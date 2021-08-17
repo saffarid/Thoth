@@ -21,26 +21,13 @@ import java.util.logging.Logger;
 
 public class DataBaseWrapper {
 
-    private final static String TEMPLATE_LOG = "";
-    private final static String PRE_URL_H2 = "jdbc:h2:";
-    private final static String PRE_URL_POSTGRE = "jdbc:postgresql:";
-    private final static String PRE_URL_MYSQL = "jdbc:mysql:";
-    private final static String PRE_URL_ORACLE = "jdbc:oracle:thin:";
     private final static String PRE_URL_SQLITE = "jdbc:sqlite:";
-    private final static String CLASS_NAME_H2 = "org.h2.Driver";
-    private final static String CLASS_NAME_POSTGRE = "org.postgresql.Driver";
-    private final static String CLASS_NAME_MYSQL = "com.mysql.jdbc.Driver";
-    private final static String CLASS_NAME_ORACLE = "oracle.jdbc.driver.OracleDriver";
     private final static String CLASS_NAME_SQLITE = "org.sqlite.JDBC";
 
-    private static Map<String, Connection> pullConn;
-    private static Map<String, Integer> countConn;
     private static Logger LOG;
 
     static {
         LOG = Logger.getLogger(DataBaseWrapper.class.getName());
-        pullConn = new HashMap<>();
-        countConn = new HashMap<>();
     }
 
     /**
