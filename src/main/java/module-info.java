@@ -8,5 +8,7 @@ module launcher {
     requires javafx.graphics;
 
     requires uikit;
+    requires thoth;
+    requires java.sql;
 
 }

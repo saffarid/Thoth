@@ -4,10 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +31,21 @@ public class DataBaseManager {
     }
 
     /**
+     * Функция создает новую БД
+     * */
+    public void createDatabase(File db) throws SQLException, ClassNotFoundException {
+        DataBaseWrapper.openConnetion(db).close();
+    }
+
+    /**
+     * Функция закрывает соединение с БД
+     * */
+    public void closeConnection() throws SQLException {
+        conn.close();
+        conn = null;
+    }
+
+    /**
      * Функция удаляет все записи из таблицы
      */
     public void clear(String tableName)
@@ -43,19 +55,17 @@ public class DataBaseManager {
     /**
      * Функция отвечает за создание новой таблицы в БД
      */
-    private void createTable(String tableName,
-                             List<TableColumn> column,
-                             Connection conn) throws SQLException {
-
+    public void createTable(Table table) throws SQLException {
+        DataBaseWrapper.createTable(table.getName(), table.getColumns(), conn);
     }
 
     /**
      * Функция отвечает за удаление записи из таблицы БД
      */
-    public void delete(String tableName,
+    public void delete(Table table,
                        WhereValues whereValues)
             throws SQLException {
-
+        DataBaseWrapper.delete(conn, table, whereValues);
     }
 
     /**
@@ -67,33 +77,6 @@ public class DataBaseManager {
     public void insert(String tableName,
                        ContentValues contentValues)
                        throws SQLException {
-
-    }
-
-
-    /**
-     * Функция возвращает карту наименований столбцов и их типов. Где ключ - наименование столбца, значение - его тип.
-     *
-     * @return
-     */
-    public List<TableColumn> getColumnsType(String tableName) throws SQLException {
-
-    }
-
-    /**
-     * Функция возвращает выборку строк из таблицы
-     */
-    public List<LinkedHashMap<TableColumn, Object>> getTableData(String tableName) throws SQLException {
-
-    }
-
-    /**
-     * Функция возвращает список таблиц БД
-     *
-     * @return Список таблиц БД
-     */
-    public ArrayList<String> getTablesList() throws SQLException {
-
     }
 
     /**
@@ -101,7 +84,7 @@ public class DataBaseManager {
      * @param db Путь до базы данных
      * */
     public void openConnection(File db) throws SQLException, ClassNotFoundException {
-        conn = DataBaseWrapper.openConnetion(db.getAbsolutePath());
+        conn = DataBaseWrapper.openConnetion(db);
     }
 
     /**
@@ -143,11 +126,30 @@ public class DataBaseManager {
     }
 
     /**
+     * Функция возвращает выборку строк из таблицы
+     */
+    public List<LinkedHashMap<TableColumn, Object>> select(Table table,
+                                                           List<TableColumn> columns,
+                                                           WhereValues where) throws SQLException {
+        ResultSet select = DataBaseWrapper.select(table, columns, where, conn);
+        List<LinkedHashMap<TableColumn, Object>> res = new LinkedList<>();
+        while (select.next()){
+            LinkedHashMap<TableColumn, Object> row = new LinkedHashMap<>();
+            for (TableColumn tableColumn : table.getColumns()) {
+                row.put(tableColumn, select.getObject(tableColumn.getName()));
+            }
+            res.add(row);
+        }
+        return res;
+    }
+
+    /**
      * Функция отвечает за обновление щаписи в таблице
      */
-    public void update(String tableName,
+    public void update(Table table,
                        ContentValues contentValues,
                        WhereValues whereValues)
             throws SQLException {
+        DataBaseWrapper.update(table, contentValues, whereValues, conn);
     }
 }

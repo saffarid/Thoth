@@ -1,16 +1,12 @@
 package Database;
 
-import DataBase.TableColumn;
-import Model.Config;
-
 import java.io.File;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -41,8 +37,8 @@ public class DataBaseWrapper {
                                  TableColumn tableColumn,
                                  Connection conn) throws SQLException {
 
-        String template = "alter table `%1s` add %2s";
-        execute(conn, String.format(template, tableName, tableColumn.toAdd()));
+//        String template = "alter table `%1s` add %2s";
+//        execute(conn, String.format(template, tableName, tableColumn.toAdd()));
     }
 
     /**
@@ -109,14 +105,14 @@ public class DataBaseWrapper {
     /**
      * Функция удаляет записи из таблицы.
      *
-     * @param tableName имя таблицы
-     * @param where     массив, хранящий значение по которому ищем строки для удаления.
+     * @param table таблица.
+     * @param where массив, хранящий значение по которому ищем строки для удаления.
      */
     public static void delete(Connection conn,
-                              String tableName,
+                              Table table,
                               WhereValues where) throws SQLException {
         String templateComand = "delete from `%1s`";
-        String comand = String.format(templateComand, tableName);
+        String comand = String.format(templateComand, table);
         if (where != null) {
             String templateWhere = "%1s where %2s";
             comand = String.format(templateWhere, comand, where.toString());
@@ -185,27 +181,19 @@ public class DataBaseWrapper {
     /**
      * Функция открывает соединение с базой данных.
      *
-     * @param dbName имя базы данных.
+     * @param db имя базы данных.
      */
-    public static Connection openConnetion(String dbName) throws ClassNotFoundException, SQLException {
+    public static Connection openConnetion(File db) throws ClassNotFoundException, SQLException {
 
         StringBuilder url = new StringBuilder(PRE_URL_SQLITE);
-//            StringBuilder url = new StringBuilder(PRE_URL_MYSQL);
-        File dir = new File(Config.getConfig().getDatabase().getUrlStorage());
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
 
-        url.append(dir.getAbsolutePath());
-        url.append(File.separator);
-        url.append(dbName);
+        if (!db.getParentFile().exists()) db.getParentFile().mkdir();
+
+        url.append(db.getAbsolutePath());
         Connection connection = null;
 
-
         Class.forName(CLASS_NAME_SQLITE);
-//                Class.forName(CLASS_NAME_MYSQL);
         connection = DriverManager.getConnection(url.toString());
-//                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/store", "root", "PnO030994");
 
         return connection;
     }
@@ -226,7 +214,7 @@ public class DataBaseWrapper {
 
     /**
      * Функция переименовывает колонку таблицы
-     * */
+     */
     public static void renameColumn(String tableName,
                                     TableColumn oldTableColumn,
                                     TableColumn newTableColumn,
@@ -267,21 +255,24 @@ public class DataBaseWrapper {
     /**
      * Функция осуществляет чтение из базы данных
      *
-     * @param tableName имя таблицы.
-     * @param columns   массив содержащий список колонок для запроса.
-     * @param where     строка, хранящая имя столбца в по которому определяем какую строку удаляем.
+     * @param table объект-описание таблицы.
+     * @param where строка, хранящая имя столбца в по которому определяем какую строку удаляем.
      * @return объект ResultSet
      */
-    public static ResultSet select(String tableName,
-                                   String[] columns,
+    public static ResultSet select(Table table,
+                                   List<TableColumn> columns,
                                    WhereValues where,
                                    Connection conn) throws SQLException {
         ResultSet result = null;
 
         String templateComand = "select %1s from `%2s`";
-        String column = Arrays.toString(columns);
-        column = column.substring(1, column.length() - 1);
-        String comand = String.format(templateComand, column, tableName);
+        StringBuilder column = new StringBuilder("*");
+        if (columns != null) {
+            List<String> collect = columns.stream().map(column1 -> column1.getName()).collect(Collectors.toList());
+            column = new StringBuilder(Arrays.toString(collect.toArray()));
+            column.deleteCharAt(column.indexOf("[")).deleteCharAt(column.indexOf("]"));
+        }
+        String comand = String.format(templateComand, column.toString(), table.getName());
 
         if (where != null) {
             String templateWhere = "%1s where %2s";
@@ -296,17 +287,17 @@ public class DataBaseWrapper {
     /**
      * Функция осуществляет обновление строки в таблице.
      *
-     * @param tableName     имя таблицы в которую добавляют данные
+     * @param table         имя таблицы в которую добавляют данные
      * @param contentValues класс-обёртка данных, для сохранения в базе данных. Ключ представляет наименование столбца, значение - значение столбца.
      * @param where         строка, хранящая имя столбца в по которому определяем в какой строке обновляем информацию
      */
-    public static void update(String tableName,
+    public static void update(Table table,
                               ContentValues contentValues,
                               WhereValues where,
                               Connection conn) throws SQLException {
         //Заготовка SQL-команды
         String templateComand = "update `%1s` set %2s";
-        String comand = String.format(templateComand, tableName, contentValues.toStringUpdate());
+        String comand = String.format(templateComand, table, contentValues.toStringUpdate());
         if (where != null) {
             String templateWhere = "%1s where %2s";
             comand = String.format(templateWhere, comand, where.toString());

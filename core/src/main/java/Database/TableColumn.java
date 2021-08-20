@@ -7,27 +7,67 @@ public abstract class TableColumn {
     /**
      * Наименование столбца
      * */
-    String name;
+    protected String name;
     /**
      * Тип данных столбца.
      * Переменная должна хранить значение равное ключу в файлах типов колонок.
      * */
 
-    String type;
+    protected String type;
     /**
      * Уникальность значений в каждой записи данного столбца
      * */
 
-    boolean isUnique;
+    protected boolean isUnique;
     /**
      * Если записи столбца представляют собой первичный ключ
      * */
 
-    boolean isPrimaryKey;
+    protected boolean isPrimaryKey;
     /**
      * Возможность записи пустых значений
      * */
-    boolean isNotNull;
+    protected boolean isNotNull;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean isUnique() {
+        return isUnique;
+    }
+
+    public void setUnique(boolean unique) {
+        isUnique = unique;
+    }
+
+    public boolean isPrimaryKey() {
+        return isPrimaryKey;
+    }
+
+    public void setPrimaryKey(boolean primaryKey) {
+        isPrimaryKey = primaryKey;
+    }
+
+    public boolean isNotNull() {
+        return isNotNull;
+    }
+
+    public void setNotNull(boolean notNull) {
+        isNotNull = notNull;
+    }
 
     /**
      * Функция возвращает строку для использования в запросе CREATE TABLE.
@@ -50,5 +90,8 @@ public abstract class TableColumn {
         return res;
     }
 
+    public boolean equals(Database.TableColumn obj) {
+        return name.equals(obj.getName());
+    }
 
 }
