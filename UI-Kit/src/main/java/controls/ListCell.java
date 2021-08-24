@@ -10,21 +10,21 @@ public class ListCell<T> extends javafx.scene.control.ListCell<T> {
                     color + " 0%,  " +
                     color + " " + midGrad + "%,  " +
                     color + " " + (midGrad + gradRange) + "%, " +
-                    "#343A40)";
+                    "transparent)";
         }
         if((midGrad + gradRange) >= 100){
             return "linear-gradient(to right, " +
-                    "#343A40,  " +
+                    "transparent,  " +
                     color + " " + (midGrad - gradRange) + "%, " +
                     color + " " + midGrad + "%,  " +
                     color + ")";
         }
         return "linear-gradient(to right, " +
-                "#343A40,  " +
+                "transparent,  " +
                 color + " " + (midGrad - gradRange) + "%, " +
                 color + " " + midGrad + "%,  " +
                 color + " " + (midGrad + gradRange) + "%, " +
-                "#343A40)";
+                "transparent)";
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ListCell<T> extends javafx.scene.control.ListCell<T> {
                 int perX = (int) ((mouseEvent.getSceneX() / getWidth()) * 100);
                 StringBuilder style = new StringBuilder("");
 
-                style.append("-fx-background-color: " + getLinearGradient("#23272B", perX, 25) + ";");
+                style.append("-fx-background-color: " + getLinearGradient("#6C757D", perX, 25) + ";");
                 style.append("-fx-border-color: " + getLinearGradient("grey", perX, 15) + ";");
 
                 source.setStyle(style.toString());

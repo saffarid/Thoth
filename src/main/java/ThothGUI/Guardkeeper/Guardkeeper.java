@@ -109,11 +109,13 @@ public class Guardkeeper extends BorderPane {
         Button viewer = getButton("VIEWER", IMG_EYE, this::openViewer);
         Button edit = getButton("РЕДАКТИРОВАТЬ", null, this::editUserDb);
         Button create = getButton("СОЗДАТЬ", null, this::createUserDb);
+        Button remove = getButton("УДАЛИТЬ", null, this::createUserDb);
 
         sandbox.disableProperty().bind(navigationMenu.getList().getSelectionModel().selectedItemProperty().isNull());
         viewer.disableProperty().bind(navigationMenu.getList().getSelectionModel().selectedItemProperty().isNull());
         edit.disableProperty().bind(navigationMenu.getList().getSelectionModel().selectedItemProperty().isNull());
         create.disableProperty().bind(navigationMenu.getList().getSelectionModel().selectedItemProperty().isNotNull());
+        remove.disableProperty().bind(navigationMenu.getList().getSelectionModel().selectedItemProperty().isNull());
 
         TextField name = new TextField();
         PathFile path = getPathFile(this::choisePath);
@@ -128,7 +130,8 @@ public class Guardkeeper extends BorderPane {
                 new Twin(new Label("Наименование"), name),
                 new Twin(new Label("Путь"), path),
                 new Twin(new Label("Шаблон"), template),
-                new Twin(edit, create)
+                new Twin(edit, create),
+                new Twin(new Label(), remove)
         );
         setCenter(vBox);
     }
