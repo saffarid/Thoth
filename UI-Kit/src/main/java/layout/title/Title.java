@@ -4,8 +4,11 @@ import controls.Button;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+
 
 public abstract class Title extends BorderPane {
 
@@ -17,24 +20,34 @@ public abstract class Title extends BorderPane {
     private final String STYLE_CLASS_TITLE = "title";
     private final String STYLE_CLASS_CLOSE = "close";
 
+    private double switchSceneX;
+    private double switchSceneY;
+
+    private Stage stage;
+
     /**
      * Кнопка закрытия окна
      * */
     protected Button close;
 
-    public Title() {
+    public Title(Stage stage) {
         super();
+        init(stage);
     }
 
-    public Title(Node node) {
+    public Title(Stage stage, Node node) {
         super(node);
+        init(stage);
     }
 
-    public Title(Node node, Node node1, Node node2, Node node3, Node node4) {
+    public Title(Stage stage, Node node, Node node1, Node node2, Node node3, Node node4) {
         super(node, node1, node2, node3, node4);
+        init(stage);
     }
 
-    protected void init(){
+    private void init(Stage stage){
+        this.stage = stage;
+
         HBox imageBar = new HBox();
         setRight(imageBar);
 
@@ -45,6 +58,11 @@ public abstract class Title extends BorderPane {
 
         getStylesheets().add(getClass().getResource("/style/layout/title/title.css").toExternalForm());
         close.getStyleClass().add(STYLE_CLASS_CLOSE);
+
+        setOnMousePressed(this::stagePress);
+        setOnMouseDragged(this::stageDrag);
+
+        close.setOnAction(event -> stage.close());
     }
 
     protected Button addButton(String url) {
@@ -54,6 +72,38 @@ public abstract class Title extends BorderPane {
         );
         btn.setGraphic(closeImg);
         return btn;
+    }
+
+    private void savePos(MouseEvent mouseEvent) {
+//        Main.LOG.log(Level.INFO, "Сохранение положения окна");
+//        Config.getConfig().getWindow().setStartX(stage.getX());
+//        Config.getConfig().getWindow().setStartY(stage.getY());
+    }
+
+
+    public void stagePress(MouseEvent mouseEvent) {
+        switch (mouseEvent.getButton()) {
+            case PRIMARY: {
+//                Main.LOG.log(Level.INFO, "Подготовка к перетаскиванию окна");
+//                Main.LOG.log(Level.INFO, "Считывание значений: положение мыши");
+                switchSceneX = mouseEvent.getX();
+                switchSceneY = mouseEvent.getY();
+//                if(stage.equals(stage) && stage.isMaximized()){
+//                    stage.setMaximized(false);
+//                    switchSceneX = (mouseEvent.getX() - 0.0)*(Config.getConfig().getWindow().getWidth() - 0.0)/(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth() - 0.0);
+//                }
+                break;
+            }
+        }
+    }
+
+    private void stageDrag(MouseEvent mouseEvent) {
+        switch (mouseEvent.getButton()) {
+            case PRIMARY: {
+                stage.setX(mouseEvent.getScreenX() - switchSceneX);
+                stage.setY(mouseEvent.getScreenY() - switchSceneY);
+            }
+        }
     }
 
 }

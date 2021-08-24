@@ -1,0 +1,15 @@
+.h_resize{
+    -fx-cursor:h-resize;
+}
+
+.v_resize{
+    -fx-cursor:v-resize;
+}
+
+.main_diag_resize{
+    -fx-cursor:se-resize;
+}
+
+.second_diag_resize{
+    -fx-cursor:sw-resize;
+}

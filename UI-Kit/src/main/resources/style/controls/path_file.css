@@ -1,0 +1,48 @@
+.path-file{
+
+}
+
+.path-file .button{
+    -fx-pref-height:30px;
+    -fx-pref-width:30px;
+    -fx-background-color:transparent;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+    -fx-border-color:#FFC107;
+    -fx-border-style:solid;
+    -fx-border-width:2px;
+    -fx-border-radius:0;
+    -fx-text-fill:#F8F9FA;
+}
+
+.path-file .label{
+    -fx-background-color:transparent;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+    -fx-border-color:#FFC107;
+    -fx-border-style:solid;
+    -fx-border-width:0 0 2px 0;
+}
+
+
+.path-file:hover .button{
+    -fx-border-color:#E0A800;
+    -fx-text-fill:#E2E6EA;
+}
+
+.path-file:hover .label{
+    -fx-border-color:#E0A800;
+    -fx-text-fill:#E2E6EA;
+    -fx-border-width:0 0 2px 0;
+}
+
+.path-file:disabled .button{
+    -fx-border-color:#FFD75E;
+    -fx-text-fill:#FAFCFC;
+}
+
+.path-file:disabled .label{
+    -fx-border-color:#FFD75E;
+    -fx-text-fill:#FAFCFC;
+    -fx-border-width:0 0 2px 0;
+}

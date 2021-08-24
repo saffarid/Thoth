@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 public class TitleWithMenu extends Title{
 
@@ -21,27 +22,25 @@ public class TitleWithMenu extends Title{
     private Button minify;
 
 
-    public TitleWithMenu() {
-        super();
+    public TitleWithMenu(Stage stage) {
+        super(stage);
 
         init();
     }
 
-    public TitleWithMenu(Node node) {
-        super(node);
+    public TitleWithMenu(Stage stage, Node node) {
+        super(stage, node);
 
         init();
     }
 
-    public TitleWithMenu(Node node, Node node1, Node node2, Node node3, Node node4) {
-        super(node, node1, node2, node3, node4);
+    public TitleWithMenu(Stage stage, Node node, Node node1, Node node2, Node node3, Node node4) {
+        super(stage, node, node1, node2, node3, node4);
 
         init();
     }
 
-    @Override
-    protected void init(){
-        super.init();
+    private void init(){
         fullSize = addButton(URL_MINIFY);
         minify = addButton(URL_MINIFY_TO_TASK_BAR);
 

@@ -1,6 +1,7 @@
 package controls;
 
 import javafx.scene.Node;
+import styleconstants.STYLESHEETS;
 
 public class Button extends javafx.scene.control.Button {
 
@@ -26,6 +27,6 @@ public class Button extends javafx.scene.control.Button {
     }
 
     private void init(){
-        getStylesheets().add(getClass().getResource("/style/controls/button.css").toExternalForm());
+        getStylesheets().add(getClass().getResource(STYLESHEETS.BUTTON).toExternalForm());
     }
 }
