@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import layout.basepane.BorderPane;
+import styleconstants.Styleclasses;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class ListPane<T> extends BorderPane {
 
     private final String STYLE_CLASS_LPANE  = "list-pane";
     private final String STYLE_CLASS_TITLE  = "title";
-    private final String STYLE_CLASS_BORDER = "border";
+
 
     private Label title;
 
@@ -40,10 +41,9 @@ public class ListPane<T> extends BorderPane {
     }
 
     private void listConfig(List<T> items){
-        list = new ListView<T>(FXCollections.observableArrayList(items));
-//        list.setCellFactory(stringListView -> new ListCell());
+        list = new ListView<T>();
         list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        list.getStyleClass().add(STYLE_CLASS_BORDER);
+        list.getStyleClass().addAll(Styleclasses.BORDER, Styleclasses.DARK);
     }
 
     public ListView<T> getList(){

@@ -1,10 +1,13 @@
 package layout.basepane;
 
 import javafx.scene.Node;
+import styleconstants.STYLESHEETS;
+import styleconstants.Styleclasses;
 
 public class VBox extends javafx.scene.layout.VBox {
 
-    private final String STYLE_CLASS_VBOX = "vbox";
+    private static final String VBOX = "vbox";
+    private static final String SSHEET_VBOX = "/style/layout/panes/basepanes/vbox.css";
 
     public VBox() {
         super();
@@ -26,8 +29,12 @@ public class VBox extends javafx.scene.layout.VBox {
         init();
     }
 
-    private void init(){
-        getStylesheets().add(getClass().getResource("/style/layout/panes/basepanes/vbox.css").toExternalForm());
-        getStyleClass().addAll(STYLE_CLASS_VBOX);
+    private void init() {
+        getStylesheets().addAll(
+                getClass().getResource(STYLESHEETS.COLOR).toExternalForm(),
+                getClass().getResource(SSHEET_VBOX).toExternalForm()
+        );
+
+        getStyleClass().addAll(VBOX, Styleclasses.DARK);
     }
 }

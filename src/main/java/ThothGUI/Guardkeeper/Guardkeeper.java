@@ -1,5 +1,10 @@
 package ThothGUI.Guardkeeper;
 
+import Main.Main;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import styleconstants.STYLESHEETS;
 import thoth_styleconstants.Styleclasses;
 import ThothCore.Guardkeeper.DataBaseException.DatabaseExistsException;
 import controls.*;
@@ -20,11 +25,17 @@ import layout.title.TitleWithoutMenu;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+
+import static Main.Main.LOG;
 
 public class Guardkeeper extends BorderPane {
-
-    private final String IMG_EYE = "/image/icon/eye.png";
 
     /**
      * Окно, в котором отображается представление
@@ -61,10 +72,15 @@ public class Guardkeeper extends BorderPane {
      * */
     private SimpleStringProperty template;
 
+    /**
+     * Список пользовательских таблиц
+     * */
+    private SimpleListProperty<File> databases;
 
     public Guardkeeper(Stage stage) throws SQLException, ClassNotFoundException {
         guardkeeper = new ThothCore.Guardkeeper.Guardkeeper();
         this.stage = stage;
+        databases = new SimpleListProperty<File>(FXCollections.observableList(guardkeeper.getDatabases()));
 
         name = new SimpleStringProperty("");
         path = new SimpleStringProperty("");
@@ -103,13 +119,13 @@ public class Guardkeeper extends BorderPane {
 
     private void contentConfig(){
         VBox vBox = new VBox();
-        vBox.setPadding(new Insets(50, 0, 0, 5));
+        vBox.setPadding(new Insets(52, 0, 0, 5));
 
         Button sandbox = getButton("SANDBOX", null, this::openSandbox);
-        Button viewer = getButton("VIEWER", IMG_EYE, this::openViewer);
-        Button edit = getButton("РЕДАКТИРОВАТЬ", null, this::editUserDb);
+        Button viewer = getButton("VIEWER", thoth_styleconstants.Image.EYE, this::openViewer);
+        Button edit = getButton("РЕДАКТИРОВАТЬ", thoth_styleconstants.Image.EDIT, this::editUserDb);
         Button create = getButton("СОЗДАТЬ", null, this::createUserDb);
-        Button remove = getButton("УДАЛИТЬ", null, this::createUserDb);
+        Button remove = getButton("УДАЛИТЬ", null, this::removeUserDb);
 
         sandbox.disableProperty().bind(navigationMenu.getList().getSelectionModel().selectedItemProperty().isNull());
         viewer.disableProperty().bind(navigationMenu.getList().getSelectionModel().selectedItemProperty().isNull());
@@ -140,16 +156,16 @@ public class Guardkeeper extends BorderPane {
      * Функция создает пользовательскую БД
      * */
     private void createUserDb(ActionEvent event) {
-        if(!path.get().equals("") || !name.get().equals("")) {
+        if(!path.get().equals("") && !name.get().equals("")) {
             try {
                 guardkeeper.createNewDatabase(new File(path.get(), name.get()), new File(template.get()));
-                navigationMenu.getList().getItems().setAll(guardkeeper.getDatabases());
+                refresh();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (DatabaseExistsException e) {
-                e.printStackTrace();
+                System.out.println("БД уже существует");
             }
         }else{
             System.out.println("Не введено имя или не выбрано расположение БД");
@@ -162,13 +178,17 @@ public class Guardkeeper extends BorderPane {
     private void editUserDb(ActionEvent event) {
         try {
             guardkeeper.renameDatabase(navigationMenu.getList().getSelectionModel().getSelectedItem(), new File(path.getValue(), name.getValue()));
+            refresh();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.INFO,"Не найден файл " + e.getMessage());
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
+    /**
+     * Функция общей инициализации компонента Button
+     * */
     private Button getButton(String text, String img, EventHandler<ActionEvent> event) {
         Button btn = new Button(text);
         if (img != null) {
@@ -182,6 +202,9 @@ public class Guardkeeper extends BorderPane {
         return btn;
     }
 
+    /**
+     * Функция общей инициализации компонента PathFile
+     * */
     private PathFile getPathFile(EventHandler<ActionEvent> event){
         PathFile pathFile = new PathFile();
         pathFile.setOnAction(event);
@@ -192,9 +215,10 @@ public class Guardkeeper extends BorderPane {
      * Настройка навигационного меню
      * */
     private void navigationMenuConfig(){
-        navigationMenu = new ListPane("Доступные БД", guardkeeper.getDatabases());
+        navigationMenu = new ListPane("Доступные БД", databases);
         ListView<File> list = navigationMenu.getList();
-        list.setCellFactory(fileListView -> new ListCell());
+        list.itemsProperty().bind(databases);
+        refresh();
         list.getSelectionModel().clearSelection();
 
         list.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
@@ -220,15 +244,27 @@ public class Guardkeeper extends BorderPane {
      *
      * */
     private void openViewer(ActionEvent event) {
-
+        File selectedItem = navigationMenu.getList().getSelectionModel().getSelectedItem();
+        LOG.log(Level.INFO, "Запуск Viewer для пользовательской БД " + selectedItem);
+        try {
+            guardkeeper.openViewer(selectedItem);
+        } catch (NoSuchFileException e) {
+            LOG.log(Level.INFO, "Не найден файл " + e.getMessage());
+        }
     }
 
     private void openSandbox(ActionEvent event) {
-
+        File selectedItem = navigationMenu.getList().getSelectionModel().getSelectedItem();
+        LOG.log(Level.INFO, "Запуск SandBox для пользовательской БД " + selectedItem);
+        try {
+            guardkeeper.openSandBox(selectedItem);
+        } catch (NoSuchFileException e) {
+            LOG.log(Level.INFO, "Не найден файл " + e.getMessage());
+        }
     }
 
     private void setStyle(){
-        getStyleClass().add(Styleclasses.WINDOW);
+        getStyleClass().addAll(Styleclasses.WINDOW);
 
         getStylesheets().add(getClass().getResource("/style/list.css").toExternalForm());
         getStylesheets().add(getClass().getResource("/style/window.css").toExternalForm());
@@ -239,7 +275,32 @@ public class Guardkeeper extends BorderPane {
      * */
     private void titleConfig(){
         title = new TitleWithoutMenu(stage, "Thoth");
-
         setTop(title);
+    }
+
+    /**
+     * Функция обновляет список пользовательских БД
+     * */
+    private void refresh() {
+        List<File> databases = guardkeeper.getDatabases();
+        Collections.sort(databases);
+
+        navigationMenu.getList().setCellFactory(null);
+        this.databases.setValue(FXCollections.observableList(databases));
+        navigationMenu.getList().setCellFactory(fileListView -> new ListCell());
+    }
+
+    /**
+     * Функция удаляет пользовательскую БД
+     * */
+    private void removeUserDb(ActionEvent event) {
+        try {
+            guardkeeper.removeDatabase(navigationMenu.getList().getSelectionModel().getSelectedItem());
+            refresh();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (IOException e) {
+            LOG.log(Level.INFO,"Не найден файл " + e.getMessage());
+        }
     }
 }

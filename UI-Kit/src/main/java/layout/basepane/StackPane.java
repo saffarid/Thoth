@@ -2,6 +2,7 @@ package layout.basepane;
 
 import javafx.scene.Node;
 import styleconstants.STYLESHEETS;
+import styleconstants.Styleclasses;
 
 public class StackPane extends javafx.scene.layout.StackPane {
 
@@ -17,6 +18,7 @@ public class StackPane extends javafx.scene.layout.StackPane {
     }
 
     private void init(){
-        getStylesheets().add(getClass().getResource(STYLESHEETS.BACKGROUND).toExternalForm());
+        getStylesheets().add(getClass().getResource(STYLESHEETS.COLOR).toExternalForm());
+        getStyleClass().addAll(Styleclasses.DARK);
     }
 }

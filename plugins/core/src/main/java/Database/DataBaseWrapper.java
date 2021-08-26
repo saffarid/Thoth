@@ -112,7 +112,7 @@ public class DataBaseWrapper {
                               Table table,
                               WhereValues where) throws SQLException {
         String templateComand = "delete from `%1s`";
-        String comand = String.format(templateComand, table);
+        String comand = String.format(templateComand, table.getName());
         if (where != null) {
             String templateWhere = "%1s where %2s";
             comand = String.format(templateWhere, comand, where.toString());

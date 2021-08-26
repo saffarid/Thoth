@@ -10,6 +10,8 @@ import javafx.scene.image.ImageView;
 import layout.basepane.BorderPane;
 import layout.basepane.ScrollPane;
 import layout.basepane.VBox;
+import styleconstants.STYLESHEETS;
+import styleconstants.Styleclasses;
 
 import java.util.List;
 
@@ -72,8 +74,9 @@ public class NavigationMenu extends BorderPane {
         scrollPane.setFitToWidth(true);
         title.setMaxWidth(MAX_SIZE);
 
+        getStylesheets().add(getClass().getResource(STYLESHEETS.COLOR).toExternalForm());
         getStylesheets().add(getClass().getResource("/style/layout/panes/custom/navigation_menu.css").toExternalForm());
-        getStyleClass().add(STYLE_CLASS_NAV_MENU);
+        getStyleClass().addAll(STYLE_CLASS_NAV_MENU, Styleclasses.DARK);
         content.getStyleClass().add(STYLE_CLASS_CONTENT);
         title.getStyleClass().add(STYLE_CLASS_TITLE);
 

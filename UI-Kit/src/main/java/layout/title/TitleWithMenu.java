@@ -1,6 +1,6 @@
 package layout.title;
 
-import controls.Button;
+import javafx.scene.control.Button;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,19 +24,16 @@ public class TitleWithMenu extends Title{
 
     public TitleWithMenu(Stage stage) {
         super(stage);
-
         init();
     }
 
     public TitleWithMenu(Stage stage, Node node) {
         super(stage, node);
-
         init();
     }
 
     public TitleWithMenu(Stage stage, Node node, Node node1, Node node2, Node node3, Node node4) {
         super(stage, node, node1, node2, node3, node4);
-
         init();
     }
 

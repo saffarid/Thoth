@@ -1,0 +1,32 @@
+.list-pane{
+    -fx-padding:2px;
+}
+
+.border{
+    -fx-border-color:#707070;
+    -fx-border-style:solid;
+    -fx-border-width:1px;
+}
+
+.title{
+    -fx-max-height:50px;
+    -fx-min-height:50px;
+    -fx-text-fill:white;
+    -fx-alignment:center;
+}
+
+.list-view, .list-view .sheet{
+    -fx-background-color:#343A40;
+}
+
+.cell{
+    -fx-background-color:transparent;
+    -fx-text-fill:white;
+    -fx-border-color:transparent;
+    -fx-border-style:solid;
+    -fx-border-width:1px;
+}
+
+.list-cell:focused{
+    -fx-background-color:#6C757D;
+}

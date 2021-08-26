@@ -5,6 +5,8 @@ import styleconstants.STYLESHEETS;
 
 public class Button extends javafx.scene.control.Button {
 
+    public static final String BUTTON = "/style/controls/button.css";
+
     public Button() {
         super();
         init();
@@ -27,6 +29,6 @@ public class Button extends javafx.scene.control.Button {
     }
 
     private void init(){
-        getStylesheets().add(getClass().getResource(STYLESHEETS.BUTTON).toExternalForm());
+        getStylesheets().add(getClass().getResource(BUTTON).toExternalForm());
     }
 }

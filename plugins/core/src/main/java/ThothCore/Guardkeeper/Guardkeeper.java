@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -58,6 +59,7 @@ public class Guardkeeper {
                    ClassNotFoundException,
                    DatabaseExistsException {
         new CreatorUserDatabase().create(db, template, table);
+        readDataBases();
     }
 
     public List<File> getDatabases() {
@@ -67,22 +69,26 @@ public class Guardkeeper {
     /**
      * Функция создает и возвращает объект SandBox
      */
-    public void openSandBox(File db) {
+    public void openSandBox(File db) throws NoSuchFileException {
+        if(!db.exists()){
+            throw new NoSuchFileException(db.getAbsolutePath());
+        }
 
     }
 
     /**
      * Функция создает и возвращает объект Viewer
      */
-    public void openViewer(File db) {
-
+    public void openViewer(File db) throws NoSuchFileException {
+        if(!db.exists()){
+            throw new NoSuchFileException(db.getAbsolutePath());
+        }
     }
 
     /**
      * Функция считывает список пользовательских таблиц и преобразует их в списов объектов File.
      */
     private void readDataBases() throws SQLException {
-        String template = "%1s" + File.pathSeparator + "%2s";
 
         List<TableColumn> columns = table.getColumns()
                 .stream()
@@ -128,13 +134,15 @@ public class Guardkeeper {
             if (!newDb.getParentFile().exists()) newDb.getParentFile().mkdir();
             Files.move(oldDb.toPath(), newDb.toPath(), StandardCopyOption.REPLACE_EXISTING);
             dbManager.update(table, contentValues, whereValues);
+
+            readDataBases();
         }
     }
 
     /**
      * Функция удаляет пользовательскую БД
      */
-    public void removeDatabase(File db) throws SQLException, IOException {
+    public void removeDatabase(File db) throws SQLException, IOException, NoSuchFileException {
 
         WhereValues whereValues = new WhereValues();
         whereValues.put(table.getColumns()
@@ -151,6 +159,7 @@ public class Guardkeeper {
         Files.delete(db.toPath());
         dbManager.delete(table, whereValues);
 
+        readDataBases();
     }
 
 

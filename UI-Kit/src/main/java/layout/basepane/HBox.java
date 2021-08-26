@@ -1,10 +1,13 @@
 package layout.basepane;
 
 import javafx.scene.Node;
+import styleconstants.STYLESHEETS;
+import styleconstants.Styleclasses;
 
 public class HBox extends javafx.scene.layout.HBox {
 
-    private final String STYLE_CLASS_HBOX = "hbox";
+    public static final String SCLASS_HBOX = "hbox";
+    public static final String SSHEET_HBOX = "/style/layout/panes/basepanes/hbox.css";
 
     public HBox() {
         super();
@@ -26,8 +29,11 @@ public class HBox extends javafx.scene.layout.HBox {
         init();
     }
 
-    private void init(){
-        getStylesheets().add(getClass().getResource("/style/layout/panes/basepanes/hbox.css").toExternalForm());
-        getStyleClass().addAll(STYLE_CLASS_HBOX);
+    private void init() {
+        getStylesheets().addAll(
+                getClass().getResource(STYLESHEETS.COLOR).toExternalForm(),
+                getClass().getResource(SSHEET_HBOX).toExternalForm()
+        );
+        getStyleClass().addAll(SCLASS_HBOX, Styleclasses.DARK);
     }
 }
