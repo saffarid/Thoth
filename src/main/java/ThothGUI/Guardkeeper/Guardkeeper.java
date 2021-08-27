@@ -1,10 +1,8 @@
 package ThothGUI.Guardkeeper;
 
-import Main.Main;
+import Main.ChangeScreen;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import styleconstants.STYLESHEETS;
 import thoth_styleconstants.Styleclasses;
 import ThothCore.Guardkeeper.DataBaseException.DatabaseExistsException;
 import controls.*;
@@ -15,37 +13,29 @@ import javafx.geometry.Insets;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import layout.custompane.ListPane;
 import layout.basepane.VBox;
-import layout.title.TitleWithoutMenu;
+import window.SecondaryWindow;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
 import static Main.Main.LOG;
 
-public class Guardkeeper extends BorderPane {
+public class Guardkeeper extends SecondaryWindow {
 
     /**
      * Окно, в котором отображается представление
      * */
     private Stage stage;
-
-    /**
-     * Заголовок окна
-     */
-    private TitleWithoutMenu title;
 
     /**
      * Навигационное меню. В него записываются пользовательские БД
@@ -77,16 +67,19 @@ public class Guardkeeper extends BorderPane {
      * */
     private SimpleListProperty<File> databases;
 
-    public Guardkeeper(Stage stage) throws SQLException, ClassNotFoundException {
+    private ChangeScreen changeScreen;
+
+    public Guardkeeper(Stage stage, ChangeScreen changeScreen) throws SQLException, ClassNotFoundException {
+        super(stage, "Thoth");
         guardkeeper = new ThothCore.Guardkeeper.Guardkeeper();
         this.stage = stage;
+        this.changeScreen = changeScreen;
         databases = new SimpleListProperty<File>(FXCollections.observableList(guardkeeper.getDatabases()));
 
         name = new SimpleStringProperty("");
         path = new SimpleStringProperty("");
         template = new SimpleStringProperty("");
 
-        titleConfig();
         navigationMenuConfig();
         contentConfig();
 
@@ -248,6 +241,7 @@ public class Guardkeeper extends BorderPane {
         LOG.log(Level.INFO, "Запуск Viewer для пользовательской БД " + selectedItem);
         try {
             guardkeeper.openViewer(selectedItem);
+            changeScreen.changeScreen();
         } catch (NoSuchFileException e) {
             LOG.log(Level.INFO, "Не найден файл " + e.getMessage());
         }
@@ -264,18 +258,7 @@ public class Guardkeeper extends BorderPane {
     }
 
     private void setStyle(){
-        getStyleClass().addAll(Styleclasses.WINDOW);
-
         getStylesheets().add(getClass().getResource("/style/list.css").toExternalForm());
-        getStylesheets().add(getClass().getResource("/style/window.css").toExternalForm());
-    }
-
-    /**
-     * Настройка заголовка окна
-     * */
-    private void titleConfig(){
-        title = new TitleWithoutMenu(stage, "Thoth");
-        setTop(title);
     }
 
     /**

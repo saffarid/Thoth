@@ -1,7 +1,7 @@
 package layout.basepane;
 
 import javafx.scene.Node;
-import styleconstants.STYLESHEETS;
+import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
 public class BorderPane extends javafx.scene.layout.BorderPane {
@@ -26,7 +26,7 @@ public class BorderPane extends javafx.scene.layout.BorderPane {
 
     private void init() {
         getStylesheets().addAll(
-                getClass().getResource(STYLESHEETS.COLOR).toExternalForm(),
+                getClass().getResource(Stylesheets.COLOR).toExternalForm(),
                 getClass().getResource(SSHEET_BPANE).toExternalForm()
         );
         getStyleClass().addAll(SCLASS_BPANE, Styleclasses.DARK);

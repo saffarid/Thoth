@@ -12,8 +12,6 @@ public class Styleclasses {
 
     public static final String BORDER = "border";
 
-
-
-
+    public static final String WINDOW = "window";
 
 }

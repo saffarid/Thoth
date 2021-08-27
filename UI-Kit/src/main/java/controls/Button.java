@@ -1,7 +1,6 @@
 package controls;
 
 import javafx.scene.Node;
-import styleconstants.STYLESHEETS;
 
 public class Button extends javafx.scene.control.Button {
 

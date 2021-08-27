@@ -1,16 +1,17 @@
 package layout.custompane;
 
-import controls.Button;
+
 import controls.Label;
 import controls.MenuButton;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import layout.basepane.BorderPane;
 import layout.basepane.ScrollPane;
-import layout.basepane.VBox;
-import styleconstants.STYLESHEETS;
+import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public class NavigationMenu extends BorderPane {
         scrollPane.setFitToWidth(true);
         title.setMaxWidth(MAX_SIZE);
 
-        getStylesheets().add(getClass().getResource(STYLESHEETS.COLOR).toExternalForm());
+        getStylesheets().add(getClass().getResource(Stylesheets.COLOR).toExternalForm());
         getStylesheets().add(getClass().getResource("/style/layout/panes/custom/navigation_menu.css").toExternalForm());
         getStyleClass().addAll(STYLE_CLASS_NAV_MENU, Styleclasses.DARK);
         content.getStyleClass().add(STYLE_CLASS_CONTENT);
@@ -94,9 +95,10 @@ public class NavigationMenu extends BorderPane {
      * */
     private void setMinifyButton(){
         ImageView imageView = new ImageView(
-                new Image(getClass().getResourceAsStream("/image/icons/menu.png"), 40, 40, false, false)
+                new Image(getClass().getResourceAsStream("/image/icons/menu.png"), 30, 30, false, false)
         );
-        minifyButton = new Button(imageView);
+        minifyButton = new Button();
+        minifyButton.setGraphic(imageView);
         title.setLeft(minifyButton);
         minifyButton.setOnAction(this::minify);
         minifyButton.getStyleClass().add(STYLE_CLASS_MINIFY_BTN);

@@ -2,7 +2,6 @@ module uikit {
 
     exports layout.basepane;
     exports layout.custompane;
-    exports layout.title;
     exports controls;
     exports window;
     exports styleconstants;

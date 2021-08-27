@@ -3,6 +3,8 @@ package controls;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 
+import java.util.Collection;
+
 public class MenuButton extends Button {
 
     private final String STYLE_CLASS_MENU_BUTTON = "menu-button";

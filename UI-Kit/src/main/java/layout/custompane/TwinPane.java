@@ -4,7 +4,7 @@ import controls.Twin;
 import layout.basepane.BorderPane;
 import layout.basepane.ScrollPane;
 import layout.basepane.VBox;
-import styleconstants.STYLESHEETS;
+import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
 public class TwinPane extends BorderPane {
@@ -34,7 +34,7 @@ public class TwinPane extends BorderPane {
         scrollPane.setContent(content);
         setCenter(scrollPane);
 
-        getStylesheets().add(getClass().getResource(STYLESHEETS.COLOR).toExternalForm());
+        getStylesheets().add(getClass().getResource(Stylesheets.COLOR).toExternalForm());
 
         getStylesheets().add(getClass().getResource("/style/layout/panes/custom/twin_pane.css").toExternalForm());
         getStyleClass().addAll(STYLE_CLASS_TWIN_PANE, Styleclasses.DARK);

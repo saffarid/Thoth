@@ -1,7 +1,7 @@
 package layout.basepane;
 
 import javafx.scene.Node;
-import styleconstants.STYLESHEETS;
+import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
 public class VBox extends javafx.scene.layout.VBox {
@@ -31,7 +31,7 @@ public class VBox extends javafx.scene.layout.VBox {
 
     private void init() {
         getStylesheets().addAll(
-                getClass().getResource(STYLESHEETS.COLOR).toExternalForm(),
+                getClass().getResource(Stylesheets.COLOR).toExternalForm(),
                 getClass().getResource(SSHEET_VBOX).toExternalForm()
         );
 

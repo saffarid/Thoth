@@ -1,7 +1,7 @@
 package layout.basepane;
 
 import javafx.scene.Node;
-import styleconstants.STYLESHEETS;
+import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
 public class ScrollPane extends javafx.scene.control.ScrollPane {
@@ -20,7 +20,7 @@ public class ScrollPane extends javafx.scene.control.ScrollPane {
 
     private void init(){
         getStylesheets().addAll(
-                getClass().getResource(STYLESHEETS.COLOR).toExternalForm(),
+                getClass().getResource(Stylesheets.COLOR).toExternalForm(),
                 getClass().getResource(SSHEET_SPANE).toExternalForm()
         );
         getStyleClass().addAll(Styleclasses.BORDER, Styleclasses.DARK);

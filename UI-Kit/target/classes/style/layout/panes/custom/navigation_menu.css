@@ -1,5 +1,6 @@
 .navigation-menu{
     -fx-background-color:#343A40;
+    -fx-padding: 2px;
 }
 
 .title{
@@ -19,4 +20,8 @@
     -fx-background-color:transparent;
     -fx-background-radius:0;
     -fx-padding:2.5px;
+}
+
+.content{
+    -fx-border-width:1px;
 }

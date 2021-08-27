@@ -9,5 +9,5 @@
 .border{
     -fx-border-color:#707070;
     -fx-border-style:solid;
-    -fx-border-width:2px;
+    -fx-border-width:1px;
 }

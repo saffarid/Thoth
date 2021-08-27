@@ -2,9 +2,8 @@ package window;
 
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import styleconstants.STYLESHEETS;
+import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
 public class StageResizer {
@@ -165,7 +164,7 @@ public class StageResizer {
         this.stage = stage;
 
         Parent root = this.stage.getScene().getRoot();
-        root.getStylesheets().add(getClass().getResource(STYLESHEETS.STAGE_RESIZER).toExternalForm());
+        root.getStylesheets().add(getClass().getResource(Stylesheets.STAGE_RESIZER).toExternalForm());
 
         root.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, mouseEvent -> {
             if (!root.equals(mouseEvent.getTarget())) {

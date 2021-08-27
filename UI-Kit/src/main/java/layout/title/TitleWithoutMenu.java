@@ -12,12 +12,10 @@ public class TitleWithoutMenu extends Title{
 
     private Label title;
 
-    public TitleWithoutMenu(Stage stage, String title) {
-        super(stage);
-
+    public TitleWithoutMenu(String title) {
+        super();
         init(title);
     }
-
 
     private void init(String title){
         if(title != null) {

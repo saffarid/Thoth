@@ -1,6 +1,7 @@
 package Main;
 
 import ThothGUI.Guardkeeper.Guardkeeper;
+import ThothGUI.Main.MainWindow;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -9,9 +10,11 @@ import window.StageResizer;
 
 import java.util.logging.Logger;
 
-public class Main extends Application {
+public class Main extends Application implements ChangeScreen{
 
     public static Logger LOG;
+
+    private Stage stage;
 
     static {
         LOG = Logger.getLogger("Thoth");
@@ -19,7 +22,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Guardkeeper root = new Guardkeeper(stage);
+        this.stage = stage;
+
+        Guardkeeper root = new Guardkeeper(stage, this::changeScreen);
 
         Scene scene = new Scene(root, 700, 500);
         stage.setScene(scene);
@@ -28,9 +33,15 @@ public class Main extends Application {
 
         stage.show();
     }
+
     public static void main(String[] args) {
         launch(args);
     }
 
 
+    @Override
+    public void changeScreen() {
+        MainWindow mainWindow = new MainWindow(stage);
+        stage.setScene(new Scene(mainWindow, 800, 600));
+    }
 }

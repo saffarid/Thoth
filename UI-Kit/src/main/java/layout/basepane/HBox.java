@@ -1,7 +1,7 @@
 package layout.basepane;
 
 import javafx.scene.Node;
-import styleconstants.STYLESHEETS;
+import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
 public class HBox extends javafx.scene.layout.HBox {
@@ -31,7 +31,7 @@ public class HBox extends javafx.scene.layout.HBox {
 
     private void init() {
         getStylesheets().addAll(
-                getClass().getResource(STYLESHEETS.COLOR).toExternalForm(),
+                getClass().getResource(Stylesheets.COLOR).toExternalForm(),
                 getClass().getResource(SSHEET_HBOX).toExternalForm()
         );
         getStyleClass().addAll(SCLASS_HBOX, Styleclasses.DARK);
