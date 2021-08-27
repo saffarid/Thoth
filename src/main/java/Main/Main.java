@@ -43,5 +43,6 @@ public class Main extends Application implements ChangeScreen{
     public void changeScreen() {
         MainWindow mainWindow = new MainWindow(stage);
         stage.setScene(new Scene(mainWindow, 800, 600));
+        new StageResizer(stage);
     }
 }

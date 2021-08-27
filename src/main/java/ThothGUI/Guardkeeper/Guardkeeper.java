@@ -3,7 +3,6 @@ package ThothGUI.Guardkeeper;
 import Main.ChangeScreen;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import thoth_styleconstants.Styleclasses;
 import ThothCore.Guardkeeper.DataBaseException.DatabaseExistsException;
 import controls.*;
 import javafx.beans.property.SimpleStringProperty;

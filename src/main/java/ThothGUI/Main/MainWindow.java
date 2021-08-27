@@ -10,11 +10,11 @@ import javafx.stage.Stage;
 
 import layout.basepane.StackPane;
 import layout.custompane.NavigationMenu;
-import thoth_styleconstants.Styleclasses;
 import window.PrimaryWindow;
 import window.Subwindow;
+import window.SubwindowResizer;
 
-
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,9 +26,13 @@ public class MainWindow extends PrimaryWindow {
 
     private StackPane workspace;
 
+    private List<String> openSubwindows;
+
     public MainWindow(Stage stage) {
         super(stage);
         mainStage = stage;
+
+        openSubwindows = new ArrayList<>();
 
         menuConfig();
         workspaceConfig();
@@ -73,24 +77,17 @@ public class MainWindow extends PrimaryWindow {
                 }
             }
         });
+        new SubwindowResizer(subwindow);
         return subwindow;
     }
 
     private void openAnalyzator(ActionEvent event) {
         Subwindow subwindow = createSubwindow("Анализатор");
-        subwindow.setPrefHeight(200);
-        subwindow.setPrefWidth(200);
-        subwindow.setMaxHeight(200);
-        subwindow.setMaxWidth(200);
 
     }
 
     private void openTables(ActionEvent event) {
         Subwindow subwindow = createSubwindow("Список таблиц");
-        subwindow.setPrefHeight(200);
-        subwindow.setPrefWidth(200);
-        subwindow.setMaxHeight(200);
-        subwindow.setMaxWidth(200);
     }
 
     private void styleConfig(){

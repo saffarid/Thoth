@@ -21,8 +21,6 @@ public class PrimaryWindow extends Window{
         title.getClose().setOnAction(event -> stage.close());
 
         setTop(this.title);
-
-        new StageResizer(this.stage);
     }
 
     public void stagePress(MouseEvent mouseEvent) {
