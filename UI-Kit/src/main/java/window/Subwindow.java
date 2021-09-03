@@ -32,8 +32,8 @@ public class Subwindow extends Window{
         switch (mouseEvent.getButton()) {
             case PRIMARY: {
                 System.out.println("help");
-                title.setSwitchSceneX(mouseEvent.getSceneX());
-                title.setSwitchSceneY(mouseEvent.getSceneY());
+                title.setSwitchSceneX(mouseEvent.getSceneX() - getTranslateX());
+                title.setSwitchSceneY(mouseEvent.getSceneY() - getTranslateY());
                 break;
             }
         }

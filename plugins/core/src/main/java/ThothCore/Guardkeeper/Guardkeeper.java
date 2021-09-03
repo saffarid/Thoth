@@ -9,7 +9,6 @@ import ThothCore.Guardkeeper.DataBaseException.DatabaseExistsException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardCopyOption;
@@ -17,7 +16,6 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +29,8 @@ public class Guardkeeper {
      */
     private DataBaseInfo.DatabasesPath table;
 
+    private File dbGuardkeeper;
+
     /**
      * Менеджер для работы с БД
      */
@@ -43,10 +43,11 @@ public class Guardkeeper {
 
     public Guardkeeper() throws SQLException, ClassNotFoundException {
         dbManager = DataBaseManager.getDbManager();
-        dbManager.openConnection(DataBaseInfo.dbName);
+        dbGuardkeeper = DataBaseInfo.dbName;
+        dbManager.getConnection(dbGuardkeeper);
 
         table = new DataBaseInfo.DatabasesPath();
-        dbManager.createTable(table);
+        dbManager.createTable(table, this.dbGuardkeeper);
 
         readDataBases();
     }
@@ -58,7 +59,7 @@ public class Guardkeeper {
             throws SQLException,
                    ClassNotFoundException,
                    DatabaseExistsException {
-        new CreatorUserDatabase().create(db, template, table);
+        new CreatorUserDatabase(this.dbGuardkeeper).create(db, template, table);
         readDataBases();
     }
 
@@ -94,7 +95,7 @@ public class Guardkeeper {
                 .stream()
                 .filter(column -> !column.getName().equals("id"))
                 .collect(Collectors.toList());
-        List<LinkedHashMap<TableColumn, Object>> select = dbManager.select(table, columns, null);
+        List<LinkedHashMap<TableColumn, Object>> select = dbManager.select(table, columns, null, this.dbGuardkeeper);
 
         databases = select.stream().map(row -> {
             LinkedList<TableColumn> row1 = new LinkedList<>(row.keySet());
@@ -133,7 +134,7 @@ public class Guardkeeper {
 
             if (!newDb.getParentFile().exists()) newDb.getParentFile().mkdir();
             Files.move(oldDb.toPath(), newDb.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            dbManager.update(table, contentValues, whereValues);
+            dbManager.update(table, contentValues, whereValues, this.dbGuardkeeper);
 
             readDataBases();
         }
@@ -157,7 +158,7 @@ public class Guardkeeper {
                 db.getName());
 
         Files.delete(db.toPath());
-        dbManager.delete(table, whereValues);
+        dbManager.delete(table, whereValues, this.dbGuardkeeper);
 
         readDataBases();
     }

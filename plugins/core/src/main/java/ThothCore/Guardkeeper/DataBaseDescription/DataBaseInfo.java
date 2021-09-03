@@ -3,6 +3,7 @@ package ThothCore.Guardkeeper.DataBaseDescription;
 import Database.Table;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,8 +29,9 @@ public class DataBaseInfo {
             constrPKColumns = new LinkedList<>();
             constrNNColumns = new LinkedList<>();
             constrUColumns = new LinkedList<>();
+            constrFK = new HashMap<>();
             name = "DatabasePath";
-            addColumn(new TableColumn(COL_ID, "integer", true, true, true));
+            addColumn(new TableColumn(COL_ID, "integer", false, true, false));
             addColumn(new TableColumn(COL_NAME, TEXT, false, false, true));
             addColumn(new TableColumn(COL_PATH, TEXT, false, false, true));
         }

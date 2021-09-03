@@ -7,7 +7,7 @@ public class TableColumn extends Database.TableColumn {
         this.type = type;
         this.isUnique = isUnique;
         this.isPrimaryKey = isPrimaryKey;
-        this.isNotNull = (isPrimaryKey)?(true):(isNotNull);
+        this.isNotNull = isNotNull;
     }
 
     public TableColumn() {

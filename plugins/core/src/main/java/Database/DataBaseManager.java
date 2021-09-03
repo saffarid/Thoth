@@ -5,13 +5,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataBaseManager {
 
     private static Logger LOG;
     private static DataBaseManager dbManager;
-    private Connection conn;
+    private Map<File, Connection> conns;
     private GuardianOfWisdom guardianOfWisdom;
 
     static {
@@ -20,6 +21,7 @@ public class DataBaseManager {
 
     public DataBaseManager() throws SQLException, ClassNotFoundException {
         guardianOfWisdom = new GuardianOfWisdom();
+        conns = new HashMap<>();
     }
 
     public static DataBaseManager getDbManager() throws SQLException, ClassNotFoundException {
@@ -33,15 +35,17 @@ public class DataBaseManager {
      * Функция создает новую БД
      * */
     public void createDatabase(File db) throws SQLException, ClassNotFoundException {
-        DataBaseWrapper.openConnetion(db).close();
+        getConnection(db);
     }
 
     /**
      * Функция закрывает соединение с БД
      * */
-    public void closeConnection() throws SQLException {
-        conn.close();
-        conn = null;
+    public void closeConnection(File db) throws SQLException {
+        if(conns.containsKey(db)){
+            conns.get(db).close();
+            conns.remove(db);
+        }
     }
 
     /**
@@ -54,17 +58,28 @@ public class DataBaseManager {
     /**
      * Функция отвечает за создание новой таблицы в БД
      */
-    public void createTable(Table table) throws SQLException {
-        DataBaseWrapper.createTable(table.getName(), table.getColumns(), conn);
+    public void createTable(Table table, File db) throws SQLException {
+        DataBaseWrapper.createTable(table, table.getColumns(), conns.get(db));
     }
 
     /**
      * Функция отвечает за удаление записи из таблицы БД
      */
     public void delete(Table table,
-                       WhereValues whereValues)
+                       WhereValues whereValues,
+                       File db)
             throws SQLException {
-        DataBaseWrapper.delete(conn, table, whereValues);
+        DataBaseWrapper.delete(conns.get(db), table, whereValues);
+    }
+
+    /**
+     * Функция возвращает соединение с БД
+     * */
+    public Connection getConnection(File db) throws SQLException, ClassNotFoundException {
+        if(!conns.containsKey(db)) {
+            openConnection(db);
+        }
+        return conns.get(db);
     }
 
     /**
@@ -73,18 +88,19 @@ public class DataBaseManager {
      * @param tableName     наименование таблицы для вставки записей
      * @param contentValues Объект вставляемых данных
      */
-    public void insert(String tableName,
-                       ContentValues contentValues)
+    public void insert(Table tableName,
+                       ContentValues contentValues,
+                       File db)
                        throws SQLException {
-        DataBaseWrapper.insert(tableName, contentValues, conn);
+        DataBaseWrapper.insert(tableName, contentValues, conns.get(db));
     }
 
     /**
      * Функция открывает соединение с БД/
      * @param db Путь до базы данных
      * */
-    public void openConnection(File db) throws SQLException, ClassNotFoundException {
-        conn = DataBaseWrapper.openConnetion(db);
+    private void openConnection(File db) throws SQLException, ClassNotFoundException {
+        conns.put(db, DataBaseWrapper.openConnetion(db));
     }
 
     /**
@@ -130,8 +146,9 @@ public class DataBaseManager {
      */
     public List<LinkedHashMap<TableColumn, Object>> select(Table table,
                                                            List<TableColumn> columns,
-                                                           WhereValues where) throws SQLException {
-        ResultSet select = DataBaseWrapper.select(table, columns, where, conn);
+                                                           WhereValues where,
+                                                           File db) throws SQLException {
+        ResultSet select = DataBaseWrapper.select(table, columns, where, conns.get(db));
         List<LinkedHashMap<TableColumn, Object>> res = new LinkedList<>();
         while (select.next()){
             LinkedHashMap<TableColumn, Object> row = new LinkedHashMap<>();
@@ -148,8 +165,9 @@ public class DataBaseManager {
      */
     public void update(Table table,
                        ContentValues contentValues,
-                       WhereValues whereValues)
+                       WhereValues whereValues,
+                       File db)
             throws SQLException {
-        DataBaseWrapper.update(table, contentValues, whereValues, conn);
+        DataBaseWrapper.update(table, contentValues, whereValues, conns.get(db));
     }
 }

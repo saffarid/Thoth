@@ -90,16 +90,31 @@ public class DataBaseWrapper {
      * @param columns   объект-описание таблицы
      * @param conn      Название базы данных
      */
-    public static void createTable(String tableName,
+    public static void createTable(Table tableName,
                                    List<TableColumn> columns,
                                    Connection conn) throws SQLException {
         String com = "create table if not exists `%1s` (%2s)";
         StringBuilder res = new StringBuilder("");
         columns.stream().forEach(column -> {
             res.append(column.toCreate());
+            if(columns.indexOf(column) != columns.size()-1){
+                res.append(", ");
+            }
         });
-        res.deleteCharAt(res.lastIndexOf(","));
-        execute(conn, String.format(com, tableName, res.toString()));
+        res.append(" ");
+        if(tableName.hasConstPK()) {
+            res.append(", ");
+            res.append(tableName.getConstrPK());
+        }
+        if(tableName.hasConstrUniq()) {
+            res.append(", ");
+            res.append(tableName.getConstrUniq());
+        }
+        if(tableName.hasConstrFK()) {
+            res.append(", ");
+            res.append(tableName.getConstrFK());
+        }
+        execute(conn, String.format(com, tableName.getName(), res.toString()));
     }
 
     /**
@@ -167,18 +182,6 @@ public class DataBaseWrapper {
     }
 
     /**
-     * Функция осуществляет вставку данных в таблицу.
-     *
-     * @param tableName имя таблицы в которую добавляют данные
-     */
-    public static void insert(String tableName,
-                              ContentValues content,
-                              Connection conn) throws SQLException {
-        String template = "insert into `%1s` %2s";
-        execute(conn, String.format(template, tableName, content.toStringCreateTable()));
-    }
-
-    /**
      * Функция открывает соединение с базой данных.
      *
      * @param db имя базы данных.
@@ -196,6 +199,18 @@ public class DataBaseWrapper {
         connection = DriverManager.getConnection(url.toString());
 
         return connection;
+    }
+
+    /**
+     * Функция осуществляет вставку данных в таблицу.
+     *
+     * @param tableName имя таблицы в которую добавляют данные
+     */
+    public static void insert(Table tableName,
+                              ContentValues content,
+                              Connection conn) throws SQLException {
+        String template = "insert into `%1s` %2s";
+        execute(conn, String.format(template, tableName.getName(), content.toStringInsert()));
     }
 
     /**

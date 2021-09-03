@@ -2,6 +2,7 @@ package ThothCore.Guardkeeper;
 
 import Database.ContentValues;
 import Database.DataBaseManager;
+import ThothCore.EmptyDatabase.EmptyDatabase;
 import ThothCore.Guardkeeper.DataBaseDescription.DataBaseInfo;
 import ThothCore.Guardkeeper.DataBaseException.DatabaseExistsException;
 
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
  * Перед созданием пользовательской БД, класс проверяет существование планируемой БД
  */
 public class CreatorUserDatabase {
+
+    private File dbGuardkeeper;
 
     /**
      * Наименование БД
@@ -31,14 +34,23 @@ public class CreatorUserDatabase {
      */
     private File templateSQL;
 
+    public CreatorUserDatabase(File db) {
+        this.dbGuardkeeper = db;
+    }
+
     /**
      * Функция создает пользовательскую БД
      */
     public void create(File db, File templateSQL, DataBaseInfo.DatabasesPath table) throws SQLException, ClassNotFoundException, DatabaseExistsException {
 
         if (!db.exists()) {
-            DataBaseManager.getDbManager().createDatabase(db);
+            //Создаем пользовательскую БД
+            DataBaseManager dbManager = DataBaseManager.getDbManager();
+            dbManager.createDatabase(db);
 
+            /*
+            * Заносим информацию о вновь созданной пользовательской БД в системную БД.
+            * */
             ContentValues contentValues = new ContentValues();
             contentValues.put(table.getColumns()
                     .stream()
@@ -51,10 +63,11 @@ public class CreatorUserDatabase {
                     .collect(Collectors.toList())
                     .get(0), db.getParent());
 
-            DataBaseManager.getDbManager().insert(table.getName(), contentValues);
+            dbManager.insert(table, contentValues, dbGuardkeeper);
             /*
              * Добавить обработку шаблона БД
              * */
+            new EmptyDatabase().fill(db);
         } else {
             throw new DatabaseExistsException(db);
         }

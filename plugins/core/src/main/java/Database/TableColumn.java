@@ -1,8 +1,8 @@
 package Database;
 
-public abstract class TableColumn {
+public class TableColumn {
 
-    final String TEMPLATE_FOR_CREATE = "`%1s` %2s %3s %4s %5s,";
+    final String TEMPLATE_FOR_CREATE = "`%1s` %2s%3s%4s";
 
     /**
      * Наименование столбца
@@ -28,6 +28,58 @@ public abstract class TableColumn {
      * Возможность записи пустых значений
      * */
     protected boolean isNotNull;
+
+    /**
+     * Колонка внешней таблицы, на которую ссылается внешний ключ
+     * */
+    protected TableColumn FKTable;
+
+    /**
+     * Таблица, в которую добавляется колонка
+     * */
+    private Table tableParent;
+
+    public TableColumn(String name, String type, boolean isPrimaryKey) {
+        this.name = name;
+        this.type = type;
+        this.isUnique = false;
+        this.isPrimaryKey = isPrimaryKey;
+        this.isNotNull = false;
+    }
+
+    public TableColumn(String name, String type, boolean isUnique, boolean isPrimaryKey, boolean isNotNull, TableColumn table) {
+        this.name = name;
+        this.type = type;
+        this.isUnique = isUnique;
+        this.isPrimaryKey = isPrimaryKey;
+        this.isNotNull = isNotNull;
+        this.FKTable = table;
+    }
+
+    public TableColumn(String name, String type, boolean isUnique, boolean isPrimaryKey, boolean isNotNull) {
+        this.name = name;
+        this.type = type;
+        this.isUnique = isUnique;
+        this.isPrimaryKey = isPrimaryKey;
+        this.isNotNull = isNotNull;
+        this.FKTable = null;
+    }
+
+    public TableColumn() {
+        name = "";
+        type = "";
+        isUnique = false;
+        isPrimaryKey = false;
+        isNotNull = false;
+        FKTable = null;
+    }
+
+    /**
+     * Функция возвращает наименование колонки в формате Наименование_таблицы.Наименование_колонки
+     * */
+    public String getFullName(){
+        return tableParent.getName() + "." + getName();
+    }
 
     public String getName() {
         return name;
@@ -69,6 +121,22 @@ public abstract class TableColumn {
         isNotNull = notNull;
     }
 
+    public TableColumn getFKTable() {
+        return FKTable;
+    }
+
+    public void setFKTable(TableColumn FKTable) {
+        this.FKTable = FKTable;
+    }
+
+    public void setTableParent(Table table){
+        tableParent = table;
+    }
+
+    public Table getTableParent(){
+        return tableParent;
+    }
+
     /**
      * Функция возвращает строку для использования в запросе CREATE TABLE.
      * */
@@ -76,17 +144,15 @@ public abstract class TableColumn {
         String res = String.format(TEMPLATE_FOR_CREATE,
                 name,
                 (type),
-                (isPrimaryKey) ? ("primary key autoincrement") : (""),
-                "",
-                "");
-        if(!isPrimaryKey) {
-            res = String.format(TEMPLATE_FOR_CREATE,
-                    name,
-                    (type),
-                    "",
-                    (isUnique)?("unique"):(""),
-                    (isNotNull)?("not null"):(""));
-        }
+                (isPrimaryKey) ? (" auto increment") : (""),
+                (isNotNull) ? (" not null") : ("")
+                );
+//        if(!isPrimaryKey) {
+//            res = String.format(TEMPLATE_FOR_CREATE,
+//                    name,
+//                    (type),
+//                    "");
+//        }
         return res;
     }
 
