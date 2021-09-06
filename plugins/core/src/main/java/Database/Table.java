@@ -143,10 +143,10 @@ public abstract class Table {
         for (String name : columns) {
             res.append(String.format(UNIQ_CONSTR, this.name, name.trim(), "`" + name.trim() + "`"));
             if (columns.indexOf(name) != columns.size() - 1) {
-                res.append(", ");
+                res.append(", \n\t");
             }
         }
-        return res.toString();
+        return res.toString().trim();
     }
 
     public String getConstrFK() {
@@ -175,11 +175,11 @@ public abstract class Table {
                         )
                 );
                 if (tableColumns.indexOf(column) != tableColumns.size() - 1) {
-                    res.append(", ");
+                    res.append(", \n\t");
                 }
             }
         }
-        return res.toString();
+        return res.toString().trim();
     }
 
     public boolean hasConstPK() {
@@ -196,5 +196,12 @@ public abstract class Table {
 
     public TableColumn getIdColumn(){
         return idColumn;
+    }
+
+    protected TableColumn getTableCol(Table table, String colName) {
+        return table.getColumns()
+                .stream()
+                .filter(column -> column.getName().equals(colName))
+                .collect(Collectors.toList()).get(0);
     }
 }

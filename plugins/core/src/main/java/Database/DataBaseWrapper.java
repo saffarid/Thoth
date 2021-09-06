@@ -93,12 +93,12 @@ public class DataBaseWrapper {
     public static void createTable(Table tableName,
                                    List<TableColumn> columns,
                                    Connection conn) throws SQLException {
-        String com = "create table if not exists `%1s` (%2s)";
+        String com = "create table if not exists `%1s` (\n\t%2s\n\t)";
         StringBuilder res = new StringBuilder("");
         columns.stream().forEach(column -> {
             res.append(column.toCreate());
             if(columns.indexOf(column) != columns.size()-1){
-                res.append(", ");
+                res.append(", \n\t");
             }
         });
         res.append(" ");
@@ -107,11 +107,11 @@ public class DataBaseWrapper {
 //            res.append(tableName.getConstrPK());
 //        }
         if(tableName.hasConstrUniq()) {
-            res.append(", ");
+            res.append(", \n\t");
             res.append(tableName.getConstrUniq());
         }
         if(tableName.hasConstrFK()) {
-            res.append(", ");
+            res.append(", \n\t");
             res.append(tableName.getConstrFK());
         }
         execute(conn, String.format(com, tableName.getName(), res.toString()));

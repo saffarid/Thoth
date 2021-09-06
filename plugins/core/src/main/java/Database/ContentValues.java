@@ -2,44 +2,15 @@ package Database;
 
 import ThothCore.Guardkeeper.DataBaseDescription.DataBaseInfo;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ContentValues extends HashMap<TableColumn, Object> {
 
-    private final String TEMPLATE_COMAND_INSERT = "(%2s) values (%3s)";
+    private final String TEMPLATE_COMAND_INSERT = "(\n\t%2s\n) values (\n\t%3s)";
     private final String TEMPLATE_COMAND_UPDATE = "`%1s`=%2s,";
 
-    /**
-     * @return Строка список столбцов
-     */
-    public String getColumnListInsert() {
-        String template = "`%1s` ,";
-        StringBuilder res = new StringBuilder("");
-        keySet().stream().forEach(column -> {
-            res.append(String.format(template, column.getName()));
-        });
-        res.deleteCharAt(res.lastIndexOf(","));
-        return res.toString();
-    }
 
-    /**
-     * @return Строка значений
-     */
-    public String getColumnValueInsert() {
-        String strTemplate = "\'%1s\' ,";
-//        String template = "%1s,";
-        String rowTemplate = "%1s";
-        StringBuilder res = new StringBuilder("");
-        keySet().stream().forEach(col -> {
-            if (col.getType().equals(DataBaseInfo.DatabasesPath.TEXT)){
-                res.append(String.format(strTemplate, get(col)));
-            }
-        });
-        res.deleteCharAt(res.lastIndexOf(","));
-        return String.format(rowTemplate, res.toString());
-    }
 
     /**
      * Преобразование объекта в строку при создании таблицы в БД
@@ -52,65 +23,87 @@ public class ContentValues extends HashMap<TableColumn, Object> {
         String strColValTemplate = "\'%1s\'";
 
         List<TableColumn> columns = new LinkedList<>(keySet());
-
-        for(TableColumn column: columns){
+        columns = columns.stream().filter(column -> get(column) != null).collect(Collectors.toList());
+        for (TableColumn column : columns) {
             //Проверяем TableColumn на наличие внешнего ключа
+            Object value = get(column);
+            if (value != null) {
+                TableColumn fkTable = column.getFKTable();      //Если внешний ключ установлен, объект не будет равен null
+                if (fkTable != null) {
+                    /*
+                     * Необходимо определить ID строки внешней таблицы, в contentValues содержится значения для пользователя
+                     * */
+                    String subRequestTemplate = "select `%1s` from `%2s` where %3s";
+                    String whereTempalte =
+                            (value.getClass().getSimpleName().equals(String.class.getSimpleName()))
+                                    ? ("`%1s` = \'%2s\'")
+                                    : ("`%1s` = %2s");
+                    StringBuilder whereBuilder = new StringBuilder("");
+                    if (fkTable.getName().equals(Table.ID)) {
+                        //Обработка случая, когда внешний ключ ссылается на идентификатор строки внешней таблицы
+                        /*
+                         * Формируем подзапрос select ID from `внешняя таблица` where columnName = columnValue.
+                         * ID - fkTable.getName, внешняя таблица - fkTable.getTable, fkTable.getName - column, columnValue - get(column)
+                         */
 
-            TableColumn fkTable = column.getFKTable();      //Если внешний ключ установлен, объект не будет равен null
-            if(fkTable != null){
-                /*
-                * Необходимо определить ID строки внешней таблицы, в contentValues содержится значения для пользователя
-                * */
+                        //Определяем все колонки кроме первичного ключа
+                        List<TableColumn> collect = fkTable
+                                .getTableParent()
+                                .getColumns()
+                                .stream()
+                                .filter(col -> !col.getName().equals(Table.ID))
+                                .collect(Collectors.toList());
+                        //Формируем блок Where
+                        for (TableColumn col : collect) {
+                            whereBuilder.append(
+                                    String.format(whereTempalte, col.getName(), value)
+                            );
+                            if (collect.indexOf(col) != collect.size() - 1) {
+                                whereBuilder.append(" or ");
+                            }
+                        }
 
-                /*
-                * Формируем подзапрос select ID from `внешняя таблица` where columnName = columnValue.
-                * ID - fkTable.getName, внешняя таблица - fkTable.getTable, fkTable.getName - column, columnValue - get(column)
-                */
-                String subRequestTemplate = "select `%1s` from `%2s` where `%3s` = %4s";
-                String subRequestStrTemplate = "select `%1s` from `%2s` where `%3s` = \'%4s\'";
-                //Определяем колонку первичный ключ внешней таблицы
-                TableColumn fkTableColCont = fkTable
-                        .getTableParent()
-                        .getColumns()
-                        .stream()
-                        .filter(col -> !col.getName().equals(Table.ID))
-                        .findFirst()
-                        .get();
-                //Формируем строку подзапроса
-                if(get(column).getClass().getSimpleName().equals(String.class.getSimpleName())){
-                    subRequestTemplate = "select `%1s` from `%2s` where `%3s` = \'%4s\'";
+                        //Формируем строку подзапроса
+                        String subRequest = String.format(
+                                subRequestTemplate,
+                                fkTable.getName(),   //1
+                                fkTable.getTableParent().getName(),     //2
+                                whereBuilder.toString()
+                        );
+
+                        colValue.append("(" + subRequest + ")");
+                    } else {
+                        //Обработка подзапроса если есть информация, какой столбец интересует внешний ключ
+                        //fkTable - представляет столбец в котором ищем информацию для определения идентификатора
+                        String subRequest = String.format(
+                                subRequestTemplate,
+                                fkTable.getTableParent().getIdColumn().getName(),   //1
+                                fkTable.getTableParent().getName(),     //2
+                                String.format(whereTempalte, fkTable.getName(), value)
+                        );
+                        colValue.append("(" + subRequest + ")");
+                    }
+
+                } else {
+                    //Колонка не содержит внешний ключ
+                    if (value.getClass().getSimpleName().equals(String.class.getSimpleName())) {
+                        colValue.append(
+                                String.format(strColValTemplate, value)
+                        );
+                    } else {
+                        colValue.append(value);
+                    }
                 }
-
-                String subRequest = String.format(
-                        subRequestTemplate,
-                        fkTable.getTableParent().getIdColumn().getName(),   //1
-                        fkTable.getTableParent().getName(),     //2
-                        fkTableColCont.getName(),      //Неверно определяется столбец
-                        get(column)     //4
+                colName.append(
+                        String.format(strColNameTemplate, column.getName())
                 );
-
-                System.out.println(subRequest);
-                colValue.append("(" + subRequest + ")");
-            }else{
-                Object value = get(column);
-                if(value.getClass().getSimpleName().equals(String.class.getSimpleName())){
-                    colValue.append(
-                            String.format(strColValTemplate, value)
-                    );
-                }else{
-                    colValue.append(value);
+                if (columns.indexOf(column) != (columns.size() - 1)) {
+                    colName.append(", \n\t");
+                    colValue.append(", \n\t");
                 }
-            }
-            colName.append(
-                    String.format(strColNameTemplate, column.getName())
-            );
-            if(columns.indexOf(column) != (columns.size() - 1)){
-                colName.append(", ");
-                colValue.append(", ");
             }
         }
 
-//        return String.format(TEMPLATE_COMAND_INSERT, getColumnListInsert(), getColumnValueInsert());
         return String.format(TEMPLATE_COMAND_INSERT, colName.toString(), colValue.toString());
     }
 
@@ -122,9 +115,9 @@ public class ContentValues extends HashMap<TableColumn, Object> {
         StringBuilder res = new StringBuilder("");
         keySet().stream().forEach(tableColumn -> {
             Object value = get(tableColumn);
-            if(value.getClass().getName().equals(String.class.getName())){
+            if (value.getClass().getName().equals(String.class.getName())) {
                 res.append(String.format(TEMPLATE_COMAND_UPDATE, tableColumn.getName(), "\'" + value.toString() + "\'"));
-            }else{
+            } else {
                 res.append(String.format(TEMPLATE_COMAND_UPDATE, tableColumn.getName(), value.toString()));
             }
         });

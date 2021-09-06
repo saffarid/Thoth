@@ -7,7 +7,6 @@ import Database.TableColumn;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Класс описывает пустую пользовательскую БД
- * */
+ */
 public class EmptyDatabase {
 
     protected static final String ID = "integer";
@@ -47,10 +46,11 @@ public class EmptyDatabase {
 
     /**
      * Класс определяет таблицу "Типы таблиц"
-     * */
-    private class TableTypes extends Table{
+     */
+    private class TableTypes extends Table {
         public static final String TABLE_TYPE = "table_type";
         private List<ContentValues> contentValues;
+
         public TableTypes() {
             name = "Table types";
             type = Table.SYSTEM_TABLE_NA;
@@ -64,7 +64,7 @@ public class EmptyDatabase {
             contentValues.add(getValues(Table.SYSTEM_TABLE_NA));
         }
 
-        private ContentValues getValues(String tableType){
+        private ContentValues getValues(String tableType) {
             ContentValues contentValues = new ContentValues();
             Database.TableColumn tableTypeCol = columns
                     .stream()
@@ -73,30 +73,35 @@ public class EmptyDatabase {
             contentValues.put(tableTypeCol, tableType);
             return contentValues;
         }
-        public List<ContentValues> getContentValues(){
+
+        public List<ContentValues> getContentValues() {
             return contentValues;
         }
     }
 
     /**
      * Класс определяет таблицу "Список таблиц"
-     * */
-    private class TablesList extends Table{
+     */
+    private class TablesList extends Table {
         public static final String TABLE_NAME = "table_name";
         public static final String TABLE_TYPE_ID = "table_type_id";
         private List<ContentValues> contentValues;
+
         public TablesList() {
             name = "Tables list";
             type = Table.SYSTEM_TABLE_NA;
 
             addColumn(new TableColumn(TABLE_NAME, EmptyDatabase.TEXT, false, false, true));
-            addColumn(new TableColumn(TABLE_TYPE_ID, EmptyDatabase.ID, true, false, true, tableTypes.getIdColumn()));
+            addColumn(new TableColumn(TABLE_TYPE_ID, EmptyDatabase.ID, false, false, true, tableTypes.getIdColumn()));
 
             contentValues = new LinkedList<>();
             contentValues.add(getValues(dataTypes));
+            contentValues.add(getValues(productsCategory));
+            contentValues.add(getValues(currency));
+            contentValues.add(getValues(unitMeas));
         }
 
-        private ContentValues getValues(Table table){
+        private ContentValues getValues(Table table) {
             ContentValues contentValues = new ContentValues();
             Database.TableColumn tableTypeCol = columns
                     .stream()
@@ -111,15 +116,16 @@ public class EmptyDatabase {
             contentValues.put(tableTypeCol, table.getType());
             return contentValues;
         }
-        public List<ContentValues> getContentValues(){
+
+        public List<ContentValues> getContentValues() {
             return contentValues;
         }
     }
 
     /**
      * Класс представляет таблицу с описанием таблиц
-     * */
-    private class TableDesc extends Table{
+     */
+    private class TableDesc extends Table {
         public static final String TABLE_ID = "table_id";
         public static final String COL_NAME = "col_name";
         public static final String TYPE_ID = "type_id";
@@ -127,27 +133,73 @@ public class EmptyDatabase {
         public static final String UNIQ_CONSTR = "uniq_constr";
         public static final String NOTNULL_CONSTR = "notnull_constr";
         public static final String FK_CONSTR = "fk_constr";
+        public static final String FK_COLUMN = "fk_column";
+        private List<ContentValues> contentValues;
+
         public TableDesc() {
             name = "Table description";
             type = Table.SYSTEM_TABLE_NA;
-            addColumn(new TableColumn(TABLE_ID, EmptyDatabase.ID, true, false, true, tablesList.getIdColumn()));
+            addColumn(new TableColumn(TABLE_ID, EmptyDatabase.ID, false, false, true, getTableCol(tablesList, TablesList.TABLE_NAME)));
             addColumn(new TableColumn(COL_NAME, EmptyDatabase.TEXT, false, false, true));
-            addColumn(new TableColumn(TYPE_ID, EmptyDatabase.ID, true, false, true, tableTypes.getIdColumn()));
+            addColumn(new TableColumn(TYPE_ID, EmptyDatabase.ID, false, false, true, dataTypes.getIdColumn()));
             addColumn(new TableColumn(PK_CONSTR, EmptyDatabase.BOOL, false, false, true));
             addColumn(new TableColumn(UNIQ_CONSTR, EmptyDatabase.BOOL, false, false, true));
             addColumn(new TableColumn(NOTNULL_CONSTR, EmptyDatabase.BOOL, false, false, true));
-            addColumn(new TableColumn(FK_CONSTR, EmptyDatabase.BOOL, false, false, true));
+//            addColumn(new TableColumn(FK_CONSTR, EmptyDatabase.BOOL, false, false, true));
+            addColumn(new TableColumn(FK_COLUMN, EmptyDatabase.TEXT, false, false, false));
+
+            contentValues = new LinkedList<>();
+
+            for (TableColumn column : dataTypes.getColumns()) {
+                contentValues.add(getValues(column));
+            }
+            for(TableColumn column : productsCategory.getColumns()){
+                contentValues.add(getValues(column));
+            }
+            for(TableColumn column : currency.getColumns()){
+                contentValues.add(getValues(column));
+            }
+            for(TableColumn column : unitMeas.getColumns()){
+                contentValues.add(getValues(column));
+            }
+
+        }
+
+        private ContentValues getValues(TableColumn tableColumn) {
+
+            String templateFk = "%1s.%2s";
+
+            ContentValues contentValues = new ContentValues();
+//            Database.TableColumn fkConstrCol = ;
+
+            contentValues.put(getTableCol(this, TABLE_ID), tableColumn.getTableParent().getName());
+            contentValues.put(getTableCol(this, COL_NAME), tableColumn.getName());
+            contentValues.put(getTableCol(this, TYPE_ID), tableColumn.getType());
+            contentValues.put(getTableCol(this, PK_CONSTR), (tableColumn.isPrimaryKey()) ? (1) : (0));
+            contentValues.put(getTableCol(this, UNIQ_CONSTR), (tableColumn.isUnique()) ? (1) : (0));
+            contentValues.put(getTableCol(this, NOTNULL_CONSTR), (tableColumn.isNotNull()) ? (1) : (0));
+//            contentValues.put(getTableCol(this, FK_CONSTR), (tableColumn.getFKTable() != null) ? (1) : (0));
+            contentValues.put(getTableCol(this, FK_COLUMN), (tableColumn.getFKTable() != null) ? (String.format(templateFk, tableColumn.getFKTable().getTableParent(), tableColumn.getFKTable())) : (null));
+
+            return contentValues;
+        }
+
+
+
+        public List<ContentValues> getContentValues() {
+            return contentValues;
         }
     }
 
     /**
      * Класс определяет таблицу "Типы данных"
-     * */
-    private class DataTypes extends Table{
+     */
+    private class DataTypes extends Table {
         public static final String USER_TYPE = "user_type";     //То значение, которое видит и выбирает пользователь
         public static final String JAVA_TYPE = "java_type";     //То значение, как этот тип записывается в java
         public static final String SQL_TYPE = "sql_type";       //То значение, которое используется в запросе SQL
-        private List<ContentValues> contentValuesList;
+        private List<ContentValues> contentValues;
+
         public DataTypes() {
             name = "Data types";
             type = Table.SYSTEM_TABLE_RW;
@@ -156,16 +208,17 @@ public class EmptyDatabase {
             addColumn(new TableColumn(JAVA_TYPE, EmptyDatabase.TEXT, false, false, true));
             addColumn(new TableColumn(SQL_TYPE, EmptyDatabase.TEXT, false, false, true));
 
-            contentValuesList = new LinkedList<>();
-            contentValuesList.add(getContentValues("Текстовый", "String", "varchar(255)"));
-            contentValuesList.add(getContentValues("Числовой", "Double", "double(10, 5)"));
-            contentValuesList.add(getContentValues("Денежный", "Double", "double(10, 2)"));
+            contentValues = new LinkedList<>();
+            contentValues.add(getValues("Текстовый", "String", "varchar(255)"));
+            contentValues.add(getValues("Числовой", "Double", "double(10,5)"));
+            contentValues.add(getValues("Денежный", "Double", "double(10,2)"));
+            contentValues.add(getValues("Целочисленный", "Integer", "integer"));
         }
 
-        private ContentValues getContentValues(String userType, String javaType, String sqlType){
+        private ContentValues getValues(String userType, String javaType, String sqlType) {
             Database.TableColumn userTypeCol = columns.stream().filter(column -> column.getName().equals(USER_TYPE)).findAny().get();
             Database.TableColumn javaTypeCol = columns.stream().filter(column -> column.getName().equals(JAVA_TYPE)).findAny().get();
-            Database.TableColumn sqlTypeCol  = columns.stream().filter(column -> column.getName().equals(SQL_TYPE)).findAny().get();
+            Database.TableColumn sqlTypeCol = columns.stream().filter(column -> column.getName().equals(SQL_TYPE)).findAny().get();
 
             ContentValues contentValues = new ContentValues();
             contentValues.put(userTypeCol, userType);
@@ -173,17 +226,19 @@ public class EmptyDatabase {
             contentValues.put(sqlTypeCol, sqlType);
             return contentValues;
         }
-        public List<ContentValues> getContentValuesList(){
-            return contentValuesList;
+
+        public List<ContentValues> getContentValues() {
+            return contentValues;
         }
     }
 
     /**
      * Класс определяет таблицу "Категория товаров"
-     * */
-    private class ProductsCategory extends Table{
+     */
+    private class ProductsCategory extends Table {
         public static final String GROUP = "group";
         public static final String CATEGORY = "category";
+
         public ProductsCategory() {
             name = "Products";
             type = Table.SYSTEM_TABLE_RW;
@@ -195,10 +250,11 @@ public class EmptyDatabase {
 
     /**
      * Класс определяет таблицу "Валюта"
-     * */
-    private class Currency extends Table{
+     */
+    private class Currency extends Table {
         public static final String CURRENCY = "currency";
         public static final String COURSE = "course";
+
         public Currency() {
             name = "Currency";
             type = Table.SYSTEM_TABLE_RW;
@@ -210,10 +266,11 @@ public class EmptyDatabase {
 
     /**
      * Класс определяет таблицу "Единицы измерения"
-     * */
-    private class UnitMeas extends Table{
+     */
+    private class UnitMeas extends Table {
         public static final String UNIT_MEAS = "unit_meas";
         private List<ContentValues> contentValues;
+
         public UnitMeas() {
             name = "Unit meas";
             type = Table.SYSTEM_TABLE_RW;
@@ -230,7 +287,7 @@ public class EmptyDatabase {
             contentValues.add(getValues("компл."));
         }
 
-        private ContentValues getValues(String tableType){
+        private ContentValues getValues(String tableType) {
             ContentValues contentValues = new ContentValues();
             Database.TableColumn tableTypeCol = columns
                     .stream()
@@ -239,14 +296,15 @@ public class EmptyDatabase {
             contentValues.put(tableTypeCol, tableType);
             return contentValues;
         }
-        public List<ContentValues> getContentValues(){
+
+        public List<ContentValues> getContentValues() {
             return contentValues;
         }
     }
 
     /**
      * Функция заполняет БД
-     * */
+     */
     public void fill(File dbUser) throws SQLException, ClassNotFoundException {
 
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Заполняю БД");
@@ -260,22 +318,25 @@ public class EmptyDatabase {
         dbManager.createTable(currency, dbUser);
         dbManager.createTable(unitMeas, dbUser);
 
-        for(ContentValues contentValues: tableTypes.getContentValues()){
+        for (ContentValues contentValues : tableTypes.getContentValues()) {
             dbManager.insert(tableTypes, contentValues, dbUser);
         }
 
-        for(ContentValues contentValues: dataTypes.getContentValuesList()){
+        for (ContentValues contentValues : dataTypes.getContentValues()) {
             dbManager.insert(dataTypes, contentValues, dbUser);
         }
 
-        for(ContentValues contentValues: unitMeas.getContentValues()){
+        for (ContentValues contentValues : unitMeas.getContentValues()) {
             dbManager.insert(unitMeas, contentValues, dbUser);
         }
 
-        for(ContentValues contentValues: tablesList.getContentValues()){
+        for (ContentValues contentValues : tablesList.getContentValues()) {
             dbManager.insert(tablesList, contentValues, dbUser);
         }
 
+        for (ContentValues contentValues : tableDesc.getContentValues()) {
+            dbManager.insert(tableDesc, contentValues, dbUser);
+        }
     }
 
 }
