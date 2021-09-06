@@ -19,7 +19,7 @@ public class DataBaseWrapper {
 
     private final static String PRE_URL_SQLITE = "jdbc:sqlite:";
     private final static String CLASS_NAME_SQLITE = "org.sqlite.JDBC";
-
+    private final static boolean isExecute = true;
     private static Logger LOG;
 
     static {
@@ -102,10 +102,10 @@ public class DataBaseWrapper {
             }
         });
         res.append(" ");
-        if(tableName.hasConstPK()) {
-            res.append(", ");
-            res.append(tableName.getConstrPK());
-        }
+//        if(tableName.hasConstPK()) {
+//            res.append(", ");
+//            res.append(tableName.getConstrPK());
+//        }
         if(tableName.hasConstrUniq()) {
             res.append(", ");
             res.append(tableName.getConstrUniq());
@@ -177,8 +177,10 @@ public class DataBaseWrapper {
     private static void execute(Connection conn,
                                 String comand) throws SQLException {
         LOG.log(Level.INFO, comand);
-        Statement statement = conn.createStatement();
-        statement.execute(comand);
+        if(isExecute) {
+            Statement statement = conn.createStatement();
+            statement.execute(comand);
+        }
     }
 
     /**

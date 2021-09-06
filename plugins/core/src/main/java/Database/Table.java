@@ -12,7 +12,7 @@ public abstract class Table {
 
     public static final String ID = "id";
     protected static final String ID_TYPE = "integer";
-    private final String PK_CONSTR = "constraint `%1s_pk` primary key(%2s)";
+    private final String PK_CONSTR = "constraint `%1s_pk` primary key(%2s) autoincrement";
     private final String UNIQ_CONSTR = "constraint `%1s_%2s_uniq` unique(%3s)";
     private final String FK_CONSTR = "constraint `%1s_%2s_fk` foreign key (%3s) references `%4s` (%5s)";
 

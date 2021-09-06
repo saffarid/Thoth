@@ -2,7 +2,7 @@ package Database;
 
 public class TableColumn {
 
-    final String TEMPLATE_FOR_CREATE = "`%1s` %2s%3s%4s";
+    final String TEMPLATE_FOR_CREATE = "`%1s` %2s%3s";
 
     /**
      * Наименование столбца
@@ -141,18 +141,20 @@ public class TableColumn {
      * Функция возвращает строку для использования в запросе CREATE TABLE.
      * */
     public String toCreate(){
-        String res = String.format(TEMPLATE_FOR_CREATE,
-                name,
-                (type),
-                (isPrimaryKey) ? (" auto increment") : (""),
-                (isNotNull) ? (" not null") : ("")
-                );
-//        if(!isPrimaryKey) {
-//            res = String.format(TEMPLATE_FOR_CREATE,
-//                    name,
-//                    (type),
-//                    "");
-//        }
+        String res;
+        if (isPrimaryKey){
+            res = String.format(TEMPLATE_FOR_CREATE,
+                    name,
+                    (type),
+                    (isPrimaryKey) ? (" primary key autoincrement") : ("")
+            );
+        }else {
+            res = String.format(TEMPLATE_FOR_CREATE,
+                    name,
+                    (type),
+                    (isNotNull) ? (" not null") : ("")
+            );
+        }
         return res;
     }
 

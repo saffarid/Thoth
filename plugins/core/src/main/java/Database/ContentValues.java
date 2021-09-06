@@ -48,6 +48,9 @@ public class ContentValues extends HashMap<TableColumn, Object> {
         StringBuilder colName = new StringBuilder("");
         StringBuilder colValue = new StringBuilder("");
 
+        String strColNameTemplate = "`%1s`";
+        String strColValTemplate = "\'%1s\'";
+
         List<TableColumn> columns = new LinkedList<>(keySet());
 
         for(TableColumn column: columns){
@@ -64,28 +67,51 @@ public class ContentValues extends HashMap<TableColumn, Object> {
                 * ID - fkTable.getName, внешняя таблица - fkTable.getTable, fkTable.getName - column, columnValue - get(column)
                 */
                 String subRequestTemplate = "select `%1s` from `%2s` where `%3s` = %4s";
+                String subRequestStrTemplate = "select `%1s` from `%2s` where `%3s` = \'%4s\'";
                 //Определяем колонку первичный ключ внешней таблицы
+                TableColumn fkTableColCont = fkTable
+                        .getTableParent()
+                        .getColumns()
+                        .stream()
+                        .filter(col -> !col.getName().equals(Table.ID))
+                        .findFirst()
+                        .get();
+                //Формируем строку подзапроса
+                if(get(column).getClass().getSimpleName().equals(String.class.getSimpleName())){
+                    subRequestTemplate = "select `%1s` from `%2s` where `%3s` = \'%4s\'";
+                }
+
                 String subRequest = String.format(
                         subRequestTemplate,
-                        fkTable.getTableParent().getIdColumn().getName(),
-                        fkTable.getTableParent().getName(),
-                        fkTable.getName(),      //Неверно определяется столбец
-                        get(column)
-                        );
+                        fkTable.getTableParent().getIdColumn().getName(),   //1
+                        fkTable.getTableParent().getName(),     //2
+                        fkTableColCont.getName(),      //Неверно определяется столбец
+                        get(column)     //4
+                );
+
                 System.out.println(subRequest);
-
-
+                colValue.append("(" + subRequest + ")");
             }else{
-
+                Object value = get(column);
+                if(value.getClass().getSimpleName().equals(String.class.getSimpleName())){
+                    colValue.append(
+                            String.format(strColValTemplate, value)
+                    );
+                }else{
+                    colValue.append(value);
+                }
             }
-
-
+            colName.append(
+                    String.format(strColNameTemplate, column.getName())
+            );
+            if(columns.indexOf(column) != (columns.size() - 1)){
+                colName.append(", ");
+                colValue.append(", ");
+            }
         }
 
-
-
-
-        return String.format(TEMPLATE_COMAND_INSERT, getColumnListInsert(), getColumnValueInsert());
+//        return String.format(TEMPLATE_COMAND_INSERT, getColumnListInsert(), getColumnValueInsert());
+        return String.format(TEMPLATE_COMAND_INSERT, colName.toString(), colValue.toString());
     }
 
 
