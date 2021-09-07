@@ -46,6 +46,11 @@ public abstract class Table {
     protected String type;
 
     /**
+     * Содержимое таблицы
+     * */
+    protected List<ContentValues> contentValues;
+
+    /**
      * Список столбцов
      */
     protected List<TableColumn> columns;
@@ -77,6 +82,7 @@ public abstract class Table {
         constrNNColumns = new LinkedList<>();
         constrUColumns = new LinkedList<>();
         constrFK = new HashMap<>();
+        contentValues = new LinkedList<>();
         idColumn = new TableColumn(
                 ID,
                 ID_TYPE,
@@ -198,10 +204,10 @@ public abstract class Table {
         return idColumn;
     }
 
-    protected TableColumn getTableCol(Table table, String colName) {
+    public TableColumn getTableCol(Table table, String colName) {
         return table.getColumns()
                 .stream()
                 .filter(column -> column.getName().equals(colName))
-                .collect(Collectors.toList()).get(0);
+                .findFirst().get();
     }
 }

@@ -280,6 +280,20 @@ public class DataBaseWrapper {
                                    List<TableColumn> columns,
                                    WhereValues where,
                                    Connection conn) throws SQLException {
+        return select(table.getName(), columns, where, conn);
+    }
+
+    /**
+     * Функция осуществляет чтение из базы данных
+     *
+     * @param table объект-описание таблицы.
+     * @param where строка, хранящая имя столбца в по которому определяем какую строку удаляем.
+     * @return объект ResultSet
+     */
+    public static ResultSet select(String table,
+                                   List<TableColumn> columns,
+                                   WhereValues where,
+                                   Connection conn) throws SQLException {
         ResultSet result = null;
 
         String templateComand = "select %1s from `%2s`";
@@ -289,7 +303,7 @@ public class DataBaseWrapper {
             column = new StringBuilder(Arrays.toString(collect.toArray()));
             column.deleteCharAt(column.indexOf("[")).deleteCharAt(column.indexOf("]"));
         }
-        String comand = String.format(templateComand, column.toString(), table.getName());
+        String comand = String.format(templateComand, column.toString(), table);
 
         if (where != null) {
             String templateWhere = "%1s where %2s";

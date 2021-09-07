@@ -1,5 +1,7 @@
 package Database;
 
+import ThothCore.EmptyDatabase.EmptyDatabase;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -80,6 +82,22 @@ public class DataBaseManager {
             openConnection(db);
         }
         return conns.get(db);
+    }
+
+    /**
+     * Функция возвращает список созданных таблиц
+     * @param db файл пользовательской БД
+     * @param table таблица, с которой производится считывание информации
+     * */
+    public List<Table> getTableList(File db, Table table) throws SQLException, ClassNotFoundException {
+        List<Table> res = new LinkedList<>();
+        ResultSet select = DataBaseWrapper.select(
+                table, null, null, getConnection(db)
+        );
+
+        table.
+
+        return res;
     }
 
     /**

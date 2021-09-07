@@ -1,8 +1,10 @@
 package Main;
 
+import java.io.File;
+
 @FunctionalInterface
 public interface ChangeScreen {
 
-    void changeScreen();
+    void changeScreen(File db);
 
 }

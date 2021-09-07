@@ -240,7 +240,7 @@ public class Guardkeeper extends SecondaryWindow {
         LOG.log(Level.INFO, "Запуск Viewer для пользовательской БД " + selectedItem);
         try {
             guardkeeper.openViewer(selectedItem);
-            changeScreen.changeScreen();
+            changeScreen.changeScreen(selectedItem);
         } catch (NoSuchFileException e) {
             LOG.log(Level.INFO, "Не найден файл " + e.getMessage());
         }
