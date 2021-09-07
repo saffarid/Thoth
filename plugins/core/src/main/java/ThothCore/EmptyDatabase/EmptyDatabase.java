@@ -31,6 +31,8 @@ public class EmptyDatabase {
     private Currency currency;
     private UnitMeas unitMeas;
 
+    private TestTable testTable;
+
     public EmptyDatabase() {
 
         tableTypes = new TableTypes();
@@ -42,6 +44,7 @@ public class EmptyDatabase {
         tablesList = new TablesList();
         tableDesc = new TableDesc();
 
+        testTable = new TestTable();
     }
 
     /**
@@ -63,7 +66,6 @@ public class EmptyDatabase {
             contentValues.add(getValues(Table.SYSTEM_TABLE_RW));
             contentValues.add(getValues(Table.SYSTEM_TABLE_NA));
         }
-
         private ContentValues getValues(String tableType) {
             ContentValues contentValues = new ContentValues();
             Database.TableColumn tableTypeCol = columns
@@ -73,7 +75,6 @@ public class EmptyDatabase {
             contentValues.put(tableTypeCol, tableType);
             return contentValues;
         }
-
         public List<ContentValues> getContentValues() {
             return contentValues;
         }
@@ -86,7 +87,6 @@ public class EmptyDatabase {
         public static final String TABLE_NAME = "table_name";
         public static final String TABLE_TYPE_ID = "table_type_id";
         private List<ContentValues> contentValues;
-
         public TablesList() {
             name = "Tables list";
             type = Table.SYSTEM_TABLE_NA;
@@ -100,8 +100,7 @@ public class EmptyDatabase {
             contentValues.add(getValues(currency));
             contentValues.add(getValues(unitMeas));
         }
-
-        private ContentValues getValues(Table table) {
+        public ContentValues getValues(Table table) {
             ContentValues contentValues = new ContentValues();
             Database.TableColumn tableTypeCol = columns
                     .stream()
@@ -116,7 +115,6 @@ public class EmptyDatabase {
             contentValues.put(tableTypeCol, table.getType());
             return contentValues;
         }
-
         public List<ContentValues> getContentValues() {
             return contentValues;
         }
@@ -135,7 +133,6 @@ public class EmptyDatabase {
         public static final String FK_CONSTR = "fk_constr";
         public static final String FK_COLUMN = "fk_column";
         private List<ContentValues> contentValues;
-
         public TableDesc() {
             name = "Table description";
             type = Table.SYSTEM_TABLE_NA;
@@ -164,14 +161,9 @@ public class EmptyDatabase {
             }
 
         }
-
-        private ContentValues getValues(TableColumn tableColumn) {
-
+        public  ContentValues getValues(TableColumn tableColumn) {
             String templateFk = "%1s.%2s";
-
             ContentValues contentValues = new ContentValues();
-//            Database.TableColumn fkConstrCol = ;
-
             contentValues.put(getTableCol(this, TABLE_ID), tableColumn.getTableParent().getName());
             contentValues.put(getTableCol(this, COL_NAME), tableColumn.getName());
             contentValues.put(getTableCol(this, TYPE_ID), tableColumn.getType());
@@ -179,13 +171,13 @@ public class EmptyDatabase {
             contentValues.put(getTableCol(this, UNIQ_CONSTR), (tableColumn.isUnique()) ? (1) : (0));
             contentValues.put(getTableCol(this, NOTNULL_CONSTR), (tableColumn.isNotNull()) ? (1) : (0));
 //            contentValues.put(getTableCol(this, FK_CONSTR), (tableColumn.getFKTable() != null) ? (1) : (0));
-            contentValues.put(getTableCol(this, FK_COLUMN), (tableColumn.getFKTable() != null) ? (String.format(templateFk, tableColumn.getFKTable().getTableParent(), tableColumn.getFKTable())) : (null));
-
+            contentValues.put(getTableCol(this, FK_COLUMN), (tableColumn.getFKTable() != null)
+                    ?(String.format(
+                            templateFk, tableColumn.getFKTable().getTableParent().getName(), tableColumn.getFKTable().getName())
+            )
+                    :(null));
             return contentValues;
         }
-
-
-
         public List<ContentValues> getContentValues() {
             return contentValues;
         }
@@ -199,7 +191,6 @@ public class EmptyDatabase {
         public static final String JAVA_TYPE = "java_type";     //То значение, как этот тип записывается в java
         public static final String SQL_TYPE = "sql_type";       //То значение, которое используется в запросе SQL
         private List<ContentValues> contentValues;
-
         public DataTypes() {
             name = "Data types";
             type = Table.SYSTEM_TABLE_RW;
@@ -214,7 +205,6 @@ public class EmptyDatabase {
             contentValues.add(getValues("Денежный", "Double", "double(10,2)"));
             contentValues.add(getValues("Целочисленный", "Integer", "integer"));
         }
-
         private ContentValues getValues(String userType, String javaType, String sqlType) {
             Database.TableColumn userTypeCol = columns.stream().filter(column -> column.getName().equals(USER_TYPE)).findAny().get();
             Database.TableColumn javaTypeCol = columns.stream().filter(column -> column.getName().equals(JAVA_TYPE)).findAny().get();
@@ -226,7 +216,6 @@ public class EmptyDatabase {
             contentValues.put(sqlTypeCol, sqlType);
             return contentValues;
         }
-
         public List<ContentValues> getContentValues() {
             return contentValues;
         }
@@ -296,8 +285,49 @@ public class EmptyDatabase {
             contentValues.put(tableTypeCol, tableType);
             return contentValues;
         }
-
         public List<ContentValues> getContentValues() {
+            return contentValues;
+        }
+    }
+
+    /**
+     * Тестовая таблица
+     * */
+    private class TestTable extends Table{
+        public static final String COL1 = "col 1";
+        public static final String COL2 = "col 2";
+        public static final String COL3 = "col 3";
+        private List<ContentValues> contentValues;
+        private ContentValues forTableList;
+        private List<ContentValues> forTableDesc;
+        public TestTable() {
+            name = "Test table";
+            type = Table.TABLE;
+            contentValues = new LinkedList<>();
+            forTableDesc = new LinkedList<>();
+            addColumn(new TableColumn(COL1, EmptyDatabase.TEXT, false, false, false, getTableCol(unitMeas, UnitMeas.UNIT_MEAS)));
+            addColumn(new TableColumn(COL2, EmptyDatabase.NUMBER, false, false, false));
+            addColumn(new TableColumn(COL3, EmptyDatabase.NUMBER, false, false, false));
+
+            contentValues.add(getValues("м.", 666d, 333d));
+            contentValues.add(getValues("мм.", 432186d, 8d));
+            contentValues.add(getValues("компл.", 921d, 262d));
+
+            forTableList = tablesList.getValues(this);
+
+            forTableDesc.add(tableDesc.getValues(getTableCol(this, COL1)));
+            forTableDesc.add(tableDesc.getValues(getTableCol(this, COL2)));
+            forTableDesc.add(tableDesc.getValues(getTableCol(this, COL3)));
+        }
+
+        private ContentValues getValues(String col1, Double col2, Double col3){
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(getTableCol(this, COL1), col1);
+            contentValues.put(getTableCol(this, COL2), col2);
+            contentValues.put(getTableCol(this, COL3), col3);
+            return contentValues;
+        }
+        public List<ContentValues> getContentValues(){
             return contentValues;
         }
     }
@@ -317,6 +347,7 @@ public class EmptyDatabase {
         dbManager.createTable(productsCategory, dbUser);
         dbManager.createTable(currency, dbUser);
         dbManager.createTable(unitMeas, dbUser);
+        dbManager.createTable(testTable, dbUser);
 
         for (ContentValues contentValues : tableTypes.getContentValues()) {
             dbManager.insert(tableTypes, contentValues, dbUser);
@@ -335,6 +366,14 @@ public class EmptyDatabase {
         }
 
         for (ContentValues contentValues : tableDesc.getContentValues()) {
+            dbManager.insert(tableDesc, contentValues, dbUser);
+        }
+
+        for (ContentValues contentValues : testTable.getContentValues()){
+            dbManager.insert(testTable, contentValues, dbUser);
+        }
+        dbManager.insert(tablesList, testTable.forTableList, dbUser);
+        for (ContentValues contentValues : testTable.forTableDesc){
             dbManager.insert(tableDesc, contentValues, dbUser);
         }
     }
