@@ -89,14 +89,23 @@ public class DataBaseManager {
      * @param db файл пользовательской БД
      * @param table таблица, с которой производится считывание информации
      * */
-    public List<Table> getTableList(File db, Table table) throws SQLException, ClassNotFoundException {
-        List<Table> res = new LinkedList<>();
+    public List<HashMap<String, Object>> getDataTable(File db,
+                                                      Table table)
+            throws SQLException, ClassNotFoundException {
+        List<HashMap<String, Object>> res = new LinkedList<>();
         ResultSet select = DataBaseWrapper.select(
                 table, null, null, getConnection(db)
         );
-
-        table.
-
+        while (select.next()){
+            HashMap<String, Object> contentValues = new HashMap<>();
+            for(int i = 1; i < select.getMetaData().getColumnCount() + 1; i++){
+                contentValues.put(
+                        select.getMetaData().getColumnName(i),
+                        select.getObject(i)
+                );
+            }
+            res.add(contentValues);
+        }
         return res;
     }
 

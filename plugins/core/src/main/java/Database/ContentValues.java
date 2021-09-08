@@ -75,10 +75,11 @@ public class ContentValues extends HashMap<TableColumn, Object> {
                     } else {
                         //Обработка подзапроса если есть информация, какой столбец интересует внешний ключ
                         //fkTable - представляет столбец в котором ищем информацию для определения идентификатора
+                        Table tableParent = fkTable.getTableParent();
                         String subRequest = String.format(
                                 subRequestTemplate,
-                                fkTable.getTableParent().getIdColumn().getName(),   //1
-                                fkTable.getTableParent().getName(),     //2
+                                tableParent.getTableCol(tableParent, Table.ID).getName(),   //1
+                                tableParent.getName(),     //2
                                 String.format(whereTempalte, fkTable.getName(), value)
                         );
                         colValue.append("(" + subRequest + ")");

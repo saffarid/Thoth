@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Шаблон описания создаваемой/считываемой таблицы
  */
-public abstract class Table {
+public class Table {
 
     public static final String ID = "id";
     protected static final String ID_TYPE = "integer";
@@ -32,8 +32,6 @@ public abstract class Table {
      * Системная таблица, не доступна для пользователя
      */
     public static final String SYSTEM_TABLE_NA = "system_table_na";
-
-    private TableColumn idColumn;
 
     /**
      * Наименование таблицы
@@ -83,32 +81,12 @@ public abstract class Table {
         constrUColumns = new LinkedList<>();
         constrFK = new HashMap<>();
         contentValues = new LinkedList<>();
-        idColumn = new TableColumn(
+        addColumn(new TableColumn(
                 ID,
                 ID_TYPE,
-                true);
-        addColumn(idColumn);
+                true));
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public List<TableColumn> getColumns() {
-        return columns;
-    }
 
     public void addColumn(TableColumn column) {
         if (!columns.contains(column)) {
@@ -124,35 +102,23 @@ public abstract class Table {
         if (column.getFKTable() != null) constrFK.put(column, column.getFKTable());
     }
 
-    public void removeColumn(TableColumn column) {
-        if (columns.contains(column)) columns.remove(column);
+    /**
+     * Функция копирует в текущую таблицу информацию из переданной таблицы.
+     * @param copyTable копируемая таблица
+     * */
+    public Table copy(Table copyTable){
+        this.name = copyTable.getName();
+        this.type = copyTable.getType();
 
-        if (column.isPrimaryKey()) {
-            if (constrPKColumns.contains(column)) constrPKColumns.remove(column);
-            if (constrNNColumns.contains(column)) constrNNColumns.remove(column);
+        for(TableColumn column : copyTable.getColumns()){
+            addColumn(column);
         }
-        if (column.isNotNull() && constrNNColumns.contains(column)) constrNNColumns.remove(column);
-        if (column.isUnique() && constrUColumns.contains(column)) constrUColumns.remove(column);
+
+        return this;
     }
 
-    public String getConstrPK() {
-        //Получаем список столбцов в коллекции первичного ключа
-        StringBuilder columns = new StringBuilder(constrPKColumns.stream().map(column -> column.getName()).collect(Collectors.toList()).toString());
-        String res = String.format(PK_CONSTR, name, columns.deleteCharAt(columns.indexOf("[")).deleteCharAt(columns.indexOf("]")).toString());
-        return res.trim();
-    }
-
-    public String getConstrUniq() {
-        List<String> columns = constrUColumns.stream().map(column -> column.getName()).collect(Collectors.toList());
-        StringBuilder res = new StringBuilder("");
-
-        for (String name : columns) {
-            res.append(String.format(UNIQ_CONSTR, this.name, name.trim(), "`" + name.trim() + "`"));
-            if (columns.indexOf(name) != columns.size() - 1) {
-                res.append(", \n\t");
-            }
-        }
-        return res.toString().trim();
+    public List<TableColumn> getColumns() {
+        return columns;
     }
 
     public String getConstrFK() {
@@ -188,6 +154,49 @@ public abstract class Table {
         return res.toString().trim();
     }
 
+    public String getConstrPK() {
+        //Получаем список столбцов в коллекции первичного ключа
+        StringBuilder columns = new StringBuilder(constrPKColumns.stream().map(column -> column.getName()).collect(Collectors.toList()).toString());
+        String res = String.format(PK_CONSTR, name, columns.deleteCharAt(columns.indexOf("[")).deleteCharAt(columns.indexOf("]")).toString());
+        return res.trim();
+    }
+
+    public String getConstrUniq() {
+        List<String> columns = constrUColumns.stream().map(column -> column.getName()).collect(Collectors.toList());
+        StringBuilder res = new StringBuilder("");
+
+        for (String name : columns) {
+            res.append(String.format(UNIQ_CONSTR, this.name, name.trim(), "`" + name.trim() + "`"));
+            if (columns.indexOf(name) != columns.size() - 1) {
+                res.append(", \n\t");
+            }
+        }
+        return res.toString().trim();
+    }
+
+    public List<ContentValues> getContentValues() {
+        return contentValues;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public TableColumn getTableCol(Table table, String colName) {
+        return table.getColumns()
+                .stream()
+                .filter(column -> column.getName().equals(colName))
+                .findFirst().get();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public boolean hasConstrFK() {
+        return !constrFK.isEmpty();
+    }
+
     public boolean hasConstPK() {
         return !constrPKColumns.isEmpty();
     }
@@ -196,18 +205,22 @@ public abstract class Table {
         return !constrUColumns.isEmpty();
     }
 
-    public boolean hasConstrFK() {
-        return !constrFK.isEmpty();
+    public void removeColumn(TableColumn column) {
+        if (columns.contains(column)) columns.remove(column);
+
+        if (column.isPrimaryKey()) {
+            if (constrPKColumns.contains(column)) constrPKColumns.remove(column);
+            if (constrNNColumns.contains(column)) constrNNColumns.remove(column);
+        }
+        if (column.isNotNull() && constrNNColumns.contains(column)) constrNNColumns.remove(column);
+        if (column.isUnique() && constrUColumns.contains(column)) constrUColumns.remove(column);
     }
 
-    public TableColumn getIdColumn(){
-        return idColumn;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public TableColumn getTableCol(Table table, String colName) {
-        return table.getColumns()
-                .stream()
-                .filter(column -> column.getName().equals(colName))
-                .findFirst().get();
+    public void setType(String type) {
+        this.type = type;
     }
 }

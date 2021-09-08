@@ -20,18 +20,27 @@ public class EmptyDatabase {
     protected static final String BOOL = "tinyint";
     protected static final String NUMBER = "double(10,5)";
 
-    private TablesList tablesList;
+    private List<Table> tables;
 
     public EmptyDatabase() {
-        super();
-        TableTypes tableTypes = new TableTypes();
-        tablesList = new TablesList();
-        new DataTypes();
-        new ProductsCategory();
-        new Currency();
-        new UnitMeas();
-        new TableDesc();
-        new TestTable();
+        tables = new LinkedList<>();
+
+        tables.add(new TableTypes());
+        tables.add(new DataTypes());
+        tables.add(new ProductsCategory());
+        tables.add(new Currency());
+        tables.add(new UnitMeas());
+        tables.add(new TablesList());
+        tables.add(new TableDesc());
+        tables.add(new TestTable());
+    }
+
+    public Table getTable(String name){
+        return tables
+                .stream()
+                .filter(table -> table.getName().equals(name))
+                .findFirst()
+                .get();
     }
 
     /**
@@ -78,8 +87,11 @@ public class EmptyDatabase {
             addColumn(
                     new TableColumn(TABLE_NAME, EmptyDatabase.TEXT, false, false, true)
             );
+            Table tableTypes = getTable(TableTypes.NAME);
             addColumn(
-                    new TableColumn(TABLE_TYPE_ID, EmptyDatabase.ID, false, false, true, getTable(TableTypes.NAME).getIdColumn())
+                    new TableColumn(
+                            TABLE_TYPE_ID, EmptyDatabase.ID, false, false, true, tableTypes.getTableCol(tableTypes, Table.ID)
+                    )
             );
 
             contentValues.add(
@@ -127,8 +139,11 @@ public class EmptyDatabase {
                     new TableColumn(TABLE_ID, EmptyDatabase.ID, false, false, true, getTableCol(getTable(TablesList.NAME), TablesList.TABLE_NAME))
             );
             addColumn(new TableColumn(COL_NAME, EmptyDatabase.TEXT, false, false, true));
+            Table dataTypes = getTable(DataTypes.NAME);
             addColumn(
-                    new TableColumn(TYPE_ID, EmptyDatabase.ID, false, false, true, getTable(DataTypes.NAME).getIdColumn())
+                    new TableColumn(
+                            TYPE_ID, EmptyDatabase.ID, false, false, true, dataTypes.getTableCol(dataTypes, Table.ID)
+                    )
             );
             addColumn(new TableColumn(PK_CONSTR, EmptyDatabase.BOOL, false, false, true));
             addColumn(new TableColumn(UNIQ_CONSTR, EmptyDatabase.BOOL, false, false, true));
@@ -321,7 +336,7 @@ public class EmptyDatabase {
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Заполняю БД");
         DataBaseManager dbManager = DataBaseManager.getDbManager();
 
-        for (Table table : tablesList){
+        for (Table table : tables){
             dbManager.createTable(table, dbUser);
         }
 //        dbManager.createTable(tableTypes, dbUser);
@@ -365,6 +380,10 @@ public class EmptyDatabase {
         for (ContentValues contentValues : testTable.forTableDesc){
             dbManager.insert(tableDesc, contentValues, dbUser);
         }
+    }
+
+    public List<Table> getTables() {
+        return tables;
     }
 }
 
