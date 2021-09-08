@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Класс описывает пустую пользовательскую БД
@@ -90,7 +89,7 @@ public class EmptyDatabase {
             Table tableTypes = getTable(TableTypes.NAME);
             addColumn(
                     new TableColumn(
-                            TABLE_TYPE_ID, EmptyDatabase.ID, false, false, true, tableTypes.getTableCol(tableTypes, Table.ID)
+                            TABLE_TYPE_ID, EmptyDatabase.ID, false, false, true, tableTypes.getTableCol(tableTypes, TableTypes.TABLE_TYPE)
                     )
             );
 
@@ -126,7 +125,7 @@ public class EmptyDatabase {
         public static final String TABLE_ID = "table_id";
         public static final String COL_NAME = "col_name";
         public static final String TYPE_ID = "type_id";
-        public static final String PK_CONSTR = "pk-constr";
+        public static final String PK_CONSTR = "pk_constr";
         public static final String UNIQ_CONSTR = "uniq_constr";
         public static final String NOTNULL_CONSTR = "notnull_constr";
         public static final String FK_CONSTR = "fk_constr";
@@ -175,9 +174,9 @@ public class EmptyDatabase {
             contentValues.put(getTableCol(this, UNIQ_CONSTR), (tableColumn.isUnique()) ? (1) : (0));
             contentValues.put(getTableCol(this, NOTNULL_CONSTR), (tableColumn.isNotNull()) ? (1) : (0));
 //            contentValues.put(getTableCol(this, FK_CONSTR), (tableColumn.getFKTable() != null) ? (1) : (0));
-            contentValues.put(getTableCol(this, FK_COLUMN), (tableColumn.getFKTable() != null)
+            contentValues.put(getTableCol(this, FK_COLUMN), (tableColumn.getFKTableCol() != null)
                     ?(String.format(
-                            templateFk, tableColumn.getFKTable().getTableParent().getName(), tableColumn.getFKTable().getName())
+                            templateFk, tableColumn.getFKTableCol().getTableParent().getName(), tableColumn.getFKTableCol().getName())
             )
                     :(null));
             return contentValues;

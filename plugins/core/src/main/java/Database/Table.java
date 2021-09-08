@@ -1,7 +1,5 @@
 package Database;
 
-import ThothCore.EmptyDatabase.EmptyDatabase;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,7 +87,12 @@ public class Table {
 
 
     public void addColumn(TableColumn column) {
-        if (!columns.contains(column)) {
+        boolean colPresent = columns
+                .stream()
+                .filter(column1 -> column1.getName().equals(column.getName()))
+                .findAny()
+                .isPresent();
+        if (!colPresent) {
             columns.add(column);
             column.setTableParent(this);
         }
@@ -99,7 +102,7 @@ public class Table {
         }
         if (column.isNotNull() && !constrNNColumns.contains(column)) constrNNColumns.add(column);
         if (column.isUnique() && !constrUColumns.contains(column)) constrUColumns.add(column);
-        if (column.getFKTable() != null) constrFK.put(column, column.getFKTable());
+        if (column.getFKTableCol() != null) constrFK.put(column, column.getFKTableCol());
     }
 
     /**
@@ -181,12 +184,25 @@ public class Table {
     public String getName() {
         return name;
     }
+    public String getNameForSQL() {
+        String template = "`%1s`";
+        return String.format(template, name);
+    }
+
+    public TableColumn getTableCol(String colName){
+        return getTableCol(this, colName);
+    }
 
     public TableColumn getTableCol(Table table, String colName) {
-        return table.getColumns()
+        Optional<TableColumn> first = table.getColumns()
                 .stream()
                 .filter(column -> column.getName().equals(colName))
-                .findFirst().get();
+                .findFirst();
+        if(first.isPresent()) {
+            return first.get();
+        }else {
+            return null;
+        }
     }
 
     public String getType() {

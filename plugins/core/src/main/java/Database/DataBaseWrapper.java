@@ -2,7 +2,6 @@ package Database;
 
 import java.io.File;
 import java.sql.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,7 +96,7 @@ public class DataBaseWrapper {
         StringBuilder res = new StringBuilder("");
         columns.stream().forEach(column -> {
             res.append(column.toCreate());
-            if(columns.indexOf(column) != columns.size()-1){
+            if (columns.indexOf(column) != columns.size() - 1) {
                 res.append(", \n\t");
             }
         });
@@ -106,11 +105,11 @@ public class DataBaseWrapper {
 //            res.append(", ");
 //            res.append(tableName.getConstrPK());
 //        }
-        if(tableName.hasConstrUniq()) {
+        if (tableName.hasConstrUniq()) {
             res.append(", \n\t");
             res.append(tableName.getConstrUniq());
         }
-        if(tableName.hasConstrFK()) {
+        if (tableName.hasConstrFK()) {
             res.append(", \n\t");
             res.append(tableName.getConstrFK());
         }
@@ -177,7 +176,7 @@ public class DataBaseWrapper {
     private static void execute(Connection conn,
                                 String comand) throws SQLException {
         LOG.log(Level.INFO, comand);
-        if(isExecute) {
+        if (isExecute) {
             Statement statement = conn.createStatement();
             statement.execute(comand);
         }
@@ -280,35 +279,84 @@ public class DataBaseWrapper {
                                    List<TableColumn> columns,
                                    WhereValues where,
                                    Connection conn) throws SQLException {
-        return select(table.getName(), columns, where, conn);
-    }
-
-    /**
-     * Функция осуществляет чтение из базы данных
-     *
-     * @param table объект-описание таблицы.
-     * @param where строка, хранящая имя столбца в по которому определяем какую строку удаляем.
-     * @return объект ResultSet
-     */
-    public static ResultSet select(String table,
-                                   List<TableColumn> columns,
-                                   WhereValues where,
-                                   Connection conn) throws SQLException {
         ResultSet result = null;
 
-        String templateComand = "select %1s from `%2s`";
-        StringBuilder column = new StringBuilder("*");
-        if (columns != null) {
-            List<String> collect = columns.stream().map(column1 -> column1.getName()).collect(Collectors.toList());
-            column = new StringBuilder(Arrays.toString(collect.toArray()));
-            column.deleteCharAt(column.indexOf("[")).deleteCharAt(column.indexOf("]"));
+        String templateComand = "select %1s \nfrom `%2s`";
+        //Определяем столбцы для запроса в БД
+        if (columns == null) columns = table.getColumns();
+
+        StringBuilder column = new StringBuilder("");
+        //Проходим по всем колонкам для проверки
+        for (TableColumn col : columns) {
+            TableColumn fkTableCol = col.getFKTableCol();
+            if (fkTableCol != null) {
+                StringBuilder subRequest = new StringBuilder("");
+                String selectTemplate = "select %1s from %2s where %3s";
+                Table fkTableParent = fkTableCol.getTableParent();
+                TableColumn fkTableColId = fkTableParent.getTableCol(Table.ID);
+                //Ветка выполняется при наличии ссылки на внешнюю таблицу
+                if (fkTableCol.getName().equals(Table.ID)) {
+                    //Внешний ключ ссылается на колонку идентификатор внешней таблицы
+                    /*Формируем подзапрос следующего вида
+                     * select "выбираем все колонки внешней таблицы кроме ID" from fkTable where fk.id = fk_id
+                     * Подзапросы должны формироваться для каждой колонки ОТДЕЛЬНО!!!*/
+                    //Определяем колонки для вывода информации
+                    List<TableColumn> collect = fkTableParent.getColumns()
+                            .stream()
+                            .filter(column1 -> !column1.getName().equals(Table.ID))
+                            .collect(Collectors.toList());
+                    //Определяем колонку идентификатор таблицы вывода
+
+                    //Формируем подзапрос для каждого столбца
+                    for(TableColumn tableColumnFkTable: collect){
+                        subRequest.append("(");
+                        subRequest.append(
+                                String.format(
+                                        selectTemplate,
+                                        tableColumnFkTable.getNameForSQL(),
+                                        tableColumnFkTable.getTableParent().getNameForSQL(),
+                                        fkTableCol.getFullNameSQL() + " = " + col.getFullNameSQL()
+                                )
+                        );
+                        subRequest.append(") as ");
+                        subRequest.append(tableColumnFkTable.getName());
+                        if(collect.indexOf(tableColumnFkTable) != collect.size() - 1){
+                            subRequest.append(", \n");
+                        }
+                    }
+                } else {
+                    //Внешний ключ ссылается на кастомную колонку внешней таблицы
+                    /*Формируем подзапрос следующего вида
+                     * select fkTableCol from fkTable where fk.id = fk_id*/
+                    //Определяем колонки идентификаторы
+                    subRequest.append("(");
+                    subRequest.append(String.format(
+                            selectTemplate,
+                            fkTableCol.getNameForSQL(),
+                            fkTableParent.getNameForSQL(),
+                            fkTableColId.getFullNameSQL() + " = " + col.getFullNameSQL()
+                    ));
+                    subRequest.append(
+                            ") as " + fkTableCol.getName()
+                    );
+                }
+                column.append(subRequest);
+            } else {
+                //Колонка не содержит внешнего ключа
+                column.append(col.getName());
+            }
+            if (columns.indexOf(col) != columns.size() - 1) {
+                column.append(", \n");
+            }
         }
-        String comand = String.format(templateComand, column.toString(), table);
+
+        String comand = String.format(templateComand, column.toString(), table.getName());
 
         if (where != null) {
             String templateWhere = "%1s where %2s";
             comand = String.format(templateWhere, comand, where.toString());
         }
+        LOG.log(Level.INFO, comand);
         Statement statement = conn.createStatement();
         result = statement.executeQuery(comand);
 

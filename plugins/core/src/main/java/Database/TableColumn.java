@@ -8,22 +8,23 @@ public class TableColumn {
      * Наименование столбца
      * */
     protected String name;
+
     /**
      * Тип данных столбца.
      * Переменная должна хранить значение равное ключу в файлах типов колонок.
      * */
-
     protected String type;
+
     /**
      * Уникальность значений в каждой записи данного столбца
      * */
-
     protected boolean isUnique;
+
     /**
      * Если записи столбца представляют собой первичный ключ
      * */
-
     protected boolean isPrimaryKey;
+
     /**
      * Возможность записи пустых значений
      * */
@@ -32,7 +33,7 @@ public class TableColumn {
     /**
      * Колонка внешней таблицы, на которую ссылается внешний ключ
      * */
-    protected TableColumn FKTable;
+    protected TableColumn FKTableCol;
 
     /**
      * Таблица, в которую добавляется колонка
@@ -53,7 +54,7 @@ public class TableColumn {
         this.isUnique = isUnique;
         this.isPrimaryKey = isPrimaryKey;
         this.isNotNull = isNotNull;
-        this.FKTable = table;
+        this.FKTableCol = table;
     }
 
     public TableColumn(String name, String type, boolean isUnique, boolean isPrimaryKey, boolean isNotNull) {
@@ -62,7 +63,7 @@ public class TableColumn {
         this.isUnique = isUnique;
         this.isPrimaryKey = isPrimaryKey;
         this.isNotNull = isNotNull;
-        this.FKTable = null;
+        this.FKTableCol = null;
     }
 
     public TableColumn() {
@@ -71,18 +72,31 @@ public class TableColumn {
         isUnique = false;
         isPrimaryKey = false;
         isNotNull = false;
-        FKTable = null;
+        FKTableCol = null;
     }
 
     /**
      * Функция возвращает наименование колонки в формате Наименование_таблицы.Наименование_колонки
      * */
     public String getFullName(){
-        return tableParent.getName() + "." + getName();
+        String template = "%1s.%2s";
+        return String.format(template, getTableParent(), getName());
+    }
+    /**
+     * Функция возвращает наименование колонки в формате Наименование_таблицы.Наименование_колонки
+     * */
+    public String getFullNameSQL(){
+        String template = "\"%1s\".`%2s`";
+        return String.format(template, getTableParent().getName(), getName());
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getNameForSQL(){
+        String template = "`%1s`";
+        return String.format(template, name);
     }
 
     public void setName(String name) {
@@ -121,12 +135,12 @@ public class TableColumn {
         isNotNull = notNull;
     }
 
-    public TableColumn getFKTable() {
-        return FKTable;
+    public TableColumn getFKTableCol() {
+        return FKTableCol;
     }
 
-    public void setFKTable(TableColumn FKTable) {
-        this.FKTable = FKTable;
+    public void setFKTableCol(TableColumn FKTableCol) {
+        this.FKTableCol = FKTableCol;
     }
 
     public void setTableParent(Table table){

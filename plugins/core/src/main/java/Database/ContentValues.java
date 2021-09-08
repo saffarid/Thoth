@@ -1,7 +1,5 @@
 package Database;
 
-import ThothCore.Guardkeeper.DataBaseDescription.DataBaseInfo;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,7 @@ public class ContentValues extends HashMap<TableColumn, Object> {
             //Проверяем TableColumn на наличие внешнего ключа
             Object value = get(column);
             if (value != null) {
-                TableColumn fkTable = column.getFKTable();      //Если внешний ключ установлен, объект не будет равен null
+                TableColumn fkTable = column.getFKTableCol();      //Если внешний ключ установлен, объект не будет равен null
                 if (fkTable != null) {
                     /*
                      * Необходимо определить ID строки внешней таблицы, в contentValues содержится значения для пользователя
