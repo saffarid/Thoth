@@ -5,6 +5,7 @@ import ThothCore.EmptyDatabase.EmptyDatabase;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class DataBaseSQL {
 
@@ -31,11 +32,12 @@ public abstract class DataBaseSQL {
     }
 
     public Table getTable(String name){
-        return tables
+        Optional<Table> first = tables
                 .stream()
                 .filter(table -> table.getName().equals(name))
-                .findFirst()
-                .get();
+                .findFirst();
+        if(first.isPresent()) return first.get();
+        else return null;
     }
 
 

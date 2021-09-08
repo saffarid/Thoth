@@ -1,6 +1,8 @@
 package ThothCore.Thoth;
 
 import Database.DataBaseManager;
+import Database.Table;
+import Database.TableColumn;
 import ThothCore.EmptyDatabase.EmptyDatabase;
 
 import java.io.File;
@@ -10,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Thoth {
 
@@ -71,12 +74,12 @@ public class Thoth {
         );
 
         //Считываем список таблиц в БД
-        List<HashMap<String, Object>> dataTable1 = dbManager.getDataTable(
+        List<HashMap<String, Object>> tablesList = dbManager.getDataTable(
                 dbFile, db.getTable(EmptyDatabase.TablesList.NAME)
         );
 
         //Считываем описание таблиц в БД
-        List<HashMap<String, Object>> dataTable = dbManager.getDataTable(
+        List<HashMap<String, Object>> tableDesc = dbManager.getDataTable(
                 dbFile, db.getTable(EmptyDatabase.TableDesc.NAME)
         );
 
@@ -95,7 +98,33 @@ public class Thoth {
         *           то находим её и устанавливаем считанные значения,
         *           иначе создаем объект колонки и устанавливаем считанные значения
         * */
-//        for (HashMap<String, Object> row :)
+        for (HashMap<String, Object> row : tablesList){
+
+            //Определяем текущую таблицу
+            String name = (String) row.get(EmptyDatabase.TablesList.TABLE_NAME);
+            Table table = db.getTable(name);
+            if (table == null){
+                table = new Table();
+                table.setName(name);
+            }
+            //Проверяем тип таблицы
+            /*----------------------------------------------------------*/
+            //Определяем список столбцов, соответсвующих текущей таблице
+            List<HashMap<String, Object>> columns = tableDesc.stream()
+                    .filter(tab -> ((String) tab.get(EmptyDatabase.TablesList.TABLE_NAME)).equals(name))
+                    .collect(Collectors.toList());
+            //Проходим по колонкам
+            for (HashMap<String, Object> tab : columns) {
+                String columnName = (String) tab.get(EmptyDatabase.TableDesc.COL_NAME);
+                TableColumn tableCol = table.getTableCol(columnName);
+                //Перед проверкой на существование считать всю информацию с строки
+                if (tableCol == null){
+
+                    tableCol = new TableColumn()
+                }
+            }
+
+        }
 
         LOG.log(Level.INFO, getLogMes(
                 new StringBuilder("Чтение пользовательской БД ")
