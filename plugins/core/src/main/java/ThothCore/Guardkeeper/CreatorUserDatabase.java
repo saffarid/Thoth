@@ -47,7 +47,6 @@ public class CreatorUserDatabase {
             //Создаем пользовательскую БД
             DataBaseManager dbManager = DataBaseManager.getDbManager();
             dbManager.createDatabase(db);
-
             /*
             * Заносим информацию о вновь созданной пользовательской БД в системную БД.
             * */

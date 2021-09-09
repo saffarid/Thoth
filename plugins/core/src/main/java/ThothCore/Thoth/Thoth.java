@@ -1,5 +1,6 @@
 package ThothCore.Thoth;
 
+import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
 import Database.TableColumn;
@@ -20,10 +21,6 @@ public class Thoth {
 
     private final String logTemplate = "%1s: %2s";
 
-    /**
-     * Файл базы данных
-     * */
-    protected File dbFile;
 
     /**
      * Локальная копия БД
@@ -31,11 +28,19 @@ public class Thoth {
     private DataBase db;
 
     /**
+     * Менеджер работы с БД
+     * */
+    private DataBaseManager dbManager;
+
+    /**
+     * Файл базы данных
+     * */
+    protected File dbFile;
+
+    /**
      * Функциональная возможность
      * */
     private String funcAvaliable;
-
-    private DataBaseManager dbManager;
 
     static {
         LOG = Logger.getLogger(Thoth.class.getName());
@@ -61,8 +66,46 @@ public class Thoth {
         readDataBase();
     }
 
+    /**
+     * Функция создает таблицу в пользовательской БД
+     * */
+    public void createTable(Table table){
+
+    }
+
+    /**
+     * Функция создает триггер в пользовательской БД
+     * */
+    public void createtrigger(Table table){
+
+    }
+
+    /**
+     * Функция редактирует таблицу в пользовательской БД
+     * */
+    public void editTable(Table table){
+
+    }
+
+    /**
+     * Функция добавляет запись в таблицу пользовательской БД
+     * */
+    public void insertData(Table table, List<ContentValues> contentValues){
+
+    }
+
     private String getLogMes(String mes){
         return String.format(logTemplate, getClass().getSimpleName(), mes);
+    }
+
+    /**
+     * Функция формирует список таблиц для выбора с какой таблицей пользователь может взаимодействовать.
+     * Список формируется на основе текущего режима работы Thoth, а так же уровня пользовательского доступа.
+     * @return список доступных таблиц.
+     * */
+    public List<Table> getTables(){
+        //Реализация проверки доступа в зависимости от открытого модуля и формирование списка таблиц на основе этого
+        return db.getTables();
     }
 
     private void readDataBase() throws SQLException, ClassNotFoundException {
@@ -88,16 +131,16 @@ public class Thoth {
         ));
 
         /*
-        * Процесс формирования колонок заключается в следующем.
-        * Циклом проходим по считанному списку таблиц.
-        *   Если таблица с текущим наименованием существует ,
-        *   иначе создаём новый объект таблицы.
-        *   Фильтруем содержимое считанной "Table description" по текущей таблице.
-        *       Циклом проходим по колонкам текущей таблицы.
-        *           Если колонка с таким наименованием существует,
-        *           то находим её и устанавливаем считанные значения,
-        *           иначе создаем объект колонки и устанавливаем считанные значения
-        * */
+         * Процесс формирования колонок заключается в следующем.
+         * Циклом проходим по считанному списку таблиц.
+         *   Если таблица с текущим наименованием существует ,
+         *   иначе создаём новый объект таблицы.
+         *   Фильтруем содержимое считанной "Table description" по текущей таблице.
+         *       Циклом проходим по колонкам текущей таблицы.
+         *           Если колонка с таким наименованием существует,
+         *           то находим её и устанавливаем считанные значения,
+         *           иначе создаем объект колонки и устанавливаем считанные значения
+         * */
         for (HashMap<String, Object> row : tablesList){
 
             //Определяем текущую таблицу
@@ -137,9 +180,16 @@ public class Thoth {
 
         LOG.log(Level.INFO, getLogMes(
                 new StringBuilder("Чтение пользовательской БД ")
-                .append(dbFile.getAbsolutePath())
-                .append(" завершено.")
-                .toString()
+                        .append(dbFile.getAbsolutePath())
+                        .append(" завершено.")
+                        .toString()
         ));
+    }
+
+    /**
+     * Функция удаляет выбранную таблицу в пользовательской БД
+     * */
+    public void removeTable(Table table){
+
     }
 }

@@ -1,8 +1,11 @@
 package ThothGUI.Main;
 
+import Database.Table;
+import ThothCore.Thoth.Thoth;
 import controls.MenuButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -28,8 +31,12 @@ public class MainWindow extends PrimaryWindow {
 
     private List<String> openSubwindows;
 
-    public MainWindow(Stage stage) {
+    private Thoth thoth;
+
+    public MainWindow(Stage stage,
+                      Thoth thoth) {
         super(stage);
+        this.thoth = thoth;
         mainStage = stage;
 
         openSubwindows = new ArrayList<>();
@@ -83,7 +90,12 @@ public class MainWindow extends PrimaryWindow {
 
     private void openAnalyzator(ActionEvent event) {
         Subwindow subwindow = createSubwindow("Анализатор");
+        ListView<Table> listView = new ListView();
+        listView.getItems().addAll(thoth.getTables());
 
+        listView.setCellFactory(tableListView -> new ListCellTable());
+
+        subwindow.setCenter(listView);
     }
 
     private void openTables(ActionEvent event) {

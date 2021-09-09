@@ -25,12 +25,19 @@ public abstract class DataBaseSQL {
         copyTemplate(template);
     }
 
+    /**
+     *  Копирование структуры шаблона в текущую БД
+     * */
     public void copyTemplate(EmptyDatabase template){
         for(Table table : template.getTables()){
             tables.add(new Table().copy(table));
         }
     }
-
+    /**
+     * @param name наименование таблицы.
+     * @return Объект класса Table по переданному наименованию таблицы, если объект не найдет возвращается null.
+     * @see Table
+     * */
     public Table getTable(String name){
         Optional<Table> first = tables
                 .stream()
@@ -40,5 +47,11 @@ public abstract class DataBaseSQL {
         else return null;
     }
 
+    public File getDbUser() {
+        return dbUser;
+    }
 
+    public List<Table> getTables() {
+        return tables;
+    }
 }

@@ -34,13 +34,6 @@ public class DataBaseManager {
     }
 
     /**
-     * Функция создает новую БД
-     * */
-    public void createDatabase(File db) throws SQLException, ClassNotFoundException {
-        getConnection(db);
-    }
-
-    /**
      * Функция закрывает соединение с БД
      * */
     public void closeConnection(File db) throws SQLException {
@@ -55,6 +48,13 @@ public class DataBaseManager {
      */
     public void clear(String tableName)
             throws SQLException {
+    }
+
+    /**
+     * Функция создает новую БД
+     * */
+    public void createDatabase(File db) throws SQLException, ClassNotFoundException {
+        getConnection(db);
     }
 
     /**

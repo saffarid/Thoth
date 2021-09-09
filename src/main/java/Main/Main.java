@@ -44,11 +44,10 @@ public class Main extends Application implements ChangeScreen{
 
     @Override
     public void changeScreen(File db) {
-//        MainWindow mainWindow = new MainWindow(stage);
-//        stage.setScene(new Scene(mainWindow, 800, 600));
-//        new StageResizer(stage);
         try {
-            Thoth thoth = new Thoth(db);
+            MainWindow mainWindow = new MainWindow(stage, new Thoth(db));
+            stage.setScene(new Scene(mainWindow, 800, 600));
+            new StageResizer(stage);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {
