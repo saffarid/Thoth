@@ -116,12 +116,21 @@ public class Thoth {
             //Проходим по колонкам
             for (HashMap<String, Object> tab : columns) {
                 String columnName = (String) tab.get(EmptyDatabase.TableDesc.COL_NAME);
+                Boolean isPrimaryKey = (((Integer) tab.get(EmptyDatabase.TableDesc.PK_CONSTR)) == 1);
+                Boolean isUniq = (((Integer) tab.get(EmptyDatabase.TableDesc.UNIQ_CONSTR)) == 1);
+                Boolean isNotNull = (((Integer) tab.get(EmptyDatabase.TableDesc.NOTNULL_CONSTR)) == 1);
+                String  fkColumn = (String) tab.get(EmptyDatabase.TableDesc.FK_COLUMN);
                 TableColumn tableCol = table.getTableCol(columnName);
                 //Перед проверкой на существование считать всю информацию с строки
                 if (tableCol == null){
-
-                    tableCol = new TableColumn()
+                    tableCol = new TableColumn();
+                    table.addColumn(tableCol);
                 }
+                tableCol.setName(columnName);
+                tableCol.setPrimaryKey(isPrimaryKey);
+                tableCol.setUnique(isUniq);
+                tableCol.setNotNull(isNotNull);
+                tableCol.setTableParent(table);
             }
 
         }
