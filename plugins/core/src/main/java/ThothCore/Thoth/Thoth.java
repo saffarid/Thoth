@@ -69,14 +69,14 @@ public class Thoth {
     /**
      * Функция создает таблицу в пользовательской БД
      * */
-    public void createTable(Table table){
-
+    public void createTable(Table table) throws SQLException, ClassNotFoundException {
+        new CreatorTable(db, dbFile, table).createTable();
     }
 
     /**
      * Функция создает триггер в пользовательской БД
      * */
-    public void createtrigger(Table table){
+    public void createTrigger(Table table){
 
     }
 

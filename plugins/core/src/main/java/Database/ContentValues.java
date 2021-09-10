@@ -8,8 +8,6 @@ public class ContentValues extends HashMap<TableColumn, Object> {
     private final String TEMPLATE_COMAND_INSERT = "(\n\t%2s\n) values (\n\t%3s)";
     private final String TEMPLATE_COMAND_UPDATE = "`%1s`=%2s,";
 
-
-
     /**
      * Преобразование объекта в строку при создании таблицы в БД
      */

@@ -1,6 +1,7 @@
 package ThothCore.Guardkeeper.DataBaseDescription;
 
 import Database.Table;
+import Database.TableColumn;
 
 import java.io.File;
 import java.util.HashMap;

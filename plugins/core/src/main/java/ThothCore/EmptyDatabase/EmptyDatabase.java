@@ -165,20 +165,15 @@ public class EmptyDatabase {
 
         }
         public  ContentValues getValues(TableColumn tableColumn) {
-            String templateFk = "%1s.%2s";
             ContentValues contentValues = new ContentValues();
-            contentValues.put(getTableCol(this, TABLE_ID), tableColumn.getTableParent().getName());
-            contentValues.put(getTableCol(this, COL_NAME), tableColumn.getName());
-            contentValues.put(getTableCol(this, TYPE_ID), tableColumn.getType());
-            contentValues.put(getTableCol(this, PK_CONSTR), (tableColumn.isPrimaryKey()) ? (1) : (0));
-            contentValues.put(getTableCol(this, UNIQ_CONSTR), (tableColumn.isUnique()) ? (1) : (0));
-            contentValues.put(getTableCol(this, NOTNULL_CONSTR), (tableColumn.isNotNull()) ? (1) : (0));
+            contentValues.put(getTableCol(TABLE_ID), tableColumn.getTableParent().getName());
+            contentValues.put(getTableCol(COL_NAME), tableColumn.getName());
+            contentValues.put(getTableCol(TYPE_ID), tableColumn.getType());
+            contentValues.put(getTableCol(PK_CONSTR), (tableColumn.isPrimaryKey()) ? (1) : (0));
+            contentValues.put(getTableCol(UNIQ_CONSTR), (tableColumn.isUnique()) ? (1) : (0));
+            contentValues.put(getTableCol(NOTNULL_CONSTR), (tableColumn.isNotNull()) ? (1) : (0));
 //            contentValues.put(getTableCol(this, FK_CONSTR), (tableColumn.getFKTable() != null) ? (1) : (0));
-            contentValues.put(getTableCol(this, FK_COLUMN), (tableColumn.getFKTableCol() != null)
-                    ?(String.format(
-                            templateFk, tableColumn.getFKTableCol().getTableParent().getName(), tableColumn.getFKTableCol().getName())
-            )
-                    :(null));
+            contentValues.put(getTableCol(FK_COLUMN), (tableColumn.getFKTableCol() != null)?(tableColumn.getFKTableCol().getFullName()):(null));
             return contentValues;
         }
         public List<ContentValues> getContentValues() {
