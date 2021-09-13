@@ -149,8 +149,8 @@ public class EmptyDatabase {
             addColumn(new TableColumn(UNIQ_CONSTR, EmptyDatabase.BOOL, false, false, true));
             addColumn(new TableColumn(NOTNULL_CONSTR, EmptyDatabase.BOOL, false, false, true));
 //            addColumn(new TableColumn(FK_CONSTR, EmptyDatabase.BOOL, false, false, true));
-            addColumn(new TableColumn(FK_TABLE_ID, EmptyDatabase.TEXT, false, false, false, getTableCol(getTable(TablesList.NAME), TablesList.TABLE_NAME)));
-            addColumn(new TableColumn(FK_COLUMN_ID, EmptyDatabase.TEXT, false, false, false, getTableCol(COL_NAME)));
+            addColumn(new TableColumn(FK_TABLE_ID, EmptyDatabase.ID, false, false, false, getTableCol(getTable(TablesList.NAME), TablesList.TABLE_NAME)));
+            addColumn(new TableColumn(FK_COLUMN_ID, EmptyDatabase.ID, false, false, false, getTableCol(COL_NAME)));
 
             for (TableColumn column : getTable(DataTypes.NAME).getColumns()) {
                 contentValues.add(getValues(column));

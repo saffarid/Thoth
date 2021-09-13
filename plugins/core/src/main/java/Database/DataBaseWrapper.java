@@ -282,6 +282,9 @@ public class DataBaseWrapper {
         ResultSet result = null;
 
         String templateComand = "select %1s \nfrom `%2s`";
+        String templateFullName = "\"%1s\".`%2s`";
+        String templateAs = "`%1s` as `%2s`";
+        String templateName = "`%1s`";
         //Определяем столбцы для запроса в БД
         if (columns == null) columns = table.getColumns();
 
@@ -291,8 +294,19 @@ public class DataBaseWrapper {
             TableColumn fkTableCol = col.getFKTableCol();
             if (fkTableCol != null) {
                 StringBuilder subRequest = new StringBuilder("");
+                /*
+                 * Наименование таблицы формируется следующим образом.
+                 * Если наименование текущей таблицы совпадает добавляем к наименованию "sub_"*/
                 String selectTemplate = "select %1s from %2s where %3s";
-                Table fkTableParent = fkTableCol.getTableParent();
+                Table fkTableParent = new Table().copy(fkTableCol.getTableParent());
+                String pseudoName;
+                //Переменная для определения внешнего ключа на саму себя
+                boolean foreighnSelf = fkTableParent.getName().equals(table.getName());
+                if (foreighnSelf) {
+                    pseudoName = "sub_".concat(fkTableParent.getName());
+                }else{
+                    pseudoName = fkTableParent.getName();
+                }
                 TableColumn fkTableColId = fkTableParent.getTableCol(Table.ID);
                 //Ветка выполняется при наличии ссылки на внешнюю таблицу
                 if (fkTableCol.getName().equals(Table.ID)) {
@@ -308,19 +322,19 @@ public class DataBaseWrapper {
                     //Определяем колонку идентификатор таблицы вывода
 
                     //Формируем подзапрос для каждого столбца
-                    for(TableColumn tableColumnFkTable: collect){
+                    for (TableColumn tableColumnFkTable : collect) {
                         subRequest.append("(");
                         subRequest.append(
                                 String.format(
                                         selectTemplate,
                                         tableColumnFkTable.getNameForSQL(),
-                                        tableColumnFkTable.getTableParent().getNameForSQL(),
-                                        fkTableCol.getFullNameSQL() + " = " + col.getFullNameSQL()
+                                        (!foreighnSelf)?(String.format(templateName, pseudoName)):(String.format(templateAs, fkTableParent.getName(), pseudoName)),
+                                        String.format(templateFullName, pseudoName, fkTableCol.getName()) + " = " + col.getFullNameSQL()
                                 )
                         );
                         subRequest.append(") as ");
                         subRequest.append(tableColumnFkTable.getName());
-                        if(collect.indexOf(tableColumnFkTable) != collect.size() - 1){
+                        if (collect.indexOf(tableColumnFkTable) != collect.size() - 1) {
                             subRequest.append(", \n");
                         }
                     }
@@ -332,14 +346,14 @@ public class DataBaseWrapper {
                     subRequest.append(String.format(
                             selectTemplate,
                             fkTableCol.getNameForSQL(),
-                            fkTableParent.getNameForSQL(),
-                            fkTableColId.getFullNameSQL() + " = " + col.getFullNameSQL()
+                            (!foreighnSelf)?(String.format(templateName, pseudoName)):(String.format(templateAs, fkTableParent.getName(), pseudoName)),
+                            String.format(templateFullName, pseudoName, fkTableColId.getName()) + " = " + col.getFullNameSQL()
                     ));
-                    if(col.getName().startsWith("fk_")){
+                    if (col.getName().startsWith("fk_")) {
                         subRequest.append(
                                 ") as " + "fk_".concat(fkTableCol.getName())
                         );
-                    }else{
+                    } else {
                         subRequest.append(
                                 ") as " + fkTableCol.getName()
                         );
