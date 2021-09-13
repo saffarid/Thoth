@@ -129,7 +129,8 @@ public class EmptyDatabase {
         public static final String UNIQ_CONSTR = "uniq_constr";
         public static final String NOTNULL_CONSTR = "notnull_constr";
         public static final String FK_CONSTR = "fk_constr";
-        public static final String FK_COLUMN = "fk_column";
+        public static final String FK_TABLE_ID = "fk_table_name_id";
+        public static final String FK_COLUMN_ID = "fk_column_name_id";
         public TableDesc() {
             super();
             name = NAME;
@@ -148,7 +149,8 @@ public class EmptyDatabase {
             addColumn(new TableColumn(UNIQ_CONSTR, EmptyDatabase.BOOL, false, false, true));
             addColumn(new TableColumn(NOTNULL_CONSTR, EmptyDatabase.BOOL, false, false, true));
 //            addColumn(new TableColumn(FK_CONSTR, EmptyDatabase.BOOL, false, false, true));
-            addColumn(new TableColumn(FK_COLUMN, EmptyDatabase.TEXT, false, false, false));
+            addColumn(new TableColumn(FK_TABLE_ID, EmptyDatabase.TEXT, false, false, false, getTableCol(getTable(TablesList.NAME), TablesList.TABLE_NAME)));
+            addColumn(new TableColumn(FK_COLUMN_ID, EmptyDatabase.TEXT, false, false, false, getTableCol(COL_NAME)));
 
             for (TableColumn column : getTable(DataTypes.NAME).getColumns()) {
                 contentValues.add(getValues(column));
@@ -173,7 +175,8 @@ public class EmptyDatabase {
             contentValues.put(getTableCol(UNIQ_CONSTR), (tableColumn.isUnique()) ? (1) : (0));
             contentValues.put(getTableCol(NOTNULL_CONSTR), (tableColumn.isNotNull()) ? (1) : (0));
 //            contentValues.put(getTableCol(this, FK_CONSTR), (tableColumn.getFKTable() != null) ? (1) : (0));
-            contentValues.put(getTableCol(FK_COLUMN), (tableColumn.getFKTableCol() != null)?(tableColumn.getFKTableCol().getFullName()):(null));
+            contentValues.put(getTableCol(FK_TABLE_ID), (tableColumn.getFKTableCol() != null)?(tableColumn.getFKTableCol().getTableParent().getName()):(null));
+            contentValues.put(getTableCol(FK_COLUMN_ID), (tableColumn.getFKTableCol() != null)?(tableColumn.getFKTableCol().getName()):(null));
             return contentValues;
         }
         public List<ContentValues> getContentValues() {

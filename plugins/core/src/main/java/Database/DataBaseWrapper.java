@@ -328,7 +328,6 @@ public class DataBaseWrapper {
                     //Внешний ключ ссылается на кастомную колонку внешней таблицы
                     /*Формируем подзапрос следующего вида
                      * select fkTableCol from fkTable where fk.id = fk_id*/
-                    //Определяем колонки идентификаторы
                     subRequest.append("(");
                     subRequest.append(String.format(
                             selectTemplate,
@@ -336,9 +335,16 @@ public class DataBaseWrapper {
                             fkTableParent.getNameForSQL(),
                             fkTableColId.getFullNameSQL() + " = " + col.getFullNameSQL()
                     ));
-                    subRequest.append(
-                            ") as " + fkTableCol.getName()
-                    );
+                    if(col.getName().startsWith("fk_")){
+                        subRequest.append(
+                                ") as " + "fk_".concat(fkTableCol.getName())
+                        );
+                    }else{
+                        subRequest.append(
+                                ") as " + fkTableCol.getName()
+                        );
+                    }
+
                 }
                 column.append(subRequest);
             } else {

@@ -80,7 +80,8 @@ public class CreatorTable {
             contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.PK_CONSTR),     (column.isPrimaryKey()) ? (1) : (0));
             contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.UNIQ_CONSTR),   (column.isUnique()) ? (1) : (0));
             contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.NOTNULL_CONSTR),(column.isNotNull()) ? (1) : (0));
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_COLUMN),     (column.getFKTableCol() != null)?(column.getFKTableCol().getFullName()):(null));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_TABLE_ID),     (column.getFKTableCol() != null)?(column.getFKTableCol().getTableParent().getName()):(null));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_COLUMN_ID),     (column.getFKTableCol() != null)?(column.getFKTableCol().getName()):(null));
 
             dbManager.insert(tableDesc, contentValues, dbFile);
         }

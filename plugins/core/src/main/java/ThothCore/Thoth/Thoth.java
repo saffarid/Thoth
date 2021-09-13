@@ -162,7 +162,8 @@ public class Thoth {
                 Boolean isPrimaryKey = (((Integer) tab.get(EmptyDatabase.TableDesc.PK_CONSTR)) == 1);
                 Boolean isUniq = (((Integer) tab.get(EmptyDatabase.TableDesc.UNIQ_CONSTR)) == 1);
                 Boolean isNotNull = (((Integer) tab.get(EmptyDatabase.TableDesc.NOTNULL_CONSTR)) == 1);
-                String  fkColumn = (String) tab.get(EmptyDatabase.TableDesc.FK_COLUMN);
+                String  fkTable = (String) tab.get(EmptyDatabase.TableDesc.FK_TABLE_ID);
+                String  fkColumn = (String) tab.get(EmptyDatabase.TableDesc.FK_COLUMN_ID);
                 TableColumn tableCol = table.getTableCol(columnName);
                 //Перед проверкой на существование считать всю информацию с строки
                 if (tableCol == null){

@@ -15,14 +15,12 @@ public class DataBaseManager {
     private static Logger LOG;
     private static DataBaseManager dbManager;
     private Map<File, Connection> conns;
-    private GuardianOfWisdom guardianOfWisdom;
 
     static {
         LOG = Logger.getLogger(DataBaseManager.class.getName());
     }
 
     public DataBaseManager() throws SQLException, ClassNotFoundException {
-        guardianOfWisdom = new GuardianOfWisdom();
         conns = new HashMap<>();
     }
 
@@ -33,11 +31,23 @@ public class DataBaseManager {
         return dbManager;
     }
 
+    public void alterTable(Table oldTable,
+                           Table newTable,
+                           File db) {
+        /*
+         * Последовательно определяем все изменения внесённые в таблицу:
+         * 1. Определяем изменение наименования таблицы
+         *   1.1. Если наименование изменено, меняем информацию в таблицах tables list. За счет внешнего ключа ссылка
+         *        на наименование таблицы всегда будет актуальна.
+         *
+         * */
+    }
+
     /**
      * Функция закрывает соединение с БД
-     * */
+     */
     public void closeConnection(File db) throws SQLException {
-        if(conns.containsKey(db)){
+        if (conns.containsKey(db)) {
             conns.get(db).close();
             conns.remove(db);
         }
@@ -52,7 +62,7 @@ public class DataBaseManager {
 
     /**
      * Функция создает новую БД
-     * */
+     */
     public void createDatabase(File db) throws SQLException, ClassNotFoundException {
         getConnection(db);
     }
@@ -76,9 +86,9 @@ public class DataBaseManager {
 
     /**
      * Функция возвращает соединение с БД
-     * */
+     */
     public Connection getConnection(File db) throws SQLException, ClassNotFoundException {
-        if(!conns.containsKey(db)) {
+        if (!conns.containsKey(db)) {
             openConnection(db);
         }
         return conns.get(db);
@@ -86,9 +96,10 @@ public class DataBaseManager {
 
     /**
      * Функция возвращает список созданных таблиц
-     * @param db файл пользовательской БД
+     *
+     * @param db    файл пользовательской БД
      * @param table таблица, с которой производится считывание информации
-     * */
+     */
     public List<HashMap<String, Object>> getDataTable(File db,
                                                       Table table)
             throws SQLException, ClassNotFoundException {
@@ -96,9 +107,9 @@ public class DataBaseManager {
         ResultSet select = DataBaseWrapper.select(
                 table, null, null, getConnection(db)
         );
-        while (select.next()){
+        while (select.next()) {
             HashMap<String, Object> contentValues = new HashMap<>();
-            for(int i = 1; i < select.getMetaData().getColumnCount() + 1; i++){
+            for (int i = 1; i < select.getMetaData().getColumnCount() + 1; i++) {
                 contentValues.put(
                         select.getMetaData().getColumnName(i),
                         select.getObject(i)
@@ -118,21 +129,22 @@ public class DataBaseManager {
     public void insert(Table tableName,
                        ContentValues contentValues,
                        File db)
-                       throws SQLException {
+            throws SQLException {
         DataBaseWrapper.insert(tableName, contentValues, conns.get(db));
     }
 
     /**
      * Функция открывает соединение с БД/
+     *
      * @param db Путь до базы данных
-     * */
+     */
     private void openConnection(File db) throws SQLException, ClassNotFoundException {
         conns.put(db, DataBaseWrapper.openConnetion(db));
     }
 
     /**
      * Функция отвечает за переименовывание колонок в таблице
-     * */
+     */
     public void renameColumn(String tableName,
                              TableColumn oldTableColumn,
                              TableColumn newTableColumn) throws SQLException {
@@ -140,7 +152,7 @@ public class DataBaseManager {
 
     /**
      * Функция отвечает за удаление колонки из таблицы
-     * */
+     */
     public void removeColumn(String tableName,
                              TableColumn tableColumn) throws SQLException {
     }
@@ -165,7 +177,7 @@ public class DataBaseManager {
     public void replace(String fromTable,
                         String toTable,
                         ContentValues contentValues,
-                        WhereValues whereValues) throws SQLException{
+                        WhereValues whereValues) throws SQLException {
     }
 
     /**
@@ -177,7 +189,7 @@ public class DataBaseManager {
                                                            File db) throws SQLException {
         ResultSet select = DataBaseWrapper.select(table, columns, where, conns.get(db));
         List<LinkedHashMap<TableColumn, Object>> res = new LinkedList<>();
-        while (select.next()){
+        while (select.next()) {
             LinkedHashMap<TableColumn, Object> row = new LinkedHashMap<>();
             for (TableColumn tableColumn : columns) {
                 row.put(tableColumn, select.getObject(tableColumn.getName()));
