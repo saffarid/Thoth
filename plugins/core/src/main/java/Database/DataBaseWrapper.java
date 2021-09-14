@@ -278,7 +278,52 @@ public class DataBaseWrapper {
     public static ResultSet select(Table table,
                                    List<TableColumn> columns,
                                    WhereValues where,
-                                   Connection conn) throws SQLException {
+                                   Connection conn,
+                                   boolean useSubRequest) throws SQLException {
+        if (useSubRequest) {
+            return selectWithSubrequest(table, columns, where, conn);
+        } else {
+            return selectWithoutSubrequest(table, columns, where, conn);
+        }
+    }
+
+    private static ResultSet selectWithoutSubrequest(Table table,
+                                                     List<TableColumn> columns,
+                                                     WhereValues where,
+                                                     Connection conn) throws SQLException {
+
+        ResultSet result = null;
+
+        String templateComand = "select %1s \nfrom `%2s`";
+
+        //Определяем столбцы для запроса в БД
+        if (columns == null) columns = table.getColumns();
+        StringBuilder column = new StringBuilder("");
+        for (TableColumn tableColumn : columns) {
+            column.append(tableColumn.getName());
+            if (columns.indexOf(tableColumn) != columns.size() - 1) {
+                column.append(", ");
+            }
+        }
+
+        String comand = String.format(templateComand, column.toString(), table.getName());
+
+        if (where != null) {
+            String templateWhere = "%1s where %2s";
+            comand = String.format(templateWhere, comand, where.toString());
+        }
+        LOG.log(Level.INFO, comand);
+        Statement statement = conn.createStatement();
+        result = statement.executeQuery(comand);
+
+        return result;
+
+    }
+
+    private static ResultSet selectWithSubrequest(Table table,
+                                                  List<TableColumn> columns,
+                                                  WhereValues where,
+                                                  Connection conn) throws SQLException {
         ResultSet result = null;
 
         String templateComand = "select %1s \nfrom `%2s`";
@@ -304,7 +349,7 @@ public class DataBaseWrapper {
                 boolean foreighnSelf = fkTableParent.getName().equals(table.getName());
                 if (foreighnSelf) {
                     pseudoName = "sub_".concat(fkTableParent.getName());
-                }else{
+                } else {
                     pseudoName = fkTableParent.getName();
                 }
                 TableColumn fkTableColId = fkTableParent.getTableCol(Table.ID);
@@ -328,7 +373,7 @@ public class DataBaseWrapper {
                                 String.format(
                                         selectTemplate,
                                         tableColumnFkTable.getNameForSQL(),
-                                        (!foreighnSelf)?(String.format(templateName, pseudoName)):(String.format(templateAs, fkTableParent.getName(), pseudoName)),
+                                        (!foreighnSelf) ? (String.format(templateName, pseudoName)) : (String.format(templateAs, fkTableParent.getName(), pseudoName)),
                                         String.format(templateFullName, pseudoName, fkTableCol.getName()) + " = " + col.getFullNameSQL()
                                 )
                         );
@@ -346,7 +391,7 @@ public class DataBaseWrapper {
                     subRequest.append(String.format(
                             selectTemplate,
                             fkTableCol.getNameForSQL(),
-                            (!foreighnSelf)?(String.format(templateName, pseudoName)):(String.format(templateAs, fkTableParent.getName(), pseudoName)),
+                            (!foreighnSelf) ? (String.format(templateName, pseudoName)) : (String.format(templateAs, fkTableParent.getName(), pseudoName)),
                             String.format(templateFullName, pseudoName, fkTableColId.getName()) + " = " + col.getFullNameSQL()
                     ));
                     if (col.getName().startsWith("fk_")) {

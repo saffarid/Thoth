@@ -1,8 +1,7 @@
 package Main;
 
-import ThothCore.Thoth.Thoth;
 import ThothGUI.Guardkeeper.Guardkeeper;
-import ThothGUI.Main.MainWindow;
+import ThothGUI.Thoth.ThothWindow;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -45,8 +44,8 @@ public class Main extends Application implements ChangeScreen{
     @Override
     public void changeScreen(File db) {
         try {
-            MainWindow mainWindow = new MainWindow(stage, new Thoth(db));
-            stage.setScene(new Scene(mainWindow, 800, 600));
+            ThothWindow thoth = new ThothWindow(stage, new ThothCore.Thoth.Thoth(db));
+            stage.setScene(new Scene(thoth, 800, 600));
             new StageResizer(stage);
         } catch (SQLException throwables) {
             throwables.printStackTrace();

@@ -21,6 +21,7 @@ public class Thoth {
 
     private final String logTemplate = "%1s: %2s";
 
+    //Нужен отдельно шаблон БД и таблица с списком таблиц
 
     /**
      * Локальная копия БД
@@ -105,6 +106,7 @@ public class Thoth {
      * */
     public List<Table> getTables(){
         //Реализация проверки доступа в зависимости от открытого модуля и формирование списка таблиц на основе этого
+        //Функция должна возвращать только одну таблицу - tables list
         return db.getTables();
     }
 
@@ -129,6 +131,10 @@ public class Thoth {
         LOG.log(Level.INFO, getLogMes(
                 "Формирование таблиц/колонок"
         ));
+
+        Table tList = db.getTable(EmptyDatabase.TablesList.NAME);
+        Table tDesc = db.getTable(EmptyDatabase.TableDesc.NAME);
+
 
         /*
          * Процесс формирования колонок заключается в следующем.

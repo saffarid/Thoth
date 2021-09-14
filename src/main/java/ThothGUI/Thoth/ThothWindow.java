@@ -1,7 +1,9 @@
-package ThothGUI.Main;
+package ThothGUI.Thoth;
 
 import Database.Table;
 import ThothCore.Thoth.Thoth;
+import ThothGUI.Thoth.Nodes.Auxiliary.ListCellTable;
+import ThothGUI.Thoth.Nodes.TableThothGUI;
 import controls.MenuButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainWindow extends PrimaryWindow {
+public class ThothWindow extends PrimaryWindow {
 
     private Stage mainStage;
 
@@ -33,8 +35,8 @@ public class MainWindow extends PrimaryWindow {
 
     private Thoth thoth;
 
-    public MainWindow(Stage stage,
-                      Thoth thoth) {
+    public ThothWindow(Stage stage,
+                       Thoth thoth) {
         super(stage);
         this.thoth = thoth;
         mainStage = stage;
@@ -90,16 +92,20 @@ public class MainWindow extends PrimaryWindow {
 
     private void openAnalyzator(ActionEvent event) {
         Subwindow subwindow = createSubwindow("Анализатор");
+
+    }
+
+    private void openTables(ActionEvent event) {
+        Subwindow subwindow = createSubwindow("Список таблиц");
         ListView<Table> listView = new ListView();
         listView.getItems().addAll(thoth.getTables());
 
         listView.setCellFactory(tableListView -> new ListCellTable());
 
         subwindow.setCenter(listView);
-    }
 
-    private void openTables(ActionEvent event) {
-        Subwindow subwindow = createSubwindow("Список таблиц");
+        TableThothGUI tableThothGUI = new TableThothGUI();
+        tableThothGUI.getItems().addAll(thoth.getTables());
     }
 
     private void styleConfig(){

@@ -1,4 +1,4 @@
-package ThothGUI.Main;
+package ThothGUI.Thoth.Nodes.Auxiliary;
 
 import Database.Table;
 import controls.ListCell;
