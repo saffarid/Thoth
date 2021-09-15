@@ -5,9 +5,11 @@ import ThothCore.Thoth.Thoth;
 import ThothGUI.Thoth.Nodes.Auxiliary.ListCellTable;
 import ThothGUI.Thoth.Nodes.TableThothGUI;
 import controls.MenuButton;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -102,10 +104,18 @@ public class ThothWindow extends PrimaryWindow {
 
         listView.setCellFactory(tableListView -> new ListCellTable());
 
-        subwindow.setCenter(listView);
+//        subwindow.setCenter(listView);
 
         TableThothGUI tableThothGUI = new TableThothGUI();
         tableThothGUI.getItems().addAll(thoth.getTables());
+        TableColumn<Table, String> name = new TableColumn();
+        TableColumn<Table, String> type = new TableColumn();
+
+        tableThothGUI.getColumns().addAll(name, type);
+        name.setCellValueFactory(cellDataFeatures -> new SimpleStringProperty(cellDataFeatures.getValue().getName()));
+        type.setCellValueFactory(cellDataFeatures -> new SimpleStringProperty(cellDataFeatures.getValue().getType()));
+
+        subwindow.setCenter(tableThothGUI);
     }
 
     private void styleConfig(){

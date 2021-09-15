@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public abstract class DataBaseSQL {
 
-    private File dbUser;
-
     /**
      * Список таблиц
      * */
@@ -32,10 +30,6 @@ public abstract class DataBaseSQL {
                 .findFirst();
         if(first.isPresent()) return first.get();
         else return null;
-    }
-
-    public File getDbUser() {
-        return dbUser;
     }
 
     public List<Table> getTables() {

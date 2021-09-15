@@ -21,8 +21,6 @@ public class Thoth {
 
     private final String logTemplate = "%1s: %2s";
 
-    //Нужен отдельно шаблон БД и таблица с списком таблиц
-
     /**
      * Локальная копия БД
      * */
@@ -63,7 +61,7 @@ public class Thoth {
             EmptyDatabase template) throws SQLException, ClassNotFoundException {
         dbFile = dbUser;
         dbManager = DataBaseManager.getDbManager();
-        db = new DataBase(template);
+        db = new DataBase(template, dbFile);
         readDataBase();
     }
 
@@ -107,7 +105,12 @@ public class Thoth {
     public List<Table> getTables(){
         //Реализация проверки доступа в зависимости от открытого модуля и формирование списка таблиц на основе этого
         //Функция должна возвращать только одну таблицу - tables list
-        return db.getTables();
+        List<Table> res = db.getTables()
+                .stream()
+                .filter(table -> !table.getType().equals(Table.SYSTEM_TABLE_NA))
+                .collect(Collectors.toList());
+
+        return res;
     }
 
     private void readDataBase() throws SQLException, ClassNotFoundException {
@@ -118,75 +121,12 @@ public class Thoth {
                         .toString())
         );
 
-        //Считываем список таблиц в БД
-        List<HashMap<String, Object>> tablesList = dbManager.getDataTable(
-                dbFile, db.getTable(EmptyDatabase.TablesList.NAME)
-        );
-
-        //Считываем описание таблиц в БД
-        List<HashMap<String, Object>> tableDesc = dbManager.getDataTable(
-                dbFile, db.getTable(EmptyDatabase.TableDesc.NAME)
-        );
-
         LOG.log(Level.INFO, getLogMes(
                 "Формирование таблиц/колонок"
         ));
 
-        Table tList = db.getTable(EmptyDatabase.TablesList.NAME);
-        Table tDesc = db.getTable(EmptyDatabase.TableDesc.NAME);
-
-
-        /*
-         * Процесс формирования колонок заключается в следующем.
-         * Циклом проходим по считанному списку таблиц.
-         *   Если таблица с текущим наименованием существует ,
-         *   иначе создаём новый объект таблицы.
-         *   Фильтруем содержимое считанной "Table description" по текущей таблице.
-         *       Циклом проходим по колонкам текущей таблицы.
-         *           Если колонка с таким наименованием существует,
-         *           то находим её и устанавливаем считанные значения,
-         *           иначе создаем объект колонки и устанавливаем считанные значения
-         * */
-        for (HashMap<String, Object> row : tablesList){
-
-            //Определяем текущую таблицу
-            String name = (String) row.get(EmptyDatabase.TablesList.TABLE_NAME);
-            String type = (String) row.get(EmptyDatabase.TableTypes.TABLE_TYPE);
-            Table table = db.getTable(name);
-            if (table == null){
-                table = new Table();
-                table.setName(name);
-                table.setType(type);
-                db.getTables().add(table);
-            }
-            //Проверяем тип таблицы
-            /*----------------------------------------------------------*/
-            //Определяем список столбцов, соответсвующих текущей таблице
-            List<HashMap<String, Object>> columns = tableDesc.stream()
-                    .filter(tab -> ((String) tab.get(EmptyDatabase.TablesList.TABLE_NAME)).equals(name))
-                    .collect(Collectors.toList());
-            //Проходим по колонкам
-            for (HashMap<String, Object> tab : columns) {
-                String columnName = (String) tab.get(EmptyDatabase.TableDesc.COL_NAME);
-                Boolean isPrimaryKey = (((Integer) tab.get(EmptyDatabase.TableDesc.PK_CONSTR)) == 1);
-                Boolean isUniq = (((Integer) tab.get(EmptyDatabase.TableDesc.UNIQ_CONSTR)) == 1);
-                Boolean isNotNull = (((Integer) tab.get(EmptyDatabase.TableDesc.NOTNULL_CONSTR)) == 1);
-                String  fkTable = (String) tab.get(EmptyDatabase.TableDesc.FK_TABLE_ID);
-                String  fkColumn = (String) tab.get(EmptyDatabase.TableDesc.FK_COLUMN_ID);
-                TableColumn tableCol = table.getTableCol(columnName);
-                //Перед проверкой на существование считать всю информацию с строки
-                if (tableCol == null){
-                    tableCol = new TableColumn();
-                    table.addColumn(tableCol);
-                }
-                tableCol.setName(columnName);
-                tableCol.setPrimaryKey(isPrimaryKey);
-                tableCol.setUnique(isUniq);
-                tableCol.setNotNull(isNotNull);
-                tableCol.setTableParent(table);
-            }
-
-        }
+        db.readStructure();
+        db.readTableContent();
 
         LOG.log(Level.INFO, getLogMes(
                 new StringBuilder("Чтение пользовательской БД ")

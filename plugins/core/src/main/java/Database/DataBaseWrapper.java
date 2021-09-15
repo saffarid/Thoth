@@ -408,7 +408,7 @@ public class DataBaseWrapper {
                 column.append(subRequest);
             } else {
                 //Колонка не содержит внешнего ключа
-                column.append(col.getName());
+                column.append(String.format(templateName, col.getName()));
             }
             if (columns.indexOf(col) != columns.size() - 1) {
                 column.append(", \n");
