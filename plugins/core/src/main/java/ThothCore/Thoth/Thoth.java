@@ -151,10 +151,13 @@ public class Thoth {
 
             //Определяем текущую таблицу
             String name = (String) row.get(EmptyDatabase.TablesList.TABLE_NAME);
+            String type = (String) row.get(EmptyDatabase.TableTypes.TABLE_TYPE);
             Table table = db.getTable(name);
             if (table == null){
                 table = new Table();
                 table.setName(name);
+                table.setType(type);
+                db.getTables().add(table);
             }
             //Проверяем тип таблицы
             /*----------------------------------------------------------*/

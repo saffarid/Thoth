@@ -14,25 +14,12 @@ public abstract class DataBaseSQL {
     /**
      * Список таблиц
      * */
-    private List<Table> tables;
+    protected List<Table> tables;
 
     public DataBaseSQL() {
         tables = new LinkedList<>();
     }
 
-    public DataBaseSQL(EmptyDatabase template){
-        tables = new LinkedList<>();
-        copyTemplate(template);
-    }
-
-    /**
-     *  Копирование структуры шаблона в текущую БД
-     * */
-    public void copyTemplate(EmptyDatabase template){
-        for(Table table : template.getTables()){
-            tables.add(new Table().copy(table));
-        }
-    }
     /**
      * @param name наименование таблицы.
      * @return Объект класса Table по переданному наименованию таблицы, если объект не найдет возвращается null.

@@ -46,7 +46,7 @@ public class EmptyDatabase {
      * Класс определяет таблицу "Типы таблиц"
      */
     public class TableTypes extends Table {
-        public static final String NAME = "Table types";
+        public static final String NAME = "table_types";
         public static final String TABLE_TYPE = "table_type";
 
         public TableTypes() {
@@ -75,7 +75,7 @@ public class EmptyDatabase {
      * Класс определяет таблицу "Список таблиц"
      */
     public class TablesList extends Table {
-        public static final String NAME = "Tables list";
+        public static final String NAME = "tables_list";
         public static final String TABLE_NAME = "table_name";
         public static final String TABLE_TYPE_ID = "table_type_id";
         public TablesList() {
@@ -121,7 +121,7 @@ public class EmptyDatabase {
      * Класс представляет таблицу с описанием таблиц
      */
     public class TableDesc extends Table {
-        public static final String NAME = "Table description";
+        public static final String NAME = "table_desc";
         public static final String TABLE_ID = "table_id";
         public static final String COL_NAME = "col_name";
         public static final String TYPE_ID = "type_id";
@@ -188,7 +188,7 @@ public class EmptyDatabase {
      * Класс определяет таблицу "Типы данных"
      */
     public class DataTypes extends Table {
-        public static final String NAME = "Data types";
+        public static final String NAME = "data_types";
         public static final String USER_TYPE = "user_type";     //То значение, которое видит и выбирает пользователь
         public static final String JAVA_TYPE = "java_type";     //То значение, как этот тип записывается в java
         public static final String SQL_TYPE = "sql_type";       //То значение, которое используется в запросе SQL
@@ -222,7 +222,7 @@ public class EmptyDatabase {
      * Класс определяет таблицу "Категория товаров"
      */
     public class ProductsCategory extends Table {
-        public static final String NAME = "Products";
+        public static final String NAME = "products";
         public static final String GROUP = "group";
         public static final String CATEGORY = "category";
 
@@ -239,7 +239,7 @@ public class EmptyDatabase {
      * Класс определяет таблицу "Валюта"
      */
     public class Currency extends Table {
-        public static final String NAME = "Currency";
+        public static final String NAME = "currency";
         public static final String CURRENCY = "currency";
         public static final String COURSE = "course";
 
@@ -256,7 +256,7 @@ public class EmptyDatabase {
      * Класс определяет таблицу "Единицы измерения"
      */
     public class UnitMeas extends Table {
-        public static final String NAME = "Unit meas";
+        public static final String NAME = "unit_meas";
         public static final String UNIT_MEAS = "unit_meas";
 
         public UnitMeas() {

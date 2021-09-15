@@ -105,7 +105,7 @@ public class DataBaseManager {
             throws SQLException, ClassNotFoundException {
         List<HashMap<String, Object>> res = new LinkedList<>();
         ResultSet select = DataBaseWrapper.select(
-                table, null, null, getConnection(db), false
+                table, null, null, getConnection(db), true
         );
         while (select.next()) {
             HashMap<String, Object> contentValues = new HashMap<>();
