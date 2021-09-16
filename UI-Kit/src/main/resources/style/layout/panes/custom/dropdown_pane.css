@@ -1,0 +1,28 @@
+.header{
+    -fx-background-color: #23272B;
+    -fx-border-color: #7a7e83;
+    -fx-border-style:solid;
+    -fx-border-width:1px;
+    -fx-padding:5px;
+}
+
+.header .label{
+    -fx-alignment: center-left;
+    -fx-max-height:100px;
+    -fx-padding:0 0 0 10px;
+    -fx-text-alignment:left;
+    -fx-text-fill:white;
+}
+
+.header .button{
+    -fx-background-color:transparent;
+    -fx-background-insets:0;
+    -fx-border-color:transparent;
+}
+
+.content{
+    -fx-border-color: #7a7e83;
+    -fx-border-style:solid;
+    -fx-border-width:0 0 1px 0;
+    -fx-padding:10px;
+}

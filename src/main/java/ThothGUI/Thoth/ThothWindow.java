@@ -4,18 +4,27 @@ import Database.Table;
 import ThothCore.Thoth.Thoth;
 import ThothGUI.Thoth.Nodes.Auxiliary.ListCellTable;
 import ThothGUI.Thoth.Nodes.TableThothGUI;
+import controls.Label;
 import controls.MenuButton;
+import controls.Toggle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import layout.basepane.BorderPane;
+import layout.basepane.HBox;
 import layout.basepane.StackPane;
+import layout.basepane.VBox;
+import layout.custompane.DropdownPane;
 import layout.custompane.NavigationMenu;
 import window.PrimaryWindow;
 import window.Subwindow;
@@ -53,11 +62,13 @@ public class ThothWindow extends PrimaryWindow {
 
     private MenuButton getMenuButton(String mes, String url, EventHandler<ActionEvent> event){
         MenuButton menuButton = new MenuButton(mes);
-        menuButton.setGraphic(
-                new ImageView(
-                        new Image(getClass().getResource(url).toExternalForm(), 30, 30, true, true)
-                )
-        );
+        if(url != null) {
+            menuButton.setGraphic(
+                    new ImageView(
+                            new Image(getClass().getResource(url).toExternalForm(), 30, 30, true, true)
+                    )
+            );
+        }
         menuButton.setOnAction(event);
         return menuButton;
     }
@@ -66,6 +77,7 @@ public class ThothWindow extends PrimaryWindow {
         List<MenuButton> menuButtons = new LinkedList<>();
         menuButtons.add(getMenuButton("Анализатор", thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
         menuButtons.add(getMenuButton("Таблицы", thoth_styleconstants.Image.TABLE, this::openTables));
+        menuButtons.add(getMenuButton("Тест", null, this::openTest));
         menu = new NavigationMenu("", true, menuButtons);
         setLeft(menu);
     }
@@ -94,7 +106,6 @@ public class ThothWindow extends PrimaryWindow {
 
     private void openAnalyzator(ActionEvent event) {
         Subwindow subwindow = createSubwindow("Анализатор");
-
     }
 
     private void openTables(ActionEvent event) {
@@ -116,6 +127,25 @@ public class ThothWindow extends PrimaryWindow {
         type.setCellValueFactory(cellDataFeatures -> new SimpleStringProperty(cellDataFeatures.getValue().getType()));
 
         subwindow.setCenter(tableThothGUI);
+    }
+
+    private void openTest(ActionEvent event) {
+
+        Subwindow subwindow = createSubwindow("Тестовое окно");
+
+        Pane pane = new Pane(new DropdownPane("test", new BorderPane(new Toggle(true))));
+
+        BorderPane pane1 = new BorderPane(new DropdownPane("test", new BorderPane(new Label("hello"))));
+
+        BorderPane pane2 = new BorderPane(new DropdownPane("test", new BorderPane(new Label("hello"))));
+
+        VBox hBox = new VBox();
+        hBox.getChildren().addAll(pane, pane1, pane2);
+        hBox.setPadding(new Insets(5));
+        hBox.setSpacing(5);
+
+        subwindow.setCenter(hBox);
+
     }
 
     private void styleConfig(){

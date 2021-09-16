@@ -1,0 +1,22 @@
+.toggle{
+
+    -fx-padding:2px;
+    -fx-min-height:24px;
+    -fx-pref-height:24px;
+    -fx-max-height:24px;
+
+    -fx-min-width:50px;
+    -fx-pref-width:50px;
+    -fx-max-width:50px;
+}
+
+.point{
+    -fx-background-color:#6C757D;
+    -fx-min-height:20px;
+    -fx-pref-height:20px;
+    -fx-max-height:20px;
+
+    -fx-min-width:20px;
+    -fx-pref-width:20px;
+    -fx-max-width:20px;
+}
