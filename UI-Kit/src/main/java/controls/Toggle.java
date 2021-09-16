@@ -3,19 +3,13 @@ package controls;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.scene.control.CheckBox;
+import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
 
-public class Toggle extends FlowPane {
+public class Toggle extends StackPane {
 
     private final static String STYLE_SHEET = "/style/controls/toggle.css";
     private final static String STYLE_CLASS_TOGGLE = "toggle";
@@ -23,6 +17,9 @@ public class Toggle extends FlowPane {
 
     private Background toggleFalse;
     private Background toggleTrue;
+    private Background transparent;
+
+    private FlowPane back;
 
     private Pane point;
     private SimpleBooleanProperty isTrue;
@@ -30,14 +27,26 @@ public class Toggle extends FlowPane {
     public Toggle(boolean isTrue) {
         super();
 
+        back = new FlowPane();
         point = new Pane();
         toggleTrue = new Background(new BackgroundFill(Paint.valueOf("#28A745"), null, null));
         toggleFalse = new Background(new BackgroundFill(Paint.valueOf("#B00020"), null, null));
+        transparent = new Background(new BackgroundFill(Paint.valueOf("transparent"), null, null));
+
+        StackPane.setAlignment(point, Pos.CENTER_LEFT);
+
+        setBackground(toggleTrue);
+        back.setBackground(toggleFalse);
 
         setOnMouseClicked(this::changeState);
         this.isTrue = new SimpleBooleanProperty(!isTrue);
 
+//        back.getChildren().addAll(
+//                point
+//        );
+
         getChildren().addAll(
+                back,
                 point
         );
 
@@ -55,21 +64,27 @@ public class Toggle extends FlowPane {
             Timeline timeline = new Timeline();
             Duration duration = new Duration(250);
 
-            double newX = getWidth() - getPadding().getLeft() - getPadding().getRight() - point.getWidth();
+            double newX = getWidth() - point.getWidth() - 2;
 
             if (t1) {
                 timeline.getKeyFrames().addAll(
                         new KeyFrame(
-                                Duration.ZERO, new KeyValue(point.translateXProperty(), 0)
+                                Duration.ZERO, new KeyValue(point.translateXProperty(), 2)
                         )
                         , new KeyFrame(
                                 duration, new KeyValue(point.translateXProperty(), newX)
                         )
-                        , new KeyFrame(
-                                Duration.ZERO, new KeyValue(backgroundProperty(), toggleFalse, Interpolator.EASE_OUT)
+//                        , new KeyFrame(
+//                                Duration.ZERO, new KeyValue(backgroundProperty(), toggleFalse, Interpolator.LINEAR)
+//                        )
+//                        , new KeyFrame(
+//                                duration, new KeyValue(backgroundProperty(), toggleTrue, Interpolator.LINEAR)
+//                        )
+                        ,new KeyFrame(
+                                Duration.ZERO, new KeyValue(back.opacityProperty(), 1)
                         )
-                        , new KeyFrame(
-                                duration, new KeyValue(backgroundProperty(), toggleTrue, Interpolator.EASE_OUT)
+                        ,new KeyFrame(
+                                duration, new KeyValue(back.opacityProperty(), 0)
                         )
                 );
             } else {
@@ -78,13 +93,19 @@ public class Toggle extends FlowPane {
                                 Duration.ZERO, new KeyValue(point.translateXProperty(), newX)
                         )
                         , new KeyFrame(
-                                duration, new KeyValue(point.translateXProperty(), 0)
+                                duration, new KeyValue(point.translateXProperty(), 2)
                         )
-                        , new KeyFrame(
-                                Duration.ZERO, new KeyValue(backgroundProperty(), toggleTrue, Interpolator.EASE_OUT)
+//                        , new KeyFrame(
+//                                Duration.ZERO, new KeyValue(backgroundProperty(), toggleTrue, Interpolator.EASE_OUT)
+//                        )
+//                        , new KeyFrame(
+//                                duration, new KeyValue(backgroundProperty(), toggleFalse, Interpolator.EASE_OUT)
+//                        )
+                        ,new KeyFrame(
+                                Duration.ZERO, new KeyValue(back.opacityProperty(), 0)
                         )
-                        , new KeyFrame(
-                                duration, new KeyValue(backgroundProperty(), toggleFalse, Interpolator.EASE_OUT)
+                        ,new KeyFrame(
+                                duration, new KeyValue(back.opacityProperty(), 1)
                         )
                 );
             }
