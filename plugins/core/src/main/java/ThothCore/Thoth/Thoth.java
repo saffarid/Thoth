@@ -10,6 +10,7 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,7 +70,7 @@ public class Thoth {
      * Функция создает таблицу в пользовательской БД
      * */
     public void createTable(Table table) throws SQLException, ClassNotFoundException {
-        new CreatorTable(db, dbFile, table).createTable();
+        db.createTable(table);
     }
 
     /**
@@ -89,8 +90,18 @@ public class Thoth {
     /**
      * Функция добавляет запись в таблицу пользовательской БД
      * */
-    public void insertData(Table table, List<ContentValues> contentValues){
+    public void insertData(
+            Table table,
+            List<ContentValues> contentValues){
 
+        for(ContentValues values : contentValues){
+            try {
+                //Проверка адекватности данных
+                db.insertData(table, values);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
     }
 
     private String getLogMes(String mes){
@@ -139,7 +150,12 @@ public class Thoth {
     /**
      * Функция удаляет выбранную таблицу в пользовательской БД
      * */
-    public void removeTable(Table table){
+    public void removeTable(LinkedList<Table> tables) throws SQLException, ClassNotFoundException {
+
+        for(Table table : tables) {
+            //Проверка адекватности
+            db.removeTable(table);
+        }
 
     }
 }

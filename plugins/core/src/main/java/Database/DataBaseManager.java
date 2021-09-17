@@ -160,7 +160,9 @@ public class DataBaseManager {
     /**
      * Функция отвечает за удаление таблицы
      */
-    public void removeTables(ArrayList<String> tablesName) {
+    public void removeTables(Table table,
+                             File dbFile) throws SQLException, ClassNotFoundException {
+        DataBaseWrapper.dropTable(table, getConnection(dbFile));
     }
 
     /**
