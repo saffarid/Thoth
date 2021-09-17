@@ -108,8 +108,8 @@ public class ThothWindow extends PrimaryWindow {
 
         TableThothGUI tableThothGUI = new TableThothGUI();
         tableThothGUI.getItems().addAll(thoth.getTables());
-        TableColumn<Table, String> name = new TableColumn();
-        TableColumn<Table, String> type = new TableColumn();
+        TableColumn<Table, String> name = new TableColumn("name");
+        TableColumn<Table, String> type = new TableColumn("type");
 
         tableThothGUI.getColumns().addAll(name, type);
         name.setCellValueFactory(cellDataFeatures -> new SimpleStringProperty(cellDataFeatures.getValue().getName()));

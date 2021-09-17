@@ -162,12 +162,12 @@ public class DataBaseWrapper {
     /**
      * Функция удаляет таблицу из базы данных
      *
-     * @param tableName имя таблицы
-     * @param conn      Соединение с БД
+     * @param table Объект таблицы
+     * @param conn  Соединение с БД
      */
-    public static void dropTable(String tableName, Connection conn) throws SQLException {
+    public static void dropTable(Table table, Connection conn) throws SQLException {
         String comand = "drop table `%1s`";
-        execute(conn, String.format(comand, tableName));
+        execute(conn, String.format(comand, table.getName()));
     }
 
     /**

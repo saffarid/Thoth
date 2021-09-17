@@ -12,13 +12,16 @@ import java.util.stream.Collectors;
 
 public class DataBase extends DataBaseSQL {
 
+    private DataBaseManager dbManager;
+
     private File dbFile;
 
     public DataBase(EmptyDatabase template,
-                    File dbFile) {
+                    File dbFile) throws SQLException, ClassNotFoundException {
         super();
         this.dbFile = dbFile;
         copyTemplate(template);
+        dbManager = DataBaseManager.getDbManager();
     }
 
     /**
@@ -32,12 +35,78 @@ public class DataBase extends DataBaseSQL {
     }
 
     /**
+     * Функция отвечает за создание новой таблицы
+     * */
+    public void createTable(Table table) throws SQLException {
+        //Сменить способ закрепления транзакции
+        //Если на каком-то этапе произошла ошибка, вся транзакция должна отмениться
+        dbManager.createTable(table, dbFile);
+        insertIntoSysTable(table);
+        //Иначе закрепляем транзакцию и спокойно работаем дальше
+    }
+
+    public void insertData(Table table, ContentValues contentValues) throws SQLException {
+        dbManager.insert(
+                table, contentValues, dbFile
+        );
+    }
+
+    /**
+     * Функция формирует запросы на вставку информации в системные таблицы: Tables list, Table desc,
+     * */
+    private void insertIntoSysTable(Table table) throws SQLException {
+        insertIntoTablesList(table);
+        insertIntoTableDesc(table);
+    }
+
+    /**
+     * Функция формирцует запрос на вставку информации о таблицу в Table desc
+     * */
+    private void insertIntoTableDesc(Table table) throws SQLException {
+        Table tableDesc = getTable(EmptyDatabase.TableDesc.NAME);
+
+        /*
+         *  Проходим по всем колонкам таблицы, формируем объект contentValues
+         * */
+        for(TableColumn column : table.getColumns()) {
+            ContentValues contentValues = new ContentValues();
+
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.TABLE_ID),       column.getTableParent().getName());
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.COL_NAME),       column.getName());
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.TYPE_ID),        column.getType());
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.PK_CONSTR),     (column.isPrimaryKey()) ? (1) : (0));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.UNIQ_CONSTR),   (column.isUnique()) ? (1) : (0));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.NOTNULL_CONSTR),(column.isNotNull()) ? (1) : (0));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_TABLE_ID),     (column.getFKTableCol() != null)?(column.getFKTableCol().getTableParent().getName()):(null));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_COLUMN_ID),     (column.getFKTableCol() != null)?(column.getFKTableCol().getName()):(null));
+
+            dbManager.insert(tableDesc, contentValues, dbFile);
+        }
+    }
+
+    /**
+     * Функция формирует запрос на вставку информации о таблице в Tables list
+     * */
+    private void insertIntoTablesList(Table table) throws SQLException {
+        Table tablesList = getTable(EmptyDatabase.TablesList.NAME);
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(
+                tablesList.getTableCol(EmptyDatabase.TablesList.TABLE_NAME), table.getName()
+        );
+
+        contentValues.put(
+                tablesList.getTableCol(EmptyDatabase.TablesList.TABLE_TYPE_ID), table.getType()
+        );
+
+        dbManager.insert(tablesList, contentValues, dbFile);
+    }
+
+    /**
      * Функция последовательно проходит по всем записям в таблицах tables_list и table_desc
      * и собирает все созданные таблицы в единый набор
      */
     public void readStructure() throws SQLException, ClassNotFoundException {
-
-        DataBaseManager dbManager = DataBaseManager.getDbManager();
 
         //Считываем список таблиц в БД
         List<HashMap<String, Object>> tablesList = dbManager.getDataTable(
@@ -108,8 +177,6 @@ public class DataBase extends DataBaseSQL {
      * */
     public void readTableContent() throws SQLException, ClassNotFoundException {
 
-        DataBaseManager dbManager = DataBaseManager.getDbManager();
-
         List<Table> tablesCollect = tables.stream()
                 .filter(table -> !table.getType().equals(Table.SYSTEM_TABLE_NA))
                 .collect(Collectors.toList());
@@ -134,6 +201,13 @@ public class DataBase extends DataBaseSQL {
             }
         }
 
+    }
+
+    /**
+     * Функция удаляет таблицу из БД
+     * */
+    public void removeTable(Table table) throws SQLException, ClassNotFoundException {
+        dbManager.removeTables(table, dbFile);
     }
 
     public void addTable(Table table) {
