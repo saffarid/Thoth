@@ -26,7 +26,7 @@ public class DropdownPane extends BorderPane {
     private final static String STYLE_CLASS_HEADER = "header";
     private final static String STYLE_CLASS_CONTENT = "content";
 
-    private BorderPane header;
+    protected BorderPane header;
 
     private Pane content;
 

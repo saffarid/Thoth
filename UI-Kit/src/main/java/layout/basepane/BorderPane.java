@@ -1,6 +1,9 @@
 package layout.basepane;
 
 import javafx.scene.Node;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Paint;
 import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
@@ -29,6 +32,7 @@ public class BorderPane extends javafx.scene.layout.BorderPane {
                 getClass().getResource(Stylesheets.COLOR).toExternalForm(),
                 getClass().getResource(SSHEET_BPANE).toExternalForm()
         );
+//        setBackground(new Background(new BackgroundFill(Paint.valueOf("#343A40"), null, null)));
         getStyleClass().addAll(SCLASS_BPANE, Styleclasses.DARK);
     }
 }

@@ -3,6 +3,7 @@ package ThothGUI.Thoth;
 import Database.Table;
 import ThothCore.Thoth.Thoth;
 import ThothGUI.Thoth.Nodes.Auxiliary.ListCellTable;
+import ThothGUI.Thoth.Nodes.TableColumnPane;
 import ThothGUI.Thoth.Nodes.TableThothGUI;
 import controls.Label;
 import controls.MenuButton;
@@ -137,7 +138,7 @@ public class ThothWindow extends PrimaryWindow {
 
         BorderPane pane1 = new BorderPane(new DropdownPane("test", new BorderPane(new Label("hello"))));
 
-        BorderPane pane2 = new BorderPane(new DropdownPane("test", new BorderPane(new Label("hello"))));
+        BorderPane pane2 = new BorderPane(new DropdownPane("test", new Pane(new Label("hello"))));
 
         VBox hBox = new VBox();
         hBox.getChildren().addAll(pane, pane1, pane2);
