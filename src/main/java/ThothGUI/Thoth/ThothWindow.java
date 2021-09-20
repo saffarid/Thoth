@@ -1,20 +1,13 @@
 package ThothGUI.Thoth;
 
-import Database.Table;
 import ThothCore.Thoth.Thoth;
-import ThothGUI.Thoth.Nodes.Auxiliary.ListCellTable;
-import ThothGUI.Thoth.Nodes.TableColumnPane;
-import ThothGUI.Thoth.Nodes.TableThothGUI;
+import ThothGUI.Thoth.Nodes.Subwindows.TablesList;
 import controls.Label;
 import controls.MenuButton;
 import controls.Toggle;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -22,7 +15,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import layout.basepane.BorderPane;
-import layout.basepane.HBox;
 import layout.basepane.StackPane;
 import layout.basepane.VBox;
 import layout.custompane.DropdownPane;
@@ -35,7 +27,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ThothWindow extends PrimaryWindow {
+public class ThothWindow
+        extends PrimaryWindow
+        implements
+        OpenSubwindow
+        , CloseSubwindow
+{
 
     private Stage mainStage;
 
@@ -88,19 +85,8 @@ public class ThothWindow extends PrimaryWindow {
         subwindow.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) subwindow.toFront();
         });
-        if (!workspace.getChildren().contains(subwindow)){
-            workspace.getChildren().add(subwindow);
-        }else{
-            subwindow.toFront();
-        }
-        subwindow.setCloseEvent(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent click) {
-                if (workspace.getChildren().contains(subwindow)) {
-                    workspace.getChildren().remove(subwindow);
-                }
-            }
-        });
+        openSubwindow(subwindow);
+        subwindow.setCloseEvent(click -> closeSubwindow(subwindow));
         new SubwindowResizer(subwindow);
         return subwindow;
     }
@@ -110,24 +96,14 @@ public class ThothWindow extends PrimaryWindow {
     }
 
     private void openTables(ActionEvent event) {
-        Subwindow subwindow = createSubwindow("Список таблиц");
-        ListView<Table> listView = new ListView();
-        listView.getItems().addAll(thoth.getTables());
 
-        listView.setCellFactory(tableListView -> new ListCellTable());
+        openSubwindow( new TablesList(
+                "Список таблиц"
+                     , subwindow -> openSubwindow(subwindow)
+                     , subwindow -> closeSubwindow(subwindow)
+                )
+        );
 
-//        subwindow.setCenter(listView);
-
-        TableThothGUI tableThothGUI = new TableThothGUI();
-        tableThothGUI.getItems().addAll(thoth.getTables());
-        TableColumn<Table, String> name = new TableColumn("name");
-        TableColumn<Table, String> type = new TableColumn("type");
-
-        tableThothGUI.getColumns().addAll(name, type);
-        name.setCellValueFactory(cellDataFeatures -> new SimpleStringProperty(cellDataFeatures.getValue().getName()));
-        type.setCellValueFactory(cellDataFeatures -> new SimpleStringProperty(cellDataFeatures.getValue().getType()));
-
-        subwindow.setCenter(tableThothGUI);
     }
 
     private void openTest(ActionEvent event) {
@@ -160,4 +136,21 @@ public class ThothWindow extends PrimaryWindow {
         setCenter(workspace);
     }
 
+    @Override
+    public void openSubwindow(Subwindow subwindow) {
+        //Реализовать более адекватнуб проверку на открытие окна.
+        //Возможно воспользоваться мапой.
+        if (!workspace.getChildren().contains(subwindow)){
+            workspace.getChildren().add(subwindow);
+        }else{
+            subwindow.toFront();
+        }
+    }
+
+    @Override
+    public void closeSubwindow(Subwindow subwindow) {
+        if (workspace.getChildren().contains(subwindow)) {
+            workspace.getChildren().remove(subwindow);
+        }
+    }
 }
