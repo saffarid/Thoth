@@ -1,5 +1,6 @@
-package ThothGUI.Thoth.Nodes.Subwindows;
+package ThothGUI.Thoth.Nodes.Subwindows.CreateTable;
 
+import Database.TableColumn;
 import ThothGUI.Thoth.CloseSubwindow;
 import controls.Button;
 import controls.Label;
@@ -29,7 +30,7 @@ public class CreateTable extends Subwindow {
     ) {
         super("Создать таблицу");
 
-        setCloseEvent(actionEvent -> close.closeSubwindow(this));
+        setCloseEvent(event -> close.closeSubwindow(this));
 
         setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) toFront();
@@ -47,10 +48,13 @@ public class CreateTable extends Subwindow {
     }
 
     private void createTableColumn(){
+        TableColumnPane columnDesc = new TableColumnPane(new TableColumn());
+        DropdownPane column = new DropdownPane(
+                "Column 1", columnDesc
+        );
+        column.bindHeader(columnDesc.getColumnName());
         columns.getChildren().add(
-                new DropdownPane(
-                        "Column 1", new Toggle(false)
-                )
+                column
         );
     }
 
@@ -110,7 +114,4 @@ public class CreateTable extends Subwindow {
         return button;
     }
 
-    private class TableColumnGUI extends VBox{
-
-    }
 }

@@ -2,16 +2,14 @@ package ThothGUI.Thoth.Nodes.Subwindows;
 
 import Database.Table;
 import ThothGUI.Thoth.CloseSubwindow;
+import ThothGUI.Thoth.Nodes.Subwindows.CreateTable.CreateTable;
 import ThothGUI.Thoth.OpenSubwindow;
 import controls.Button;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Pane;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import window.Subwindow;

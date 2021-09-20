@@ -5,6 +5,8 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.scene.Node;
@@ -43,6 +45,10 @@ public class DropdownPane extends BorderPane {
         getStylesheets().addAll(
                 getClass().getResource(STYLE_SHEET).toExternalForm()
         );
+    }
+
+    public void bindHeader(StringProperty text){
+        ((Label)this.header.getLeft()).textProperty().bind(text);
     }
 
     private void createHeader(String header) {
