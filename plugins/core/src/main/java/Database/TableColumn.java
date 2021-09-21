@@ -40,7 +40,11 @@ public class TableColumn {
      * */
     private Table tableParent;
 
-    public TableColumn(String name, String type, boolean isPrimaryKey) {
+    public TableColumn(
+            String name
+            , String type
+            , boolean isPrimaryKey
+    ) {
         this.name = name;
         this.type = type;
         this.isUnique = false;
@@ -48,20 +52,31 @@ public class TableColumn {
         this.isNotNull = false;
     }
 
-    public TableColumn(String name, String type, boolean isUnique, boolean isPrimaryKey, boolean isNotNull, TableColumn table) {
+    public TableColumn(
+            String name
+            , String type
+            , boolean isUnique
+            , boolean isNotNull
+            , TableColumn table
+    ) {
         this.name = name;
         this.type = type;
         this.isUnique = isUnique;
-        this.isPrimaryKey = isPrimaryKey;
+        this.isPrimaryKey = false;
         this.isNotNull = isNotNull;
         this.FKTableCol = table;
     }
 
-    public TableColumn(String name, String type, boolean isUnique, boolean isPrimaryKey, boolean isNotNull) {
+    public TableColumn(
+            String name
+            , String type
+            , boolean isUnique
+            , boolean isNotNull
+    ) {
         this.name = name;
         this.type = type;
         this.isUnique = isUnique;
-        this.isPrimaryKey = isPrimaryKey;
+        this.isPrimaryKey = false;
         this.isNotNull = isNotNull;
         this.FKTableCol = null;
     }

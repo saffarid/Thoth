@@ -1,18 +1,17 @@
 package ThothGUI.Thoth.Nodes.Subwindows.CreateTable;
 
-import Database.TableColumn;
 import ThothGUI.Thoth.CloseSubwindow;
 import controls.Button;
 import controls.Label;
 import controls.TextField;
-import controls.Toggle;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.geometry.Insets;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import layout.basepane.*;
 import layout.custompane.DropdownPane;
 import window.Subwindow;
@@ -37,10 +36,17 @@ public class CreateTable extends Subwindow {
         });
 
         content = new BorderPane();
+
         setCenter(content);
 
         configHeader();
         configContent();
+
+        columns.setBackground(
+                new Background(
+                        new BackgroundFill(Paint.valueOf("green"), null, null)
+                )
+        );
     }
 
     private void addRow(ActionEvent actionEvent) {
@@ -48,13 +54,15 @@ public class CreateTable extends Subwindow {
     }
 
     private void createTableColumn(){
-        TableColumnPane columnDesc = new TableColumnPane(new TableColumn());
+        TableColumnPane columnDesc = new TableColumnPane();
+
         DropdownPane column = new DropdownPane(
                 "Column 1", columnDesc
         );
+
         column.bindHeader(columnDesc.getColumnName());
         columns.getChildren().add(
-                column
+                new BorderPane(column)
         );
     }
 
@@ -87,7 +95,13 @@ public class CreateTable extends Subwindow {
     private void configContent(){
 
         ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+
         columns = new VBox();
+
+        columns.setPadding(new Insets(5));
+        columns.setSpacing(5);
+        columns.setFillWidth(true);
 
         scrollPane.setContent(columns);
         createTableColumn();

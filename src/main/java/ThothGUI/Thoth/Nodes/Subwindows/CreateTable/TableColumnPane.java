@@ -5,36 +5,56 @@ import controls.Label;
 import controls.TextField;
 import controls.Toggle;
 import controls.Twin;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
-import layout.custompane.DropdownPane;
 
 
 public class TableColumnPane extends VBox {
 
+    private VBox columns;
+
     private TableColumn tableColumn;
 
     private TextField name;
-    private Toggle isPK;
+    private ComboBox type;
     private Toggle isUniq;
     private Toggle isNotNull;
 
     public TableColumnPane(
             TableColumn tableColumn) {
         super();
+        init(tableColumn);
+    }
 
+    public TableColumnPane() {
+        super();
+        init(null);
+    }
+
+    private void init(TableColumn tableColumn) {
+
+//        columns = new VBox();
+//        columns.setSpacing(10);
+//        columns.setPadding(new Insets(0));
         setSpacing(10);
 
+        if (tableColumn == null) {
+            tableColumn = new TableColumn(
+                    null
+                    , "Текстовый"
+                    , false
+                    , false
+            );
+        }
         this.tableColumn = tableColumn;
 
-        name = new TextField(tableColumn.getName());
-        isPK = new Toggle(tableColumn.isPrimaryKey());
-        isUniq = new Toggle(tableColumn.isUnique());
-        isNotNull = new Toggle(tableColumn.isNotNull());
+        name = new TextField(this.tableColumn.getName());
+        type = new ComboBox();
+        isUniq = new Toggle(this.tableColumn.isUnique());
+        isNotNull = new Toggle(this.tableColumn.isNotNull());
+
+        type.setValue(this.tableColumn.getType());
 
         Label checkLabel = new Label();
         checkLabel.textProperty().bind(
@@ -47,17 +67,16 @@ public class TableColumnPane extends VBox {
         );
 
         Label tableCol = new Label();
-        checkLabel.textProperty().addListener((observableValue, s, t1) -> {
-//            System.out.println("change all");
-//            tableCol.setText(this.tableColumn.getName() + "; " + this.tableColumn.isUnique() + "; " + this.tableColumn.isNotNull());
-        });
-
 
         name.textProperty().addListener((observableValue, s, t1) -> {
             if (t1 != null) {
-                System.out.println("change name");
                 this.tableColumn.setName(t1);
-                tableCol.setText(this.tableColumn.getName() + "; " + this.tableColumn.isUnique() + "; " + this.tableColumn.isNotNull());
+                tableCol.setText(
+                        this.tableColumn.getName() + "; " +
+                                this.tableColumn.getType() + "; " +
+                                this.tableColumn.isUnique() + "; " +
+                                this.tableColumn.isNotNull()
+                );
             }
         });
         isUniq.isTrueProperty().addListener((observableValue, aBoolean, t1) -> {
@@ -73,20 +92,23 @@ public class TableColumnPane extends VBox {
             }
         });
 
-
         getChildren().addAll(
                 new Twin(new Label("Наименование"), name),
-                new Twin(new Label("Тип данных"), new ComboBox<>()),
-                new Twin(new Label("Ключ"), isPK),
+                new Twin(new Label("Тип данных"), type),
                 new Twin(new Label("Уникальность"), isUniq),
                 new Twin(new Label("Отсутсвие записей"), isNotNull),
                 checkLabel,
                 tableCol
         );
 
+//        setCenter(columns);
     }
 
-    public StringProperty getColumnName(){
+    public TableColumn getTableColumn(){
+        return tableColumn;
+    }
+
+    public StringProperty getColumnName() {
         return name.textProperty();
     }
 

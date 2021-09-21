@@ -32,9 +32,9 @@ public class DataBaseInfo {
             constrUColumns = new LinkedList<>();
             constrFK = new HashMap<>();
             name = "DatabasePath";
-            addColumn(new TableColumn(COL_ID, "integer", false, true, false));
-            addColumn(new TableColumn(COL_NAME, TEXT, false, false, true));
-            addColumn(new TableColumn(COL_PATH, TEXT, false, false, true));
+            addColumn(new TableColumn(COL_ID, "integer", true, false));
+            addColumn(new TableColumn(COL_NAME, TEXT, false, true));
+            addColumn(new TableColumn(COL_PATH, TEXT, false, true));
         }
     }
 

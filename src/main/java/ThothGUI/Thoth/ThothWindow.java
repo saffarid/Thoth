@@ -8,10 +8,15 @@ import controls.Toggle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import layout.basepane.BorderPane;
@@ -111,12 +116,14 @@ public class ThothWindow
         Subwindow subwindow = createSubwindow("Тестовое окно");
 
         Pane pane = new Pane(new DropdownPane("test", new BorderPane(new Toggle(true))));
+        pane.setBackground(new Background(new BackgroundFill(Paint.valueOf(String.valueOf(Color.AQUAMARINE)), null, null)));
 
         BorderPane pane1 = new BorderPane(new DropdownPane("test", new BorderPane(new Label("hello"))));
 
         BorderPane pane2 = new BorderPane(new DropdownPane("test", new Pane(new Label("hello"))));
 
         VBox hBox = new VBox();
+        hBox.setFillWidth(true);
         hBox.getChildren().addAll(pane, pane1, pane2);
         hBox.setPadding(new Insets(5));
         hBox.setSpacing(5);

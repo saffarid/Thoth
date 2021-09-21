@@ -54,7 +54,7 @@ public class EmptyDatabase {
             name = NAME;
             type = Table.SYSTEM_TABLE_NA;
 
-            addColumn(new TableColumn(TABLE_TYPE, EmptyDatabase.TEXT, true, false, true));
+            addColumn(new TableColumn(TABLE_TYPE, EmptyDatabase.TEXT, false, true));
 
             contentValues.add(getValues(Table.TABLE));
             contentValues.add(getValues(Table.SYSTEM_TABLE_RO));
@@ -84,12 +84,12 @@ public class EmptyDatabase {
             type = Table.SYSTEM_TABLE_NA;
 
             addColumn(
-                    new TableColumn(TABLE_NAME, EmptyDatabase.TEXT, false, false, true)
+                    new TableColumn(TABLE_NAME, EmptyDatabase.TEXT, false, true)
             );
             Table tableTypes = getTable(TableTypes.NAME);
             addColumn(
                     new TableColumn(
-                            TABLE_TYPE_ID, EmptyDatabase.ID, false, false, true, tableTypes.getTableCol(tableTypes, TableTypes.TABLE_TYPE)
+                            TABLE_TYPE_ID, EmptyDatabase.ID, false, true, tableTypes.getTableCol(tableTypes, TableTypes.TABLE_TYPE)
                     )
             );
 
@@ -136,21 +136,21 @@ public class EmptyDatabase {
             name = NAME;
             type = Table.SYSTEM_TABLE_NA;
             addColumn(
-                    new TableColumn(TABLE_ID, EmptyDatabase.ID, false, false, true, getTableCol(getTable(TablesList.NAME), TablesList.TABLE_NAME))
+                    new TableColumn(TABLE_ID, EmptyDatabase.ID, false, true, getTableCol(getTable(TablesList.NAME), TablesList.TABLE_NAME))
             );
-            addColumn(new TableColumn(COL_NAME, EmptyDatabase.TEXT, false, false, true));
+            addColumn(new TableColumn(COL_NAME, EmptyDatabase.TEXT, false, true));
             Table dataTypes = getTable(DataTypes.NAME);
             addColumn(
                     new TableColumn(
-                            TYPE_ID, EmptyDatabase.ID, false, false, true, dataTypes.getTableCol(dataTypes, Table.ID)
+                            TYPE_ID, EmptyDatabase.ID, false, true, dataTypes.getTableCol(dataTypes, Table.ID)
                     )
             );
-            addColumn(new TableColumn(PK_CONSTR, EmptyDatabase.BOOL, false, false, true));
-            addColumn(new TableColumn(UNIQ_CONSTR, EmptyDatabase.BOOL, false, false, true));
-            addColumn(new TableColumn(NOTNULL_CONSTR, EmptyDatabase.BOOL, false, false, true));
+            addColumn(new TableColumn(PK_CONSTR, EmptyDatabase.BOOL, false, true));
+            addColumn(new TableColumn(UNIQ_CONSTR, EmptyDatabase.BOOL, false, true));
+            addColumn(new TableColumn(NOTNULL_CONSTR, EmptyDatabase.BOOL, false, true));
 //            addColumn(new TableColumn(FK_CONSTR, EmptyDatabase.BOOL, false, false, true));
-            addColumn(new TableColumn(FK_TABLE_ID, EmptyDatabase.ID, false, false, false, getTableCol(getTable(TablesList.NAME), TablesList.TABLE_NAME)));
-            addColumn(new TableColumn(FK_COLUMN_ID, EmptyDatabase.ID, false, false, false, getTableCol(COL_NAME)));
+            addColumn(new TableColumn(FK_TABLE_ID, EmptyDatabase.ID, false, false, getTableCol(getTable(TablesList.NAME), TablesList.TABLE_NAME)));
+            addColumn(new TableColumn(FK_COLUMN_ID, EmptyDatabase.ID, false, false, getTableCol(COL_NAME)));
 
             for (TableColumn column : getTable(DataTypes.NAME).getColumns()) {
                 contentValues.add(getValues(column));
@@ -197,9 +197,9 @@ public class EmptyDatabase {
             name = NAME;
             type = Table.SYSTEM_TABLE_RW;
 
-            addColumn(new TableColumn(USER_TYPE, EmptyDatabase.TEXT, true, false, true));
-            addColumn(new TableColumn(JAVA_TYPE, EmptyDatabase.TEXT, false, false, true));
-            addColumn(new TableColumn(SQL_TYPE, EmptyDatabase.TEXT, false, false, true));
+            addColumn(new TableColumn(USER_TYPE, EmptyDatabase.TEXT, false, true));
+            addColumn(new TableColumn(JAVA_TYPE, EmptyDatabase.TEXT, false, true));
+            addColumn(new TableColumn(SQL_TYPE, EmptyDatabase.TEXT, false, true));
 
             contentValues.add(getValues("Текстовый", "String", "varchar(255)"));
             contentValues.add(getValues("Числовой", "Double", "double(10,5)"));
@@ -230,8 +230,8 @@ public class EmptyDatabase {
             name = NAME;
             type = Table.SYSTEM_TABLE_RW;
 
-            addColumn(new TableColumn(GROUP, EmptyDatabase.TEXT, true, false, true));
-            addColumn(new TableColumn(CATEGORY, EmptyDatabase.TEXT, true, false, true));
+            addColumn(new TableColumn(GROUP, EmptyDatabase.TEXT, false, true));
+            addColumn(new TableColumn(CATEGORY, EmptyDatabase.TEXT, false, true));
         }
     }
 
@@ -247,8 +247,8 @@ public class EmptyDatabase {
             name = NAME;
             type = Table.SYSTEM_TABLE_RW;
 
-            addColumn(new TableColumn(CURRENCY, EmptyDatabase.TEXT, true, false, true));
-            addColumn(new TableColumn(COURSE, EmptyDatabase.NUMBER, false, false, true));
+            addColumn(new TableColumn(CURRENCY, EmptyDatabase.TEXT, false, true));
+            addColumn(new TableColumn(COURSE, EmptyDatabase.NUMBER, false, true));
         }
     }
 
@@ -263,7 +263,7 @@ public class EmptyDatabase {
             name = NAME;
             type = Table.SYSTEM_TABLE_RW;
 
-            addColumn(new TableColumn(UNIT_MEAS, EmptyDatabase.TEXT, true, false, true));
+            addColumn(new TableColumn(UNIT_MEAS, EmptyDatabase.TEXT, false, true));
 
             contentValues.add(getValues("м."));
             contentValues.add(getValues("мм."));
@@ -297,9 +297,9 @@ public class EmptyDatabase {
             type = Table.TABLE;
 
             forTableDesc = new LinkedList<>();
-            addColumn(new TableColumn(COL1, EmptyDatabase.TEXT, false, false, false, getTableCol(getTable(UnitMeas.NAME), UnitMeas.UNIT_MEAS)));
-            addColumn(new TableColumn(COL2, EmptyDatabase.NUMBER, false, false, false));
-            addColumn(new TableColumn(COL3, EmptyDatabase.NUMBER, false, false, false));
+            addColumn(new TableColumn(COL1, EmptyDatabase.TEXT, false, false, getTableCol(getTable(UnitMeas.NAME), UnitMeas.UNIT_MEAS)));
+            addColumn(new TableColumn(COL2, EmptyDatabase.NUMBER, false, false));
+            addColumn(new TableColumn(COL3, EmptyDatabase.NUMBER, false, false));
 
             contentValues.add(getValues("м.", 666d, 333d));
             contentValues.add(getValues("мм.", 432186d, 8d));

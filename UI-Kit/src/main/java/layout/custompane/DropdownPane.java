@@ -5,18 +5,13 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import layout.basepane.BorderPane;
@@ -34,12 +29,14 @@ public class DropdownPane extends BorderPane {
 
     private boolean contentIsHide = true;
 
+    private boolean heightIsSet = false;
+
+
     public DropdownPane(String header,
                         Pane node) {
         super();
 
         contentConfig(node);
-
         createHeader(header);
 
         getStylesheets().addAll(
@@ -48,7 +45,7 @@ public class DropdownPane extends BorderPane {
     }
 
     public void bindHeader(StringProperty text){
-        ((Label)this.header.getLeft()).textProperty().bind(text);
+        ((Label)this.header.getLeft()).textProperty().bindBidirectional(text);
     }
 
     private void createHeader(String header) {
@@ -89,14 +86,23 @@ public class DropdownPane extends BorderPane {
         setContent(node);
 
         setCenter(content);
-        content.setPrefHeight(350);
-        if(contentIsHide) {
-            content.setPrefHeight(0);
-            content.setVisible(false);
-        }
 
-        content.setMinHeight(0);
-        content.setMaxHeight(350);
+        content.heightProperty().addListener((observableValue, number, t1) -> {
+            if(!heightIsSet){
+
+                if(contentIsHide) {
+                    content.setPrefHeight(0);
+                    content.setVisible(false);
+                }else{
+                    content.setPrefHeight(content.getHeight());
+                }
+
+                content.setMinHeight(0);
+                content.setMaxHeight(content.getHeight());
+
+                heightIsSet = true;
+            }
+        });
 
         content.getStyleClass().addAll(
                 STYLE_CLASS_CONTENT
@@ -111,6 +117,7 @@ public class DropdownPane extends BorderPane {
         Timeline timeline = new Timeline();
 
         Duration durationEnd = new Duration(250);
+
         if(contentIsHide){
 
             timeline.getKeyFrames().addAll(
@@ -126,7 +133,7 @@ public class DropdownPane extends BorderPane {
                             Duration.ZERO, new KeyValue(content.prefHeightProperty(), 0, Interpolator.EASE_BOTH)
                     )
                     ,new KeyFrame(
-                            durationEnd, new KeyValue(content.prefHeightProperty(), 350, Interpolator.EASE_BOTH)
+                            durationEnd, new KeyValue(content.prefHeightProperty(), content.getMaxHeight(), Interpolator.EASE_BOTH)
                     )
 
                     ,new KeyFrame(
@@ -150,7 +157,7 @@ public class DropdownPane extends BorderPane {
                     )
 
                     ,new KeyFrame(
-                            Duration.ZERO, new KeyValue(content.prefHeightProperty(), 350, Interpolator.EASE_BOTH)
+                            Duration.ZERO, new KeyValue(content.prefHeightProperty(), content.getMaxHeight(), Interpolator.EASE_BOTH)
                     )
                     ,new KeyFrame(
                             durationEnd, new KeyValue(content.prefHeightProperty(), 0, Interpolator.EASE_BOTH)
