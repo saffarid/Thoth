@@ -37,16 +37,8 @@ public class TableColumnPane extends VBox {
 //        columns = new VBox();
 //        columns.setSpacing(10);
 //        columns.setPadding(new Insets(0));
-        setSpacing(10);
+        setSpacing(5);
 
-        if (tableColumn == null) {
-            tableColumn = new TableColumn(
-                    null
-                    , "Текстовый"
-                    , false
-                    , false
-            );
-        }
         this.tableColumn = tableColumn;
 
         name = new TextField(this.tableColumn.getName());

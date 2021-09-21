@@ -1,20 +1,21 @@
 package ThothGUI.Thoth.Nodes.Subwindows.CreateTable;
 
+import Database.Table;
+import Database.TableColumn;
 import ThothGUI.Thoth.CloseSubwindow;
-import controls.Button;
-import controls.Label;
-import controls.TextField;
+import controls.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import layout.basepane.*;
 import layout.custompane.DropdownPane;
 import window.Subwindow;
+
+import java.util.List;
 
 public class CreateTable extends Subwindow {
 
@@ -22,12 +23,16 @@ public class CreateTable extends Subwindow {
 
     private BorderPane content;
 
+    private Table createdTable;
+    private TextField tableName;
     private VBox columns;
 
     public CreateTable(
-        CloseSubwindow close
+            CloseSubwindow close
     ) {
         super("Создать таблицу");
+
+        createdTable = new Table();
 
         setCloseEvent(event -> close.closeSubwindow(this));
 
@@ -36,11 +41,19 @@ public class CreateTable extends Subwindow {
         });
 
         content = new BorderPane();
-
+        content.setPadding(new Insets(5));
         setCenter(content);
 
-        configHeader();
-        configContent();
+        configNameTypePane();
+        configColumnsPane();
+        content.setBottom(
+                new DialogButtonBar(
+                        "APPLY"
+                        , "CANCEL"
+                        , this::apply
+                        , this::cancel
+                )
+        );
 
         columns.setBackground(
                 new Background(
@@ -49,34 +62,53 @@ public class CreateTable extends Subwindow {
         );
     }
 
+    private void apply(ActionEvent event){
+
+    }
+
     private void addRow(ActionEvent actionEvent) {
         createTableColumn();
     }
 
-    private void createTableColumn(){
-        TableColumnPane columnDesc = new TableColumnPane();
+    private void cancel(ActionEvent event){
+
+    }
+
+    private void createTableColumn() {
+
+        List<TableColumn> columns = createdTable.getColumns();
+        TableColumn tableColumn = new TableColumn(
+                "Column ".concat(" ").concat(String.valueOf(columns.size()))
+                , "Текстовый"
+                , false
+                , false
+        );
+
+        columns.add(tableColumn);
+        TableColumnPane columnDesc = new TableColumnPane(tableColumn);
 
         DropdownPane column = new DropdownPane(
-                "Column 1", columnDesc
+                "Column name", columnDesc
         );
 
         column.bindHeader(columnDesc.getColumnName());
-        columns.getChildren().add(
+        this.columns.getChildren().add(
                 new BorderPane(column)
         );
     }
 
-    private void configHeader() {
+
+    private void configNameTypePane() {
 
         VBox header = new VBox();
         header.setSpacing(5);
 
-        HBox hBox = new HBox();
-        hBox.setSpacing(10);
-        hBox.getChildren().addAll(
-            new Label("Table name"),
-            new TextField()
-        );
+        tableName = new TextField();
+        tableName.textProperty().addListener((observableValue, s, t1) -> {
+            if (t1 != null) {
+                createdTable.setName(tableName.getText());
+            }
+        });
 
         HBox palette = new HBox();
         palette.setSpacing(10);
@@ -85,26 +117,34 @@ public class CreateTable extends Subwindow {
         );
 
         header.getChildren().addAll(
-                hBox
-                ,palette
+                new Twin(
+                        new Label("Table name"),
+                        tableName
+                )
+                , palette
         );
 
         content.setTop(header);
     }
 
-    private void configContent(){
+    private void configColumnsPane() {
+
+        BorderPane columns = new BorderPane();
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
 
-        columns = new VBox();
+        this.columns = new VBox();
 
-        columns.setPadding(new Insets(5));
-        columns.setSpacing(5);
-        columns.setFillWidth(true);
+//        columns.setPadding(new Insets(5));
+        this.columns.setSpacing(5);
+        this.columns.setFillWidth(true);
 
-        scrollPane.setContent(columns);
+        scrollPane.setContent(this.columns);
         createTableColumn();
+
+        columns.setTop();
+        columns.setCenter(this.columns);
 
         content.setCenter(scrollPane);
     }
@@ -112,7 +152,7 @@ public class CreateTable extends Subwindow {
     private Button getButton(
             String url
             , EventHandler<ActionEvent> event
-    ){
+    ) {
 //        Button button = new Button(
 //          new ImageView(
 //                  new Image(
