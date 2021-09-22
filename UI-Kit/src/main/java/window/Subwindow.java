@@ -21,7 +21,6 @@ public class Subwindow extends Window{
     private void drag(MouseEvent mouseEvent) {
         switch (mouseEvent.getButton()) {
             case PRIMARY: {
-                System.out.println("help no");
                 setTranslateX(mouseEvent.getSceneX() - title.getSwitchSceneX());
                 setTranslateY(mouseEvent.getSceneY() - title.getSwitchSceneY());
             }
@@ -31,12 +30,16 @@ public class Subwindow extends Window{
     private void press(MouseEvent mouseEvent) {
         switch (mouseEvent.getButton()) {
             case PRIMARY: {
-                System.out.println("help");
                 title.setSwitchSceneX(mouseEvent.getSceneX() - getTranslateX());
                 title.setSwitchSceneY(mouseEvent.getSceneY() - getTranslateY());
                 break;
             }
         }
+    }
+
+    @Override
+    public void toFront() {
+        super.toFront();
     }
 
     public void setCloseEvent(EventHandler<ActionEvent> event){

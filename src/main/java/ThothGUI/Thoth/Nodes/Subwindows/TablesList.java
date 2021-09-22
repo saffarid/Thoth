@@ -5,6 +5,7 @@ import ThothCore.Thoth.Thoth;
 import ThothGUI.Thoth.CloseSubwindow;
 import ThothGUI.Thoth.Nodes.Subwindows.CreateTable.CreateTable;
 import ThothGUI.Thoth.OpenSubwindow;
+import ThothGUI.Thoth.RefreshSystem;
 import controls.Button;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -24,7 +25,9 @@ import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import window.Subwindow;
 
-public class TablesList extends Subwindow {
+public class TablesList extends Subwindow implements RefreshSystem {
+
+    private final static String ID_TABLE_LIST_SUBWIND = "table_list";
 
     private BorderPane content;
 
@@ -44,10 +47,15 @@ public class TablesList extends Subwindow {
         this.thoth = thoth;
         this.open = open;
         this.close = close;
+
+        setId(ID_TABLE_LIST_SUBWIND);
+
         setCloseEvent(actionEvent -> this.close.closeSubwindow(this));
+
         setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) toFront();
         });
+
 
         configContent();
         setCenter(content);
@@ -76,6 +84,8 @@ public class TablesList extends Subwindow {
     private TableView<Table> configTableList() {
         tablesList = new TableView<>();
 
+        tablesList.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         tablesList.setItems(FXCollections.observableArrayList(thoth.getTables()));
 
         TableColumn<Table, String> name = new TableColumn<>("Name");
@@ -93,7 +103,10 @@ public class TablesList extends Subwindow {
     }
 
     private void createTable(ActionEvent actionEvent) {
-        open.openSubwindow(new CreateTable(this.close, thoth));
+
+        open.openSubwindow(
+                new CreateTable(this.close, thoth, this::refresh)
+        );
     }
 
     private void editTable(ActionEvent event) {
@@ -104,11 +117,17 @@ public class TablesList extends Subwindow {
             , EventHandler<ActionEvent> event) {
         Button btn = new Button(
                 new ImageView(
-                        new Image(getClass().getResourceAsStream(url), 20, 20, true, true)
+                        new Image(getClass().getResource(url).toExternalForm(), 20, 20, true, true)
                 )
         );
         btn.setOnAction(event);
         return btn;
+    }
+
+    @Override
+    public void refresh() {
+        tablesList.getItems().clear();
+        tablesList.setItems(FXCollections.observableArrayList(thoth.getTables()));
     }
 
     private void removeTable(ActionEvent event) {

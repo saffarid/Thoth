@@ -3,6 +3,7 @@ package ThothCore.Thoth;
 import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
+import Database.TableColumn;
 import ThothCore.EmptyDatabase.EmptyDatabase;
 
 import java.io.File;
@@ -21,22 +22,22 @@ public class Thoth {
 
     /**
      * Локальная копия БД
-     * */
+     */
     private DataBase db;
 
     /**
      * Менеджер работы с БД
-     * */
+     */
     private DataBaseManager dbManager;
 
     /**
      * Файл базы данных
-     * */
+     */
     protected File dbFile;
 
     /**
      * Функциональная возможность
-     * */
+     */
     private String funcAvaliable;
 
     static {
@@ -65,30 +66,49 @@ public class Thoth {
 
     /**
      * Функция создает таблицу в пользовательской БД
-     * */
+     */
     public void createTable(Table table) throws SQLException, ClassNotFoundException {
         db.createTable(table);
+        readDataBase();
     }
 
     /**
      * Функция создает триггер в пользовательской БД
-     * */
-    public void createTrigger(Table table){
+     */
+    public void createTrigger(Table table) {
 
     }
 
     /**
      * Функция редактирует таблицу в пользовательской БД
-     * */
-    public void editTable(Table table){
+     */
+    public void editTable(Table table) {
 
     }
 
-    public List<ContentValues> getDataTypes(){
-        return db.getTable(EmptyDatabase.DataTypes.NAME).getContentValues();
+    public List<DataTypes> getDataTypes() {
+
+        List<DataTypes> res = new LinkedList<>();
+
+        Table dataTypesTable = db.getTable(EmptyDatabase.DataTypes.NAME);
+
+        TableColumn userType = dataTypesTable.getTableCol(EmptyDatabase.DataTypes.USER_TYPE);
+        TableColumn javaType = dataTypesTable.getTableCol(EmptyDatabase.DataTypes.JAVA_TYPE);
+        TableColumn sqlType = dataTypesTable.getTableCol(EmptyDatabase.DataTypes.SQL_TYPE);
+
+        for (ContentValues contentValues : dataTypesTable.getContentValues()) {
+            res.add(
+                    new DataTypes(
+                            contentValues.get(userType).toString()
+                            , contentValues.get(javaType).toString()
+                            , contentValues.get(sqlType).toString()
+                    )
+            );
+        }
+        return res;
     }
 
-    public List<Object> getTableTypes(){
+    public List<Object> getTableTypes() {
 
         List<Object> collect = db.getTable(EmptyDatabase.TableTypes.NAME)
                 .getContentValues()
@@ -102,12 +122,12 @@ public class Thoth {
 
     /**
      * Функция добавляет запись в таблицу пользовательской БД
-     * */
+     */
     public void insertData(
             Table table,
-            List<ContentValues> contentValues){
+            List<ContentValues> contentValues) {
 
-        for(ContentValues values : contentValues){
+        for (ContentValues values : contentValues) {
             try {
                 //Проверка адекватности данных
                 db.insertData(table, values);
@@ -117,16 +137,17 @@ public class Thoth {
         }
     }
 
-    private String getLogMes(String mes){
+    private String getLogMes(String mes) {
         return String.format(logTemplate, getClass().getSimpleName(), mes);
     }
 
     /**
      * Функция формирует список таблиц для выбора с какой таблицей пользователь может взаимодействовать.
      * Список формируется на основе текущего режима работы Thoth, а так же уровня пользовательского доступа.
+     *
      * @return список доступных таблиц.
-     * */
-    public List<Table> getTables(){
+     */
+    public List<Table> getTables() {
         //Реализация проверки доступа в зависимости от открытого модуля и формирование списка таблиц на основе этого
         //Функция должна возвращать только одну таблицу - tables list
         List<Table> res = db.getTables()
@@ -162,10 +183,10 @@ public class Thoth {
 
     /**
      * Функция удаляет выбранную таблицу в пользовательской БД
-     * */
+     */
     public void removeTable(LinkedList<Table> tables) throws SQLException, ClassNotFoundException {
 
-        for(Table table : tables) {
+        for (Table table : tables) {
             //Проверка адекватности
             db.removeTable(table);
         }

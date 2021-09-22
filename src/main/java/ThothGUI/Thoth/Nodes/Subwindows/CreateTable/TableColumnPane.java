@@ -2,10 +2,8 @@ package ThothGUI.Thoth.Nodes.Subwindows.CreateTable;
 
 import Database.ContentValues;
 import Database.TableColumn;
-import controls.Label;
-import controls.TextField;
-import controls.Toggle;
-import controls.Twin;
+import ThothCore.Thoth.DataTypes;
+import controls.*;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
@@ -21,26 +19,26 @@ public class TableColumnPane extends VBox {
     private TableColumn tableColumn;
 
     private TextField name;
-    private ComboBox<ContentValues> type;
+    private ComboBox<DataTypes> type;
     private Toggle isUniq;
     private Toggle isNotNull;
 
     public TableColumnPane(
             TableColumn tableColumn
-            , List<ContentValues> dataTypes
+            , List<DataTypes> dataTypes
     ) {
         super();
         init(tableColumn, dataTypes);
     }
 
-    public TableColumnPane(List<ContentValues> dataTypes) {
+    public TableColumnPane(List<DataTypes> dataTypes) {
         super();
         init(null, dataTypes);
     }
 
     private void init(
             TableColumn tableColumn
-            , List<ContentValues> dataTypes
+            , List<DataTypes> dataTypes
     ) {
 
 //        columns = new VBox();
@@ -55,15 +53,9 @@ public class TableColumnPane extends VBox {
         isUniq = new Toggle(this.tableColumn.isUnique());
         isNotNull = new Toggle(this.tableColumn.isNotNull());
 
-        Label checkLabel = new Label();
-        checkLabel.textProperty().bind(
-                name.textProperty()
-                        .concat("; ")
-                        .concat(isUniq.isTrueProperty())
-                        .concat("; ")
-                        .concat(isNotNull.isTrueProperty())
-                        .concat("; ")
-        );
+        type.setCellFactory(cell -> new DataTypesCell());
+
+        type.valueProperty().addListener((observableValue, dataTypes1, t1) -> tableColumn.setType(type.getValue().getSql()));
 
         Label tableCol = new Label();
 
@@ -96,7 +88,6 @@ public class TableColumnPane extends VBox {
                 new Twin(new Label("Тип данных"), type),
                 new Twin(new Label("Уникальность"), isUniq),
                 new Twin(new Label("Отсутсвие записей"), isNotNull),
-                checkLabel,
                 tableCol
         );
 
@@ -109,6 +100,18 @@ public class TableColumnPane extends VBox {
 
     public StringProperty getColumnName() {
         return name.textProperty();
+    }
+
+    private class DataTypesCell extends ListCell<DataTypes>{
+        @Override
+        protected void updateItem(DataTypes dataTypes, boolean b) {
+            if(dataTypes != null){
+                super.updateItem(dataTypes, b);
+                setText(dataTypes.getUser());
+            }
+        }
+
+
     }
 
 }

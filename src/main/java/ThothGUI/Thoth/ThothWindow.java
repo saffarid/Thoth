@@ -5,10 +5,12 @@ import ThothGUI.Thoth.Nodes.Subwindows.TablesList;
 import controls.Label;
 import controls.MenuButton;
 import controls.Toggle;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -31,6 +33,7 @@ import window.SubwindowResizer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class ThothWindow
         extends PrimaryWindow
@@ -38,7 +41,6 @@ public class ThothWindow
         OpenSubwindow
         , CloseSubwindow
 {
-
     private Stage mainStage;
 
     private NavigationMenu menu;
@@ -102,13 +104,12 @@ public class ThothWindow
 
     private void openTables(ActionEvent event) {
 
-        openSubwindow( new TablesList(
+        openSubwindow(new TablesList(
                 "Список таблиц"
-                     , subwindow -> openSubwindow(subwindow)
-                     , subwindow -> closeSubwindow(subwindow)
-                     , thoth
-                )
-        );
+                , subwindow -> openSubwindow(subwindow)
+                , subwindow -> closeSubwindow(subwindow)
+                , thoth
+        ));
 
     }
 
@@ -146,9 +147,13 @@ public class ThothWindow
 
     @Override
     public void openSubwindow(Subwindow subwindow) {
-        //Реализовать более адекватнуб проверку на открытие окна.
-        //Возможно воспользоваться мапой.
-        if (!workspace.getChildren().contains(subwindow)){
+
+        ObservableList<Node> children = workspace.getChildren();
+        Optional<Node> first = children.stream()
+                .filter(node -> node.getId().equals(subwindow.getId()))
+                .findFirst();
+
+        if (!first.isPresent()){
             workspace.getChildren().add(subwindow);
         }else{
             subwindow.toFront();

@@ -3,8 +3,10 @@ package ThothGUI.Thoth.Nodes.Subwindows.CreateTable;
 import Database.ContentValues;
 import Database.Table;
 import Database.TableColumn;
+import ThothCore.Thoth.DataTypes;
 import ThothCore.Thoth.Thoth;
 import ThothGUI.Thoth.CloseSubwindow;
+import ThothGUI.Thoth.RefreshSystem;
 import controls.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -23,6 +25,8 @@ import java.util.List;
 
 public class CreateTable extends Subwindow {
 
+    private static final String ID_CREATE_TABLE_SUBWIND = "create_table";
+
     private final String IMG_ADD_ROW = "/image/ico/plus.png";
 
     private BorderPane content;
@@ -30,22 +34,32 @@ public class CreateTable extends Subwindow {
     private CloseSubwindow close;
     private ComboBox type;
 
+    private List<DataTypes> dataTypes;
+
     private Table createdTable;
     private TextField tableName;
     private VBox columns;
 
     private Thoth thoth;
 
+    private RefreshSystem refreshTableList;
+
     public CreateTable(
             CloseSubwindow close
             , Thoth thoth
+            , RefreshSystem refreshSystem
     ) {
         super("Создать таблицу");
         this.close = close;
         this.thoth = thoth;
+        this.refreshTableList = refreshSystem;
+
+        setId(ID_CREATE_TABLE_SUBWIND);
 
         createdTable = new Table();
         createdTable.setType(Table.TABLE);
+
+        dataTypes = thoth.getDataTypes();
 
         setCloseEvent(event -> this.close.closeSubwindow(this));
 
@@ -77,6 +91,7 @@ public class CreateTable extends Subwindow {
     private void apply(ActionEvent event) {
         try {
             thoth.createTable(createdTable);
+            refreshTableList.refresh();
             close.closeSubwindow(this);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -100,7 +115,7 @@ public class CreateTable extends Subwindow {
         );
 
         createdTable.addColumn(tableColumn);
-        TableColumnPane columnDesc = new TableColumnPane(tableColumn, thoth.getDataTypes());
+        TableColumnPane columnDesc = new TableColumnPane(tableColumn, dataTypes);
 
         DropdownPane column = new DropdownPane(
                 "Column name", columnDesc
@@ -117,7 +132,7 @@ public class CreateTable extends Subwindow {
         VBox header = new VBox();
         header.setSpacing(5);
 
-        tableName = new TextField();
+        tableName = new TextField("TableName");
         tableName.textProperty().addListener((observableValue, s, t1) -> {
             if (t1 != null) {
                 createdTable.setName(tableName.getText());
@@ -126,6 +141,7 @@ public class CreateTable extends Subwindow {
 
         type = new ComboBox<>();
         type.setItems(FXCollections.observableArrayList(thoth.getTableTypes()));
+        type.valueProperty().addListener((observableValue, o, t1) -> createdTable.setType(type.getValue().toString()));
 
 
         HBox palette = new HBox();
