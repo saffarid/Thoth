@@ -117,6 +117,17 @@ public class Table {
             addColumn(column);
         }
 
+        for(ContentValues row : copyTable.getContentValues()){
+            LinkedList<TableColumn> tableColumns = new LinkedList<>(row.keySet());
+            ContentValues copiedRow = new ContentValues();
+
+            for(TableColumn tableColumn : tableColumns){
+                copiedRow.put(getTableCol(tableColumn.getName()), row.get(tableColumn));
+            }
+
+            contentValues.add(copiedRow);
+        }
+
         return this;
     }
 

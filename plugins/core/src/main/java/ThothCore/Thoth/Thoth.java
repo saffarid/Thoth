@@ -3,13 +3,10 @@ package ThothCore.Thoth;
 import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
-import Database.TableColumn;
 import ThothCore.EmptyDatabase.EmptyDatabase;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -85,6 +82,22 @@ public class Thoth {
      * */
     public void editTable(Table table){
 
+    }
+
+    public List<ContentValues> getDataTypes(){
+        return db.getTable(EmptyDatabase.DataTypes.NAME).getContentValues();
+    }
+
+    public List<Object> getTableTypes(){
+
+        List<Object> collect = db.getTable(EmptyDatabase.TableTypes.NAME)
+                .getContentValues()
+                .stream()
+                .map(contentValues1 -> contentValues1.get(
+                        db.getTable(EmptyDatabase.TableTypes.NAME).getTableCol(EmptyDatabase.TableTypes.TABLE_TYPE))
+                )
+                .collect(Collectors.toList());
+        return collect;
     }
 
     /**

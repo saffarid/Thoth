@@ -106,6 +106,7 @@ public class ThothWindow
                 "Список таблиц"
                      , subwindow -> openSubwindow(subwindow)
                      , subwindow -> closeSubwindow(subwindow)
+                     , thoth
                 )
         );
 

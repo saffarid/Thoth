@@ -1,13 +1,17 @@
 package ThothGUI.Thoth.Nodes.Subwindows.CreateTable;
 
+import Database.ContentValues;
 import Database.TableColumn;
 import controls.Label;
 import controls.TextField;
 import controls.Toggle;
 import controls.Twin;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
+
+import java.util.List;
 
 
 public class TableColumnPane extends VBox {
@@ -17,22 +21,27 @@ public class TableColumnPane extends VBox {
     private TableColumn tableColumn;
 
     private TextField name;
-    private ComboBox type;
+    private ComboBox<ContentValues> type;
     private Toggle isUniq;
     private Toggle isNotNull;
 
     public TableColumnPane(
-            TableColumn tableColumn) {
+            TableColumn tableColumn
+            , List<ContentValues> dataTypes
+    ) {
         super();
-        init(tableColumn);
+        init(tableColumn, dataTypes);
     }
 
-    public TableColumnPane() {
+    public TableColumnPane(List<ContentValues> dataTypes) {
         super();
-        init(null);
+        init(null, dataTypes);
     }
 
-    private void init(TableColumn tableColumn) {
+    private void init(
+            TableColumn tableColumn
+            , List<ContentValues> dataTypes
+    ) {
 
 //        columns = new VBox();
 //        columns.setSpacing(10);
@@ -42,11 +51,9 @@ public class TableColumnPane extends VBox {
         this.tableColumn = tableColumn;
 
         name = new TextField(this.tableColumn.getName());
-        type = new ComboBox();
+        type = new ComboBox<>(FXCollections.observableArrayList(dataTypes));
         isUniq = new Toggle(this.tableColumn.isUnique());
         isNotNull = new Toggle(this.tableColumn.isNotNull());
-
-        type.setValue(this.tableColumn.getType());
 
         Label checkLabel = new Label();
         checkLabel.textProperty().bind(

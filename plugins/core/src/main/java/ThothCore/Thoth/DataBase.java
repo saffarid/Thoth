@@ -181,7 +181,7 @@ public class DataBase extends DataBaseSQL {
                 .filter(table -> !table.getType().equals(Table.SYSTEM_TABLE_NA))
                 .collect(Collectors.toList());
         for (Table table : tablesCollect){
-
+            table.getContentValues().clear();
             //Считываем все записи из таблицы БД
             List<HashMap<String, Object>> dataTable = dbManager.getDataTable(
                     dbFile, table

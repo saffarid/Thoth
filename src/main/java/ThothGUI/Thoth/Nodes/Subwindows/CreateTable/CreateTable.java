@@ -1,40 +1,53 @@
 package ThothGUI.Thoth.Nodes.Subwindows.CreateTable;
 
+import Database.ContentValues;
 import Database.Table;
 import Database.TableColumn;
+import ThothCore.Thoth.Thoth;
 import ThothGUI.Thoth.CloseSubwindow;
 import controls.*;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.ComboBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Paint;
 import layout.basepane.*;
 import layout.custompane.DropdownPane;
 import window.Subwindow;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class CreateTable extends Subwindow {
 
-    private final String IMG_ADD_ROW = "/image/icon/plus.png";
+    private final String IMG_ADD_ROW = "/image/ico/plus.png";
 
     private BorderPane content;
+
+    private CloseSubwindow close;
+    private ComboBox type;
 
     private Table createdTable;
     private TextField tableName;
     private VBox columns;
 
+    private Thoth thoth;
+
     public CreateTable(
             CloseSubwindow close
+            , Thoth thoth
     ) {
         super("Создать таблицу");
+        this.close = close;
+        this.thoth = thoth;
 
         createdTable = new Table();
+        createdTable.setType(Table.TABLE);
 
-        setCloseEvent(event -> close.closeSubwindow(this));
+        setCloseEvent(event -> this.close.closeSubwindow(this));
 
         setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) toFront();
@@ -55,23 +68,25 @@ public class CreateTable extends Subwindow {
                 )
         );
 
-        columns.setBackground(
-                new Background(
-                        new BackgroundFill(Paint.valueOf("green"), null, null)
-                )
-        );
-    }
-
-    private void apply(ActionEvent event){
-
     }
 
     private void addRow(ActionEvent actionEvent) {
         createTableColumn();
     }
 
-    private void cancel(ActionEvent event){
+    private void apply(ActionEvent event) {
+        try {
+            thoth.createTable(createdTable);
+            close.closeSubwindow(this);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void cancel(ActionEvent event) {
+        close.closeSubwindow(this);
     }
 
     private void createTableColumn() {
@@ -79,13 +94,13 @@ public class CreateTable extends Subwindow {
         List<TableColumn> columns = createdTable.getColumns();
         TableColumn tableColumn = new TableColumn(
                 "Column ".concat(" ").concat(String.valueOf(columns.size()))
-                , "Текстовый"
+                , "varchar(255)"
                 , false
                 , false
         );
 
-        columns.add(tableColumn);
-        TableColumnPane columnDesc = new TableColumnPane(tableColumn);
+        createdTable.addColumn(tableColumn);
+        TableColumnPane columnDesc = new TableColumnPane(tableColumn, thoth.getDataTypes());
 
         DropdownPane column = new DropdownPane(
                 "Column name", columnDesc
@@ -96,7 +111,6 @@ public class CreateTable extends Subwindow {
                 new BorderPane(column)
         );
     }
-
 
     private void configNameTypePane() {
 
@@ -110,16 +124,25 @@ public class CreateTable extends Subwindow {
             }
         });
 
+        type = new ComboBox<>();
+        type.setItems(FXCollections.observableArrayList(thoth.getTableTypes()));
+
+
         HBox palette = new HBox();
         palette.setSpacing(10);
         palette.getChildren().addAll(
-                getButton(IMG_ADD_ROW, this::addRow)
+                getButton(thoth_styleconstants.Image.PLUS, this::addRow)
+
         );
 
         header.getChildren().addAll(
                 new Twin(
                         new Label("Table name"),
                         tableName
+                )
+                , new Twin(
+                        new Label("Table type"),
+                        type
                 )
                 , palette
         );
@@ -143,29 +166,39 @@ public class CreateTable extends Subwindow {
         scrollPane.setContent(this.columns);
         createTableColumn();
 
-        columns.setTop();
-        columns.setCenter(this.columns);
+        columns.setTop(
+                new Label("Columns")
+                .setPadding(5)
+        );
+        columns.setCenter(scrollPane);
 
-        content.setCenter(scrollPane);
+        content.setCenter(columns);
     }
 
     private Button getButton(
             String url
             , EventHandler<ActionEvent> event
     ) {
-//        Button button = new Button(
-//          new ImageView(
-//                  new Image(
-//                          url, 25, 25, true, true
-//                  )
-//          )
-//        );
-
-        Button button = new Button("AddRow");
+        Button button = new Button(
+          new ImageView(
+                  new Image(
+                          getClass().getResource(url).toExternalForm(), 20, 20, true, true
+                  )
+          )
+        );
 
         button.setOnAction(event);
-
         return button;
+    }
+
+    class ComboBoxTypeTable extends ListCell<Object>{
+        @Override
+        protected void updateItem(Object o, boolean b) {
+            if(o != null){
+                super.updateItem(o, b);
+                setText(o.toString());
+            }
+        }
     }
 
 }
