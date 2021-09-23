@@ -7,11 +7,17 @@ import ThothGUI.Thoth.Nodes.Subwindows.CreateTable.CreateTable;
 import ThothGUI.Thoth.OpenSubwindow;
 import ThothGUI.Thoth.RefreshSystem;
 import controls.Button;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -24,6 +30,9 @@ import javafx.scene.paint.Paint;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import window.Subwindow;
+
+import java.sql.SQLException;
+import java.util.LinkedList;
 
 public class TablesList extends Subwindow implements RefreshSystem {
 
@@ -64,8 +73,8 @@ public class TablesList extends Subwindow implements RefreshSystem {
     private void configContent() {
 
         content = new BorderPane();
-        content.setTop(configPallete());
         content.setCenter(configTableList());
+        content.setTop(configPallete());
 
     }
 
@@ -74,8 +83,8 @@ public class TablesList extends Subwindow implements RefreshSystem {
 
         pallete.getChildren().addAll(
                 getButton(thoth_styleconstants.Image.PLUS, this::createTable)
-                , getButton(thoth_styleconstants.Image.EDIT, this::editTable)
-                , getButton(thoth_styleconstants.Image.TRASH, this::removeTable)
+                , getButton(thoth_styleconstants.Image.EDIT, this::editTable, new SimpleListProperty<>(tablesList.getSelectionModel().getSelectedItems()).sizeProperty().isNotEqualTo(1))
+                , getButton(thoth_styleconstants.Image.TRASH, this::removeTable, new SimpleListProperty<>(tablesList.getSelectionModel().getSelectedItems()).emptyProperty())
         );
 
         return pallete;
@@ -85,8 +94,10 @@ public class TablesList extends Subwindow implements RefreshSystem {
         tablesList = new TableView<>();
 
         tablesList.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
+        tablesList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tablesList.setItems(FXCollections.observableArrayList(thoth.getTables()));
+
+
 
         TableColumn<Table, String> name = new TableColumn<>("Name");
         name.setCellValueFactory(cellData -> new SimpleObjectProperty(cellData.getValue().getName()));
@@ -114,7 +125,8 @@ public class TablesList extends Subwindow implements RefreshSystem {
     }
 
     private Button getButton(String url
-            , EventHandler<ActionEvent> event) {
+            , EventHandler<ActionEvent> event
+    ) {
         Button btn = new Button(
                 new ImageView(
                         new Image(getClass().getResource(url).toExternalForm(), 20, 20, true, true)
@@ -124,6 +136,17 @@ public class TablesList extends Subwindow implements RefreshSystem {
         return btn;
     }
 
+    private Button getButton(String url
+            , EventHandler<ActionEvent> event
+            , ObservableValue disabledProperty
+    ) {
+        Button button = getButton(url, event);
+        button
+                .disableProperty()
+                .bind(disabledProperty);
+        return button;
+    }
+
     @Override
     public void refresh() {
         tablesList.getItems().clear();
@@ -131,6 +154,13 @@ public class TablesList extends Subwindow implements RefreshSystem {
     }
 
     private void removeTable(ActionEvent event) {
-
+        try {
+            thoth.removeTable(new LinkedList<>(tablesList.getSelectionModel().getSelectedItems()));
+            refresh();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

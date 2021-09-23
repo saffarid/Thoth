@@ -181,26 +181,30 @@ public class DataBase extends DataBaseSQL {
                 .filter(table -> !table.getType().equals(Table.SYSTEM_TABLE_NA))
                 .collect(Collectors.toList());
         for (Table table : tablesCollect){
-            table.getContentValues().clear();
-            //Считываем все записи из таблицы БД
-            List<HashMap<String, Object>> dataTable = dbManager.getDataTable(
-                    dbFile, table
-            );
-            List<ContentValues> data = table.getContentValues();
-            //Проходим по считанным данным
-            for (HashMap<String, Object> row : dataTable){
-                LinkedList<String> colNames = new LinkedList<>(row.keySet());
-                ContentValues contentValues = new ContentValues();
-                //Проходим по всем столбцам
-                for(String colName : colNames){
-                    contentValues.put(
-                            table.getTableCol(colName), row.get(colName)
-                    );
-                }
-                data.add(contentValues);
-            }
+            readTable(table);
         }
 
+    }
+
+    private void readTable(Table table) throws SQLException, ClassNotFoundException {
+        table.getContentValues().clear();
+        //Считываем все записи из таблицы БД
+        List<HashMap<String, Object>> dataTable = dbManager.getDataTable(
+                dbFile, table
+        );
+        List<ContentValues> data = table.getContentValues();
+        //Проходим по считанным данным
+        for (HashMap<String, Object> row : dataTable){
+            LinkedList<String> colNames = new LinkedList<>(row.keySet());
+            ContentValues contentValues = new ContentValues();
+            //Проходим по всем столбцам
+            for(String colName : colNames){
+                contentValues.put(
+                        table.getTableCol(colName), row.get(colName)
+                );
+            }
+            data.add(contentValues);
+        }
     }
 
     /**
@@ -208,6 +212,26 @@ public class DataBase extends DataBaseSQL {
      * */
     public void removeTable(Table table) throws SQLException, ClassNotFoundException {
         dbManager.removeTables(table, dbFile);
+
+        //Формируем запрос на удаление из table_desc
+        WhereValues whereTableDesc = new WhereValues();
+        Table tableDesc = getTable(EmptyDatabase.TableDesc.NAME);
+        whereTableDesc.put(
+                tableDesc.getTableCol(EmptyDatabase.TableDesc.TABLE_ID),
+                table.getName()
+        );
+        dbManager.delete(tableDesc, whereTableDesc, dbFile);
+
+        //Формируем запрос на удаление из tables_list
+        Table tablesList = getTable(EmptyDatabase.TablesList.NAME);
+        WhereValues whereTablesList = new WhereValues();
+        whereTablesList.put(
+                tablesList.getTableCol(EmptyDatabase.TablesList.TABLE_NAME),
+                table.getName()
+        );
+        dbManager.delete(tablesList, whereTablesList, dbFile);
+
+        tables.remove(table);
     }
 
     public void addTable(Table table) {

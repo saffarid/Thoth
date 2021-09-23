@@ -169,7 +169,6 @@ public class Thoth {
         LOG.log(Level.INFO, getLogMes(
                 "Формирование таблиц/колонок"
         ));
-
         db.readStructure();
         db.readTableContent();
 
@@ -190,6 +189,7 @@ public class Thoth {
             //Проверка адекватности
             db.removeTable(table);
         }
+//        readDataBase();
 
     }
 }
