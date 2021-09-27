@@ -4,12 +4,19 @@ import Database.ContentValues;
 import Database.Table;
 import ThothGUI.Thoth.CloseSubwindow;
 
+import controls.Button;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import layout.basepane.BorderPane;
+import layout.basepane.HBox;
 import layout.basepane.TableView;
 import window.Subwindow;
 
@@ -50,8 +57,41 @@ public class TableShower extends Subwindow {
 
         createTable();
         content.setCenter(tableContent);
+        content.setTop(createPalette());
         setCenter(content);
     }
+
+    private void addRows(ActionEvent event){
+
+    }
+
+    private Button getButton(
+            String url,
+            EventHandler<ActionEvent> event
+    ){
+        Button btn = new Button(
+                new ImageView(
+                        new Image(getClass().getResource(url).toExternalForm(), 15, 15, true, true
+                )
+        ));
+
+        btn.setOnAction(event);
+
+        return btn;
+    }
+
+    private HBox createPalette(){
+
+        HBox palette = new HBox();
+
+        palette.getChildren().addAll(
+                getButton(thoth_styleconstants.Image.PLUS, this::addRows)
+                , getButton(thoth_styleconstants.Image.TRASH, this::removeRows)
+        );
+
+        return palette;
+    }
+
 
     private void createTable() {
         tableContent = new TableView<>();
@@ -83,6 +123,10 @@ public class TableShower extends Subwindow {
         });
 
         return columnView;
+    }
+
+    private void removeRows(ActionEvent event){
+
     }
 
 }

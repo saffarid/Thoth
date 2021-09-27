@@ -1,17 +1,12 @@
 package ThothGUI.Thoth.Nodes.Subwindows;
 
-import Database.ContentValues;
 import Database.Table;
-import ThothCore.Thoth.DataBase;
 import ThothCore.Thoth.Thoth;
 import ThothGUI.Thoth.CloseSubwindow;
 import ThothGUI.Thoth.Nodes.Subwindows.CreateTable.CreateTable;
 import ThothGUI.Thoth.OpenSubwindow;
 import ThothGUI.Thoth.RefreshSystem;
 import controls.Button;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -24,10 +19,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import window.Subwindow;
@@ -78,20 +69,21 @@ public class TablesList extends Subwindow implements RefreshSystem {
 
         content = new BorderPane();
         content.setCenter(configTableList());
-        content.setTop(configPallete());
+        content.setTop(createPalette());
 
     }
 
-    private HBox configPallete() {
-        HBox pallete = new HBox();
+    private HBox createPalette() {
+        HBox palette = new HBox();
 
-        pallete.getChildren().addAll(
+
+        palette.getChildren().addAll(
                 getButton(thoth_styleconstants.Image.PLUS, this::createTable)
                 , getButton(thoth_styleconstants.Image.EDIT, this::editTable, new SimpleListProperty<>(tablesList.getSelectionModel().getSelectedItems()).sizeProperty().isNotEqualTo(1))
                 , getButton(thoth_styleconstants.Image.TRASH, this::removeTable, new SimpleListProperty<>(tablesList.getSelectionModel().getSelectedItems()).emptyProperty())
         );
 
-        return pallete;
+        return palette;
     }
 
     private TableView<Table> configTableList() {

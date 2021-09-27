@@ -1,6 +1,5 @@
 package ThothGUI.Thoth.Nodes.Subwindows.CreateTable;
 
-import Database.ContentValues;
 import Database.Table;
 import Database.TableColumn;
 import ThothCore.Thoth.DataTypes;
@@ -71,8 +70,8 @@ public class CreateTable extends Subwindow {
         content.setPadding(new Insets(5));
         setCenter(content);
 
-        configNameTypePane();
-        configColumnsPane();
+        createNameTypePane();
+        createColumnsPane();
         content.setBottom(
                 new DialogButtonBar(
                         "APPLY"
@@ -127,11 +126,12 @@ public class CreateTable extends Subwindow {
         );
     }
 
-    private void configNameTypePane() {
+    private void createNameTypePane() {
 
         VBox header = new VBox();
         header.setSpacing(5);
 
+        //Формируем поле ввода наименования
         tableName = new TextField("TableName");
         tableName.textProperty().addListener((observableValue, s, t1) -> {
             if (t1 != null) {
@@ -139,17 +139,10 @@ public class CreateTable extends Subwindow {
             }
         });
 
+        //Формируем поле выбора типа таблицы
         type = new ComboBox<>();
         type.setItems(FXCollections.observableArrayList(thoth.getTableTypes()));
         type.valueProperty().addListener((observableValue, o, t1) -> createdTable.setType(type.getValue().toString()));
-
-
-        HBox palette = new HBox();
-        palette.setSpacing(10);
-        palette.getChildren().addAll(
-                getButton(thoth_styleconstants.Image.PLUS, this::addRow)
-
-        );
 
         header.getChildren().addAll(
                 new Twin(
@@ -160,13 +153,13 @@ public class CreateTable extends Subwindow {
                         new Label("Table type"),
                         type
                 )
-                , palette
+                , createPalette()
         );
 
         content.setTop(header);
     }
 
-    private void configColumnsPane() {
+    private void createColumnsPane() {
 
         BorderPane columns = new BorderPane();
 
@@ -189,6 +182,19 @@ public class CreateTable extends Subwindow {
         columns.setCenter(scrollPane);
 
         content.setCenter(columns);
+    }
+
+    private HBox createPalette(){
+
+        HBox palette = new HBox();
+
+        palette.setSpacing(10);
+
+        palette.getChildren().addAll(
+                getButton(thoth_styleconstants.Image.PLUS, this::addRow)
+        );
+
+        return palette;
     }
 
     private Button getButton(
