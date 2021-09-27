@@ -75,16 +75,6 @@ public class DataBaseManager {
     }
 
     /**
-     * Функция отвечает за удаление записи из таблицы БД
-     */
-    public void delete(Table table,
-                       WhereValues whereValues,
-                       File db)
-            throws SQLException {
-        DataBaseWrapper.delete(conns.get(db), table, whereValues);
-    }
-
-    /**
      * Функция возвращает соединение с БД
      */
     public Connection getConnection(File db) throws SQLException, ClassNotFoundException {
@@ -155,6 +145,16 @@ public class DataBaseManager {
      */
     public void removeColumn(String tableName,
                              TableColumn tableColumn) throws SQLException {
+    }
+
+    /**
+     * Функция отвечает за удаление записи из таблицы БД
+     */
+    public void removedRow(Table table,
+                           WhereValues whereValues,
+                           File db)
+            throws SQLException {
+        DataBaseWrapper.delete(conns.get(db), table, whereValues);
     }
 
     /**

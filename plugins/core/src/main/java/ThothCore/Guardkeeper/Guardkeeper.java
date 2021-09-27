@@ -158,7 +158,7 @@ public class Guardkeeper {
                 db.getName());
 
         Files.delete(db.toPath());
-        dbManager.delete(table, whereValues, this.dbGuardkeeper);
+        dbManager.removedRow(table, whereValues, this.dbGuardkeeper);
 
         readDataBases();
     }

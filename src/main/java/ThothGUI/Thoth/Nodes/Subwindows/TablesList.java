@@ -128,7 +128,8 @@ public class TablesList extends Subwindow implements RefreshSystem {
                             new TableShower(
                                     selectedItem.getName(),
                                     selectedItem,
-                                    this.close
+                                    this.close,
+                                    this.thoth
                             )
                     );
                 } else {
@@ -148,7 +149,7 @@ public class TablesList extends Subwindow implements RefreshSystem {
     ) {
         Button btn = new Button(
                 new ImageView(
-                        new Image(getClass().getResource(url).toExternalForm(), 20, 20, true, true)
+                        new Image(getClass().getResource(url).toExternalForm(), 15, 15, true, true)
                 )
         );
         btn.setOnAction(event);

@@ -15,6 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Pane;
 import layout.basepane.*;
 import layout.custompane.DropdownPane;
 import window.Subwindow;
@@ -37,7 +38,7 @@ public class CreateTable extends Subwindow {
 
     private Table createdTable;
     private TextField tableName;
-    private VBox columns;
+    private VBox columnsList;
 
     private Thoth thoth;
 
@@ -68,10 +69,10 @@ public class CreateTable extends Subwindow {
 
         content = new BorderPane();
         content.setPadding(new Insets(5));
+        content.setTop(createNameTypePane());
+        content.setCenter(createColumnsPane());
         setCenter(content);
 
-        createNameTypePane();
-        createColumnsPane();
         content.setBottom(
                 new DialogButtonBar(
                         "APPLY"
@@ -103,33 +104,38 @@ public class CreateTable extends Subwindow {
         close.closeSubwindow(this);
     }
 
-    private void createTableColumn() {
+    private Pane createColumnsPane() {
 
-        List<TableColumn> columns = createdTable.getColumns();
-        TableColumn tableColumn = new TableColumn(
-                "Column ".concat(" ").concat(String.valueOf(columns.size()))
-                , "varchar(255)"
-                , false
-                , false
+        BorderPane columnsContent = new BorderPane();
+        this.columnsList = new VBox();
+
+        //Хидер области колонок
+        VBox columnsHeader = new VBox();
+        columnsHeader.setSpacing(0);
+        columnsHeader.getChildren().addAll(
+                new Label("columns").setPadding(2),
+                createPalette()
         );
 
-        createdTable.addColumn(tableColumn);
-        TableColumnPane columnDesc = new TableColumnPane(tableColumn, dataTypes);
+        //Скрол пейн для списка колонок
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+        scrollPane.setContent(this.columnsList);
 
-        DropdownPane column = new DropdownPane(
-                "Column name", columnDesc
-        );
+        createTableColumn();
 
-        column.bindHeader(columnDesc.getColumnName());
-        this.columns.getChildren().add(
-                new BorderPane(column)
-        );
+        columnsContent.setTop(columnsHeader);
+        columnsContent.setCenter(scrollPane);
+
+        return columnsContent;
+
     }
 
-    private void createNameTypePane() {
+    private Pane createNameTypePane() {
 
         VBox header = new VBox();
         header.setSpacing(5);
+        header.setFillWidth(true);
 
         //Формируем поле ввода наименования
         tableName = new TextField("TableName");
@@ -153,35 +159,32 @@ public class CreateTable extends Subwindow {
                         new Label("Table type"),
                         type
                 )
-                , createPalette()
         );
 
-        content.setTop(header);
+        return header;
     }
 
-    private void createColumnsPane() {
+    private void createTableColumn() {
 
-        BorderPane columns = new BorderPane();
-
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setFitToWidth(true);
-
-        this.columns = new VBox();
-
-//        columns.setPadding(new Insets(5));
-        this.columns.setSpacing(5);
-        this.columns.setFillWidth(true);
-
-        scrollPane.setContent(this.columns);
-        createTableColumn();
-
-        columns.setTop(
-                new Label("Columns")
-                .setPadding(5)
+        List<TableColumn> columns = createdTable.getColumns();
+        TableColumn tableColumn = new TableColumn(
+                "Column ".concat(" ").concat(String.valueOf(columns.size()))
+                , "varchar(255)"
+                , false
+                , false
         );
-        columns.setCenter(scrollPane);
 
-        content.setCenter(columns);
+        createdTable.addColumn(tableColumn);
+        TableColumnPane columnDesc = new TableColumnPane(tableColumn, dataTypes);
+
+        DropdownPane column = new DropdownPane(
+                "Column name", columnDesc
+        );
+
+        column.bindHeader(columnDesc.getColumnName());
+        this.columnsList.getChildren().add(
+                new BorderPane(column)
+        );
     }
 
     private HBox createPalette(){
@@ -204,7 +207,7 @@ public class CreateTable extends Subwindow {
         Button button = new Button(
           new ImageView(
                   new Image(
-                          getClass().getResource(url).toExternalForm(), 20, 20, true, true
+                          getClass().getResource(url).toExternalForm(), 15, 15, true, true
                   )
           )
         );

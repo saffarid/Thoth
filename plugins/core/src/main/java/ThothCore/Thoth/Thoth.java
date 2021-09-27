@@ -180,6 +180,13 @@ public class Thoth {
         ));
     }
 
+    public void removeRows(Table table, List<ContentValues> removedRows) throws SQLException {
+
+        //Проверка права удаления
+        db.removeRows(table, removedRows);
+
+    }
+
     /**
      * Функция удаляет выбранную таблицу в пользовательской БД
      */

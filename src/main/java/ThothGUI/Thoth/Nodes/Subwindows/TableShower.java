@@ -2,6 +2,7 @@ package ThothGUI.Thoth.Nodes.Subwindows;
 
 import Database.ContentValues;
 import Database.Table;
+import ThothCore.Thoth.Thoth;
 import ThothGUI.Thoth.CloseSubwindow;
 
 import controls.Button;
@@ -20,6 +21,7 @@ import layout.basepane.HBox;
 import layout.basepane.TableView;
 import window.Subwindow;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,14 +44,18 @@ public class TableShower extends Subwindow {
      */
     private TableView<ContentValues> tableContent;
 
+    private Thoth thoth;
+
     public TableShower(
             String title
             , Table table
             , CloseSubwindow close
+            , Thoth thoth
     ) {
         super(title);
         this.table = table;
         this.close = close;
+        this.thoth = thoth;
 
         setCloseEvent(actionEvent -> close.closeSubwindow(this));
 
@@ -92,7 +98,6 @@ public class TableShower extends Subwindow {
         return palette;
     }
 
-
     private void createTable() {
         tableContent = new TableView<>();
 
@@ -126,7 +131,11 @@ public class TableShower extends Subwindow {
     }
 
     private void removeRows(ActionEvent event){
-
+        try {
+            this.thoth.removeRows(table, tableContent.getSelectionModel().getSelectedItems());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
 }

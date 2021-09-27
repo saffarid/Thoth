@@ -36,7 +36,7 @@ public class DataBase extends DataBaseSQL {
 
     /**
      * Функция отвечает за создание новой таблицы
-     * */
+     */
     public void createTable(Table table) throws SQLException {
         //Сменить способ закрепления транзакции
         //Если на каком-то этапе произошла ошибка, вся транзакция должна отмениться
@@ -53,7 +53,7 @@ public class DataBase extends DataBaseSQL {
 
     /**
      * Функция формирует запросы на вставку информации в системные таблицы: Tables list, Table desc,
-     * */
+     */
     private void insertIntoSysTable(Table table) throws SQLException {
         insertIntoTablesList(table);
         insertIntoTableDesc(table);
@@ -61,24 +61,24 @@ public class DataBase extends DataBaseSQL {
 
     /**
      * Функция формирцует запрос на вставку информации о таблицу в Table desc
-     * */
+     */
     private void insertIntoTableDesc(Table table) throws SQLException {
         Table tableDesc = getTable(EmptyDatabase.TableDesc.NAME);
 
         /*
          *  Проходим по всем колонкам таблицы, формируем объект contentValues
          * */
-        for(TableColumn column : table.getColumns()) {
+        for (TableColumn column : table.getColumns()) {
             ContentValues contentValues = new ContentValues();
 
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.TABLE_ID),       column.getTableParent().getName());
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.COL_NAME),       column.getName());
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.TYPE_ID),        column.getType());
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.PK_CONSTR),     (column.isPrimaryKey()) ? (1) : (0));
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.UNIQ_CONSTR),   (column.isUnique()) ? (1) : (0));
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.NOTNULL_CONSTR),(column.isNotNull()) ? (1) : (0));
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_TABLE_ID),     (column.getFKTableCol() != null)?(column.getFKTableCol().getTableParent().getName()):(null));
-            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_COLUMN_ID),     (column.getFKTableCol() != null)?(column.getFKTableCol().getName()):(null));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.TABLE_ID), column.getTableParent().getName());
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.COL_NAME), column.getName());
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.TYPE_ID), column.getType());
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.PK_CONSTR), (column.isPrimaryKey()) ? (1) : (0));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.UNIQ_CONSTR), (column.isUnique()) ? (1) : (0));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.NOTNULL_CONSTR), (column.isNotNull()) ? (1) : (0));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_TABLE_ID), (column.getFKTableCol() != null) ? (column.getFKTableCol().getTableParent().getName()) : (null));
+            contentValues.put(tableDesc.getTableCol(EmptyDatabase.TableDesc.FK_COLUMN_ID), (column.getFKTableCol() != null) ? (column.getFKTableCol().getName()) : (null));
 
             dbManager.insert(tableDesc, contentValues, dbFile);
         }
@@ -86,7 +86,7 @@ public class DataBase extends DataBaseSQL {
 
     /**
      * Функция формирует запрос на вставку информации о таблице в Tables list
-     * */
+     */
     private void insertIntoTablesList(Table table) throws SQLException {
         Table tablesList = getTable(EmptyDatabase.TablesList.NAME);
         ContentValues contentValues = new ContentValues();
@@ -174,13 +174,13 @@ public class DataBase extends DataBaseSQL {
 
     /**
      * Функция проходит по всем таблицам
-     * */
+     */
     public void readTableContent() throws SQLException, ClassNotFoundException {
 
         List<Table> tablesCollect = tables.stream()
                 .filter(table -> !table.getType().equals(Table.SYSTEM_TABLE_NA))
                 .collect(Collectors.toList());
-        for (Table table : tablesCollect){
+        for (Table table : tablesCollect) {
             readTable(table);
         }
 
@@ -194,11 +194,11 @@ public class DataBase extends DataBaseSQL {
         );
         List<ContentValues> data = table.getContentValues();
         //Проходим по считанным данным
-        for (HashMap<String, Object> row : dataTable){
+        for (HashMap<String, Object> row : dataTable) {
             LinkedList<String> colNames = new LinkedList<>(row.keySet());
             ContentValues contentValues = new ContentValues();
             //Проходим по всем столбцам
-            for(String colName : colNames){
+            for (String colName : colNames) {
                 contentValues.put(
                         table.getTableCol(colName), row.get(colName)
                 );
@@ -208,8 +208,25 @@ public class DataBase extends DataBaseSQL {
     }
 
     /**
+     * Функция удаляет записи из пользовательской БД
+     */
+    public void removeRows(
+            Table table,
+            List<ContentValues> removedRows
+    ) throws SQLException {
+
+        for (ContentValues row : removedRows) {
+            WhereValues whereValues = new WhereValues();
+            TableColumn tableColId = table.getTableCol(Table.ID);
+            whereValues.put(tableColId, row.get(tableColId));
+            dbManager.removedRow(table, whereValues, dbFile);
+        }
+
+    }
+
+    /**
      * Функция удаляет таблицу из БД
-     * */
+     */
     public void removeTable(Table table) throws SQLException, ClassNotFoundException {
         dbManager.removeTables(table, dbFile);
 
@@ -220,7 +237,7 @@ public class DataBase extends DataBaseSQL {
                 tableDesc.getTableCol(EmptyDatabase.TableDesc.TABLE_ID),
                 table.getName()
         );
-        dbManager.delete(tableDesc, whereTableDesc, dbFile);
+        dbManager.removedRow(tableDesc, whereTableDesc, dbFile);
 
         //Формируем запрос на удаление из tables_list
         Table tablesList = getTable(EmptyDatabase.TablesList.NAME);
@@ -229,7 +246,7 @@ public class DataBase extends DataBaseSQL {
                 tablesList.getTableCol(EmptyDatabase.TablesList.TABLE_NAME),
                 table.getName()
         );
-        dbManager.delete(tablesList, whereTablesList, dbFile);
+        dbManager.removedRow(tablesList, whereTablesList, dbFile);
 
         tables.remove(table);
     }
