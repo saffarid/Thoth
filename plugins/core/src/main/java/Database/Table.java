@@ -85,7 +85,6 @@ public class Table {
                 true));
     }
 
-
     public void addColumn(TableColumn column) {
         boolean colPresent = columns
                 .stream()
