@@ -23,6 +23,7 @@ public class DBLiteStructure extends DataBaseSQL {
         tables.add(new OrderStatus());
         tables.add(new Partners());
         tables.add(new IncomeTypes());
+        tables.add(new Currency());
 
     }
 
@@ -121,6 +122,54 @@ public class DBLiteStructure extends DataBaseSQL {
 
             addColumn(new TableColumn(
                     INCOME_TYPE, "varchar(255)", true, true
+            ));
+        }
+    }
+
+    /**
+     * Таблица список валют
+     * */
+    class Currency extends Table{
+        public static final String TABLE_NAME = "currency";
+        public static final String CURRENCY = "currency";
+        public static final String COURSE = "course";
+
+        public Currency() {
+            super();
+            name = TABLE_NAME;
+            type = SYSTEM_GUIDE;
+
+            addColumn(new TableColumn(
+                    CURRENCY, "varchar(100)", true, true
+            ));
+            addColumn(new TableColumn(
+                    COURSE, "double(100, 2)", false, true
+            ));
+        }
+    }
+
+    /**
+     * Таблица для хранения неиспользуемых продуктов
+     * */
+    class NotUsed extends Table{
+        public static final String TABLE_NAME = "not_used";
+        public static final String ARTICLE = "article";
+        public static final String NAME = "name";
+        public static final String CAUSE = "cause";
+
+        public NotUsed() {
+            super();
+            name = TABLE_NAME;
+            type = DBLiteStructure.this.TABLE;
+
+            addColumn(new TableColumn(
+                    ARTICLE, "varchar(255)", true, true
+            ));
+            addColumn(new TableColumn(
+                    NAME, "varchar(255)", true, true
+            ));
+            addColumn(new TableColumn(
+                    CAUSE, "text", false, false
             ));
         }
     }
