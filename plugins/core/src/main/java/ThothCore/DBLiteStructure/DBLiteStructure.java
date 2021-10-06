@@ -40,8 +40,8 @@ public class DBLiteStructure extends DataBaseSQL {
         //Таблица типа SYSTEM_GUIDE
         tables.add(new Currency());
         //Таблица типа TABLE
-        tables.add(new NotUsed());
         tables.add(new Products());
+        tables.add(new NotUsed());
         tables.add(new Storage());
         tables.add(new Purchases());
         tables.add(new Orders());
@@ -184,17 +184,21 @@ public class DBLiteStructure extends DataBaseSQL {
         public static final String ARTICLE = "article";
         public static final String NAME = "name";
         public static final String CAUSE = "cause";
+        public static final String PRODUCT_ID = "product_id";
 
         public NotUsed() {
             super();
             name = TABLE_NAME;
             type = DBLiteStructure.this.TABLE;
 
+//            addColumn(new TableColumn(
+//                    ARTICLE, "varchar(255)", true, true
+//            ));
+//            addColumn(new TableColumn(
+//                    NAME, "varchar(255)", true, true
+//            ));
             addColumn(new TableColumn(
-                    ARTICLE, "varchar(255)", true, true
-            ));
-            addColumn(new TableColumn(
-                    NAME, "varchar(255)", true, true
+                    PRODUCT_ID, "integer", true, true, getTable(Products.TABLE_NAME).getTableCol(Products.ID)
             ));
             addColumn(new TableColumn(
                     CAUSE, "text", false, false
@@ -342,7 +346,7 @@ public class DBLiteStructure extends DataBaseSQL {
                     DATE_FINISH, "date", false, true
                     ));
             addColumn(new TableColumn(
-                    STATUS_ID, "integer", false, true
+                    STATUS_ID, "integer", false, true, getTable(OrderStatus.TABLE_NAME).getTableCol(OrderStatus.ORDER_STATUS)
                     ));
             addColumn(new TableColumn(
                     AUTOFINISH, "integer", false, true
