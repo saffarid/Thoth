@@ -1,10 +1,18 @@
 package ThothCore.DBLiteStructure;
 
+import Database.DataBaseManager;
 import Database.DataBaseSQL;
 import Database.Table;
 import Database.TableColumn;
 
+import java.io.File;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class DBLiteStructure extends DataBaseSQL {
+
+    private static Logger LOG;
 
     public final String TABLE = "table";
     public final String PROJECT_TABLE = "project_table";
@@ -14,7 +22,13 @@ public class DBLiteStructure extends DataBaseSQL {
     public final String SYSTEM_GUIDE = "system_guide";
     public final String SYSTEM_CONSTANTS = "system_constants";
 
-    public DBLiteStructure() {
+    public final String URL_DB = "db/storage.tho";
+
+    static {
+        LOG = Logger.getLogger(DBLiteStructure.class.getName());
+    }
+
+    public DBLiteStructure() throws SQLException, ClassNotFoundException {
         super();
 
         //Таблицы типа GUIDE
@@ -30,6 +44,15 @@ public class DBLiteStructure extends DataBaseSQL {
         tables.add(new Products());
         tables.add(new Storage());
         tables.add(new Purchases());
+        tables.add(new Orders());
+        tables.add(new ProjectsList());
+        tables.add(new Incomes());
+
+        if(!new File(URL_DB).exists()){
+            firstInit();
+        }else{
+
+        }
     }
 
     /**
@@ -325,5 +348,63 @@ public class DBLiteStructure extends DataBaseSQL {
                     AUTOFINISH, "integer", false, true
                     ));
         }
+    }
+
+    /**
+     * Таблица списка проектов
+     * */
+    class ProjectsList extends Table{
+        public static final String TABLE_NAME = "projects_list";
+        public static final String NAME = "name";
+        public static final String DATE = "date";
+
+        public ProjectsList() {
+            super();
+            name = TABLE_NAME;
+            type = DBLiteStructure.this.TABLE;
+
+            addColumn(new TableColumn(
+                    NAME, "varchar(255)", false, true
+            ));
+            addColumn(new TableColumn(
+                    DATE, "date", false, true
+            ));
+        }
+    }
+
+    /**
+     * Таблица доходов
+     * */
+    class Incomes extends Table{
+        public static final String TABLE_NAME = "incomes";
+        public static final String ORDER_ID = "order_id";
+
+        public Incomes() {
+            super();
+            name = TABLE_NAME;
+            type = DBLiteStructure.this.TABLE;
+
+            addColumn(new TableColumn(
+                    ORDER_ID, "integer", false, true
+            ));
+        }
+    }
+
+    private void firstInit() throws SQLException, ClassNotFoundException {
+        DataBaseManager dbManager = DataBaseManager.getDbManager();
+        File db = new File(URL_DB);
+        LOG.log(Level.INFO, "Создаю БД");
+        dbManager.createDatabase(db);
+
+        LOG.log(Level.INFO, "Добавляю таблицы в БД");
+        for(Table table : tables){
+            dbManager.createTable(table, db);
+        }
+        LOG.log(Level.INFO, "Создание структуры успешно пройдено");
+
+    }
+
+    private void secondInit(){
+        
     }
 }

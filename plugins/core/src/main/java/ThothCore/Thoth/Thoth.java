@@ -4,6 +4,7 @@ import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
 import Database.TableColumn;
+import ThothCore.DBLiteStructure.DBLiteStructure;
 import ThothCore.EmptyDatabase.EmptyDatabase;
 
 import java.io.File;
@@ -61,6 +62,7 @@ public class Thoth {
         dbFile = dbUser;
         dbManager = DataBaseManager.getDbManager();
         db = new DataBase(template, dbFile);
+        new DBLiteStructure();
         readDataBase();
     }
 
