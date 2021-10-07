@@ -1,10 +1,10 @@
-package ThothCore.Guardkeeper;
+package ThothCore.Thoth.Guardkeeper;
 
 import Database.ContentValues;
 import Database.DataBaseManager;
-import ThothCore.EmptyDatabase.EmptyDatabase;
-import ThothCore.Guardkeeper.DataBaseDescription.DataBaseInfo;
-import ThothCore.Guardkeeper.DataBaseException.DatabaseExistsException;
+import ThothCore.Thoth.EmptyDatabase.EmptyDatabase;
+import ThothCore.Thoth.Guardkeeper.DataBaseDescription.DataBaseInfo;
+import ThothCore.Thoth.Guardkeeper.DataBaseException.DatabaseExistsException;
 
 import java.io.File;
 import java.sql.SQLException;

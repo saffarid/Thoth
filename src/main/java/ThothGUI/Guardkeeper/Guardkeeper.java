@@ -3,7 +3,7 @@ package ThothGUI.Guardkeeper;
 import Main.ChangeScreen;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import ThothCore.Guardkeeper.DataBaseException.DatabaseExistsException;
+import ThothCore.Thoth.Guardkeeper.DataBaseException.DatabaseExistsException;
 import controls.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -44,7 +44,7 @@ public class Guardkeeper extends SecondaryWindow {
     /**
      * Объект выбора взаимодействия с Thoth
      * */
-    private ThothCore.Guardkeeper.Guardkeeper guardkeeper;
+    private ThothCore.Thoth.Guardkeeper.Guardkeeper guardkeeper;
 
     /**
      * Наименование пользовательской БД
@@ -70,7 +70,7 @@ public class Guardkeeper extends SecondaryWindow {
 
     public Guardkeeper(Stage stage, ChangeScreen changeScreen) throws SQLException, ClassNotFoundException {
         super(stage, "Thoth");
-        guardkeeper = new ThothCore.Guardkeeper.Guardkeeper();
+        guardkeeper = new ThothCore.Thoth.Guardkeeper.Guardkeeper();
         this.stage = stage;
         this.changeScreen = changeScreen;
         databases = new SimpleListProperty<File>(FXCollections.observableList(guardkeeper.getDatabases()));

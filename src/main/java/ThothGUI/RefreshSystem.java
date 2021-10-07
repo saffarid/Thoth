@@ -1,4 +1,4 @@
-package ThothGUI.Thoth;
+package ThothGUI;
 @FunctionalInterface
 public interface RefreshSystem {
 

@@ -1,4 +1,4 @@
-package ThothCore.EmptyDatabase;
+package ThothCore.Thoth.EmptyDatabase;
 
 import Database.*;
 

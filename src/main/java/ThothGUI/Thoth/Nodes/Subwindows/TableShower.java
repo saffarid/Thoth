@@ -3,15 +3,13 @@ package ThothGUI.Thoth.Nodes.Subwindows;
 import Database.ContentValues;
 import Database.Table;
 import ThothCore.Thoth.Thoth;
-import ThothGUI.Thoth.CloseSubwindow;
+import ThothGUI.CloseSubwindow;
 
 import controls.Button;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.image.Image;

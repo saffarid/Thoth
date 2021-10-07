@@ -1,4 +1,4 @@
-package ThothCore.Guardkeeper.DataBaseException;
+package ThothCore.Thoth.Guardkeeper.DataBaseException;
 
 import java.io.File;
 

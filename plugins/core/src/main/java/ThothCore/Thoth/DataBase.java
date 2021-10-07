@@ -1,7 +1,7 @@
 package ThothCore.Thoth;
 
 import Database.*;
-import ThothCore.EmptyDatabase.EmptyDatabase;
+import ThothCore.Thoth.EmptyDatabase.EmptyDatabase;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -110,12 +110,12 @@ public class DataBase extends DataBaseSQL {
 
         //Считываем список таблиц в БД
         List<HashMap<String, Object>> tablesList = dbManager.getDataTable(
-                dbFile, getTable(EmptyDatabase.TablesList.NAME)
+                dbFile, getTable(EmptyDatabase.TablesList.NAME), true
         );
 
         //Считываем описание таблиц в БД
         List<HashMap<String, Object>> tableDesc = dbManager.getDataTable(
-                dbFile, getTable(EmptyDatabase.TableDesc.NAME)
+                dbFile, getTable(EmptyDatabase.TableDesc.NAME), true
         );
 
         /*
@@ -190,7 +190,7 @@ public class DataBase extends DataBaseSQL {
         table.getContentValues().clear();
         //Считываем все записи из таблицы БД
         List<HashMap<String, Object>> dataTable = dbManager.getDataTable(
-                dbFile, table
+                dbFile, table, true
         );
         List<ContentValues> data = table.getContentValues();
         //Проходим по считанным данным

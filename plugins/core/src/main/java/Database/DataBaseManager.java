@@ -1,13 +1,10 @@
 package Database;
 
-import ThothCore.EmptyDatabase.EmptyDatabase;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataBaseManager {
@@ -91,11 +88,12 @@ public class DataBaseManager {
      * @param table таблица, с которой производится считывание информации
      */
     public List<HashMap<String, Object>> getDataTable(File db,
-                                                      Table table)
+                                                      Table table,
+                                                      boolean useSubRequest)
             throws SQLException, ClassNotFoundException {
         List<HashMap<String, Object>> res = new LinkedList<>();
         ResultSet select = DataBaseWrapper.select(
-                table, null, null, getConnection(db), true
+                table, null, null, getConnection(db), useSubRequest
         );
         while (select.next()) {
             HashMap<String, Object> contentValues = new HashMap<>();

@@ -1,4 +1,4 @@
-package ThothCore.Guardkeeper.DataBaseDescription;
+package ThothCore.Thoth.Guardkeeper.DataBaseDescription;
 
 import Database.Table;
 import Database.TableColumn;
@@ -6,7 +6,6 @@ import Database.TableColumn;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 public class DataBaseInfo {
 

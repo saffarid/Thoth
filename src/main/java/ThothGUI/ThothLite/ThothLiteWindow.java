@@ -1,9 +1,9 @@
-package ThothGUI.Thoth;
+package ThothGUI.ThothLite;
 
-import ThothCore.Thoth.Thoth;
+import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
-import ThothGUI.Thoth.Nodes.Subwindows.TablesList;
+import ThothGUI.ThothLite.Subwindows.TablesList;
 import controls.Label;
 import controls.MenuButton;
 import controls.Toggle;
@@ -36,12 +36,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class ThothWindow
+public class ThothLiteWindow
         extends PrimaryWindow
         implements
         OpenSubwindow
         , CloseSubwindow
 {
+
+    private final String STRING_KEY_INCOME_EXPENSES = "Доходы/расходы";
+    private final String STRING_KEY_ORDERS = "Заказы";
+    private final String STRING_KEY_PURCHASES = "Покупки";
+    private final String STRING_KEY_PROJECTS = "Проекты";
+    private final String STRING_KEY_STORAGE = "Склад";
+    private final String STRING_KEY_TABLES_GUIDE = "Списочные таблицы";
+
+
     private Stage mainStage;
 
     private NavigationMenu menu;
@@ -50,10 +59,10 @@ public class ThothWindow
 
     private List<String> openSubwindows;
 
-    private Thoth thoth;
+    private ThothLite thoth;
 
-    public ThothWindow(Stage stage,
-                       Thoth thoth) {
+    public ThothLiteWindow(Stage stage,
+                           ThothLite thoth) {
         super(stage);
         this.thoth = thoth;
         mainStage = stage;
@@ -71,7 +80,7 @@ public class ThothWindow
         if(url != null) {
             menuButton.setGraphic(
                     new ImageView(
-                            new Image(getClass().getResource(url).toExternalForm(), 30, 30, true, true)
+                            new Image(getClass().getResource(url).toExternalForm(), 20, 20, true, true)
                     )
             );
         }
@@ -81,9 +90,12 @@ public class ThothWindow
 
     private void menuConfig(){
         List<MenuButton> menuButtons = new LinkedList<>();
-        menuButtons.add(getMenuButton("Анализатор", thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
-        menuButtons.add(getMenuButton("Таблицы", thoth_styleconstants.Image.TABLE, this::openTables));
-        menuButtons.add(getMenuButton("Тест", null, this::openTest));
+        menuButtons.add(getMenuButton(STRING_KEY_INCOME_EXPENSES, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
+        menuButtons.add(getMenuButton(STRING_KEY_ORDERS, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
+        menuButtons.add(getMenuButton(STRING_KEY_PURCHASES, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
+        menuButtons.add(getMenuButton(STRING_KEY_PROJECTS, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
+        menuButtons.add(getMenuButton(STRING_KEY_STORAGE, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
+        menuButtons.add(getMenuButton(STRING_KEY_TABLES_GUIDE, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
         menu = new NavigationMenu("", true, menuButtons);
         setLeft(menu);
     }
@@ -100,18 +112,11 @@ public class ThothWindow
     }
 
     private void openAnalyzator(ActionEvent event) {
-        Subwindow subwindow = createSubwindow("Анализатор");
+
     }
 
     private void openTables(ActionEvent event) {
-
-        openSubwindow(new TablesList(
-                "Список таблиц"
-                , subwindow -> openSubwindow(subwindow)
-                , subwindow -> closeSubwindow(subwindow)
-                , thoth
-        ));
-
+        openSubwindow(new TablesList("Таблицы", thoth));
     }
 
     private void openTest(ActionEvent event) {

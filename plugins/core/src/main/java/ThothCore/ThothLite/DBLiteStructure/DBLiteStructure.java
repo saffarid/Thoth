@@ -1,13 +1,10 @@
-package ThothCore.DBLiteStructure;
+package ThothCore.ThothLite.DBLiteStructure;
 
-import Database.DataBaseManager;
 import Database.DataBaseSQL;
 import Database.Table;
 import Database.TableColumn;
 
-import java.io.File;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DBLiteStructure extends DataBaseSQL {
@@ -21,8 +18,6 @@ public class DBLiteStructure extends DataBaseSQL {
     public final String SYSTEM_TABLE = "system_table";
     public final String SYSTEM_GUIDE = "system_guide";
     public final String SYSTEM_CONSTANTS = "system_constants";
-
-    public final String URL_DB = "db/storage.tho";
 
     static {
         LOG = Logger.getLogger(DBLiteStructure.class.getName());
@@ -48,11 +43,6 @@ public class DBLiteStructure extends DataBaseSQL {
         tables.add(new ProjectsList());
         tables.add(new Incomes());
 
-        if(!new File(URL_DB).exists()){
-            firstInit();
-        }else{
-
-        }
     }
 
     /**
@@ -165,7 +155,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public Currency() {
             super();
             name = TABLE_NAME;
-            type = SYSTEM_GUIDE;
+            type = GUIDE;
 
             addColumn(new TableColumn(
                     CURRENCY, "varchar(100)", true, true
@@ -394,21 +384,4 @@ public class DBLiteStructure extends DataBaseSQL {
         }
     }
 
-    private void firstInit() throws SQLException, ClassNotFoundException {
-        DataBaseManager dbManager = DataBaseManager.getDbManager();
-        File db = new File(URL_DB);
-        LOG.log(Level.INFO, "Создаю БД");
-        dbManager.createDatabase(db);
-
-        LOG.log(Level.INFO, "Добавляю таблицы в БД");
-        for(Table table : tables){
-            dbManager.createTable(table, db);
-        }
-        LOG.log(Level.INFO, "Создание структуры успешно пройдено");
-
-    }
-
-    private void secondInit(){
-        
-    }
 }

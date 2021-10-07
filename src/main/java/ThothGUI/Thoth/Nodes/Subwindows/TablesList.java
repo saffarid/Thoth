@@ -2,10 +2,10 @@ package ThothGUI.Thoth.Nodes.Subwindows;
 
 import Database.Table;
 import ThothCore.Thoth.Thoth;
-import ThothGUI.Thoth.CloseSubwindow;
+import ThothGUI.CloseSubwindow;
 import ThothGUI.Thoth.Nodes.Subwindows.CreateTable.CreateTable;
-import ThothGUI.Thoth.OpenSubwindow;
-import ThothGUI.Thoth.RefreshSystem;
+import ThothGUI.OpenSubwindow;
+import ThothGUI.RefreshSystem;
 import controls.Button;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;

@@ -1,4 +1,4 @@
-package ThothGUI.Thoth;
+package ThothGUI;
 
 import window.Subwindow;
 

@@ -37,7 +37,7 @@ public abstract class Title extends BorderPane {
     protected Button addButton(String url) {
         Button btn = new Button();
         ImageView closeImg = new ImageView(
-                new Image(getClass().getResourceAsStream(url), 25, 25, true, false)
+                new Image(getClass().getResourceAsStream(url), 15, 15, true, false)
         );
         btn.setGraphic(closeImg);
         return btn;
