@@ -206,6 +206,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public static final String PRODUCT_TYPE_ID = "product_type_id";
         public static final String PRICE = "price";
         public static final String CURRENCY_ID = "currency_id";
+        public static final String NOTE = "note";
 
         public Products() {
             super();
@@ -227,6 +228,9 @@ public class DBLiteStructure extends DataBaseSQL {
             addColumn(new TableColumn(
                     CURRENCY_ID, "integer", false, true, getTable(Currency.TABLE_NAME).getTableCol(Currency.CURRENCY)
             ));
+            addColumn(new TableColumn(
+                    NOTE, "text", false, false
+            ));
         }
     }
 
@@ -237,7 +241,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public static final String TABLE_NAME = "storage";
         public static final String COUNT = "count";
         public static final String COUNT_TYPE_ID = "count_type_id";
-        public static final String NOTE = "note";
+
         public static final String PRODUCT_ID = "product_id";
 
         public Storage() {
@@ -250,9 +254,6 @@ public class DBLiteStructure extends DataBaseSQL {
             ));
             addColumn(new TableColumn(
                     COUNT_TYPE_ID, "integer", false, true, getTable(CountTypes.TABLE_NAME).getTableCol(CountTypes.COUNT_TYPE)
-            ));
-            addColumn(new TableColumn(
-                    NOTE, "text", false, false
             ));
             addColumn(new TableColumn(
                     PRODUCT_ID, "integer", true, true, getTable(Products.TABLE_NAME).getTableCol(Products.ID)
