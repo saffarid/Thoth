@@ -1,5 +1,6 @@
 package ThothCore.ThothLite.DBData.DBDataElement;
 
+import ThothCore.ThothLite.DBData.Identifiable;
 import ThothCore.ThothLite.Finishable;
 
 import java.util.Date;
@@ -7,11 +8,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Purchase implements Finishable {
+public class Purchase
+        implements Finishable, Identifiable {
 
-    public static final String PRODUCT = "product";
-    public static final String COUNT = "count";
-    public static final String COUNT_TYPE = "count_type";
+    public static final int DELIVERED = 1;
 
     private String orderNumber;
     private Partner store;
@@ -27,7 +27,7 @@ public class Purchase implements Finishable {
         purchasedProducts = new LinkedList<>();
     }
 
-    public void addProduct(Product product, Double count, String countType) {
+    public void addProduct(Product product, Double count, ListElement countType) {
         StorageCell cell = new StorageCell(product, count, countType);
         purchasedProducts.add(cell);
     }
@@ -38,6 +38,11 @@ public class Purchase implements Finishable {
                 purchasedProducts.remove(cell);
             }
         }
+    }
+
+    @Override
+    public String getId() {
+        return orderNumber;
     }
 
     public String getOrderNumber() {

@@ -1,15 +1,20 @@
 package ThothCore.ThothLite.DBData.DBDataElement;
 
-public class Product {
+import ThothCore.ThothLite.DBData.Identifiable;
 
+public class Product
+        implements Identifiable {
+
+    private String id;
     private String article;
     private String name;
-    private String type;
+    private ListElement type;
     private Double price;
-    private String currency;
+    private Currency currency;
     private String note;
 
-    public Product(String article, String name, String type, Double price, String currency) {
+    public Product(String id, String article, String name, ListElement type, Double price, Currency currency) {
+        this.id = id;
         this.article = article;
         this.name = name;
         this.type = type;
@@ -17,7 +22,8 @@ public class Product {
         this.currency = currency;
     }
 
-    public Product(String article, String name, String type, Double price, String currency, String note) {
+    public Product(String id, String article, String name, ListElement type, Double price, Currency currency, String note) {
+        this.id = id;
         this.article = article;
         this.name = name;
         this.type = type;
@@ -39,8 +45,13 @@ public class Product {
         return article;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -51,7 +62,7 @@ public class Product {
         return price;
     }
 
-    public String getType() {
+    public ListElement getType() {
         return type;
     }
 
@@ -59,7 +70,7 @@ public class Product {
         this.article = article;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 
@@ -71,7 +82,7 @@ public class Product {
         this.price = price;
     }
 
-    public void setType(String type) {
+    public void setType(ListElement type) {
         this.type = type;
     }
 }

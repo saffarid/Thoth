@@ -15,23 +15,6 @@ public class Table {
     private final String FK_CONSTR = "constraint `%1s_%2s_fk` foreign key (%3s) references `%4s` (%5s)";
 
     /**
-     * Тип пользовательская таблица
-     */
-    public static final String TABLE = "table";
-    /**
-     * Системная таблица, только для чтения
-     */
-    public static final String SYSTEM_TABLE_RO = "system_table_ro";
-    /**
-     * Системная таблица, чтение/запись
-     */
-    public static final String SYSTEM_TABLE_RW = "system_table_rw";
-    /**
-     * Системная таблица, не доступна для пользователя
-     */
-    public static final String SYSTEM_TABLE_NA = "system_table_na";
-
-    /**
      * Наименование таблицы
      */
     protected String name;

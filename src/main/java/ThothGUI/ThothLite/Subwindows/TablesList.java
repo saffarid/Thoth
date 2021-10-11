@@ -12,7 +12,7 @@ public class TablesList extends Subwindow {
         super(title);
 
         ListView<Table> tablesList = new ListView<>();
-        tablesList.getItems().addAll(thoth.getTables());
+
 
         setCenter(tablesList);
 

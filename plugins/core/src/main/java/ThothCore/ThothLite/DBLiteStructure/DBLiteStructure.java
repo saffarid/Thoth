@@ -11,14 +11,6 @@ public class DBLiteStructure extends DataBaseSQL {
 
     private static Logger LOG;
 
-    public final String TABLE = "table";
-    public final String PROJECT_TABLE = "project_table";
-    public final String GUIDE = "guide";
-    public final String CONSTANTS = "constants";
-    public final String SYSTEM_TABLE = "system_table";
-    public final String SYSTEM_GUIDE = "system_guide";
-    public final String SYSTEM_CONSTANTS = "system_constants";
-
     static {
         LOG = Logger.getLogger(DBLiteStructure.class.getName());
     }
@@ -48,35 +40,29 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица едениц измерения
      */
-    class CountTypes extends Table{
-        public static final String TABLE_NAME = "count_type";
-        public static final String COUNT_TYPE = "count_type";
+    class CountTypes extends Table {
         public CountTypes() {
             super();
-            name = TABLE_NAME;
-            type = GUIDE;
+            name = StructureDescription.CountTypes.TABLE_NAME;
+            type = StructureDescription.GUIDE;
 
             addColumn(new TableColumn(
-                    COUNT_TYPE, "varchar(10)", true, true
+                    StructureDescription.CountTypes.COUNT_TYPE, "varchar(10)", true, true
             ));
-
         }
     }
 
     /**
      * Таблица типов продуктов
      */
-    class ProductTypes extends Table{
-        public static final String TABLE_NAME = "product_types";
-        public static final String PRODUCT_TYPES = "product_types";
-
+    class ProductTypes extends Table {
         public ProductTypes() {
             super();
-            name = TABLE_NAME;
-            type = GUIDE;
+            name = StructureDescription.ProductTypes.TABLE_NAME;
+            type = StructureDescription.GUIDE;
 
             addColumn(new TableColumn(
-                    PRODUCT_TYPES, "varchar(255)", true, true
+                    StructureDescription.ProductTypes.PRODUCT_TYPES, "varchar(255)", true, true
             ));
         }
     }
@@ -84,17 +70,14 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица статусов заказа
      */
-    class OrderStatus extends Table{
-        public static final String TABLE_NAME = "order_status";
-        public static final String ORDER_STATUS = "order_status";
-
+    class OrderStatus extends Table {
         public OrderStatus() {
             super();
-            name = TABLE_NAME;
-            type = GUIDE;
+            name = StructureDescription.OrderStatus.TABLE_NAME;
+            type = StructureDescription.GUIDE;
 
             addColumn(new TableColumn(
-                    ORDER_STATUS, "varchar(255)", true, true
+                    StructureDescription.OrderStatus.ORDER_STATUS, "varchar(255)", true, true
             ));
         }
     }
@@ -102,25 +85,20 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица партнеров
      */
-    class Partners extends Table{
-        public static final String TABLE_NAME = "partners";
-        public static final String NAME = "name";
-        public static final String PHONE = "phone";
-        public static final String WEB = "web";
-
+    class Partners extends Table {
         public Partners() {
             super();
-            name = TABLE_NAME;
-            type = GUIDE;
+            name = StructureDescription.Partners.TABLE_NAME;
+            type = StructureDescription.GUIDE;
 
             addColumn(new TableColumn(
-                    NAME, "text", true, true
+                    StructureDescription.Partners.NAME, "text", true, true
             ));
             addColumn(new TableColumn(
-                    PHONE, "varchar(20)", false, false
+                    StructureDescription.Partners.PHONE, "varchar(20)", false, false
             ));
             addColumn(new TableColumn(
-                    WEB, "varchar(255)", false, false
+                    StructureDescription.Partners.WEB, "varchar(255)", false, false
             ));
         }
     }
@@ -128,70 +106,50 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица категорий доходов
      */
-    class IncomeTypes extends Table{
-
-        public static final String TABLE_NAME = "income_types";
-        public static final String INCOME_TYPE = "income_type";
-
+    class IncomeTypes extends Table {
         public IncomeTypes() {
             super();
-            name = TABLE_NAME;
-            type = GUIDE;
+            name = StructureDescription.IncomeTypes.TABLE_NAME;
+            type = StructureDescription.GUIDE;
 
             addColumn(new TableColumn(
-                    INCOME_TYPE, "varchar(255)", true, true
+                    StructureDescription.IncomeTypes.INCOME_TYPE, "varchar(255)", true, true
             ));
         }
     }
 
     /**
      * Таблица список валют
-     * */
-    class Currency extends Table{
-        public static final String TABLE_NAME = "currency";
-        public static final String CURRENCY = "currency";
-        public static final String COURSE = "course";
-
+     */
+    class Currency extends Table {
         public Currency() {
             super();
-            name = TABLE_NAME;
-            type = GUIDE;
+            name = StructureDescription.Currency.TABLE_NAME;
+            type = StructureDescription.GUIDE;
 
             addColumn(new TableColumn(
-                    CURRENCY, "varchar(100)", true, true
+                    StructureDescription.Currency.CURRENCY, "varchar(100)", true, true
             ));
             addColumn(new TableColumn(
-                    COURSE, "double(100, 2)", false, true
+                    StructureDescription.Currency.COURSE, "double(100, 2)", false, true
             ));
         }
     }
 
     /**
      * Таблица для хранения неиспользуемых продуктов
-     * */
-    class NotUsed extends Table{
-        public static final String TABLE_NAME = "not_used";
-        public static final String ARTICLE = "article";
-        public static final String NAME = "name";
-        public static final String CAUSE = "cause";
-        public static final String PRODUCT_ID = "product_id";
-
+     */
+    class NotUsed extends Table {
         public NotUsed() {
             super();
-            name = TABLE_NAME;
-            type = DBLiteStructure.this.TABLE;
+            name = StructureDescription.NotUsed.TABLE_NAME;
+            type = StructureDescription.TABLE;
 
-//            addColumn(new TableColumn(
-//                    ARTICLE, "varchar(255)", true, true
-//            ));
-//            addColumn(new TableColumn(
-//                    NAME, "varchar(255)", true, true
-//            ));
             addColumn(new TableColumn(
-                    PRODUCT_ID, "integer", true, true, getTable(Products.TABLE_NAME).getTableCol(Products.ID)
+                    StructureDescription.NotUsed.PRODUCT_ID, "integer", true, true, getTable(StructureDescription.Products.TABLE_NAME).getTableCol(Products.ID)
             ));
             addColumn(new TableColumn(
-                    CAUSE, "text", false, false
+                    StructureDescription.NotUsed.CAUSE, "text", false, false
             ));
         }
     }
@@ -199,37 +157,29 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица для хранения продуктов
      */
-    class Products extends Table{
-        public static final String TABLE_NAME = "products";
-        public static final String ARTICLE = "article";
-        public static final String NAME = "name";
-        public static final String PRODUCT_TYPE_ID = "product_type_id";
-        public static final String PRICE = "price";
-        public static final String CURRENCY_ID = "currency_id";
-        public static final String NOTE = "note";
-
+    class Products extends Table {
         public Products() {
             super();
-            name = TABLE_NAME;
-            type = DBLiteStructure.this.TABLE;
+            name = StructureDescription.Products.TABLE_NAME;
+            type = StructureDescription.TABLE;
 
             addColumn(new TableColumn(
-                    ARTICLE, "varchar(255)", true, true
+                    StructureDescription.Products.ARTICLE, "varchar(255)", true, true
             ));
             addColumn(new TableColumn(
-                    NAME, "varchar(255)", false, true
+                    StructureDescription.Products.NAME, "varchar(255)", false, true
             ));
             addColumn(new TableColumn(
-                    PRODUCT_TYPE_ID, "integer", false, true, getTable(ProductTypes.TABLE_NAME).getTableCol(ProductTypes.PRODUCT_TYPES)
+                    StructureDescription.Products.PRODUCT_TYPE_ID, "integer", false, true, getTable(StructureDescription.ProductTypes.TABLE_NAME).getTableCol(StructureDescription.ProductTypes.PRODUCT_TYPES)
             ));
             addColumn(new TableColumn(
-                    PRICE, "double(100000000, 2)", false, true
+                    StructureDescription.Products.PRICE, "double(100000000, 2)", false, true
             ));
             addColumn(new TableColumn(
-                    CURRENCY_ID, "integer", false, true, getTable(Currency.TABLE_NAME).getTableCol(Currency.CURRENCY)
+                    StructureDescription.Products.CURRENCY_ID, "integer", false, true, getTable(StructureDescription.Currency.TABLE_NAME).getTableCol(StructureDescription.Currency.CURRENCY)
             ));
             addColumn(new TableColumn(
-                    NOTE, "text", false, false
+                    StructureDescription.Products.NOTE, "text", false, false
             ));
         }
     }
@@ -237,26 +187,20 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица для хранения содержимого склада
      */
-    class Storage extends Table{
-        public static final String TABLE_NAME = "storage";
-        public static final String COUNT = "count";
-        public static final String COUNT_TYPE_ID = "count_type_id";
-
-        public static final String PRODUCT_ID = "product_id";
-
+    class Storage extends Table {
         public Storage() {
             super();
-            name = TABLE_NAME;
-            type = DBLiteStructure.this.TABLE;
+            name = StructureDescription.Storage.TABLE_NAME;
+            type = StructureDescription.TABLE;
 
             addColumn(new TableColumn(
-                    COUNT, "integer", false, true
+                    StructureDescription.Storage.COUNT, "integer", false, true
             ));
             addColumn(new TableColumn(
-                    COUNT_TYPE_ID, "integer", false, true, getTable(CountTypes.TABLE_NAME).getTableCol(CountTypes.COUNT_TYPE)
+                    StructureDescription.Storage.COUNT_TYPE_ID, "integer", false, true, getTable(StructureDescription.CountTypes.TABLE_NAME).getTableCol(StructureDescription.CountTypes.COUNT_TYPE)
             ));
             addColumn(new TableColumn(
-                    PRODUCT_ID, "integer", true, true, getTable(Products.TABLE_NAME).getTableCol(Products.ID)
+                    StructureDescription.Storage.PRODUCT_ID, "integer", true, true, getTable(StructureDescription.Products.TABLE_NAME).getTableCol(StructureDescription.Products.ID)
             ));
         }
     }
@@ -264,123 +208,98 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица для хранения покупок
      */
-    class Purchases extends Table{
-        public static final String TABLE_NAME = "purchases";
-        public static final String ORDER_ID = "order_id";
-        public static final String STORE_ID = "store_id";
-        public static final String PRODUCT_ID = "product_id";
-        public static final String COUNT = "count";
-        public static final String COUNT_TYPE_ID = "count_type_id";
-        public static final String DELIVERY_DATE = "delivery_date";
-        public static final String IS_DELIVERED = "is_delivered";
-
+    class Purchases extends Table {
         public Purchases() {
             super();
-            name = TABLE_NAME;
-            type = DBLiteStructure.this.TABLE;
+            name = StructureDescription.Purchases.TABLE_NAME;
+            type = StructureDescription.TABLE;
 
             addColumn(new TableColumn(
-                    ORDER_ID, "varchar(255)", false, true
+                    StructureDescription.Purchases.ORDER_ID, "varchar(255)", false, true
             ));
             addColumn(new TableColumn(
-                    STORE_ID, "integer", false, true, getTable(Partners.TABLE_NAME).getTableCol(Partners.ID)
+                    StructureDescription.Purchases.STORE_ID, "integer", false, true, getTable(StructureDescription.Partners.TABLE_NAME).getTableCol(Partners.ID)
             ));
             addColumn(new TableColumn(
-                    PRODUCT_ID, "integer", false, true, getTable(Products.TABLE_NAME).getTableCol(Products.ID)
+                    StructureDescription.Purchases.PRODUCT_ID, "integer", false, true, getTable(StructureDescription.Products.TABLE_NAME).getTableCol(Products.ID)
             ));
             addColumn(new TableColumn(
-                    COUNT, "double(1000000000, 1000)", false, true
+                    StructureDescription.Purchases.COUNT, "double(1000000000, 1000)", false, true
             ));
             addColumn(new TableColumn(
-                    COUNT_TYPE_ID, "integer", false, true, getTable(CountTypes.TABLE_NAME).getTableCol(CountTypes.COUNT_TYPE)
+                    StructureDescription.Purchases.COUNT_TYPE_ID, "integer", false, true, getTable(StructureDescription.CountTypes.TABLE_NAME).getTableCol(StructureDescription.CountTypes.COUNT_TYPE)
             ));
             addColumn(new TableColumn(
-                    DELIVERY_DATE, "date", false, true
+                    StructureDescription.Purchases.DELIVERY_DATE, "date", false, true
             ));
             addColumn(new TableColumn(
-                    IS_DELIVERED, "tinyint", false, true
+                    StructureDescription.Purchases.IS_DELIVERED, "tinyint", false, true
             ));
         }
     }
 
     /**
      * Таблица заказов от клиентов
-     * */
-    class Orders extends Table{
-        public static final String TABLE_NAME = "orders";
-        public static final String CUSTOMER_ID = "customer_id";
-        public static final String PROJECT_ID = "project_id";
-        public static final String IS_MONTHLY = "is_monthly";
-        public static final String DATE_START = "date_start";
-        public static final String DATE_FINISH = "date_finish";
-        public static final String STATUS_ID = "status_id";
-        public static final String AUTOFINISH = "autofinish";
-
+     */
+    class Orders extends Table {
         public Orders() {
             super();
-            name = TABLE_NAME;
-            type = DBLiteStructure.this.TABLE;
+            name = StructureDescription.Orders.TABLE_NAME;
+            type = StructureDescription.TABLE;
 
             addColumn(new TableColumn(
-                    CUSTOMER_ID, "integer", false, true
-                    ));
+                    StructureDescription.Orders.CUSTOMER_ID, "integer", false, true
+            ));
             addColumn(new TableColumn(
-                    PROJECT_ID, "integer", false, true
-                    ));
+                    StructureDescription.Orders.PROJECT_ID, "integer", false, true
+            ));
             addColumn(new TableColumn(
-                    IS_MONTHLY, "integer", false, true
-                    ));
+                    StructureDescription.Orders.IS_MONTHLY, "integer", false, true
+            ));
             addColumn(new TableColumn(
-                    DATE_START, "date", false, true
-                    ));
+                    StructureDescription.Orders.DATE_START, "date", false, true
+            ));
             addColumn(new TableColumn(
-                    DATE_FINISH, "date", false, true
-                    ));
+                    StructureDescription.Orders.DATE_FINISH, "date", false, true
+            ));
             addColumn(new TableColumn(
-                    STATUS_ID, "integer", false, true, getTable(OrderStatus.TABLE_NAME).getTableCol(OrderStatus.ORDER_STATUS)
-                    ));
+                    StructureDescription.Orders.STATUS_ID, "integer", false, true, getTable(StructureDescription.OrderStatus.TABLE_NAME).getTableCol(StructureDescription.OrderStatus.ORDER_STATUS)
+            ));
             addColumn(new TableColumn(
-                    AUTOFINISH, "integer", false, true
-                    ));
+                    StructureDescription.Orders.AUTOFINISH, "integer", false, true
+            ));
         }
     }
 
     /**
      * Таблица списка проектов
-     * */
-    class ProjectsList extends Table{
-        public static final String TABLE_NAME = "projects_list";
-        public static final String NAME = "name";
-        public static final String DATE = "date";
-
+     */
+    class ProjectsList extends Table {
         public ProjectsList() {
             super();
-            name = TABLE_NAME;
-            type = DBLiteStructure.this.TABLE;
+            name = StructureDescription.ProjectsList.TABLE_NAME;
+            type = StructureDescription.TABLE;
 
             addColumn(new TableColumn(
-                    NAME, "varchar(255)", false, true
+                    StructureDescription.ProjectsList.NAME, "varchar(255)", false, true
             ));
             addColumn(new TableColumn(
-                    DATE, "date", false, true
+                    StructureDescription.ProjectsList.DATE, "date", false, true
             ));
         }
     }
 
     /**
      * Таблица доходов
-     * */
-    class Incomes extends Table{
-        public static final String TABLE_NAME = "incomes";
-        public static final String ORDER_ID = "order_id";
-
+     */
+    class Incomes extends Table {
         public Incomes() {
             super();
-            name = TABLE_NAME;
-            type = DBLiteStructure.this.TABLE;
+            name = StructureDescription.Incomes.TABLE_NAME;
+            type = StructureDescription.TABLE;
 
             addColumn(new TableColumn(
-                    ORDER_ID, "integer", false, true
+                    StructureDescription.Incomes.ORDER_ID, "integer", false, true
             ));
         }
     }

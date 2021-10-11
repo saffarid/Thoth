@@ -1,17 +1,24 @@
 package ThothCore.ThothLite.DBData.DBDataElement;
 
-public class StorageCell {
+import ThothCore.ThothLite.DBData.Identifiable;
 
+public class StorageCell
+        implements Identifiable {
+
+    private String id;
     private Product product;
-
     private Double count;
+    private ListElement countType;
 
-    private String countType;
-
-    public StorageCell(Product product, Double count, String countType) {
+    public StorageCell(Product product, Double count, ListElement countType) {
         this.product = product;
         this.count = count;
         this.countType = countType;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public Product getProduct() {
@@ -30,12 +37,11 @@ public class StorageCell {
         this.count = count;
     }
 
-    public String getCountType() {
+    public ListElement getCountType() {
         return countType;
     }
 
-    public void setCountType(String countType) {
+    public void setCountType(ListElement countType) {
         this.countType = countType;
     }
-
 }

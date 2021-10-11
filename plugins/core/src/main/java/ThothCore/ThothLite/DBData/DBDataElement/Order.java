@@ -1,10 +1,11 @@
 package ThothCore.ThothLite.DBData.DBDataElement;
 
+import ThothCore.ThothLite.DBData.Identifiable;
 import ThothCore.ThothLite.Finishable;
 
 import java.util.Date;
 
-public class Order implements Finishable {
+public class Order implements Finishable, Identifiable {
 
     private String id;
     private Partner customer;
@@ -12,10 +13,10 @@ public class Order implements Finishable {
     private boolean isMonthly;
     private Date startDate;
     private Date finishDate;
-    private String status;
+    private ListElement status;
     private boolean autofinish;
 
-    public Order(String id, Partner customer, Project project, boolean isMonthly, Date startDate, Date finishDate, String status, boolean autofinish) {
+    public Order(String id, Partner customer, Project project, boolean isMonthly, Date startDate, Date finishDate, ListElement status, boolean autofinish) {
         this.id = id;
         this.customer = customer;
         this.project = project;
@@ -30,6 +31,7 @@ public class Order implements Finishable {
         return customer;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -42,7 +44,7 @@ public class Order implements Finishable {
         return startDate;
     }
 
-    public String getStatus() {
+    public ListElement getStatus() {
         return status;
     }
 
@@ -82,7 +84,7 @@ public class Order implements Finishable {
         this.startDate = startDate;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ListElement status) {
         this.status = status;
     }
 

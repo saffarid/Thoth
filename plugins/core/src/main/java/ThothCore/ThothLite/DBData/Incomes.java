@@ -1,7 +1,7 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.ListElement;
+import ThothCore.ThothLite.DBData.DBDataElement.Order;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 import ThothCore.ThothLite.TableReadable;
 
@@ -9,24 +9,21 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
-public class OrderStatus
-        extends Data<ListElement>
+import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Incomes.*;
+
+public class Incomes
+        extends Data<Order>
         implements TableReadable {
 
-    public OrderStatus() {
+    public Incomes() {
         super();
-        name = StructureDescription.OrderStatus.TABLE_NAME;
+        name = TABLE_NAME;
     }
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
         for(HashMap<String, Object> row : data){
-            datas.add(
-                    new ListElement(
-                            (String) row.get(StructureDescription.OrderStatus.ID),
-                            (String) row.get(StructureDescription.OrderStatus.ORDER_STATUS)
-                    )
-            );
+
         }
     }
 

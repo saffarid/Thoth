@@ -1,27 +1,43 @@
 package ThothCore.ThothLite.DBData;
 
+import Database.TableColumn;
+import ThothCore.ThothLite.DBData.DBDataElement.Currency;
+import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.TableReadable;
+
+import java.sql.ResultSet;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
-public class Currencies {
+import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Currency.*;
 
-    private HashMap<String, Double> currency;
+public class Currencies
+        extends Data<Currency>
+        implements TableReadable {
 
     public Currencies() {
-        this.currency = new HashMap<>();
+        super();
+        name = TABLE_NAME;
     }
 
-    public void put(String currency, Double course){
-        this.currency.put(currency, course);
+    @Override
+    public void readTable(List<HashMap<String, Object>> data) {
+        for(HashMap<String, Object> row : data){
+            datas.add(new Currency(
+                    (String) row.get(ID),
+                    (String) row.get(CURRENCY),
+                    (Double) row.get(COURSE)
+            ));
+        }
     }
 
-    public Double getCourse(String currency){
-        return this.currency.get(currency);
+    @Override
+    public void readTable(ResultSet resultSet) {
+
     }
 
-    public List<String> getCurrencies(){
-        return new LinkedList<>(this.currency.keySet());
-    }
+    @Override
+    public void readTableWithTableColumn(List<HashMap<TableColumn, Object>> data) {
 
+    }
 }

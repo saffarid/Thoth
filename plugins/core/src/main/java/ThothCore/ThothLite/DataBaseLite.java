@@ -3,10 +3,13 @@ package ThothCore.ThothLite;
 import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
+import ThothCore.ThothLite.DBData.CountTypes;
+import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBLiteStructure.DBLiteStructure;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,7 +61,7 @@ public class DataBaseLite {
     /**
      * Чтение содержимого таблиц БД
      * */
-    private void readDataBase() throws SQLException, ClassNotFoundException {
+    public void readDataBase() throws SQLException, ClassNotFoundException {
         for(Table table : structure.getTables()){
             readTable(
                     table,
@@ -70,17 +73,15 @@ public class DataBaseLite {
     /**
      * Чтение содержимого таблицы
      * */
-    private void readTable(Table table, List<HashMap<String, Object>> data){
-
-        List<ContentValues> dataTables = table.getContentValues();
-        for(HashMap<String, Object> row : data){
-            ContentValues contentValues = new ContentValues();
-            for(String key : row.keySet()){
-                contentValues.put(table.getTableCol(key), row.get(key));
-            }
-            dataTables.add(contentValues);
+    public void readTable(Table table, List<HashMap<String, Object>> data){
+        try {
+            LOG.log(Level.INFO, table.getName());
+            DBData.getInstance().getTableReadable(table.getName()).readTable(data);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-
     }
+
+
 
 }
