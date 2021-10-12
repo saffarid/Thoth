@@ -23,7 +23,7 @@ public class IncomeTypes
         for(HashMap<String, Object> row : data){
             datas.add(
                     new ListElement(
-                            (String) row.get(StructureDescription.IncomeTypes.ID),
+                            String.valueOf(row.get(StructureDescription.IncomeTypes.ID)),
                             (String) row.get(StructureDescription.IncomeTypes.INCOME_TYPE)
                     )
             );

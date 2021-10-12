@@ -23,7 +23,7 @@ public class ProductTypes
         for(HashMap<String, Object> row : data){
             datas.add(
                     new ListElement(
-                            (String) row.get(StructureDescription.ProductTypes.ID),
+                            String.valueOf(row.get(StructureDescription.ProductTypes.ID)),
                             (String) row.get(StructureDescription.ProductTypes.PRODUCT_TYPES)
                     )
             );

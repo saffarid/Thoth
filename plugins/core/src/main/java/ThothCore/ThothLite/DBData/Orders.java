@@ -27,20 +27,20 @@ public class Orders
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) throws ParseException {
-        for(HashMap<String, Object> row : data){
+        for (HashMap<String, Object> row : data) {
 
             datas.add(
                     new Order(
-                            (String) row.get(ID),
+                            String.valueOf(row.get(ID)),
                             (Partner) DBData.getInstance().getTable(StructureDescription.Partners.TABLE_NAME)
-                            .getById( (String) row.get(CUSTOMER_ID) ),
+                                    .getById(String.valueOf(row.get(CUSTOMER_ID))),
                             (Project) DBData.getInstance().getTable(StructureDescription.ProjectsList.TABLE_NAME)
-                            .getById( (String) row.get(PROJECT_ID) ),
+                                    .getById(String.valueOf(row.get(PROJECT_ID))),
                             (int) row.get(IS_MONTHLY) == 1,
                             DateFormat.getDateInstance().parse((String) row.get(DATE_START)),
                             DateFormat.getDateInstance().parse((String) row.get(DATE_FINISH)),
                             (ListElement) DBData.getInstance().getTable(StructureDescription.OrderStatus.TABLE_NAME)
-                            .getById( (String) row.get(STATUS_ID)),
+                                    .getById( String.valueOf(row.get(STATUS_ID)) ),
                             (int) row.get(AUTOFINISH) == 1
                     )
             );

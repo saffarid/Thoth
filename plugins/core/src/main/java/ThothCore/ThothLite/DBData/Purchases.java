@@ -34,9 +34,9 @@ public class Purchases
 
             if (purchase == null) {
                 purchase = new Purchase(
-                        (String) row.get(ORDER_ID),
+                        String.valueOf(row.get(ORDER_ID)),
                         (Partner) DBData.getInstance().getTable(StructureDescription.Partners.TABLE_NAME)
-                                .getById(STORE_ID),
+                                .getById( String.valueOf( row.get(STORE_ID)) ),
                         DateFormat.getDateInstance().parse((String) row.get(DELIVERY_DATE)),
                         (int) row.get(IS_DELIVERED) == Purchase.DELIVERED
                 );
@@ -48,10 +48,10 @@ public class Purchases
 
             purchase.addProduct(
                     (Product) DBData.getInstance().getTable(StructureDescription.Products.TABLE_NAME)
-                            .getById((String) row.get(PRODUCT_ID)),
+                            .getById( String.valueOf(row.get(PRODUCT_ID)) ),
                     (Double) row.get(COUNT),
                     (ListElement) DBData.getInstance().getTable(StructureDescription.CountTypes.TABLE_NAME)
-                            .getById((String) row.get(COUNT_TYPE_ID))
+                            .getById( String.valueOf(row.get(COUNT_TYPE_ID)) )
             );
 
         }

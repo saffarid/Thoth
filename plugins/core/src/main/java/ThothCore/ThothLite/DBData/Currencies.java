@@ -24,7 +24,7 @@ public class Currencies
     public void readTable(List<HashMap<String, Object>> data) {
         for(HashMap<String, Object> row : data){
             datas.add(new Currency(
-                    (String) row.get(ID),
+                    String.valueOf(row.get(ID)),
                     (String) row.get(CURRENCY),
                     (Double) row.get(COURSE)
             ));

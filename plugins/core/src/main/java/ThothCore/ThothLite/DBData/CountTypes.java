@@ -25,7 +25,7 @@ public class CountTypes
         for(HashMap<String, Object> row : data){
             datas.add(
                     new ListElement(
-                            (String) row.get(ID),
+                            String.valueOf(row.get(ID)),
                             (String) row.get(COUNT_TYPE)
                     )
             );

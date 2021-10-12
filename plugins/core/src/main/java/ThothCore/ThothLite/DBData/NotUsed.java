@@ -27,9 +27,9 @@ public class NotUsed
         for(HashMap<String, Object> row : data){
             datas.add(
                     new NotUse(
-                            (String) row.get(ID),
+                            String.valueOf(row.get(ID)),
                             (Product) DBData.getInstance().getTable(StructureDescription.Products.TABLE_NAME)
-                            .getById( (String) row.get(PRODUCT_ID) ),
+                            .getById( String.valueOf(row.get(PRODUCT_ID)) ),
                             (String) row.get(CAUSE)
                     )
             );

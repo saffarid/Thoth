@@ -22,7 +22,7 @@ public class Partners
     public void readTable(List<HashMap<String, Object>> data) {
         for(HashMap<String, Object> row : data){
             datas.add(new Partner(
-                    (String) row.get(StructureDescription.Partners.ID),
+                    String.valueOf(row.get(StructureDescription.Partners.ID)),
                     (String) row.get(StructureDescription.Partners.NAME),
                     (String) row.get(StructureDescription.Partners.PHONE),
                     (String) row.get(StructureDescription.Partners.WEB)

@@ -28,14 +28,14 @@ public class Products
             DBData dbData = DBData.getInstance();
             datas.add(
                     new Product(
-                            (String) row.get(ID),
+                            String.valueOf(row.get(ID)),
                             (String) row.get(ARTICLE),
                             (String) row.get(NAME),
                             (ListElement) dbData.getTable(StructureDescription.ProductTypes.TABLE_NAME)
-                                    .getById((String) row.get(PRODUCT_TYPE_ID)),
+                                    .getById(String.valueOf(row.get(PRODUCT_TYPE_ID))),
                             (Double) row.get(PRICE),
                             (Currency) dbData.getTable(StructureDescription.Currency.TABLE_NAME)
-                                    .getById((String) row.get(CURRENCY_ID)),
+                                    .getById(String.valueOf(row.get(CURRENCY_ID))),
                             (String) row.get(NOTE)
 
                     )

@@ -29,10 +29,10 @@ public class Storage
             datas.add(
                     new StorageCell(
                             (Product) dbData.getTable(StructureDescription.Products.TABLE_NAME)
-                                    .getById((String) row.get(PRODUCT_ID)),
+                                    .getById( String.valueOf(row.get(PRODUCT_ID)) ),
                             (Double) row.get(COUNT),
                             (ListElement) dbData.getTable(StructureDescription.CountTypes.TABLE_NAME)
-                                    .getById((String) row.get(COUNT_TYPE_ID))
+                                    .getById( String.valueOf(row.get(COUNT_TYPE_ID)) )
                     )
             );
         }

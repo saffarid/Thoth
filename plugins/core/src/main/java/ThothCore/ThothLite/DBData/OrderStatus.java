@@ -23,7 +23,7 @@ public class OrderStatus
         for(HashMap<String, Object> row : data){
             datas.add(
                     new ListElement(
-                            (String) row.get(StructureDescription.OrderStatus.ID),
+                            String.valueOf(row.get(StructureDescription.OrderStatus.ID)),
                             (String) row.get(StructureDescription.OrderStatus.ORDER_STATUS)
                     )
             );
