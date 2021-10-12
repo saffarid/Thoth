@@ -45,10 +45,6 @@ public class Purchase
         return orderNumber;
     }
 
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-
     public List<StorageCell> getPurchasedProducts() {
         return purchasedProducts;
     }
@@ -85,5 +81,10 @@ public class Purchase
     @Override
     public void finish() {
 
+    }
+
+    @Override
+    public String message() {
+        return getId();
     }
 }

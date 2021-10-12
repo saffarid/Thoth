@@ -75,7 +75,6 @@ public class DataBaseLite {
      * */
     public void readTable(Table table, List<HashMap<String, Object>> data){
         try {
-            LOG.log(Level.INFO, table.getName());
             DBData.getInstance().getTableReadable(table.getName()).readTable(data);
         } catch (ParseException e) {
             e.printStackTrace();

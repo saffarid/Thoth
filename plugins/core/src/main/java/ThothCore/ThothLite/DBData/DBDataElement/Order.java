@@ -97,4 +97,9 @@ public class Order implements Finishable, Identifiable {
     public void finish() {
 
     }
+
+    @Override
+    public String message() {
+        return id;
+    }
 }

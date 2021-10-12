@@ -14,4 +14,9 @@ public interface Finishable {
      * */
     void finish();
 
+    /**
+     * Информация об объекте
+     * */
+    String message();
+
 }
