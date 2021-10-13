@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.Flow;
 
 public interface Traceable
-        extends Flow.Publisher, Closeable{
+        extends Flow.Publisher<Finishable>, Closeable{
 
     void setTraceableObjects(List<Finishable> finishables);
 

@@ -37,7 +37,7 @@ public class Purchases
                         String.valueOf(row.get(ORDER_ID)),
                         (Partner) DBData.getInstance().getTable(StructureDescription.Partners.TABLE_NAME)
                                 .getById( String.valueOf( row.get(STORE_ID)) ),
-                        DateFormat.getDateInstance().parse((String) row.get(DELIVERY_DATE)),
+                        new Date((Long) row.get(DELIVERY_DATE)),
                         (int) row.get(IS_DELIVERED) == Purchase.DELIVERED
                 );
 

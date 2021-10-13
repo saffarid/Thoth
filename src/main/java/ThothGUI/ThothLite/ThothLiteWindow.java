@@ -1,5 +1,7 @@
 package ThothGUI.ThothLite;
 
+import ThothCore.ThothLite.DBData.Purchases;
+import ThothCore.ThothLite.Finishable;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
@@ -35,12 +37,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Flow;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ThothLiteWindow
         extends PrimaryWindow
         implements
         OpenSubwindow
         , CloseSubwindow
+        , Flow.Subscriber<Finishable>
 {
 
     private final String STRING_KEY_INCOME_EXPENSES = "Доходы/расходы";
@@ -50,6 +56,7 @@ public class ThothLiteWindow
     private final String STRING_KEY_STORAGE = "Склад";
     private final String STRING_KEY_TABLES_GUIDE = "Списочные таблицы";
 
+    private static Logger LOG;
 
     private Stage mainStage;
 
@@ -60,6 +67,10 @@ public class ThothLiteWindow
     private List<String> openSubwindows;
 
     private ThothLite thoth;
+
+    static {
+        LOG = Logger.getLogger("ThothLiteGUI");
+    }
 
     public ThothLiteWindow(Stage stage,
                            ThothLite thoth) {
@@ -73,7 +84,10 @@ public class ThothLiteWindow
         workspaceConfig();
         styleConfig();
 
+        thoth.purchasesSubscribe(this);
+
     }
+
 
     private MenuButton getMenuButton(String mes, String url, EventHandler<ActionEvent> event){
         MenuButton menuButton = new MenuButton(mes);
@@ -172,4 +186,26 @@ public class ThothLiteWindow
             workspace.getChildren().remove(subwindow);
         }
     }
+
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+        subscription.request(1);
+        LOG.log(Level.INFO, "Подписка прошла успешно");
+    }
+
+    @Override
+    public void onNext(Finishable item) {
+        LOG.log(Level.INFO, item.message());
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+
 }

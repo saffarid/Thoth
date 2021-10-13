@@ -25,8 +25,10 @@ public class Main extends Application implements ChangeScreen{
     public void start(Stage stage) throws Exception {
         this.stage = stage;
 
-        ThothLiteWindow thoth = new ThothLiteWindow(stage, new ThothLite());
+        ThothLite thoth1 = new ThothLite();
+        ThothLiteWindow thoth = new ThothLiteWindow(stage, thoth1);
         stage.setScene(new Scene(thoth, 800, 600));
+//        thoth1.purchasesSubscribe(thoth);
 
 
         stage.initStyle(StageStyle.UNDECORATED);

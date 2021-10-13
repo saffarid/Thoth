@@ -31,12 +31,11 @@ public class ThothLite {
 
     }
 
-    public void purchasesSubscribe(Flow.Subscriber<Purchase> subscriber){
+    public void purchasesSubscribe(Flow.Subscriber<Finishable> subscriber){
         watcherPurchasesFinish.subscribe(subscriber);
     }
 
-    public void orderSubscribe(Flow.Subscriber<Order> subscriber){
+    public void orderSubscribe(Flow.Subscriber<Finishable> subscriber){
         watcherOrdersFinish.subscribe(subscriber);
     }
-
 }
