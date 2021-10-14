@@ -6,7 +6,6 @@ import ThothCore.ThothLite.DBData.DBDataElement.Order;
 import ThothCore.ThothLite.DBData.DBDataElement.Partner;
 import ThothCore.ThothLite.DBData.DBDataElement.Project;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
-import ThothCore.ThothLite.TableReadable;
 
 import java.sql.ResultSet;
 import java.text.DateFormat;

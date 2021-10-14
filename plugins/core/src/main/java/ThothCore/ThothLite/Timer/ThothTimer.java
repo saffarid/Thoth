@@ -1,12 +1,10 @@
 package ThothCore.ThothLite.Timer;
 
-import ThothCore.ThothLite.Finishable;
+import ThothCore.ThothLite.DBData.Finishable;
 
 import java.text.DateFormat;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -17,18 +15,24 @@ public class ThothTimer
 
     private SubmissionPublisher publisher;
     private HashMap<Finishable, ScheduledFuture> taskMap;
-    private List<Finishable> table;
+    private List<Finishable> buffer;
 
     public ThothTimer() {
-        publisher = new SubmissionPublisher(ForkJoinPool.commonPool(), 5);
+        publisher = new SubmissionPublisher(ForkJoinPool.commonPool(), POOL_SIZE);
         taskMap = new HashMap<>();
-        table = new LinkedList<>();
-
+        buffer = new LinkedList<>();
     }
 
     @Override
     public void subscribe(Flow.Subscriber subscriber) {
+        boolean hadSubscribers = publisher.hasSubscribers();
         publisher.subscribe(subscriber);
+        if(!hadSubscribers){
+            for (Finishable finishable : buffer){
+                notifySubscribers(finishable);
+                buffer.remove(finishable);
+            }
+        }
     }
 
     @Override
@@ -49,11 +53,9 @@ public class ThothTimer
             if( (daysDelay > 0) && (finishDate.isAfter(currentDate)) ){
                 taskMap.put(
                         finishable, poolExecutor.schedule(scheduledTask, daysDelay, TimeUnit.DAYS)
-//                        finishable, poolExecutor.schedule(scheduledTask, daysDelay, TimeUnit.MILLISECONDS)
                 );
             }else {
                 poolExecutor.schedule(scheduledTask, 2, TimeUnit.SECONDS);
-//                poolExecutor.execute(scheduledTask);
             }
         }
     }
@@ -69,6 +71,10 @@ public class ThothTimer
 
     @Override
     public void notifySubscribers(Finishable finishable) {
-        publisher.submit(finishable);
+        if(publisher.hasSubscribers()){
+            publisher.submit(finishable);
+        }else{
+            buffer.add(finishable);
+        }
     }
 }

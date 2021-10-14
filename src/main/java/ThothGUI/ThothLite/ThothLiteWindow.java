@@ -1,11 +1,12 @@
 package ThothGUI.ThothLite;
 
-import ThothCore.ThothLite.DBData.Purchases;
-import ThothCore.ThothLite.Finishable;
+import ThothCore.ThothLite.DBData.Finishable;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
-import ThothGUI.ThothLite.Subwindows.TablesList;
+import ThothGUI.ThothLite.Subwindows.Products;
+import ThothGUI.ThothLite.Subwindows.Purchases;
+
 import controls.Label;
 import controls.MenuButton;
 import controls.Toggle;
@@ -104,54 +105,29 @@ public class ThothLiteWindow
 
     private void menuConfig(){
         List<MenuButton> menuButtons = new LinkedList<>();
-        menuButtons.add(getMenuButton(STRING_KEY_INCOME_EXPENSES, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
-        menuButtons.add(getMenuButton(STRING_KEY_ORDERS, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
-        menuButtons.add(getMenuButton(STRING_KEY_PURCHASES, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
-        menuButtons.add(getMenuButton(STRING_KEY_PROJECTS, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
-        menuButtons.add(getMenuButton(STRING_KEY_STORAGE, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
-        menuButtons.add(getMenuButton(STRING_KEY_TABLES_GUIDE, thoth_styleconstants.Image.ANALYZE, this::openAnalyzator));
+        menuButtons.add(getMenuButton(
+                STRING_KEY_INCOME_EXPENSES, thoth_styleconstants.Image.ANALYZE, event -> {}
+        ));
+        menuButtons.add(getMenuButton(
+                STRING_KEY_ORDERS, thoth_styleconstants.Image.ANALYZE, event -> {}
+        ));
+        menuButtons.add(getMenuButton(
+                STRING_KEY_PURCHASES, thoth_styleconstants.Image.ANALYZE, event -> {openSubwindow(new Purchases(STRING_KEY_PURCHASES, this::closeSubwindow));}
+        ));
+        menuButtons.add(getMenuButton(
+                STRING_KEY_PROJECTS, thoth_styleconstants.Image.ANALYZE, event -> {}
+        ));
+        menuButtons.add(getMenuButton(
+                STRING_KEY_STORAGE, thoth_styleconstants.Image.ANALYZE, event -> {}
+        ));
+        menuButtons.add(getMenuButton(
+                STRING_KEY_TABLES_GUIDE, thoth_styleconstants.Image.ANALYZE, event -> {}
+        ));
+        menuButtons.add(getMenuButton(
+                "Продукты", thoth_styleconstants.Image.ANALYZE, event -> {openSubwindow(new Products("Продукты", this::closeSubwindow, thoth));}
+        ));
         menu = new NavigationMenu("", true, menuButtons);
         setLeft(menu);
-    }
-
-    private Subwindow createSubwindow(String title){
-        Subwindow subwindow = new Subwindow(title);
-        subwindow.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) subwindow.toFront();
-        });
-        openSubwindow(subwindow);
-        subwindow.setCloseEvent(click -> closeSubwindow(subwindow));
-        new SubwindowResizer(subwindow);
-        return subwindow;
-    }
-
-    private void openAnalyzator(ActionEvent event) {
-
-    }
-
-    private void openTables(ActionEvent event) {
-        openSubwindow(new TablesList("Таблицы", thoth));
-    }
-
-    private void openTest(ActionEvent event) {
-
-        Subwindow subwindow = createSubwindow("Тестовое окно");
-
-        Pane pane = new Pane(new DropdownPane("test", new BorderPane(new Toggle(true))));
-        pane.setBackground(new Background(new BackgroundFill(Paint.valueOf(String.valueOf(Color.AQUAMARINE)), null, null)));
-
-        BorderPane pane1 = new BorderPane(new DropdownPane("test", new BorderPane(new Label("hello"))));
-
-        BorderPane pane2 = new BorderPane(new DropdownPane("test", new Pane(new Label("hello"))));
-
-        VBox hBox = new VBox();
-        hBox.setFillWidth(true);
-        hBox.getChildren().addAll(pane, pane1, pane2);
-        hBox.setPadding(new Insets(5));
-        hBox.setSpacing(5);
-
-        subwindow.setCenter(hBox);
-
     }
 
     private void styleConfig(){

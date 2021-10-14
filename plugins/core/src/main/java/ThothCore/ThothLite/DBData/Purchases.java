@@ -6,10 +6,8 @@ import ThothCore.ThothLite.DBData.DBDataElement.Partner;
 import ThothCore.ThothLite.DBData.DBDataElement.Product;
 import ThothCore.ThothLite.DBData.DBDataElement.Purchase;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
-import ThothCore.ThothLite.TableReadable;
 
 import java.sql.ResultSet;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;

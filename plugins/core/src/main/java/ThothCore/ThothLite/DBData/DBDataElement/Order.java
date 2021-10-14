@@ -1,7 +1,7 @@
 package ThothCore.ThothLite.DBData.DBDataElement;
 
 import ThothCore.ThothLite.DBData.Identifiable;
-import ThothCore.ThothLite.Finishable;
+import ThothCore.ThothLite.DBData.Finishable;
 
 import java.util.Date;
 

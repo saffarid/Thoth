@@ -1,6 +1,6 @@
 package ThothCore.ThothLite.Timer;
 
-import ThothCore.ThothLite.Finishable;
+import ThothCore.ThothLite.DBData.Finishable;
 
 public interface Closeable {
 

@@ -22,6 +22,9 @@ public class Currency implements Identifiable {
         return id;
     }
 
+    @Override
+    public void setId(String id) { }
+
     public String getCurrency() {
         return currency;
     }

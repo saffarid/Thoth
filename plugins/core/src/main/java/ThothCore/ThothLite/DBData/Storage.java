@@ -5,7 +5,6 @@ import ThothCore.ThothLite.DBData.DBDataElement.ListElement;
 import ThothCore.ThothLite.DBData.DBDataElement.Product;
 import ThothCore.ThothLite.DBData.DBDataElement.StorageCell;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
-import ThothCore.ThothLite.TableReadable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;

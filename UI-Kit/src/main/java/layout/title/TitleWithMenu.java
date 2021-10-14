@@ -1,5 +1,6 @@
 package layout.title;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -20,17 +21,30 @@ public class TitleWithMenu extends Title{
     private Button minify;
 
 
-    public TitleWithMenu() {
+    public TitleWithMenu(Stage stage) {
         super();
-        init();
+        init(stage);
     }
 
-    private void init(){
+    private void init(Stage stage){
         fullSize = addButton(URL_MINIFY);
         minify = addButton(URL_MINIFY_TO_TASK_BAR);
 
         ((HBox)getRight()).getChildren().add(0,fullSize);
         ((HBox)getRight()).getChildren().add(0,minify);
+
+        minify.setOnAction(event -> {
+            stage.setIconified(true);
+        });
+
+        fullSize.setOnAction(event -> {
+            boolean maximized = stage.isMaximized();
+            if(maximized){
+                stage.setMaximized(false);
+            }else{
+                stage.setMaximized(true);
+            }
+        });
     }
 
 }

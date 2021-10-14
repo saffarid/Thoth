@@ -4,7 +4,6 @@ import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.NotUse;
 import ThothCore.ThothLite.DBData.DBDataElement.Product;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
-import ThothCore.ThothLite.TableReadable;
 
 import java.sql.ResultSet;
 import java.text.ParseException;

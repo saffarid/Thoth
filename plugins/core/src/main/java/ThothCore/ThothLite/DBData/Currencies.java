@@ -2,8 +2,6 @@ package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Currency;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
-import ThothCore.ThothLite.TableReadable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;

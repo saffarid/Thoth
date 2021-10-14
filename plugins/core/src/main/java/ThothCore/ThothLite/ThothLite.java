@@ -1,13 +1,15 @@
 package ThothCore.ThothLite;
 
 import ThothCore.ThothLite.DBData.DBData;
-import ThothCore.ThothLite.DBData.DBDataElement.Order;
-import ThothCore.ThothLite.DBData.DBDataElement.Purchase;
+import ThothCore.ThothLite.DBData.DBDataElement.Product;
+import ThothCore.ThothLite.DBData.Finishable;
+import ThothCore.ThothLite.DBData.Products;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 import ThothCore.ThothLite.Timer.ThothTimer;
 import ThothCore.ThothLite.Timer.Traceable;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.Flow;
 
 public class ThothLite {
@@ -31,11 +33,23 @@ public class ThothLite {
 
     }
 
+    /**
+     * Подписка на публикацию наступления плановой даты завершения заказа
+     * */
+    public void orderSubscribe(Flow.Subscriber<Finishable> subscriber){
+        watcherOrdersFinish.subscribe(subscriber);
+    }
+
+    /**
+     * Подписка на публикацию наступления даты получения покупки
+     * */
     public void purchasesSubscribe(Flow.Subscriber<Finishable> subscriber){
         watcherPurchasesFinish.subscribe(subscriber);
     }
 
-    public void orderSubscribe(Flow.Subscriber<Finishable> subscriber){
-        watcherOrdersFinish.subscribe(subscriber);
+    public List<Product> getProducts(){
+        return dbData.getTable(StructureDescription.Products.TABLE_NAME).getDatas();
     }
+
+
 }

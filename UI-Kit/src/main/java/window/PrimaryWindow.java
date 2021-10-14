@@ -1,8 +1,11 @@
 package window;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import layout.title.TitleWithMenu;
+
+import java.awt.*;
 
 public class PrimaryWindow extends Window{
 
@@ -13,7 +16,7 @@ public class PrimaryWindow extends Window{
 
         this.stage = stage;
 
-        title = new TitleWithMenu();
+        title = new TitleWithMenu(stage);
 
         title.setOnMousePressed(this::stagePress);
         title.setOnMouseDragged(this::stageDrag);
@@ -28,6 +31,9 @@ public class PrimaryWindow extends Window{
             case PRIMARY: {
                 title.setSwitchSceneX( mouseEvent.getX() );
                 title.setSwitchSceneY( mouseEvent.getY() );
+                if(stage.isMaximized()){
+                    title.setSwitchSceneX( (mouseEvent.getX() - 0.0)*(getPrefWidth() - 0.0)/(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth() - 0.0) );
+                }
                 break;
             }
         }
@@ -36,6 +42,7 @@ public class PrimaryWindow extends Window{
     private void stageDrag(MouseEvent mouseEvent) {
         switch (mouseEvent.getButton()) {
             case PRIMARY: {
+                if(stage.isMaximized()) stage.setMaximized(false);
                 stage.setX(mouseEvent.getScreenX() - title.getSwitchSceneX());
                 stage.setY(mouseEvent.getScreenY() - title.getSwitchSceneY());
             }

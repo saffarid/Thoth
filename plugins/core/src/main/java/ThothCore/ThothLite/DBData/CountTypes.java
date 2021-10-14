@@ -2,8 +2,6 @@ package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.ListElement;
-import ThothCore.ThothLite.TableReadable;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;

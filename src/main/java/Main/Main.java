@@ -27,9 +27,8 @@ public class Main extends Application implements ChangeScreen{
 
         ThothLite thoth1 = new ThothLite();
         ThothLiteWindow thoth = new ThothLiteWindow(stage, thoth1);
-        stage.setScene(new Scene(thoth, 800, 600));
-//        thoth1.purchasesSubscribe(thoth);
-
+        thoth.setPrefSize(800, 600);
+        stage.setScene(new Scene(thoth));
 
         stage.initStyle(StageStyle.UNDECORATED);
 

@@ -1,10 +1,9 @@
 package ThothCore.ThothLite.DBData.DBDataElement;
 
 import ThothCore.ThothLite.DBData.Identifiable;
-import ThothCore.ThothLite.Finishable;
+import ThothCore.ThothLite.DBData.Finishable;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
