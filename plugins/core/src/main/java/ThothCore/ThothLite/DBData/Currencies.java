@@ -1,7 +1,7 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.Currency;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -11,11 +11,11 @@ import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Currency.
 
 public class Currencies
         extends Data<Currency>
-        implements TableReadable {
+{
 
     public Currencies() {
         super();
-        name = TABLE_NAME;
+        setName(TABLE_NAME);
     }
 
     @Override

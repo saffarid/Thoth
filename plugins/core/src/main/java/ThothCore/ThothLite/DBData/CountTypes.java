@@ -1,7 +1,7 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.ListElement;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.ListElement;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class CountTypes
 
     public CountTypes() {
         super();
-        name = TABLE_NAME;
+        setName(TABLE_NAME);
     }
 
     @Override

@@ -1,9 +1,8 @@
 package ThothGUI.ThothLite.Subwindows;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Product;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
-import javafx.scene.control.Cell;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import window.Subwindow;

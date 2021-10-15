@@ -1,30 +1,31 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.Partner;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Partner;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
+import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Partners.*;
+
 public class Partners
         extends Data<Partner>
-        implements TableReadable {
+{
 
     public Partners() {
         super();
-        name = StructureDescription.Partners.TABLE_NAME;
+        setName(TABLE_NAME);
     }
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
         for(HashMap<String, Object> row : data){
             datas.add(new Partner(
-                    String.valueOf(row.get(StructureDescription.Partners.ID)),
-                    (String) row.get(StructureDescription.Partners.NAME),
-                    (String) row.get(StructureDescription.Partners.PHONE),
-                    (String) row.get(StructureDescription.Partners.WEB)
+                    String.valueOf(row.get(ID)),
+                    (String) row.get(NAME),
+                    (String) row.get(PHONE),
+                    (String) row.get(WEB)
             ));
         }
     }

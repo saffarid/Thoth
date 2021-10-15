@@ -1,6 +1,6 @@
 package ThothCore.ThothLite.Timer;
 
-import ThothCore.ThothLite.DBData.Finishable;
+import ThothCore.ThothLite.DBData.DBDataElement.Finishable;
 
 import java.util.List;
 import java.util.concurrent.Flow;

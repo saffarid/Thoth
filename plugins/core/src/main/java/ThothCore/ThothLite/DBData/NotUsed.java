@@ -1,8 +1,8 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.NotUse;
-import ThothCore.ThothLite.DBData.DBDataElement.Product;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.NotUse;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
@@ -14,11 +14,11 @@ import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.NotUsed.*
 
 public class NotUsed
         extends Data<NotUse>
-        implements TableReadable {
+{
 
     public NotUsed() {
         super();
-        name = TABLE_NAME;
+        setName(TABLE_NAME);
     }
 
     @Override

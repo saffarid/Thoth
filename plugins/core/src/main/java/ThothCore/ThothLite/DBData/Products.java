@@ -1,9 +1,10 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.Currency;
-import ThothCore.ThothLite.DBData.DBDataElement.ListElement;
-import ThothCore.ThothLite.DBData.DBDataElement.Product;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.ListElement;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
+import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
@@ -13,12 +14,12 @@ import java.util.List;
 import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Products.*;
 
 public class Products
-        extends Data<Product>
-        implements TableReadable {
+        extends Data<Storagable>
+{
 
     public Products() {
         super();
-        name = TABLE_NAME;
+        setName(TABLE_NAME);
     }
 
     @Override
@@ -27,7 +28,6 @@ public class Products
             DBData dbData = DBData.getInstance();
             datas.add(
                     new Product(
-                            String.valueOf(row.get(ID)),
                             (String) row.get(ARTICLE),
                             (String) row.get(NAME),
                             (ListElement) dbData.getTable(StructureDescription.ProductTypes.TABLE_NAME)

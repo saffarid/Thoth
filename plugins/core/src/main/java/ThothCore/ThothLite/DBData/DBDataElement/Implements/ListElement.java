@@ -1,6 +1,6 @@
-package ThothCore.ThothLite.DBData.DBDataElement;
+package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Identifiable;
 
 public class ListElement
         implements Identifiable {

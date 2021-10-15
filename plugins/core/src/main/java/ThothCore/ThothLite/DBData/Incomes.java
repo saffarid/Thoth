@@ -1,7 +1,7 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.Order;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Order;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class Incomes
 
     public Incomes() {
         super();
-        name = TABLE_NAME;
+        setName(TABLE_NAME);
     }
 
     @Override

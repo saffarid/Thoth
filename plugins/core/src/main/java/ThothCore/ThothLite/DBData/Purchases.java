@@ -1,10 +1,11 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.ListElement;
-import ThothCore.ThothLite.DBData.DBDataElement.Partner;
-import ThothCore.ThothLite.DBData.DBDataElement.Product;
-import ThothCore.ThothLite.DBData.DBDataElement.Purchase;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.ListElement;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Partner;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Purchase;
+import ThothCore.ThothLite.DBData.DBDataElement.Purchasable;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
@@ -16,25 +17,25 @@ import java.util.List;
 import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Purchases.*;
 
 public class Purchases
-        extends Data<Purchase>
-        implements TableReadable {
+        extends Data<Purchasable>
+{
 
     public Purchases() {
         super();
-        name = TABLE_NAME;
+        setName(TABLE_NAME);
     }
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) throws ParseException {
         for (HashMap<String, Object> row : data) {
 
-            Purchase purchase = getById((String) row.get(ORDER_ID));
+            Purchasable purchase = getById((String) row.get(ORDER_ID));
 
             if (purchase == null) {
                 purchase = new Purchase(
                         String.valueOf(row.get(ORDER_ID)),
                         (Partner) DBData.getInstance().getTable(StructureDescription.Partners.TABLE_NAME)
-                                .getById( String.valueOf( row.get(STORE_ID)) ),
+                                .getById(String.valueOf(row.get(STORE_ID))),
                         new Date((Long) row.get(DELIVERY_DATE)),
                         (int) row.get(IS_DELIVERED) == Purchase.DELIVERED
                 );
@@ -44,15 +45,10 @@ public class Purchases
                 );
             }
 
-            purchase.addProduct(
-                    (Product) DBData.getInstance().getTable(StructureDescription.Products.TABLE_NAME)
-                            .getById( String.valueOf(row.get(PRODUCT_ID)) ),
-                    (Double) row.get(COUNT),
-                    (ListElement) DBData.getInstance().getTable(StructureDescription.CountTypes.TABLE_NAME)
-                            .getById( String.valueOf(row.get(COUNT_TYPE_ID)) )
-            );
+            //Реализовать добавление продуктов в список
 
         }
+
     }
 
     @Override

@@ -1,6 +1,6 @@
 package ThothCore.ThothLite.Timer;
 
-import ThothCore.ThothLite.DBData.Finishable;
+import ThothCore.ThothLite.DBData.DBDataElement.Finishable;
 
 import java.text.DateFormat;
 import java.time.LocalDate;

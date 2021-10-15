@@ -1,38 +1,25 @@
 package ThothGUI.ThothLite;
 
-import ThothCore.ThothLite.DBData.Finishable;
+import ThothCore.ThothLite.DBData.DBDataElement.Finishable;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Subwindows.Products;
 import ThothGUI.ThothLite.Subwindows.Purchases;
 
-import controls.Label;
 import controls.MenuButton;
-import controls.Toggle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
-import layout.basepane.BorderPane;
 import layout.basepane.StackPane;
-import layout.basepane.VBox;
-import layout.custompane.DropdownPane;
 import layout.custompane.NavigationMenu;
 import window.PrimaryWindow;
 import window.Subwindow;
-import window.SubwindowResizer;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

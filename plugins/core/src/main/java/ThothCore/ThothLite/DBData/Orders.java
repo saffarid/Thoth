@@ -1,10 +1,10 @@
 package ThothCore.ThothLite.DBData;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.ListElement;
-import ThothCore.ThothLite.DBData.DBDataElement.Order;
-import ThothCore.ThothLite.DBData.DBDataElement.Partner;
-import ThothCore.ThothLite.DBData.DBDataElement.Project;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.ListElement;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Order;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Partner;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Project;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
@@ -17,11 +17,11 @@ import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Orders.*;
 
 public class Orders
         extends Data<Order>
-        implements TableReadable {
+{
 
     public Orders() {
         super();
-        name = TABLE_NAME;
+        setName(TABLE_NAME);
     }
 
     @Override

@@ -1,9 +1,8 @@
 package ThothCore.ThothLite;
 
 import ThothCore.ThothLite.DBData.DBData;
-import ThothCore.ThothLite.DBData.DBDataElement.Product;
-import ThothCore.ThothLite.DBData.Finishable;
-import ThothCore.ThothLite.DBData.Products;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
+import ThothCore.ThothLite.DBData.DBDataElement.Finishable;
 import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 import ThothCore.ThothLite.Timer.ThothTimer;
 import ThothCore.ThothLite.Timer.Traceable;

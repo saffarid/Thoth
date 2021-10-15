@@ -1,11 +1,10 @@
-package ThothCore.ThothLite.DBData.DBDataElement;
+package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
 
 public class Product
-        implements Identifiable {
+        implements Storagable {
 
-    private String id;
     private String article;
     private String name;
     private ListElement type;
@@ -13,8 +12,7 @@ public class Product
     private Currency currency;
     private String note;
 
-    public Product(String id, String article, String name, ListElement type, Double price, Currency currency) {
-        this.id = id;
+    public Product(String article, String name, ListElement type, Double price, Currency currency) {
         this.article = article;
         this.name = name;
         this.type = type;
@@ -22,8 +20,7 @@ public class Product
         this.currency = currency;
     }
 
-    public Product(String id, String article, String name, ListElement type, Double price, Currency currency, String note) {
-        this.id = id;
+    public Product(String article, String name, ListElement type, Double price, Currency currency, String note) {
         this.article = article;
         this.name = name;
         this.type = type;
@@ -34,55 +31,61 @@ public class Product
 
     public boolean equals(Product obj) {
         if( (this.article != null && !this.article.equals(""))
-                && (obj.getArticle() != null && !obj.getArticle().equals("")) ) {
-            return this.article.equals(obj.getArticle());
+                && (obj.getId() != null && !obj.getId().equals("")) ) {
+            return this.article.equals(obj.getId());
         }else{
             return this.name.equals(obj.getName());
         }
     }
 
-    public String getArticle() {
-        return article;
-    }
 
-    public Currency getCurrency() {
-        return currency;
+    @Override
+    public String getCurrency() {
+        return currency.getCurrency();
     }
 
     @Override
     public String getId() {
-        return id;
+        return article;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Double getPrice() {
         return price;
     }
 
-    public ListElement getType() {
-        return type;
+    @Override
+    public String getType() {
+        return type.getValue();
     }
 
-    public void setArticle(String article) {
-        this.article = article;
+    @Override
+    public void setCurrency(String currency) {
+
     }
 
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
+    @Override
+    public void setId(String id) {
+        this.article = id;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public void setPrice(Double price) {
         this.price = price;
     }
 
-    public void setType(ListElement type) {
-        this.type = type;
+    @Override
+    public void setType(String type) {
+
     }
 }

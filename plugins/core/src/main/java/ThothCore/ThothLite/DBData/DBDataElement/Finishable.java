@@ -1,13 +1,18 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.DBDataElement;
 
 import java.util.Date;
 
 public interface Finishable {
 
     /**
-     * Функция возвращает дату завершения
+     * @return дата завершения
      * */
     Date finishDate();
+
+    /**
+     * @param finishDate дата завершения
+     * */
+    void setFinishDate(Date finishDate);
 
     /**
      * Действие при наступлении даты завершения

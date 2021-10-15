@@ -1,4 +1,4 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.DBDataElement;
 
 /**
  * Реализация интерфейса делает объект исчисляемым
