@@ -1,7 +1,9 @@
 package ThothCore.ThothLite;
 
+import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
+import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBLiteStructure.DBLiteStructure;
 
@@ -52,8 +54,30 @@ public class DataBaseLite {
         LOG.log(Level.INFO, "Создание структуры успешно пройдено");
     }
 
+    private ContentValues convertToContentValues(String tableName, HashMap<String, Object> data){
+        ContentValues contentValues = new ContentValues();
+
+        for(String columnName : data.keySet()){
+            contentValues.put(structure.getTable(tableName).getTableCol(columnName), data.get(columnName));
+        }
+
+        return contentValues;
+    }
+
     public List<Table> getTables(){
         return structure.getTables();
+    }
+
+    public void insert(String tableName, List<HashMap<String, Object>> datas) throws SQLException {
+
+        for(HashMap<String, Object> data : datas){
+            dbManager.insert(
+                    structure.getTable(tableName),
+                    convertToContentValues(tableName, data),
+                    dbFile
+            );
+        }
+
     }
 
     /**

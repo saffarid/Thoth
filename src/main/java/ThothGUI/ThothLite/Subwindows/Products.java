@@ -8,6 +8,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import window.Subwindow;
 
+import java.util.List;
+
 public class Products
         extends Subwindow {
 
@@ -22,7 +24,7 @@ public class Products
         setCloseEvent(event -> closeSubwindow.closeSubwindow(this));
 
         listProducts = new ListView<>();
-        listProducts.getItems().setAll((Storagable) thoth.getDataFromTable(StructureDescription.Products.TABLE_NAME));
+        listProducts.getItems().setAll((List<Storagable>)thoth.getDataFromTable(StructureDescription.Products.TABLE_NAME));
         listProducts.setCellFactory(productListView -> new ProductCell());
         setCenter(listProducts);
     }
