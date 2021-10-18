@@ -1,10 +1,11 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Finishable;
+import ThothCore.ThothLite.DBData.DBDataElement.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Orderable;
 import ThothCore.ThothLite.DBData.DBDataElement.Projectable;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Order
@@ -14,37 +15,37 @@ public class Order
     private String customer;
     private Projectable project;
     private boolean isMonthly;
-    private Date startDate;
-    private Date finishDate;
-    private ListElement status;
+    private LocalDate startDate;
+    private LocalDate finishDate;
+    private Listed status;
     private boolean autofinish;
 
     public Order(String id
             , Identifiable customer
-            , Project project
+            , Projectable project
             , boolean isMonthly
-            , Date startDate
-            , Date finishDate
-            , ListElement status
+            , String startDate
+            , String finishDate
+            , Listed status
             , boolean autofinish) {
         this.id = id;
         this.customer = customer.getId();
         this.project = project;
         this.isMonthly = isMonthly;
-        this.startDate = startDate;
-        this.finishDate = finishDate;
+        this.startDate = LocalDate.parse(startDate);
+        this.finishDate = LocalDate.parse(finishDate);
         this.status = status;
         this.autofinish = autofinish;
     }
 
     @Override
-    public Date finishDate() {
+    public LocalDate finishDate() {
         return finishDate;
     }
 
     @Override
-    public void setFinishDate(Date finishDate) {
-        this.finishDate = finishDate;
+    public void setFinishDate(String finishDate) {
+        this.finishDate = LocalDate.parse(finishDate);
     }
 
     @Override
@@ -78,13 +79,13 @@ public class Order
     }
 
     @Override
-    public Date startDate() {
+    public LocalDate startDate() {
         return startDate;
     }
 
     @Override
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setStartDate(String startDate) {
+        this.startDate = LocalDate.parse(startDate);
     }
 
     @Override

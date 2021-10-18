@@ -1,8 +1,10 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Nameable;
+import ThothCore.ThothLite.DBData.DBData;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,8 @@ public abstract class Data<T extends Identifiable>
                 .isPresent();
     }
 
+    public abstract HashMap<String, Object> convertToMap(Identifiable identifiable);
+
     public T getById(String id) {
         Optional<T> element = datas.stream().filter(t -> t.getId().equals(id)).findFirst();
         return (element.isPresent()) ?
@@ -41,6 +45,10 @@ public abstract class Data<T extends Identifiable>
 
     public List<T> getDatas() {
         return datas;
+    }
+
+    public Identifiable getFromTableById(String tableName, String id){
+        return DBData.getInstance().getTable(tableName).getById(id);
     }
 
     public String getName() {

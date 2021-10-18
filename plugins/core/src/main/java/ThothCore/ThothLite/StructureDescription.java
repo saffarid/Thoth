@@ -1,4 +1,4 @@
-package ThothCore.ThothLite.DBLiteStructure;
+package ThothCore.ThothLite;
 
 import Database.Table;
 import Database.TableColumn;

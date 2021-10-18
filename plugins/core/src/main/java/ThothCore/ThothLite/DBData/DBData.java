@@ -1,5 +1,7 @@
 package ThothCore.ThothLite.DBData;
 
+import ThothCore.ThothLite.DBData.Tables.*;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;

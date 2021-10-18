@@ -1,6 +1,8 @@
 package ThothCore.ThothLite.DBData.DBDataElement;
 
-import java.util.List;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Composite;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
 
 public interface Projectable
         extends Nameable

@@ -1,4 +1,4 @@
-package ThothCore.ThothLite.DBData.DBDataElement;
+package ThothCore.ThothLite.DBData.DBDataElement.Properties;
 
 public interface Typable {
 

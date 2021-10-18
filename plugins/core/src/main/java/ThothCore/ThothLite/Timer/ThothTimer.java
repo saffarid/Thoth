@@ -1,6 +1,6 @@
 package ThothCore.ThothLite.Timer;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Finishable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 
 import java.text.DateFormat;
 import java.time.LocalDate;
@@ -41,10 +41,7 @@ public class ThothTimer
         LocalDate currentDate = LocalDate.now();
 
         for(Finishable finishable : finishables){
-            String format = DateFormat.getDateInstance().format(
-                    finishable.finishDate()
-            );
-            LocalDate finishDate = new java.sql.Date(finishable.finishDate().getTime()).toLocalDate();
+            LocalDate finishDate = finishable.finishDate();
 
             ScheduledTask scheduledTask = new ScheduledTask(this::notifySubscribers, finishable);
 

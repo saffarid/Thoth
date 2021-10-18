@@ -1,6 +1,7 @@
 package ThothGUI.ThothLite;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Finishable;
+
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;

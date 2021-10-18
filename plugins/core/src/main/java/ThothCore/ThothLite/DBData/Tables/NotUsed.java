@@ -1,16 +1,18 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
 import Database.TableColumn;
+import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.NotUse;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.NotUsed.*;
+import static ThothCore.ThothLite.StructureDescription.NotUsed.*;
 
 public class NotUsed
         extends Data<NotUse>
@@ -22,13 +24,24 @@ public class NotUsed
     }
 
     @Override
+    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+        HashMap<String, Object> res = new HashMap<>();
+
+        NotUse notUse = (NotUse) identifiable;
+
+        res.put(PRODUCT_ID, notUse.getProduct().getId());
+        res.put(CAUSE, notUse.getCause());
+
+        return res;
+    }
+
+    @Override
     public void readTable(List<HashMap<String, Object>> data) throws ParseException {
         for(HashMap<String, Object> row : data){
             datas.add(
                     new NotUse(
                             String.valueOf(row.get(ID)),
-                            (Product) DBData.getInstance().getTable(StructureDescription.Products.TABLE_NAME)
-                            .getById( String.valueOf(row.get(PRODUCT_ID)) ),
+                            (Product) getFromTableById( StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(PRODUCT_ID)) ),
                             (String) row.get(CAUSE)
                     )
             );

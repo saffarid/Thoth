@@ -1,5 +1,6 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
+import ThothCore.ThothLite.DBData.DBDataElement.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
 
 public class Product
@@ -7,12 +8,12 @@ public class Product
 
     private String article;
     private String name;
-    private ListElement type;
+    private Listed type;
     private Double price;
     private Currency currency;
     private String note;
 
-    public Product(String article, String name, ListElement type, Double price, Currency currency) {
+    public Product(String article, String name, Listed type, Double price, Currency currency) {
         this.article = article;
         this.name = name;
         this.type = type;
@@ -20,7 +21,7 @@ public class Product
         this.currency = currency;
     }
 
-    public Product(String article, String name, ListElement type, Double price, Currency currency, String note) {
+    public Product(String article, String name, Listed type, Double price, Currency currency, String note) {
         this.article = article;
         this.name = name;
         this.type = type;
@@ -37,7 +38,6 @@ public class Product
             return this.name.equals(obj.getName());
         }
     }
-
 
     @Override
     public String getCurrency() {

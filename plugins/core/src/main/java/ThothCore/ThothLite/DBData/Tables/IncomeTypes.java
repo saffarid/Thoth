@@ -1,22 +1,33 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
 import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.ListElement;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBData.DBDataElement.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.IncomeTypes.*;
+import static ThothCore.ThothLite.StructureDescription.IncomeTypes.*;
 
 public class IncomeTypes
-        extends Data<ListElement>
+        extends Data<Listed>
 {
 
     public IncomeTypes() {
         super();
         setName(TABLE_NAME);
+    }
+
+    @Override
+    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+        HashMap<String, Object> res = new HashMap<>();
+        Listed listed = (Listed) identifiable;
+
+        res.put(INCOME_TYPE, listed.getValue());
+
+        return res;
     }
 
     @Override

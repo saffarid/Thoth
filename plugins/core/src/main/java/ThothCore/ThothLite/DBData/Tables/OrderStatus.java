@@ -1,21 +1,32 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
 import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.ListElement;
+import ThothCore.ThothLite.DBData.DBDataElement.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.CountTypes.*;
+import static ThothCore.ThothLite.StructureDescription.OrderStatus.*;
 
-public class CountTypes
-        extends Data<ListElement>
-        implements TableReadable {
+public class OrderStatus
+        extends Data<Listed>
+{
 
-    public CountTypes() {
+    public OrderStatus() {
         super();
         setName(TABLE_NAME);
+    }
+
+    @Override
+    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+        HashMap<String, Object> res = new HashMap<>();
+
+
+
+        return res;
     }
 
     @Override
@@ -24,7 +35,7 @@ public class CountTypes
             datas.add(
                     new ListElement(
                             String.valueOf(row.get(ID)),
-                            (String) row.get(COUNT_TYPE)
+                            (String) row.get(ORDER_STATUS)
                     )
             );
         }

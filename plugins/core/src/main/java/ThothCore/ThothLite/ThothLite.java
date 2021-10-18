@@ -1,9 +1,8 @@
 package ThothCore.ThothLite;
 
 import ThothCore.ThothLite.DBData.DBData;
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
-import ThothCore.ThothLite.DBData.DBDataElement.Finishable;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.Timer.ThothTimer;
 import ThothCore.ThothLite.Timer.Traceable;
 
@@ -46,8 +45,8 @@ public class ThothLite {
         watcherPurchasesFinish.subscribe(subscriber);
     }
 
-    public List<Product> getProducts(){
-        return dbData.getTable(StructureDescription.Products.TABLE_NAME).getDatas();
+    public List<? extends Identifiable> getDataFromTable(String tableName){
+        return dbData.getTable(tableName).getDatas();
     }
 
 

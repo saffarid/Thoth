@@ -1,22 +1,34 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
 import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.ListElement;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBData.DBDataElement.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.ProductTypes.*;
+import static ThothCore.ThothLite.StructureDescription.CountTypes.*;
 
-public class ProductTypes
-        extends Data<ListElement>
-{
+public class CountTypes
+        extends Data<Listed>
+        implements TableReadable {
 
-    public ProductTypes() {
+    public CountTypes() {
         super();
         setName(TABLE_NAME);
+    }
+
+    @Override
+    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+        HashMap<String, Object> res = new HashMap<>();
+
+        Listed listed = (Listed) identifiable;
+
+        res.put(COUNT_TYPE, listed.getValue());
+
+        return res;
     }
 
     @Override
@@ -25,7 +37,7 @@ public class ProductTypes
             datas.add(
                     new ListElement(
                             String.valueOf(row.get(ID)),
-                            (String) row.get(PRODUCT_TYPES)
+                            (String) row.get(COUNT_TYPE)
                     )
             );
         }

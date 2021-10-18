@@ -1,13 +1,14 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
 import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Currency.*;
+import static ThothCore.ThothLite.StructureDescription.Currency.*;
 
 public class Currencies
         extends Data<Currency>
@@ -16,6 +17,18 @@ public class Currencies
     public Currencies() {
         super();
         setName(TABLE_NAME);
+    }
+
+    @Override
+    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+        HashMap<String, Object> res = new HashMap<>();
+
+        Currency currency = (Currency) identifiable;
+
+        res.put(CURRENCY, currency.getCurrency());
+        res.put(COURSE, currency.getCourse());
+
+        return res;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 public class NotUse
         implements Identifiable {

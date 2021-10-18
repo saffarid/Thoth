@@ -1,7 +1,7 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Nameable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
 
 public class Partner
         implements Identifiable

@@ -1,21 +1,26 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Project;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBData.DBDataElement.Projectable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.ProjectsList.*;
+import static ThothCore.ThothLite.StructureDescription.ProjectsList.*;
 
 public class ProjectList
-        extends Data<Project>
+        extends Data<Projectable>
 {
     public ProjectList() {
         super();
         setName(TABLE_NAME);
+    }
+
+    @Override
+    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+        return null;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ThothGUI.ThothLite.Subwindows;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
+import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
+import ThothCore.ThothLite.StructureDescription;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import javafx.scene.control.ListCell;
@@ -10,7 +11,7 @@ import window.Subwindow;
 public class Products
         extends Subwindow {
 
-    private ListView<Product> listProducts;
+    private ListView<Storagable> listProducts;
 
     public Products(
             String title
@@ -21,18 +22,18 @@ public class Products
         setCloseEvent(event -> closeSubwindow.closeSubwindow(this));
 
         listProducts = new ListView<>();
-        listProducts.getItems().setAll(thoth.getProducts());
+        listProducts.getItems().setAll((Storagable) thoth.getDataFromTable(StructureDescription.Products.TABLE_NAME));
         listProducts.setCellFactory(productListView -> new ProductCell());
         setCenter(listProducts);
     }
 
-    class ProductCell extends ListCell<Product> {
+    class ProductCell extends ListCell<Storagable> {
 
         @Override
-        protected void updateItem(Product product, boolean b) {
+        protected void updateItem(Storagable product, boolean b) {
             if(product != null){
                 super.updateItem(product, b);
-                setText(product.getArticle());
+                setText(product.getId());
             }
         }
     }

@@ -1,21 +1,26 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
 import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Order;
+import ThothCore.ThothLite.DBData.DBDataElement.Orderable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Incomes.*;
+import static ThothCore.ThothLite.StructureDescription.Incomes.*;
 
 public class Incomes
-        extends Data<Order>
-        implements TableReadable {
+        extends Data<Orderable> {
 
     public Incomes() {
         super();
         setName(TABLE_NAME);
+    }
+
+    @Override
+    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+        return null;
     }
 
     @Override

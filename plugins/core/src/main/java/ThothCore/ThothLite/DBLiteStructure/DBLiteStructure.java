@@ -3,6 +3,7 @@ package ThothCore.ThothLite.DBLiteStructure;
 import Database.DataBaseSQL;
 import Database.Table;
 import Database.TableColumn;
+import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -230,7 +231,7 @@ public class DBLiteStructure extends DataBaseSQL {
                     StructureDescription.Purchases.COUNT_TYPE_ID, "integer", false, true, getTable(StructureDescription.CountTypes.TABLE_NAME).getTableCol(StructureDescription.CountTypes.COUNT_TYPE)
             ));
             addColumn(new TableColumn(
-                    StructureDescription.Purchases.DELIVERY_DATE, "date", false, true
+                    StructureDescription.Purchases.DELIVERY_DATE, "varchar(255)", false, true
             ));
             addColumn(new TableColumn(
                     StructureDescription.Purchases.IS_DELIVERED, "tinyint", false, true
@@ -257,10 +258,10 @@ public class DBLiteStructure extends DataBaseSQL {
                     StructureDescription.Orders.IS_MONTHLY, "integer", false, true
             ));
             addColumn(new TableColumn(
-                    StructureDescription.Orders.DATE_START, "date", false, true
+                    StructureDescription.Orders.DATE_START, "varchar(255)", false, true
             ));
             addColumn(new TableColumn(
-                    StructureDescription.Orders.DATE_FINISH, "date", false, true
+                    StructureDescription.Orders.DATE_FINISH, "varchar(255)", false, true
             ));
             addColumn(new TableColumn(
                     StructureDescription.Orders.STATUS_ID, "integer", false, true, getTable(StructureDescription.OrderStatus.TABLE_NAME).getTableCol(StructureDescription.OrderStatus.ORDER_STATUS)
@@ -284,7 +285,7 @@ public class DBLiteStructure extends DataBaseSQL {
                     StructureDescription.ProjectsList.NAME, "varchar(255)", false, true
             ));
             addColumn(new TableColumn(
-                    StructureDescription.ProjectsList.DATE, "date", false, true
+                    StructureDescription.ProjectsList.DATE, "varchar(255)", false, true
             ));
         }
     }

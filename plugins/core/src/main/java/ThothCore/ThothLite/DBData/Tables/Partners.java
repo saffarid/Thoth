@@ -1,13 +1,15 @@
-package ThothCore.ThothLite.DBData;
+package ThothCore.ThothLite.DBData.Tables;
 
 import Database.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Partner;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Partners.*;
+import static ThothCore.ThothLite.StructureDescription.Partners.*;
+
 
 public class Partners
         extends Data<Partner>
@@ -16,6 +18,11 @@ public class Partners
     public Partners() {
         super();
         setName(TABLE_NAME);
+    }
+
+    @Override
+    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+        return null;
     }
 
     @Override

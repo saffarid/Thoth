@@ -1,9 +1,7 @@
 package ThothCore.ThothLite;
 
-import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
-import ThothCore.ThothLite.DBData.CountTypes;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBLiteStructure.DBLiteStructure;
 

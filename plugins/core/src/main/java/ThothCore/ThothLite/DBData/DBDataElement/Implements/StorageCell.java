@@ -1,5 +1,6 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
+import ThothCore.ThothLite.DBData.DBDataElement.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Storing;
 import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
 
@@ -9,12 +10,13 @@ public class StorageCell
     private String adress;
     private Storagable product;
     private Double count;
-    private ListElement countType;
+    private Listed countType;
 
     public StorageCell(
             Storagable product
             , Double count
-            , ListElement countType) {
+            , Listed countType) {
+        this.adress = null;
         this.product = product;
         this.count = count;
         this.countType = countType;
@@ -24,7 +26,7 @@ public class StorageCell
             String id
             , Storagable product
             , Double count
-            , ListElement countType) {
+            , Listed countType) {
         this.adress = id;
         this.product = product;
         this.count = count;

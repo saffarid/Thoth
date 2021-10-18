@@ -1,9 +1,11 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Purchasable;
 import ThothCore.ThothLite.DBData.DBDataElement.Storing;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,14 +17,14 @@ public class Purchase
 
     private String orderNumber;
     private String storeId;
-    private Date deliveryDate;
+    private LocalDate deliveryDate;
     private boolean isDelivered;
     private List<Storing> purchasedProducts;
 
-    public Purchase(String orderNumber, Identifiable store, Date deliveryDate, boolean isDelivered) {
+    public Purchase(String orderNumber, Identifiable store, String deliveryDate, boolean isDelivered) {
         this.orderNumber = orderNumber;
         this.storeId = store.getId();
-        this.deliveryDate = deliveryDate;
+        this.deliveryDate = LocalDate.parse(deliveryDate);
         this.isDelivered = isDelivered;
         purchasedProducts = new LinkedList<>();
     }
@@ -38,7 +40,7 @@ public class Purchase
     }
 
     @Override
-    public Date finishDate() {
+    public LocalDate finishDate() {
         return deliveryDate;
     }
 
@@ -48,8 +50,8 @@ public class Purchase
     }
 
     @Override
-    public void setFinishDate(Date finishDate) {
-        this.deliveryDate = finishDate;
+    public void setFinishDate(String finishDate) {
+        this.deliveryDate = LocalDate.parse(finishDate);
     }
 
     @Override
