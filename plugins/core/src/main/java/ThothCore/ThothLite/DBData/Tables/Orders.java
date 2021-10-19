@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ThothCore.ThothLite.StructureDescription.Orders.*;
@@ -28,15 +29,15 @@ public class Orders
     }
 
     @Override
-    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
-        HashMap<String, Object> res = new HashMap<>();
-
-        Orderable orderable = (Orderable) identifiable;
-
-        res.put( CUSTOMER_ID, orderable.getPartnerId() );
-        res.put( PROJECT_ID, orderable.getProjectable().getId() );
-        res.put( DATE_START, orderable.startDate().format(DateTimeFormatter.ISO_DATE) );
-        res.put( DATE_FINISH, orderable.finishDate().format(DateTimeFormatter.ISO_DATE) );
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
+        List<HashMap<String, Object>> res = new LinkedList<>();
+//
+//        Orderable orderable = (Orderable) identifiable;
+//
+//        res.put( CUSTOMER_ID, orderable.getPartnerId() );
+//        res.put( PROJECT_ID, orderable.getProjectable().getId() );
+//        res.put( DATE_START, orderable.startDate().format(DateTimeFormatter.ISO_DATE) );
+//        res.put( DATE_FINISH, orderable.finishDate().format(DateTimeFormatter.ISO_DATE) );
 
         return res;
     }

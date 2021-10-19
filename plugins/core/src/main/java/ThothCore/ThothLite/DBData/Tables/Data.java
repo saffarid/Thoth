@@ -34,7 +34,7 @@ public abstract class Data<T extends Identifiable>
                 .isPresent();
     }
 
-    public abstract HashMap<String, Object> convertToMap(Identifiable identifiable);
+    public abstract List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list);
 
     public T getById(String id) {
         Optional<T> element = datas.stream().filter(t -> t.getId().equals(id)).findFirst();

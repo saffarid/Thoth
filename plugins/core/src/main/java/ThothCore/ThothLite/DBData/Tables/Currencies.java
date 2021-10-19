@@ -6,6 +6,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ThothCore.ThothLite.StructureDescription.Currency.*;
@@ -20,13 +21,13 @@ public class Currencies
     }
 
     @Override
-    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
-        HashMap<String, Object> res = new HashMap<>();
-
-        Currency currency = (Currency) identifiable;
-
-        res.put(CURRENCY, currency.getCurrency());
-        res.put(COURSE, currency.getCourse());
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
+        List<HashMap<String, Object>> res = new LinkedList<>();
+//
+//        Currency currency = (Currency) identifiable;
+//
+//        res.put(CURRENCY, currency.getCurrency());
+//        res.put(COURSE, currency.getCourse());
 
         return res;
     }

@@ -10,6 +10,7 @@ import ThothCore.ThothLite.StructureDescription;
 import java.sql.ResultSet;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ThothCore.ThothLite.StructureDescription.NotUsed.*;
@@ -24,13 +25,13 @@ public class NotUsed
     }
 
     @Override
-    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
-        HashMap<String, Object> res = new HashMap<>();
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
+        List<HashMap<String, Object>> res = new LinkedList<>();
 
-        NotUse notUse = (NotUse) identifiable;
-
-        res.put(PRODUCT_ID, notUse.getProduct().getId());
-        res.put(CAUSE, notUse.getCause());
+//        NotUse notUse = (NotUse) identifiable;
+//
+//        res.put(PRODUCT_ID, notUse.getProduct().getId());
+//        res.put(CAUSE, notUse.getCause());
 
         return res;
     }

@@ -1,9 +1,12 @@
 package ThothCore.ThothLite.DBData.Tables;
 
+import Database.ContentValues;
 import Database.TableColumn;
+import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.*;
 import ThothCore.ThothLite.DBData.DBDataElement.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
 import ThothCore.ThothLite.DBData.DBDataElement.Purchasable;
 import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
 import ThothCore.ThothLite.DBData.DBDataElement.Storing;
@@ -11,7 +14,9 @@ import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
 import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ThothCore.ThothLite.StructureDescription.Purchases.*;
@@ -26,8 +31,28 @@ public class Purchases
     }
 
     @Override
-    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
-        return null;
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
+        List<HashMap<String, Object>> res = new LinkedList<>();
+
+        for(Identifiable identifiable : list){
+            Purchasable purchasable = (Purchasable) identifiable;
+
+            for(Storing storing : purchasable.getComposition()){
+                HashMap<String, Object> map = new HashMap<>();
+
+                map.put(ORDER_ID, purchasable.getId());
+                map.put(STORE_ID, ((Nameable)getFromTableById(StructureDescription.Partners.TABLE_NAME, purchasable.getPartnerId())).getName());
+                map.put(PRODUCT_ID, storing.getStoragable().getId());
+                map.put(COUNT, storing.getCount());
+                map.put(COUNT_TYPE_ID, storing.getCountType());
+                map.put(DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
+                map.put(IS_DELIVERED, false);
+
+                res.add(map);
+            }
+        }
+
+        return res;
     }
 
     @Override

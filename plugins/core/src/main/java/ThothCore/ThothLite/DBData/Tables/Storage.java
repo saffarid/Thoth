@@ -10,6 +10,7 @@ import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ThothCore.ThothLite.StructureDescription.Storage.*;
@@ -24,8 +25,12 @@ public class Storage
     }
 
     @Override
-    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
-        return null;
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
+        List<HashMap<String, Object>> res = new LinkedList<>();
+
+
+
+        return res;
     }
 
     @Override

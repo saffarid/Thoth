@@ -48,7 +48,6 @@ public class ThothLite {
      * */
     public void insert(String tableName, List<? extends Identifiable> datas) throws SQLException {
 
-        List<HashMap<String, Object>> insertedDatas = new LinkedList<>();
         Data table = dbData.getTable(tableName);
 
         for (Identifiable data : datas) {
@@ -57,28 +56,24 @@ public class ThothLite {
                 Composite composite = (Composite) data;
 
                 Data products = dbData.getTable(StructureDescription.Products.TABLE_NAME);
-                List<HashMap<String, Object>> datasProducts = new LinkedList<>();
-                for (Storing storing : composite.getComposition()) {
-                    //Проверяем наличие продукта в БД
-                    Storagable storagable = storing.getStoragable();
+                List<Storagable> datasProducts = new LinkedList<>();
 
-                    if (!products.contains(storagable)) { //Если продукт не существует в СЧИТАННОЙ бд, добавляем его в список для вставки в бд
-                        datasProducts.add(products.convertToMap(storagable));
+                for (Storing storing : composite.getComposition()){
+                    Storagable storagable = storing.getStoragable();
+                    if(!products.contains(storagable)){
+                        datasProducts.add(storagable);
                     }
                 }
 
-                //Если список продуктов не пуст, добавляем записи в БД
-                if (!datasProducts.isEmpty()) {
-                    database.insert(products.getName(), datasProducts);
+                if(!datasProducts.isEmpty()){
+                    database.insert(products.getName(), products.convertToMap(datasProducts));
                 }
+
             }
 
-            insertedDatas.add(table.convertToMap(data));
         }
 
-        if(!insertedDatas.isEmpty()){
-            database.insert( table.getName(), insertedDatas );
-        }
+        database.insert( table.getName(), table.convertToMap(datas));
 
     }
 

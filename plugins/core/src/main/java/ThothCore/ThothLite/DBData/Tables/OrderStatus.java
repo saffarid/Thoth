@@ -7,6 +7,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ThothCore.ThothLite.StructureDescription.OrderStatus.*;
@@ -21,8 +22,8 @@ public class OrderStatus
     }
 
     @Override
-    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
-        HashMap<String, Object> res = new HashMap<>();
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
+        List<HashMap<String, Object>> res = new LinkedList<>();
 
 
 

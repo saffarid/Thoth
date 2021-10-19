@@ -10,6 +10,7 @@ import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ThothCore.ThothLite.StructureDescription.Products.*;
@@ -24,8 +25,23 @@ public class Products
     }
 
     @Override
-    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
-        return null;
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> identifiable) {
+        List<HashMap<String, Object>> res = new LinkedList<>();
+
+        for (Identifiable data : identifiable) {
+            Storagable storagable = (Storagable) data;
+
+            HashMap<String, Object> map = new HashMap<>();
+            map.put(ARTICLE, storagable.getId());
+            map.put(NAME, storagable.getName());
+            map.put(PRODUCT_TYPE_ID, storagable.getType());
+            map.put(PRICE, storagable.getPrice());
+            map.put(CURRENCY_ID, storagable.getCurrency());
+
+            res.add(map);
+        }
+
+        return res;
     }
 
     @Override

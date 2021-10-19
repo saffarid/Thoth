@@ -19,7 +19,7 @@ public class Incomes
     }
 
     @Override
-    public HashMap<String, Object> convertToMap(Identifiable identifiable) {
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list) {
         return null;
     }
 
