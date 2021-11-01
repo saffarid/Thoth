@@ -3,14 +3,14 @@ package Database;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import Database.Column.*;
+import Database.Column.TableColumn;
+
 /**
  * Шаблон описания создаваемой/считываемой таблицы
  */
 public class Table {
 
-    public static final String ID = "id";
-    protected static final String ID_TYPE = "integer";
-    private final String PK_CONSTR = "constraint `%1s_pk` primary key(%2s) autoincrement";
     private final String UNIQ_CONSTR = "constraint `%1s_%2s_uniq` unique(%3s)";
     private final String FK_CONSTR = "constraint `%1s_%2s_fk` foreign key (%3s) references `%4s` (%5s)";
 
@@ -26,7 +26,7 @@ public class Table {
 
     /**
      * Содержимое таблицы
-     * */
+     */
     protected List<ContentValues> contentValues;
 
     /**
@@ -35,40 +35,37 @@ public class Table {
     protected List<TableColumn> columns;
 
     /**
-     * Список столбцов для ограничения PRIMARY KEY
-     */
-    protected List<TableColumn> constrPKColumns;
-
-    /**
      * Список столбцов для ограничения UNIQUE
      */
-    protected List<TableColumn> constrUColumns;
+    protected List<TableColumn> uniqueColumns;
 
     /**
      * Список столбцов для ограничения NOT NULL
      */
-    protected List<TableColumn> constrNNColumns;
+    protected List<TableColumn> notNullColumns;
 
     /**
      * Список для ограничения FOREIGN KEY
      * Ключом является колонка текущей таблицы, значение - внешняя таблица
      */
-    protected Map<TableColumn, TableColumn> constrFK;
+    protected Map<TableColumn, TableColumn> foreignKeysColumns;
 
     public Table() {
         columns = new LinkedList<>();
-        constrPKColumns = new LinkedList<>();
-        constrNNColumns = new LinkedList<>();
-        constrUColumns = new LinkedList<>();
-        constrFK = new HashMap<>();
+        notNullColumns = new LinkedList<>();
+        uniqueColumns = new LinkedList<>();
+        foreignKeysColumns = new HashMap<>();
         contentValues = new LinkedList<>();
-        addColumn(new TableColumn(
-                ID,
-                ID_TYPE,
-                true));
     }
 
-    public void addColumn(TableColumn column) {
+    /**
+     * Функция отвечает за добавление новой колонки в описание таблицы.
+     *
+     * @param column новая колонка.
+     * @return true - если колонка добавлена.
+     */
+    public boolean addColumn(TableColumn column) {
+        boolean res = false;
         boolean colPresent = columns
                 .stream()
                 .filter(column1 -> column1.getName().equals(column.getName()))
@@ -76,35 +73,43 @@ public class Table {
                 .isPresent();
         if (!colPresent) {
             columns.add(column);
-            column.setTableParent(this);
+            column.setTable(this);
+            res = true;
         }
-        if (column.isPrimaryKey()) {
-            if (!constrPKColumns.contains(column)) constrPKColumns.add(column);
-//            if (!constrNNColumns.contains(column)) constrNNColumns.add(column);
+
+        if (column instanceof NotNull) {
+            if (((NotNull) column).isNotNull() && !notNullColumns.contains(column)) notNullColumns.add(column);
         }
-        if (column.isNotNull() && !constrNNColumns.contains(column)) constrNNColumns.add(column);
-        if (column.isUnique() && !constrUColumns.contains(column)) constrUColumns.add(column);
-        if (column.getFKTableCol() != null) constrFK.put(column, column.getFKTableCol());
+        if (column instanceof Unique) {
+            if (((Unique) column).isUnique() && !uniqueColumns.contains(column)) uniqueColumns.add(column);
+        }
+        if (column instanceof ForeignKey) {
+            if (((ForeignKey) column).getForeignKey() != null)
+                foreignKeysColumns.put(column, ((ForeignKey) column).getForeignKey());
+        }
+
+        return res;
     }
 
     /**
      * Функция копирует в текущую таблицу информацию из переданной таблицы.
+     *
      * @param copyTable копируемая таблица
-     * */
-    public Table copy(Table copyTable){
+     */
+    public Table copy(Table copyTable) {
         this.name = copyTable.getName();
         this.type = copyTable.getType();
 
-        for(TableColumn column : copyTable.getColumns()){
+        for (TableColumn column : copyTable.getColumns()) {
             addColumn(column);
         }
 
-        for(ContentValues row : copyTable.getContentValues()){
-            LinkedList<TableColumn> tableColumns = new LinkedList<>(row.keySet());
+        for (ContentValues row : copyTable.getContentValues()) {
+            LinkedList<TableColumn> tableColumns = new LinkedList<TableColumn>(row.keySet());
             ContentValues copiedRow = new ContentValues();
 
-            for(TableColumn tableColumn : tableColumns){
-                copiedRow.put(getTableCol(tableColumn.getName()), row.get(tableColumn));
+            for (TableColumn tableColumn : tableColumns) {
+                copiedRow.put(getColumnByName(tableColumn.getName()), row.get(tableColumn));
             }
 
             contentValues.add(copiedRow);
@@ -117,31 +122,27 @@ public class Table {
         return columns;
     }
 
-    public String getConstrFK() {
-
+    public String getConstrainsForeignKey() {
         StringBuilder res = new StringBuilder("");
-        if (constrFK != null && !constrFK.keySet().isEmpty()) {
-            ArrayList<TableColumn> tableColumns = new ArrayList(constrFK.keySet());
+        if (!foreignKeysColumns.keySet().isEmpty()) {
+
+            ArrayList<TableColumn> tableColumns = new ArrayList(foreignKeysColumns.keySet());
+
             for (TableColumn column : tableColumns) {
-                Table table = constrFK.get(column).getTableParent();
-                List<String> collect = table.getColumns()
-                        .stream()
-                        .filter(column1 -> column1.isPrimaryKey())
-                        .map(column1 -> column1.getName())
-                        .collect(Collectors.toList());
-                StringBuilder tableColumnsPK = new StringBuilder(
-                        collect
-                                .toString()
-                );
+                Table foreignKeyTable = foreignKeysColumns.get(column).getTable();
+                // Определяем наименование колонки первичного ключа внешней таблицы
+                String foreignKeyPrimaryKey = foreignKeyTable.getPrimaryKeyColumn().getName();
+
                 res.append(String.format(
                         FK_CONSTR,
-                        name,
-                        table.getName(),
-                        "`" + column.getName() + "`",
-                        table.getName(),
-                        "`" + tableColumnsPK.deleteCharAt(tableColumnsPK.indexOf("[")).deleteCharAt(tableColumnsPK.indexOf("]")).toString() + "`"
+                        name,                                   //1
+                        foreignKeyTable.getName(),              //2
+                        "`" + column.getName() + "`",           //3
+                        foreignKeyTable.getName(),              //4
+                        "`" + foreignKeyPrimaryKey + "`"        //5
                         )
                 );
+
                 if (tableColumns.indexOf(column) != tableColumns.size() - 1) {
                     res.append(", \n\t");
                 }
@@ -150,20 +151,14 @@ public class Table {
         return res.toString().trim();
     }
 
-    public String getConstrPK() {
-        //Получаем список столбцов в коллекции первичного ключа
-        StringBuilder columns = new StringBuilder(constrPKColumns.stream().map(column -> column.getName()).collect(Collectors.toList()).toString());
-        String res = String.format(PK_CONSTR, name, columns.deleteCharAt(columns.indexOf("[")).deleteCharAt(columns.indexOf("]")).toString());
-        return res.trim();
-    }
-
-    public String getConstrUniq() {
-        List<String> columns = constrUColumns.stream().map(column -> column.getName()).collect(Collectors.toList());
+    /**
+     * @return строка со всеми именовынными ограничениями по уникальности
+     * */
+    public String getConstrainsUnique() {
         StringBuilder res = new StringBuilder("");
-
-        for (String name : columns) {
-            res.append(String.format(UNIQ_CONSTR, this.name, name.trim(), "`" + name.trim() + "`"));
-            if (columns.indexOf(name) != columns.size() - 1) {
+        for (TableColumn column : uniqueColumns) {
+            res.append(String.format(UNIQ_CONSTR, this.name, column.getName().trim(), "`" + column.getName().trim() + "`"));
+            if (uniqueColumns.indexOf(column) != uniqueColumns.size() - 1) {
                 res.append(", \n\t");
             }
         }
@@ -177,23 +172,29 @@ public class Table {
     public String getName() {
         return name;
     }
-    public String getNameForSQL() {
-        String template = "`%1s`";
-        return String.format(template, name);
+
+    /**
+     * @return колонка - первичный ключ.
+     */
+    public PrimaryKey getPrimaryKeyColumn() {
+        return (PrimaryKey) (columns.stream().filter(column -> column instanceof PrimaryKey).findFirst().get());
     }
 
-    public TableColumn getTableCol(String colName){
-        return getTableCol(this, colName);
+    /**
+     * Функция ищет колонку по её наименованию
+     */
+    public TableColumn getColumnByName(String colName) {
+        return getColumnByName(this, colName);
     }
 
-    public TableColumn getTableCol(Table table, String colName) {
+    public TableColumn getColumnByName(Table table, String colName) {
         Optional<TableColumn> first = table.getColumns()
                 .stream()
                 .filter(column -> column.getName().equals(colName))
                 .findFirst();
-        if(first.isPresent()) {
+        if (first.isPresent()) {
             return first.get();
-        }else {
+        } else {
             return null;
         }
     }
@@ -202,27 +203,30 @@ public class Table {
         return type;
     }
 
-    public boolean hasConstrFK() {
-        return !constrFK.isEmpty();
+    public boolean hasForeignKeys() {
+        return !foreignKeysColumns.isEmpty();
     }
 
-    public boolean hasConstPK() {
-        return !constrPKColumns.isEmpty();
+    public boolean hasUniques() {
+        return !uniqueColumns.isEmpty();
     }
 
-    public boolean hasConstrUniq() {
-        return !constrUColumns.isEmpty();
-    }
+    public boolean removeColumn(TableColumn column) {
+        boolean res = false;
 
-    public void removeColumn(TableColumn column) {
-        if (columns.contains(column)) columns.remove(column);
-
-        if (column.isPrimaryKey()) {
-            if (constrPKColumns.contains(column)) constrPKColumns.remove(column);
-            if (constrNNColumns.contains(column)) constrNNColumns.remove(column);
+        if (columns.contains(column)) {
+            columns.remove(column);
+            res = true;
         }
-        if (column.isNotNull() && constrNNColumns.contains(column)) constrNNColumns.remove(column);
-        if (column.isUnique() && constrUColumns.contains(column)) constrUColumns.remove(column);
+
+        if (column instanceof NotNull) {
+            if (((NotNull) column).isNotNull() && notNullColumns.contains(column)) notNullColumns.remove(column);
+        }
+        if (column instanceof Unique) {
+            if (((Unique) column).isUnique() && uniqueColumns.contains(column)) uniqueColumns.remove(column);
+        }
+
+        return res;
     }
 
     public void setName(String name) {

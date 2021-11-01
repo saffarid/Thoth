@@ -1,11 +1,11 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.TableColumn;
+import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.StorageCell;
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storing;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
@@ -28,7 +28,17 @@ public class Storage
     public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
         List<HashMap<String, Object>> res = new LinkedList<>();
 
+        for(Identifiable identifiable : list){
+            Storing storing = (Storing) identifiable;
+            HashMap<String, Object> map = new HashMap<>();
 
+            map.put(ADRESS, storing.getId());
+            map.put(PRODUCT_ID, storing.getStoragable().getId());
+            map.put(COUNT, storing.getCount());
+            map.put(COUNT_TYPE_ID, storing.getCountType().getValue());
+
+            res.add(map);
+        }
 
         return res;
     }
@@ -38,7 +48,7 @@ public class Storage
         for (HashMap<String, Object> row : data) {
             addData(
                     new StorageCell(
-                            (String) row.get(ID),
+                            (String) row.get(ADRESS),
                             (Storagable) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(PRODUCT_ID))),
                             (Double) row.get(COUNT),
                             (Listed) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(COUNT_TYPE_ID)))

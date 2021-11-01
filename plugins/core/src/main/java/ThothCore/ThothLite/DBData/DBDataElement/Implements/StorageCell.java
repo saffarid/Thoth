@@ -1,8 +1,8 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
-import ThothCore.ThothLite.DBData.DBDataElement.Storing;
-import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 
 public class StorageCell
         implements Storing {
@@ -44,8 +44,8 @@ public class StorageCell
     }
 
     @Override
-    public String getCountType() {
-        return countType.getValue();
+    public Listed getCountType() {
+        return countType;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class StorageCell
     }
 
     @Override
-    public void setCountType(String countType) {
+    public void setCountType(Listed countType) {
 
     }
 

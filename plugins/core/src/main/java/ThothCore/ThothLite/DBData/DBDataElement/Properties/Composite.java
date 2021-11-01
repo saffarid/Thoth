@@ -1,7 +1,5 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Properties;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Storing;
-
 import java.util.List;
 
 public interface Composite {

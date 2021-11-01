@@ -1,11 +1,10 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Partnership;
 
 public class Partner
-        implements Identifiable
-        , Nameable {
+        implements Partnership
+{
 
     private String id;
     private String name;
@@ -42,5 +41,25 @@ public class Partner
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getPhone() {
+        return phone;
+    }
+
+    @Override
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    @Override
+    public String getWeb() {
+        return web;
+    }
+
+    @Override
+    public void setWeb(String web) {
+        this.web = web;
     }
 }

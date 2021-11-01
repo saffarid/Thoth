@@ -1,8 +1,8 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.TableColumn;
+import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.ListElement;
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
@@ -24,17 +24,20 @@ public class CountTypes
     @Override
     public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> identifiable) {
         List<HashMap<String, Object>> res = new LinkedList<>();
-//
-//        Listed listed = (Listed) identifiable;
-//
-//        res.put(COUNT_TYPE, listed.getValue());
+
+        for (Identifiable data : identifiable) {
+            HashMap<String, Object> map = new HashMap<>();
+            Listed listed = (Listed) data;
+            map.put(COUNT_TYPE, listed.getValue());
+            res.add(map);
+        }
 
         return res;
     }
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
-        for(HashMap<String, Object> row : data){
+        for (HashMap<String, Object> row : data) {
             datas.add(
                     new ListElement(
                             String.valueOf(row.get(ID)),

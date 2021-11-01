@@ -5,9 +5,10 @@ import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Purchase;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.StorageCell;
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
-import ThothCore.ThothLite.DBData.DBDataElement.Purchasable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Partnership;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.StructureDescription;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
@@ -58,7 +59,7 @@ public class Products
 
         Purchasable purchasable = new Purchase(
                 "ifsq",
-                DBData.getInstance().getTable(StructureDescription.Partners.TABLE_NAME).getById("1"),
+                (Partnership) DBData.getInstance().getTable(StructureDescription.Partners.TABLE_NAME).getById("1"),
                 "2021-10-19",
                 false
         );
@@ -94,7 +95,7 @@ public class Products
         datas.add(purchasable);
 
         try {
-            thoth.insert(StructureDescription.Purchases.TABLE_NAME, datas);
+            thoth.insertToTable(StructureDescription.Purchases.TABLE_NAME, datas);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

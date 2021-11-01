@@ -1,12 +1,10 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Purchasable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storing;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Partnership;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,14 +14,14 @@ public class Purchase
     public static final int DELIVERED = 1;
 
     private String orderNumber;
-    private String storeId;
+    private Partnership store;
     private LocalDate deliveryDate;
     private boolean isDelivered;
     private List<Storing> purchasedProducts;
 
-    public Purchase(String orderNumber, Identifiable store, String deliveryDate, boolean isDelivered) {
+    public Purchase(String orderNumber, Partnership store, String deliveryDate, boolean isDelivered) {
         this.orderNumber = orderNumber;
-        this.storeId = store.getId();
+        this.store = store;
         this.deliveryDate = LocalDate.parse(deliveryDate);
         this.isDelivered = isDelivered;
         purchasedProducts = new LinkedList<>();
@@ -98,13 +96,13 @@ public class Purchase
     }
 
     @Override
-    public String getPartnerId() {
-        return storeId;
+    public Partnership getPartner() {
+        return store;
     }
 
     @Override
-    public void setPartner(Identifiable partner) {
-        this.storeId = partner.getId();
+    public void setPartner(Partnership partner) {
+        this.store = partner;
     }
 
 }

@@ -1,11 +1,11 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.TableColumn;
+import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Order;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Partner;
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
-import ThothCore.ThothLite.DBData.DBDataElement.Orderable;
-import ThothCore.ThothLite.DBData.DBDataElement.Projectable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Orderable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Projectable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.StructureDescription;
@@ -20,8 +20,7 @@ import java.util.List;
 import static ThothCore.ThothLite.StructureDescription.Orders.*;
 
 public class Orders
-        extends Data<Orderable>
-{
+        extends Data<Orderable> {
 
     public Orders() {
         super();
@@ -29,16 +28,20 @@ public class Orders
     }
 
     @Override
-    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list) {
         List<HashMap<String, Object>> res = new LinkedList<>();
-//
-//        Orderable orderable = (Orderable) identifiable;
-//
-//        res.put( CUSTOMER_ID, orderable.getPartnerId() );
-//        res.put( PROJECT_ID, orderable.getProjectable().getId() );
-//        res.put( DATE_START, orderable.startDate().format(DateTimeFormatter.ISO_DATE) );
-//        res.put( DATE_FINISH, orderable.finishDate().format(DateTimeFormatter.ISO_DATE) );
-
+        for (Identifiable identifiable : list) {
+            HashMap<String, Object> map = new HashMap<>();
+            Orderable orderable = (Orderable) identifiable;
+            map.put(CUSTOMER_ID, orderable.getPartner().getId());
+            map.put(PROJECT_ID, orderable.getProjectable().getId());
+            map.put(DATE_START, orderable.startDate().format(DateTimeFormatter.ISO_DATE));
+            map.put(DATE_FINISH, orderable.finishDate().format(DateTimeFormatter.ISO_DATE));
+            map.put(STATUS_ID, orderable.getStatus().getValue() );
+            map.put(AUTOFINISH, 0);
+            map.put(IS_MONTHLY, 0);
+            res.add(map);
+        }
         return res;
     }
 
@@ -48,7 +51,7 @@ public class Orders
             addData(
                     new Order(
                             String.valueOf(row.get(ID)),
-                            (Partner) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(CUSTOMER_ID))) ,
+                            (Partner) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(CUSTOMER_ID))),
                             (Projectable) getFromTableById(StructureDescription.ProjectsList.TABLE_NAME, String.valueOf(row.get(PROJECT_ID))),
                             (int) row.get(IS_MONTHLY) == 1,
                             (String) row.get(DATE_START),

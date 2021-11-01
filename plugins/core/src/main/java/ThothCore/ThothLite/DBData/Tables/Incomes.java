@@ -1,11 +1,13 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.Orderable;
+import Database.Column.TableColumn;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Orderable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ThothCore.ThothLite.StructureDescription.Incomes.*;
@@ -20,13 +22,21 @@ public class Incomes
 
     @Override
     public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list) {
-        return null;
+        List<HashMap<String, Object>> res = new LinkedList<>();
+        for(Identifiable identifiable : list){
+            HashMap<String, Object> map = new HashMap<>();
+            Orderable orderable = (Orderable) identifiable;
+            map.put(ORDER_ID, orderable.getId());
+            res.add(map);
+        }
+        return res;
     }
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
         for(HashMap<String, Object> row : data){
-
+            Orderable orderable = (Orderable) getFromTableById(StructureDescription.Orders.TABLE_NAME, String.valueOf(row.get(ORDER_ID)));
+            addData(orderable);
         }
     }
 

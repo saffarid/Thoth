@@ -2,7 +2,7 @@ package ThothCore.ThothLite.DBData.DBDataElement.Properties;
 
 public interface HasPartner {
 
-    String getPartnerId();
-    void setPartner(Identifiable partner);
+    Partnership getPartner();
+    void setPartner(Partnership partner);
 
 }

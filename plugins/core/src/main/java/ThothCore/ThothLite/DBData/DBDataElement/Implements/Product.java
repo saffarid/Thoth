@@ -1,7 +1,7 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
-import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 
 public class Product
         implements Storagable {
@@ -40,8 +40,8 @@ public class Product
     }
 
     @Override
-    public String getCurrency() {
-        return currency.getCurrency();
+    public Currency getCurrency() {
+        return currency;
     }
 
     @Override
@@ -60,12 +60,12 @@ public class Product
     }
 
     @Override
-    public String getType() {
-        return type.getValue();
+    public Listed getType() {
+        return type;
     }
 
     @Override
-    public void setCurrency(String currency) {
+    public void setCurrency(Currency currency) {
 
     }
 
@@ -85,7 +85,7 @@ public class Product
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Listed type) {
 
     }
 }

@@ -1,6 +1,7 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.TableColumn;
+
+import Database.Column.TableColumn;
 
 import java.sql.ResultSet;
 import java.text.ParseException;

@@ -5,11 +5,11 @@ public interface Typable {
     /**
      * @return тип объекта
      * */
-    String getType();
+    Listed getType();
 
     /**
      * @param type устанавливаемый тип
      * */
-    void setType(String type);
+    void setType(Listed type);
 
 }

@@ -1,11 +1,5 @@
 package ThothCore.ThothLite;
 
-import Database.Table;
-import Database.TableColumn;
-
-import java.sql.SQLException;
-import java.util.logging.Logger;
-
 public class StructureDescription {
 
     public static final String TABLE = "table";
@@ -79,8 +73,8 @@ public class StructureDescription {
     public static class NotUsed{
         public static final String TABLE_NAME = "not_used";
         public static final String ID = "id";
-        public static final String ARTICLE = "article";
-        public static final String NAME = "name";
+//        public static final String ARTICLE = "article";
+//        public static final String NAME = "name";
         public static final String CAUSE = "cause";
         public static final String PRODUCT_ID = "product_id";
     }
@@ -90,7 +84,7 @@ public class StructureDescription {
      */
     public static class Products{
         public static final String TABLE_NAME = "products";
-        public static final String ID = "id";
+//        public static final String ID = "id";
         public static final String ARTICLE = "article";
         public static final String NAME = "name";
         public static final String PRODUCT_TYPE_ID = "product_type_id";
@@ -104,10 +98,9 @@ public class StructureDescription {
      */
     public static class Storage{
         public static final String TABLE_NAME = "storage";
-        public static final String ID = "id";
+        public static final String ADRESS = "adress";
         public static final String COUNT = "count";
         public static final String COUNT_TYPE_ID = "count_type_id";
-
         public static final String PRODUCT_ID = "product_id";
     }
 
@@ -116,7 +109,7 @@ public class StructureDescription {
      */
     public static class Purchases{
         public static final String TABLE_NAME = "purchases";
-        public static final String ID = "id";
+//        public static final String ID = "id";
         public static final String ORDER_ID = "order_id";
         public static final String STORE_ID = "store_id";
         public static final String PRODUCT_ID = "product_id";
@@ -131,7 +124,7 @@ public class StructureDescription {
      * */
     public static class Orders{
         public static final String TABLE_NAME = "orders";
-        public static final String ID = "id";
+        public static final String ID = "order_id";
         public static final String CUSTOMER_ID = "customer_id";
         public static final String PROJECT_ID = "project_id";
         public static final String IS_MONTHLY = "is_monthly";

@@ -18,11 +18,11 @@ public interface Countable {
     /**
      * @return единицы измерения
      * */
-    String getCountType();
+    Listed getCountType();
 
     /**
      * @param countType новая единица измерения
      * */
-    void setCountType(String countType);
+    void setCountType(Listed countType);
 
 }

@@ -1,17 +1,18 @@
 package Database;
 
+
+import Database.Column.Autoincrement;
+import Database.Column.ForeignKey;
+import Database.Column.PrimaryKey;
+import Database.Column.TableColumn;
+
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class WhereValues extends HashMap<TableColumn, Object> {
-    //    StringBuilder result = new StringBuilder("");
-//    keySet().stream().forEach(key -> {
-//        result.append(String.format(TEMPLATE, key, get(key)));
-//    });
-//        result.deleteCharAt(result.lastIndexOf(","))
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder("");
@@ -21,70 +22,73 @@ public class WhereValues extends HashMap<TableColumn, Object> {
         for (TableColumn tableColumn : tablesColumns) {
 
             Object value = this.get(tableColumn);
-            String whereTemplate = (value.getClass().getName().equals(String.class.getName())) ? ("%1s=\'%2s\'") : ("%1s=%2s");
-            TableColumn fkTableCol = tableColumn.getFKTableCol();
-            if (fkTableCol != null) {
-                String subreqTemplate = "(select `%1s` from `%2s` where %3s)";
-                if (fkTableCol.getName().equals(Table.ID)) {
-                    //Внешний ключ ссылается на колонку идентификатор внешней таблицы
-                    /*Формируем подзапрос следующего вида
-                     * select id from fkTable where "все колонки кроме id" = value
-                     */
-                    //Определяем колонки для вывода информации
+            String whereTemplate = (value instanceof String) ? ("%1s=\'%2s\'") : ("%1s=%2s");
+            if (tableColumn instanceof ForeignKey) {
+                TableColumn foreignKey = ((ForeignKey)tableColumn).getForeignKey();
 
-                    List<TableColumn> collect = fkTableCol.getTableParent().getColumns()
-                            .stream()
-                            .filter(column1 -> !column1.getName().equals(Table.ID))
-                            .collect(Collectors.toList());
+                if(foreignKey != null) {
+                    String subreqTemplate = "(select `%1s` from `%2s` where %3s)";
+                    if (foreignKey instanceof Autoincrement) {
+                        //Внешний ключ ссылается на автоинкрементируемый первичный ключ внешней таблицы
+                        /*Формируем подзапрос следующего вида
+                         * select id from fkTable where "все колонки кроме id" = value
+                         */
+                        //Определяем колонки для вывода информации
 
-                    StringBuilder whereSubrequesResult = new StringBuilder("");
+                        List<TableColumn> collect = foreignKey.getTable().getColumns()
+                                .stream()
+                                .filter(column1 -> !(column1 instanceof PrimaryKey))
+                                .collect(Collectors.toList());
 
-                    for(TableColumn column : collect){
-                        whereSubrequesResult.append(
-                            String.format(
-                                    whereTemplate
-                                    , String.format(templateFullName, column.getTableParent().getName(), column.getName())
-                                    , value
-                            )
-                        );
-                        if(collect.indexOf(column) != collect.size() - 1){
-                            whereSubrequesResult.append(" or \n\t");
-                        }
-                    }
+                        StringBuilder whereSubrequesResult = new StringBuilder("");
 
-                    String subrequest = String.format(
-                            subreqTemplate
-                            , fkTableCol.getName()
-                            , fkTableCol.getTableParent().getName()
-                            , whereSubrequesResult.toString()
-                    );
-
-                    result.append(
-                            String.format("`%1s` = %2s", tableColumn.getName(), subrequest)
-                    );
-                } else {
-                    //Внешний ключ ссылается на кастомную колонку внешней таблицы
-                    /*Формируем подзапрос следующего вида
-                     * select fkTableCol from fkTable where fk.id = value*/
-                    String subrequest =
-                            String.format(
-                                    subreqTemplate
-                                    , fkTableCol.getTableParent().getTableCol(Table.ID).getName()
-                                    , fkTableCol.getTableParent().getName()
-                                    , String.format(
+                        for (TableColumn column : collect) {
+                            whereSubrequesResult.append(
+                                    String.format(
                                             whereTemplate
-                                            , String.format(templateFullName, fkTableCol.getTableParent().getName(), fkTableCol.getName())
+                                            , String.format(templateFullName, column.getTable().getName(), column.getName())
                                             , value
                                     )
                             );
-                    result.append(
-                            String.format("`%1s` = %2s", tableColumn.getName(), subrequest)
-                    );
+                            if (collect.indexOf(column) != collect.size() - 1) {
+                                whereSubrequesResult.append(" or \n\t");
+                            }
+                        }
+
+                        String subrequest = String.format(
+                                subreqTemplate
+                                , foreignKey.getName()
+                                , foreignKey.getTable().getName()
+                                , whereSubrequesResult.toString()
+                        );
+
+                        result.append(
+                                String.format("`%1s` = %2s", tableColumn.getName(), subrequest)
+                        );
+                    } else {
+                        //Внешний ключ ссылается на кастомную колонку внешней таблицы
+                        /*Формируем подзапрос следующего вида
+                         * select foreignKey from fkTable where fk.id = value*/
+                        String subrequest =
+                                String.format(
+                                        subreqTemplate
+                                        , foreignKey.getTable().getPrimaryKeyColumn().getName()
+                                        , foreignKey.getTable().getName()
+                                        , String.format(
+                                                whereTemplate
+                                                , String.format(templateFullName, foreignKey.getTable().getName(), foreignKey.getName())
+                                                , value
+                                        )
+                                );
+                        result.append(
+                                String.format("`%1s` = %2s", tableColumn.getName(), subrequest)
+                        );
+                    }
                 }
 
             } else {
                 //Колонка не содержит внешнего ключа
-                if(value.getClass().getName().equals(String.class.getName())){
+                if(value instanceof String){
                     result.append(
                             String.format("`%1s` = \'%2s\'", tableColumn.getName(), value.toString())
                     );

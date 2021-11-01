@@ -1,8 +1,10 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Projectable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storing;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Projectable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 
+import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Project
@@ -11,6 +13,14 @@ public class Project
     private String id;
     private String name;
     private List<Storing> usedProducts;
+    private LocalDate createdDate;
+
+    public Project(String id, String name) {
+        this.id = id;
+        this.name = name;
+        this.usedProducts = new LinkedList<>();
+        createdDate = LocalDate.now();
+    }
 
     @Override
     public List<Storing> getComposition() {
@@ -68,5 +78,15 @@ public class Project
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public LocalDate startDate() {
+        return createdDate;
+    }
+
+    @Override
+    public void setStartDate(String startDate) {
+        createdDate = LocalDate.parse(startDate);
     }
 }

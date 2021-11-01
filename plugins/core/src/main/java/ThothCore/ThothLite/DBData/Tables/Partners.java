@@ -1,7 +1,8 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.TableColumn;
+import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Partner;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Partnership;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
 import java.sql.ResultSet;
@@ -13,7 +14,7 @@ import static ThothCore.ThothLite.StructureDescription.Partners.*;
 
 
 public class Partners
-        extends Data<Partner>
+        extends Data<Partnership>
 {
 
     public Partners() {
@@ -24,9 +25,14 @@ public class Partners
     @Override
     public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
         List<HashMap<String, Object>> res = new LinkedList<>();
-
-
-
+        for(Identifiable identifiable : list){
+            HashMap<String, Object> map = new HashMap<>();
+            Partnership partner = (Partnership) identifiable;
+            map.put(NAME, partner.getName());
+            map.put(PHONE, partner.getPhone());
+            map.put(WEB, partner.getWeb());
+            res.add(map);
+        }
         return res;
     }
 

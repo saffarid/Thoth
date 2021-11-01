@@ -1,11 +1,11 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.TableColumn;
+import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
@@ -34,9 +34,9 @@ public class Products
             HashMap<String, Object> map = new HashMap<>();
             map.put(ARTICLE, storagable.getId());
             map.put(NAME, storagable.getName());
-            map.put(PRODUCT_TYPE_ID, storagable.getType());
+            map.put(PRODUCT_TYPE_ID, storagable.getType().getValue());
             map.put(PRICE, storagable.getPrice());
-            map.put(CURRENCY_ID, storagable.getCurrency());
+            map.put(CURRENCY_ID, storagable.getCurrency().getCurrency());
 
             res.add(map);
         }

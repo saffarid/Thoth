@@ -1,18 +1,14 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Orderable;
-import ThothCore.ThothLite.DBData.DBDataElement.Projectable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Order
         implements Orderable{
 
     private String id;
-    private String customer;
+    private Partnership customer;
     private Projectable project;
     private boolean isMonthly;
     private LocalDate startDate;
@@ -21,7 +17,7 @@ public class Order
     private boolean autofinish;
 
     public Order(String id
-            , Identifiable customer
+            , Partnership customer
             , Projectable project
             , boolean isMonthly
             , String startDate
@@ -29,7 +25,7 @@ public class Order
             , Listed status
             , boolean autofinish) {
         this.id = id;
-        this.customer = customer.getId();
+        this.customer = customer;
         this.project = project;
         this.isMonthly = isMonthly;
         this.startDate = LocalDate.parse(startDate);
@@ -59,13 +55,13 @@ public class Order
     }
 
     @Override
-    public String getPartnerId() {
+    public Partnership getPartner() {
         return customer;
     }
 
     @Override
-    public void setPartner(Identifiable partner) {
-        this.customer = partner.getId();
+    public void setPartner(Partnership partner) {
+        this.customer = partner;
     }
 
     @Override
@@ -96,6 +92,16 @@ public class Order
     @Override
     public void setProjectable(Projectable projectable) {
         this.project = projectable;
+    }
+
+    @Override
+    public Listed getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(Listed status) {
+        this.status = status;
     }
 
 }

@@ -1,15 +1,13 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.ContentValues;
-import Database.TableColumn;
-import ThothCore.ThothLite.DBData.DBData;
+import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.*;
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
-import ThothCore.ThothLite.DBData.DBDataElement.Purchasable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storing;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
@@ -41,10 +39,10 @@ public class Purchases
                 HashMap<String, Object> map = new HashMap<>();
 
                 map.put(ORDER_ID, purchasable.getId());
-                map.put(STORE_ID, ((Nameable)getFromTableById(StructureDescription.Partners.TABLE_NAME, purchasable.getPartnerId())).getName());
+                map.put(STORE_ID, purchasable.getPartner().getName());
                 map.put(PRODUCT_ID, storing.getStoragable().getId());
                 map.put(COUNT, storing.getCount());
-                map.put(COUNT_TYPE_ID, storing.getCountType());
+                map.put(COUNT_TYPE_ID, storing.getCountType().getValue());
                 map.put(DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
                 map.put(IS_DELIVERED, false);
 

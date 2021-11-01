@@ -1,5 +1,7 @@
 package Database;
 
+import Database.Column.TableColumn;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;

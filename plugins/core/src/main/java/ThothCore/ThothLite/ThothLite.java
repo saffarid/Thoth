@@ -4,14 +4,13 @@ import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Composite;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
-import ThothCore.ThothLite.DBData.DBDataElement.Storing;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import ThothCore.ThothLite.DBData.Tables.Data;
 import ThothCore.ThothLite.Timer.ThothTimer;
 import ThothCore.ThothLite.Timer.Traceable;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Flow;
@@ -37,6 +36,10 @@ public class ThothLite {
 
     }
 
+    /**
+     * @param tableName наименование запрашиваемой таблицы.
+     * @return список содержимого таблицы.
+     * */
     public List<? extends Identifiable> getDataFromTable(String tableName) {
         return dbData.getTable(tableName).getDatas();
     }
@@ -46,7 +49,7 @@ public class ThothLite {
      * @param tableName наименование таблицы для вставки новых записей.
      * @param datas добавляемые данные.
      * */
-    public void insert(String tableName, List<? extends Identifiable> datas) throws SQLException {
+    public void insertToTable(String tableName, List<? extends Identifiable> datas) throws SQLException {
 
         Data table = dbData.getTable(tableName);
 
@@ -77,8 +80,6 @@ public class ThothLite {
 
     }
 
-
-
     /**
      * Подписка на публикацию наступления плановой даты завершения заказа
      */
@@ -93,5 +94,24 @@ public class ThothLite {
         watcherPurchasesFinish.subscribe(subscriber);
     }
 
+    /**
+     * Функция удаляет данные из таблицы.
+     * @param tableName наименование таблицы из которой удаляются записи.
+     * @param datas удаляемые записи.
+     * */
+    public void removeFromTable(String tableName, List<? extends Identifiable> datas) throws SQLException {
+        Data table = dbData.getTable(tableName);
+        database.remove(table.getName(), table.convertToMap(datas));
+    }
+
+    /**
+     * Функция обновляет записи в таблице.
+     * @param tableName наименование таблицы в которой обновляются записи.
+     * @param datas обновлённые записи.
+     * */
+    public void updateInTable(String tableName, List<? extends Identifiable> datas) throws SQLException {
+        Data table = dbData.getTable(tableName);
+        database.update(tableName, table.convertToMap(datas));
+    }
 
 }

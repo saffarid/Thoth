@@ -1,6 +1,6 @@
 package ThothCore.ThothLite.DBData.Tables;
 
-import Database.TableColumn;
+import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 
@@ -12,8 +12,7 @@ import java.util.List;
 import static ThothCore.ThothLite.StructureDescription.Currency.*;
 
 public class Currencies
-        extends Data<Currency>
-{
+        extends Data<Currency> {
 
     public Currencies() {
         super();
@@ -21,20 +20,23 @@ public class Currencies
     }
 
     @Override
-    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
+    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list) {
         List<HashMap<String, Object>> res = new LinkedList<>();
-//
-//        Currency currency = (Currency) identifiable;
-//
-//        res.put(CURRENCY, currency.getCurrency());
-//        res.put(COURSE, currency.getCourse());
+
+        for (Identifiable identifiable : list) {
+            HashMap<String, Object> map = new HashMap<>();
+            Currency currency = (Currency) identifiable;
+            map.put(CURRENCY, currency.getCurrency());
+            map.put(COURSE, currency.getCourse());
+            res.add(map);
+        }
 
         return res;
     }
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
-        for(HashMap<String, Object> row : data){
+        for (HashMap<String, Object> row : data) {
             datas.add(new Currency(
                     String.valueOf(row.get(ID)),
                     (String) row.get(CURRENCY),

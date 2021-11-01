@@ -1,7 +1,6 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Listed;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 
 public class ListElement
         implements Listed {

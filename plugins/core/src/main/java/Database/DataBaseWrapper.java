@@ -1,5 +1,10 @@
 package Database;
 
+import Database.Column.Autoincrement;
+import Database.Column.ForeignKey;
+import Database.Column.PrimaryKey;
+import Database.Column.TableColumn;
+
 import java.io.File;
 import java.sql.*;
 import java.util.List;
@@ -95,23 +100,19 @@ public class DataBaseWrapper {
         String com = "create table if not exists `%1s` (\n\t%2s\n\t)";
         StringBuilder res = new StringBuilder("");
         columns.stream().forEach(column -> {
-            res.append(column.toCreate());
+            res.append(column.comandForCreate());
             if (columns.indexOf(column) != columns.size() - 1) {
                 res.append(", \n\t");
             }
         });
         res.append(" ");
-//        if(tableName.hasConstPK()) {
-//            res.append(", ");
-//            res.append(tableName.getConstrPK());
-//        }
-        if (tableName.hasConstrUniq()) {
+        if (tableName.hasUniques()) {
             res.append(", \n\t");
-            res.append(tableName.getConstrUniq());
+            res.append(tableName.getConstrainsUnique());
         }
-        if (tableName.hasConstrFK()) {
+        if (tableName.hasForeignKeys()) {
             res.append(", \n\t");
-            res.append(tableName.getConstrFK());
+            res.append(tableName.getConstrainsForeignKey());
         }
         execute(conn, String.format(com, tableName.getName(), res.toString()));
     }
@@ -329,78 +330,78 @@ public class DataBaseWrapper {
         String templateComand = "select %1s \nfrom `%2s`";
         String templateFullName = "\"%1s\".`%2s`";
         String templateAs = "`%1s` as `%2s`";
-        String templateName = "`%1s`";
+        String templateSqlName = "`%1s`";
         //Определяем столбцы для запроса в БД
+        //Если требуемые колонки не переданы, запрашиваем все колонки из таблицы
         if (columns == null) columns = table.getColumns();
 
         StringBuilder column = new StringBuilder("");
         //Проходим по всем колонкам для проверки
         for (TableColumn col : columns) {
-            TableColumn fkTableCol = col.getFKTableCol();
-            if (fkTableCol != null) {
+            if (col instanceof ForeignKey) {
+                TableColumn foreignKeyColumn = ((ForeignKey)col).getForeignKey();
                 StringBuilder subRequest = new StringBuilder("");
                 /*
                  * Наименование таблицы формируется следующим образом.
                  * Если наименование текущей таблицы совпадает добавляем к наименованию "sub_"*/
                 String selectTemplate = "select %1s from %2s where %3s";
-                Table fkTableParent = new Table().copy(fkTableCol.getTableParent());
+                Table foreignKeyTable = new Table().copy(foreignKeyColumn.getTable());
                 String pseudoName;
                 //Переменная для определения внешнего ключа на саму себя
-                boolean foreighnSelf = fkTableParent.getName().equals(table.getName());
-                if (foreighnSelf) {
-                    pseudoName = "sub_".concat(fkTableParent.getName());
+                boolean foreignKeySelf = foreignKeyTable.getName().equals(table.getName());
+                if (foreignKeySelf) {
+                    pseudoName = "sub_".concat(foreignKeyTable.getName());
                 } else {
-                    pseudoName = fkTableParent.getName();
+                    pseudoName = foreignKeyTable.getName();
                 }
-                TableColumn fkTableColId = fkTableParent.getTableCol(Table.ID);
+                TableColumn fkTableColId = foreignKeyTable.getPrimaryKeyColumn();
                 //Ветка выполняется при наличии ссылки на внешнюю таблицу
-                if (fkTableCol.getName().equals(Table.ID)) {
-                    //Внешний ключ ссылается на колонку идентификатор внешней таблицы
+                if (foreignKeyColumn instanceof Autoincrement) {
+                    //Внешний ключ ссылается на автоинкрементируемый первичный ключ внешней таблицы
                     /*Формируем подзапрос следующего вида
                      * select "выбираем все колонки внешней таблицы кроме ID" from fkTable where fk.id = fk_id
                      * Подзапросы должны формироваться для каждой колонки ОТДЕЛЬНО!!!*/
                     //Определяем колонки для вывода информации
-                    List<TableColumn> collect = fkTableParent.getColumns()
+                    List<TableColumn> collect = foreignKeyTable.getColumns()
                             .stream()
-                            .filter(column1 -> !column1.getName().equals(Table.ID))
+                            .filter(column1 -> !(column1 instanceof PrimaryKey))
                             .collect(Collectors.toList());
-                    //Определяем колонку идентификатор таблицы вывода
 
                     //Формируем подзапрос для каждого столбца
-                    for (TableColumn tableColumnFkTable : collect) {
+                    for (TableColumn columnForeignKeyTable : collect) {
                         subRequest.append("(");
                         subRequest.append(
                                 String.format(
                                         selectTemplate,
-                                        tableColumnFkTable.getNameForSQL(),
-                                        (!foreighnSelf) ? (String.format(templateName, pseudoName)) : (String.format(templateAs, fkTableParent.getName(), pseudoName)),
-                                        String.format(templateFullName, pseudoName, fkTableCol.getName()) + " = " + col.getFullNameSQL()
+                                        String.format(templateSqlName), columnForeignKeyTable.getName(),    //Наименование колонки внешней таблицы
+                                        (!foreignKeySelf) ? (String.format(templateSqlName, pseudoName)) : (String.format(templateAs, foreignKeyTable.getName(), pseudoName)),  //Наименование внешней таблицы
+                                        String.format(templateFullName, pseudoName, foreignKeyColumn.getName()) + " = " + String.format(templateFullName, col.getTable().getName(), col.getName()) //Блок WHERE
                                 )
                         );
                         subRequest.append(") as ");
-                        subRequest.append(tableColumnFkTable.getName());
-                        if (collect.indexOf(tableColumnFkTable) != collect.size() - 1) {
+                        subRequest.append(columnForeignKeyTable.getName());
+                        if (collect.indexOf(columnForeignKeyTable) != collect.size() - 1) {
                             subRequest.append(", \n");
                         }
                     }
                 } else {
                     //Внешний ключ ссылается на кастомную колонку внешней таблицы
                     /*Формируем подзапрос следующего вида
-                     * select fkTableCol from fkTable where fk.id = fk_id*/
+                     * select foreignKeyColumn from fkTable where fk.id = fk_id*/
                     subRequest.append("(");
                     subRequest.append(String.format(
                             selectTemplate,
-                            fkTableCol.getNameForSQL(),
-                            (!foreighnSelf) ? (String.format(templateName, pseudoName)) : (String.format(templateAs, fkTableParent.getName(), pseudoName)),
-                            String.format(templateFullName, pseudoName, fkTableColId.getName()) + " = " + col.getFullNameSQL()
+                            String.format(templateSqlName, foreignKeyColumn.getName()),
+                            (!foreignKeySelf) ? (String.format(templateSqlName, pseudoName)) : (String.format(templateAs, foreignKeyTable.getName(), pseudoName)),
+                            String.format(templateFullName, pseudoName, fkTableColId.getName()) + " = " + String.format(templateFullName, col.getTable().getName(), col.getName())
                     ));
                     if (col.getName().startsWith("fk_")) {
                         subRequest.append(
-                                ") as " + "fk_".concat(fkTableCol.getName())
+                                ") as " + "fk_".concat(foreignKeyColumn.getName())
                         );
                     } else {
                         subRequest.append(
-                                ") as " + fkTableCol.getName()
+                                ") as " + foreignKeyColumn.getName()
                         );
                     }
 
@@ -408,7 +409,7 @@ public class DataBaseWrapper {
                 column.append(subRequest);
             } else {
                 //Колонка не содержит внешнего ключа
-                column.append(String.format(templateName, col.getName()));
+                column.append(String.format(templateSqlName, col.getName()));
             }
             if (columns.indexOf(col) != columns.size() - 1) {
                 column.append(", \n");

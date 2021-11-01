@@ -1,9 +1,10 @@
 package ThothCore.ThothLite;
 
+import Database.Column.PrimaryKey;
 import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
-import Database.TableColumn;
+import Database.WhereValues;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBLiteStructure.DBLiteStructure;
 
@@ -58,10 +59,20 @@ public class DataBaseLite {
         ContentValues contentValues = new ContentValues();
 
         for(String columnName : data.keySet()){
-            contentValues.put(structure.getTable(tableName).getTableCol(columnName), data.get(columnName));
+            contentValues.put(structure.getTable(tableName).getColumnByName(columnName), data.get(columnName));
         }
 
         return contentValues;
+    }
+
+    private WhereValues convertToWhereValues(String tableName, HashMap<String, Object> data){
+        WhereValues whereValues = new WhereValues();
+
+        PrimaryKey primaryKeyColumn = structure.getTable(tableName).getPrimaryKeyColumn();
+        whereValues.put(
+                primaryKeyColumn, data.get(primaryKeyColumn.getName())
+        );
+        return whereValues;
     }
 
     public List<Table> getTables(){
@@ -69,7 +80,6 @@ public class DataBaseLite {
     }
 
     public void insert(String tableName, List<HashMap<String, Object>> datas) throws SQLException {
-
         for(HashMap<String, Object> data : datas){
             dbManager.insert(
                     structure.getTable(tableName),
@@ -77,7 +87,6 @@ public class DataBaseLite {
                     dbFile
             );
         }
-
     }
 
     /**
@@ -103,6 +112,31 @@ public class DataBaseLite {
         }
     }
 
+    /**
+     * Функция удаляет записи из таблицы.
+     * @param tableName имя таблицы.
+     * @param datas удаляемые данные.
+     * */
+    public void remove(String tableName, List<HashMap<String, Object>> datas) throws SQLException {
+        for(HashMap<String, Object> data : datas){
+            dbManager.removedRow(
+                    structure.getTable(tableName)
+                    , convertToWhereValues(tableName, data)
+                    , dbFile
+            );
+        }
+    }
 
+    public void update(String tableName, List<HashMap<String, Object>> datas) throws SQLException {
+        for(HashMap<String, Object> data : datas){
+            dbManager.update(
+                    structure.getTable(tableName)
+                    , convertToContentValues(tableName, data)
+                    , convertToWhereValues(tableName, data)
+                    , dbFile
+            );
+        }
+
+    }
 
 }
