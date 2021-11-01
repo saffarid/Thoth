@@ -11,4 +11,6 @@ public interface Purchasable
         , HasPartner
         , Finishable {
 
+    boolean isDelivered();
+
 }

@@ -105,4 +105,8 @@ public class Purchase
         this.store = partner;
     }
 
+    @Override
+    public boolean isDelivered() {
+        return isDelivered;
+    }
 }
