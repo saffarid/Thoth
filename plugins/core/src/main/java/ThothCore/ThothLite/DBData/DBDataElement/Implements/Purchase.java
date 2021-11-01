@@ -107,4 +107,8 @@ public class Purchase
         this.storeId = partner.getId();
     }
 
+    @Override
+    public boolean isDelivered() {
+        return isDelivered;
+    }
 }
