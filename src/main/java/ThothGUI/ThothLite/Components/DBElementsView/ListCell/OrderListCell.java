@@ -1,12 +1,10 @@
-package ThothGUI.ThothLite.Components.ListCell;
+package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Orderable;
 import thoth_styleconstants.Image;
 
-import java.time.format.DateTimeFormatter;
-
 public class OrderListCell
-        extends IdentifiableListCellImpl{
+        extends IdentifiableListCell {
 
     protected OrderListCell(Orderable order) {
         super(

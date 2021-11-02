@@ -1,9 +1,9 @@
-package ThothGUI.ThothLite.Components.ListCell;
+package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import thoth_styleconstants.Image;
 
-public class StoringListCell extends IdentifiableListCellImpl{
+public class StoringListCell extends IdentifiableListCell {
 
     private static final String templateStoragable = "%1s-%2s";
 

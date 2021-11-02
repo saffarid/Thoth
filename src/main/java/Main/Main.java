@@ -11,7 +11,7 @@ import window.StageResizer;
 import java.io.File;
 import java.util.logging.Logger;
 
-public class Main extends Application implements ChangeScreen{
+public class Main extends Application{
 
     public static Logger LOG;
 
@@ -40,8 +40,4 @@ public class Main extends Application implements ChangeScreen{
         launch(args);
     }
 
-
-    @Override
-    public void changeScreen(File db) {
-    }
 }

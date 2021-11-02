@@ -1,4 +1,4 @@
-package ThothGUI.ThothLite.Components.ListCell;
+package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
 import thoth_styleconstants.Image;
@@ -6,7 +6,7 @@ import thoth_styleconstants.Image;
 import java.time.format.DateTimeFormatter;
 
 public class PurchaseListCell
-        extends IdentifiableListCellImpl{
+        extends IdentifiableListCell {
 
     protected PurchaseListCell(Purchasable purchase) {
         super(

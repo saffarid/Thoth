@@ -97,22 +97,22 @@ public class ThothLiteWindow
                 STRING_KEY_INCOME_EXPENSES, thoth_styleconstants.Image.ANALYZE, event -> {}
         ));
         menuButtons.add(getMenuButton(
-                STRING_KEY_ORDERS, thoth_styleconstants.Image.ANALYZE, event -> {}
+                STRING_KEY_ORDERS, thoth_styleconstants.Image.ORDER, event -> {}
         ));
         menuButtons.add(getMenuButton(
-                STRING_KEY_PURCHASES, thoth_styleconstants.Image.ANALYZE, event -> {openSubwindow(new Purchases(STRING_KEY_PURCHASES, this::closeSubwindow));}
+                STRING_KEY_PURCHASES, thoth_styleconstants.Image.PURCHASE, event -> {openSubwindow(new Purchases(STRING_KEY_PURCHASES, this::closeSubwindow));}
         ));
         menuButtons.add(getMenuButton(
-                STRING_KEY_PROJECTS, thoth_styleconstants.Image.ANALYZE, event -> {}
+                STRING_KEY_PROJECTS, thoth_styleconstants.Image.PROJECT, event -> {}
         ));
         menuButtons.add(getMenuButton(
-                STRING_KEY_STORAGE, thoth_styleconstants.Image.ANALYZE, event -> {}
+                STRING_KEY_STORAGE, thoth_styleconstants.Image.STORAGE_CELL, event -> {}
         ));
         menuButtons.add(getMenuButton(
                 STRING_KEY_TABLES_GUIDE, thoth_styleconstants.Image.ANALYZE, event -> {}
         ));
         menuButtons.add(getMenuButton(
-                "Продукты", thoth_styleconstants.Image.ANALYZE, event -> {openSubwindow(new Products("Продукты", this::closeSubwindow, thoth));}
+                "Продукты", thoth_styleconstants.Image.PRODUCT, event -> {openSubwindow(new Products("Продукты", this::closeSubwindow, thoth));}
         ));
         menu = new NavigationMenu("", true, menuButtons);
         setLeft(menu);
@@ -131,7 +131,6 @@ public class ThothLiteWindow
 
     @Override
     public void openSubwindow(Subwindow subwindow) {
-
         ObservableList<Node> children = workspace.getChildren();
         Optional<Node> first = children.stream()
                 .filter(node -> node.getId().equals(subwindow.getId()))

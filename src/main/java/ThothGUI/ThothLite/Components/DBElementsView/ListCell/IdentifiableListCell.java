@@ -1,22 +1,21 @@
-package ThothGUI.ThothLite.Components.ListCell;
+package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import controls.Label;
 import controls.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import layout.basepane.BorderPane;
 
-public abstract class IdentifiableListCellImpl
-        extends ListCell<BorderPane>
-        implements IdentifiableListCell{
+public abstract class IdentifiableListCell
+        extends ListCell<BorderPane>{
 
     protected ImageView icon;
     protected Label title;
     protected Label subtitle;
     protected Label property;
 
-    protected IdentifiableListCellImpl(
+    protected IdentifiableListCell(
             String url,
             String title,
             String subtitle,
@@ -34,25 +33,40 @@ public abstract class IdentifiableListCellImpl
 
     }
 
-    @Override
+    static IdentifiableListCell getInstance(Identifiable identifiable){
+
+        if (identifiable instanceof Storagable) {
+            return new ProductListCell( (Storagable) identifiable );
+        } else if (identifiable instanceof Storing) {
+            return new StoringListCell( (Storing) identifiable );
+        } else if (identifiable instanceof Purchasable) {
+            return new PurchaseListCell( (Purchasable) identifiable );
+        } else if (identifiable instanceof Projectable) {
+            return new ProjectListCell( (Projectable) identifiable );
+        } else if (identifiable instanceof Orderable) {
+            return new OrderListCell( (Orderable) identifiable);
+        }
+
+        return null;
+    }
+
     public void setImageIcon(String url) {
         icon.setImage(
                 new Image(getClass().getResource(url).toExternalForm(), 40, 40, true, true)
         );
     }
 
-    @Override
     public void setTextTitle(String text) {
         this.title.setText(text);
     }
 
-    @Override
     public void setTextSubtitle(String text) {
         this.subtitle.setText(text);
     }
 
-    @Override
     public void setTextProperty(String text) {
         this.property.setText(text);
     }
+
+
 }
