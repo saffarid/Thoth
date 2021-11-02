@@ -1,7 +1,7 @@
 package ThothGUI.ThothLite.Components.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.*;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 
 public interface IdentifiableListCell {
 

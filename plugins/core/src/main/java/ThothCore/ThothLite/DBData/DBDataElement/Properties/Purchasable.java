@@ -11,6 +11,13 @@ public interface Purchasable
         , HasPartner
         , Finishable {
 
+    /**
+     * Функция возвращает статус доставки
+     * */
     boolean isDelivered();
+    /**
+     * Функция устанавливает покупку в доставленное состояние
+     * */
+    void delivered();
 
 }

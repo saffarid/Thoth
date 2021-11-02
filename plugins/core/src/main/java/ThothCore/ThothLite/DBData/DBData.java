@@ -1,6 +1,7 @@
 package ThothCore.ThothLite.DBData;
 
 import ThothCore.ThothLite.DBData.Tables.*;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -38,16 +39,17 @@ public class DBData {
 
     public Data getTable(
             String name
-    ){
+    ) throws NotContainsException {
         Optional<Data> res = tables.stream()
                 .filter(data -> data.getName().equals(name))
                 .findFirst();
-        return (res.isPresent())?(res.get()):(null);
+        if(!res.isPresent()) throw new NotContainsException();
+        return res.get();
     }
 
     public TableReadable getTableReadable(
             String name
-    ){
+    ) throws NotContainsException {
         return getTable(name);
     }
 

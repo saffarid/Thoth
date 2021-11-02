@@ -6,6 +6,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
@@ -46,14 +47,18 @@ public class Storage
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
         for (HashMap<String, Object> row : data) {
-            addData(
-                    new StorageCell(
-                            (String) row.get(ADRESS),
-                            (Storagable) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(PRODUCT_ID))),
-                            (Double) row.get(COUNT),
-                            (Listed) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(COUNT_TYPE_ID)))
-                    )
-            );
+            try {
+                addData(
+                        new StorageCell(
+                                (String) row.get(ADRESS),
+                                (Storagable) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(PRODUCT_ID))),
+                                (Double) row.get(COUNT),
+                                (Listed) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(COUNT_TYPE_ID)))
+                        )
+                );
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            }
         }
     }
 

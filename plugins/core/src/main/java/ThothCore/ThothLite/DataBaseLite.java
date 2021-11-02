@@ -7,6 +7,7 @@ import Database.Table;
 import Database.WhereValues;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBLiteStructure.DBLiteStructure;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -108,6 +109,8 @@ public class DataBaseLite {
         try {
             DBData.getInstance().getTableReadable(table.getName()).readTable(data);
         } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NotContainsException e) {
             e.printStackTrace();
         }
     }

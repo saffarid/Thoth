@@ -8,6 +8,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Orderable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Projectable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
@@ -48,18 +49,22 @@ public class Orders
     @Override
     public void readTable(List<HashMap<String, Object>> data) throws ParseException {
         for (HashMap<String, Object> row : data) {
-            addData(
-                    new Order(
-                            String.valueOf(row.get(ID)),
-                            (Partner) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(CUSTOMER_ID))),
-                            (Projectable) getFromTableById(StructureDescription.ProjectsList.TABLE_NAME, String.valueOf(row.get(PROJECT_ID))),
-                            (int) row.get(IS_MONTHLY) == 1,
-                            (String) row.get(DATE_START),
-                            (String) row.get(DATE_FINISH),
-                            (Listed) getFromTableById(StructureDescription.OrderStatus.TABLE_NAME, String.valueOf(row.get(STATUS_ID))),
-                            (int) row.get(AUTOFINISH) == Finishable.AUTOFINISH
-                    )
-            );
+            try {
+                addData(
+                        new Order(
+                                String.valueOf(row.get(ID)),
+                                (Partner) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(CUSTOMER_ID))),
+                                (Projectable) getFromTableById(StructureDescription.ProjectsList.TABLE_NAME, String.valueOf(row.get(PROJECT_ID))),
+                                (int) row.get(IS_MONTHLY) == 1,
+                                (String) row.get(DATE_START),
+                                (String) row.get(DATE_FINISH),
+                                (Listed) getFromTableById(StructureDescription.OrderStatus.TABLE_NAME, String.valueOf(row.get(STATUS_ID))),
+                                (int) row.get(AUTOFINISH) == Finishable.AUTOFINISH
+                        )
+                );
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Partnership;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.StructureDescription;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
@@ -47,7 +48,11 @@ public class Products
         add.setOnAction(this::addPurchase);
 
         listProducts = new ListView<>();
-        listProducts.getItems().setAll((List<Storagable>)thoth.getDataFromTable(StructureDescription.Products.TABLE_NAME));
+        try {
+            listProducts.getItems().setAll((List<Storagable>) thoth.getDataFromTable(StructureDescription.Products.TABLE_NAME));
+        } catch (NotContainsException e) {
+            e.printStackTrace();
+        }
         listProducts.setCellFactory(productListView -> new ProductCell());
 
         vBox.getChildren().addAll(add, listProducts);
@@ -57,47 +62,52 @@ public class Products
 
     private void addPurchase(ActionEvent event) {
 
-        Purchasable purchasable = new Purchase(
-                "ifsq",
-                (Partnership) DBData.getInstance().getTable(StructureDescription.Partners.TABLE_NAME).getById("1"),
-                "2021-10-19",
-                false
-        );
-
-        purchasable.addStoring(
-                new StorageCell(
-                        new Product(
-                                "ksf13123",
-                                "asdcx12354",
-                                (Listed) DBData.getInstance().getTable(StructureDescription.ProductTypes.TABLE_NAME).getById("1"),
-                                78.0,
-                                (Currency) DBData.getInstance().getTable(StructureDescription.Currency.TABLE_NAME).getById("1")
-                        ),
-                        34.0,
-                        (Listed) DBData.getInstance().getTable(StructureDescription.CountTypes.TABLE_NAME).getById("1")
-                )
-        );
-        purchasable.addStoring(
-                new StorageCell(
-                        new Product(
-                                "lgfhio",
-                                "mkxcv",
-                                (Listed) DBData.getInstance().getTable(StructureDescription.ProductTypes.TABLE_NAME).getById("1"),
-                                78.0,
-                                (Currency) DBData.getInstance().getTable(StructureDescription.Currency.TABLE_NAME).getById("1")
-                        ),
-                        34.0,
-                        (Listed) DBData.getInstance().getTable(StructureDescription.CountTypes.TABLE_NAME).getById("1")
-                )
-        );
-
-        List<Purchasable> datas = new LinkedList<>();
-        datas.add(purchasable);
-
         try {
-            thoth.insertToTable(StructureDescription.Purchases.TABLE_NAME, datas);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            Purchasable purchasable = new Purchase(
+                    "ifsq",
+                    (Partnership) DBData.getInstance().getTable(StructureDescription.Partners.TABLE_NAME).getById("1"),
+                    "2021-10-19",
+                    false
+            );
+
+            purchasable.addStoring(
+                    new StorageCell(
+                            new Product(
+                                    "ksf13123",
+                                    "asdcx12354",
+                                    (Listed) DBData.getInstance().getTable(StructureDescription.ProductTypes.TABLE_NAME).getById("1"),
+                                    78.0,
+                                    (Currency) DBData.getInstance().getTable(StructureDescription.Currency.TABLE_NAME).getById("1")
+                            ),
+                            34.0,
+                            (Listed) DBData.getInstance().getTable(StructureDescription.CountTypes.TABLE_NAME).getById("1")
+                    )
+            );
+            purchasable.addStoring(
+                    new StorageCell(
+                            new Product(
+                                    "lgfhio",
+                                    "mkxcv",
+                                    (Listed) DBData.getInstance().getTable(StructureDescription.ProductTypes.TABLE_NAME).getById("1"),
+                                    78.0,
+                                    (Currency) DBData.getInstance().getTable(StructureDescription.Currency.TABLE_NAME).getById("1")
+                            ),
+                            34.0,
+                            (Listed) DBData.getInstance().getTable(StructureDescription.CountTypes.TABLE_NAME).getById("1")
+                    )
+            );
+
+            List<Purchasable> datas = new LinkedList<>();
+            datas.add(purchasable);
+
+            try {
+                thoth.insertToTable(StructureDescription.Purchases.TABLE_NAME, datas);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        } catch (NotContainsException e) {
+            e.printStackTrace();
         }
     }
 
@@ -105,7 +115,7 @@ public class Products
 
         @Override
         protected void updateItem(Storagable product, boolean b) {
-            if(product != null){
+            if (product != null) {
                 super.updateItem(product, b);
                 setText(product.getId());
             }

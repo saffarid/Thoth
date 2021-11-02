@@ -3,6 +3,7 @@ package ThothCore.ThothLite.DBData.Tables;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -36,18 +37,17 @@ public abstract class Data<T extends Identifiable>
 
     public abstract List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list);
 
-    public T getById(String id) {
+    public T getById(String id) throws NotContainsException {
         Optional<T> element = datas.stream().filter(t -> t.getId().equals(id)).findFirst();
-        return (element.isPresent()) ?
-                (element.get()) :
-                (null);
+        if(!element.isPresent()) throw new NotContainsException();
+        return element.get();
     }
 
     public List<T> getDatas() {
         return datas;
     }
 
-    public Identifiable getFromTableById(String tableName, String id){
+    public Identifiable getFromTableById(String tableName, String id) throws NotContainsException {
         return DBData.getInstance().getTable(tableName).getById(id);
     }
 

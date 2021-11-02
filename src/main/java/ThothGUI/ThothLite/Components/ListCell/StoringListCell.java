@@ -1,6 +1,6 @@
 package ThothGUI.ThothLite.Components.ListCell;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Storing;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import thoth_styleconstants.Image;
 
 public class StoringListCell extends IdentifiableListCellImpl{

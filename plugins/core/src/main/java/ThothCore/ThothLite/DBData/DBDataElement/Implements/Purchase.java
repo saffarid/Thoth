@@ -109,4 +109,9 @@ public class Purchase
     public boolean isDelivered() {
         return isDelivered;
     }
+
+    @Override
+    public void delivered() {
+        isDelivered = true;
+    }
 }

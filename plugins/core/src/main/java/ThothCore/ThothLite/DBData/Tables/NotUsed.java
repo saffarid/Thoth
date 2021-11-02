@@ -4,6 +4,7 @@ import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.NotUse;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
@@ -38,13 +39,17 @@ public class NotUsed
     @Override
     public void readTable(List<HashMap<String, Object>> data) throws ParseException {
         for (HashMap<String, Object> row : data) {
-            datas.add(
-                    new NotUse(
-                            String.valueOf(row.get(ID)),
-                            (Product) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(PRODUCT_ID))),
-                            (String) row.get(CAUSE)
-                    )
-            );
+            try {
+                datas.add(
+                        new NotUse(
+                                String.valueOf(row.get(ID)),
+                                (Product) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(PRODUCT_ID))),
+                                (String) row.get(CAUSE)
+                        )
+                );
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            }
         }
     }
 

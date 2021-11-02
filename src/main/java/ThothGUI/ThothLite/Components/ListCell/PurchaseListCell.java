@@ -1,6 +1,6 @@
 package ThothGUI.ThothLite.Components.ListCell;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Purchasable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
 import thoth_styleconstants.Image;
 
 import java.time.format.DateTimeFormatter;

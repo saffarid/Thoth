@@ -1,6 +1,6 @@
 package ThothGUI.ThothLite.Components.ListCell;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import thoth_styleconstants.Image;
 
 public class ProductListCell
@@ -11,7 +11,7 @@ public class ProductListCell
                 Image.PRODUCT,
                 product.getId(),
                 product.getName(),
-                product.getType()
+                product.getType().getValue()
         );
     }
 

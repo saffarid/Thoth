@@ -6,6 +6,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.StructureDescription;
 
 import java.sql.ResultSet;
@@ -47,16 +48,20 @@ public class Products
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
         for(HashMap<String, Object> row : data){
-            addData(
-                    new Product(
-                            (String) row.get(ARTICLE),
-                            (String) row.get(NAME),
-                            (Listed) getFromTableById(StructureDescription.ProductTypes.TABLE_NAME, String.valueOf(row.get(PRODUCT_TYPE_ID))),
-                            (Double) row.get(PRICE),
-                            (Currency) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(CURRENCY_ID))),
-                            (String) row.get(NOTE)
-                    )
-            );
+            try {
+                addData(
+                        new Product(
+                                (String) row.get(ARTICLE),
+                                (String) row.get(NAME),
+                                (Listed) getFromTableById(StructureDescription.ProductTypes.TABLE_NAME, String.valueOf(row.get(PRODUCT_TYPE_ID))),
+                                (Double) row.get(PRICE),
+                                (Currency) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(CURRENCY_ID))),
+                                (String) row.get(NOTE)
+                        )
+                );
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            }
         }
     }
 

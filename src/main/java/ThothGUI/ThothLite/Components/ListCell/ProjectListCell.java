@@ -1,6 +1,6 @@
 package ThothGUI.ThothLite.Components.ListCell;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Projectable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Projectable;
 import thoth_styleconstants.Image;
 
 public class ProjectListCell
