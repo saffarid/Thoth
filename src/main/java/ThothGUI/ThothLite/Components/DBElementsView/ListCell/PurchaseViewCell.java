@@ -5,10 +5,10 @@ import thoth_styleconstants.Image;
 
 import java.time.format.DateTimeFormatter;
 
-public class PurchaseListCell
-        extends IdentifiableListCell {
+public class PurchaseViewCell
+        extends IdentifiableViewCell {
 
-    protected PurchaseListCell(Purchasable purchase) {
+    protected PurchaseViewCell(Purchasable purchase) {
         super(
                 Image.PURCHASE,
                 purchase.getId(),

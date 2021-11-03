@@ -3,10 +3,10 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import thoth_styleconstants.Image;
 
-public class ProductListCell
-        extends IdentifiableListCell {
+public class ProductViewCell
+        extends IdentifiableViewCell {
 
-    protected ProductListCell(Storagable product) {
+    protected ProductViewCell(Storagable product) {
         super(
                 Image.PRODUCT,
                 product.getId(),

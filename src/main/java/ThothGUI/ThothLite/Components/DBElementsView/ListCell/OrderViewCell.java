@@ -3,10 +3,10 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Orderable;
 import thoth_styleconstants.Image;
 
-public class OrderListCell
-        extends IdentifiableListCell {
+public class OrderViewCell
+        extends IdentifiableViewCell {
 
-    protected OrderListCell(Orderable order) {
+    protected OrderViewCell(Orderable order) {
         super(
                 Image.ORDER,
                 order.getId(),

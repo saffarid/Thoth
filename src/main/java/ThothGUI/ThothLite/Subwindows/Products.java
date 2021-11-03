@@ -9,10 +9,12 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Partnership;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.DataType;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.StructureDescription;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
+import ThothGUI.ThothLite.Components.DBElementsView.ListView.IdentifiablesListView;
 import controls.Button;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ListCell;
@@ -27,7 +29,6 @@ import java.util.List;
 public class Products
         extends Subwindow {
 
-    private ListView<Storagable> listProducts;
     private ThothLite thoth;
 
 
@@ -47,15 +48,14 @@ public class Products
         Button add = new Button("Добавить покупку");
         add.setOnAction(this::addPurchase);
 
-        listProducts = new ListView<>();
         try {
-            listProducts.getItems().setAll((List<Storagable>) thoth.getDataFromTable(StructureDescription.Products.TABLE_NAME));
+            vBox.getChildren().addAll(
+                    add
+                    , IdentifiablesListView.getInstance(DataType.PRODUCT, (List<Storagable>) thoth.getDataFromTable(StructureDescription.Products.TABLE_NAME))
+                    );
         } catch (NotContainsException e) {
             e.printStackTrace();
         }
-        listProducts.setCellFactory(productListView -> new ProductCell());
-
-        vBox.getChildren().addAll(add, listProducts);
 
         setCenter(vBox);
     }

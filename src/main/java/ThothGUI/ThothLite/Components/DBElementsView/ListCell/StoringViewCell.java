@@ -3,11 +3,11 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import thoth_styleconstants.Image;
 
-public class StoringListCell extends IdentifiableListCell {
+public class StoringViewCell extends IdentifiableViewCell {
 
     private static final String templateStoragable = "%1s-%2s";
 
-    protected StoringListCell(Storing storing) {
+    protected StoringViewCell(Storing storing) {
         super(
                 Image.STORAGE_CELL,
                 storing.getId(),
