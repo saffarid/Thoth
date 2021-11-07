@@ -1,5 +1,6 @@
 package ThothCore.ThothLite;
 
+import Database.Table;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.Tables.Data;
@@ -41,6 +42,24 @@ public class ThothLite {
     public List<? extends Identifiable> getDataFromTable(String tableName)
             throws NotContainsException {
         return dbData.getTable(tableName).getDatas();
+    }
+
+    /**
+     * @return Список таблиц со списочными данными.
+     * */
+    public List<Data> getListedDatas(){
+        List<Data> res = new LinkedList<>();
+
+        List<Table> tablesByType = database.getTablesByType(StructureDescription.TableTypes.GUIDE);
+        for(Table table : tablesByType){
+            try {
+                res.add( dbData.getTable(table.getName()) );
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return res;
     }
 
     /**

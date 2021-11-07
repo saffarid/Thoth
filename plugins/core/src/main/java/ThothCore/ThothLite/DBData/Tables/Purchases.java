@@ -57,11 +57,11 @@ public class Purchases
     public void readTable(List<HashMap<String, Object>> data) throws ParseException {
         for (HashMap<String, Object> row : data) {
 
+            Purchasable purchase = null;
             try {
-                Purchasable purchase = getById((String) row.get(ORDER_ID));
-
-                if (purchase == null) {
-
+                purchase = getById((String) row.get(ORDER_ID));
+            } catch (NotContainsException e) {
+                try {
                     purchase = new Purchase(
                             String.valueOf(row.get(ORDER_ID)),
                             (Partner) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(STORE_ID))),
@@ -72,15 +72,25 @@ public class Purchases
                     addData(
                             purchase
                     );
+                } catch (NotContainsException notContainsException) {
+                    notContainsException.printStackTrace();
                 }
+            }
 
+            try {
                 Storing storing = purchase.getStoringByStoragableId(String.valueOf(row.get(PRODUCT_ID)));
 
                 if (storing == null) {
                     storing = new StorageCell(
-                            (Storagable) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(PRODUCT_ID))),
+                            (Storagable) getFromTableById(
+                                    StructureDescription.Products.TABLE_NAME
+                                    , String.valueOf(row.get(PRODUCT_ID))
+                            ),
                             (Double) row.get(COUNT),
-                            (Listed) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(COUNT_TYPE_ID)))
+                            (Listed) getFromTableById(
+                                    StructureDescription.CountTypes.TABLE_NAME
+                                    , String.valueOf( ((Double)row.get(COUNT_TYPE_ID)).intValue() )
+                            )
                     );
                     purchase.addStoring(storing);
                 }

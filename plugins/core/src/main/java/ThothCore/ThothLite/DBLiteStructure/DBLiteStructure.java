@@ -75,7 +75,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public CountTypes() {
             super();
             name = StructureDescription.CountTypes.TABLE_NAME;
-            type = StructureDescription.GUIDE;
+            type = StructureDescription.TableTypes.GUIDE.getType();
 
             addColumn(
                     TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT)
@@ -93,7 +93,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public ProductTypes() {
             super();
             name = StructureDescription.ProductTypes.TABLE_NAME;
-            type = StructureDescription.GUIDE;
+            type = StructureDescription.TableTypes.GUIDE.getType();
 
             addColumn(
                     TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT)
@@ -111,7 +111,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public OrderStatus() {
             super();
             name = StructureDescription.OrderStatus.TABLE_NAME;
-            type = StructureDescription.GUIDE;
+            type = StructureDescription.TableTypes.GUIDE.getType();
 
             addColumn(
                     TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT)
@@ -129,7 +129,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public Partners() {
             super();
             name = StructureDescription.Partners.TABLE_NAME;
-            type = StructureDescription.GUIDE;
+            type = StructureDescription.TableTypes.GUIDE.getType();
 
             addColumn(
                     TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT)
@@ -153,7 +153,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public IncomeTypes() {
             super();
             name = StructureDescription.IncomeTypes.TABLE_NAME;
-            type = StructureDescription.GUIDE;
+            type = StructureDescription.TableTypes.GUIDE.getType();
 
             addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
             addColumn(getCustomColumn(
@@ -169,7 +169,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public Currency() {
             super();
             name = StructureDescription.Currency.TABLE_NAME;
-            type = StructureDescription.GUIDE;
+            type = StructureDescription.TableTypes.GUIDE.getType();
 
             addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
             addColumn(getCustomColumn(
@@ -188,7 +188,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public NotUsed() {
             super();
             name = StructureDescription.NotUsed.TABLE_NAME;
-            type = StructureDescription.TABLE;
+            type = StructureDescription.TableTypes.TABLE.getType();
 
             addColumn(getPrimaryKeyCustom(
                     StructureDescription.NotUsed.PRODUCT_ID, DataTypes.INT
@@ -206,7 +206,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public Products() {
             super();
             name = StructureDescription.Products.TABLE_NAME;
-            type = StructureDescription.TABLE;
+            type = StructureDescription.TableTypes.TABLE.getType();
 
             addColumn( getPrimaryKeyCustom(
                     StructureDescription.Products.ARTICLE, DataTypes.TEXT
@@ -238,7 +238,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public Storage() {
             super();
             name = StructureDescription.Storage.TABLE_NAME;
-            type = StructureDescription.TABLE;
+            type = StructureDescription.TableTypes.TABLE.getType();
 
             addColumn( getPrimaryKeyCustom(
                     StructureDescription.Storage.ADRESS, DataTypes.NOTE
@@ -264,7 +264,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public Purchases() {
             super();
             name = StructureDescription.Purchases.TABLE_NAME;
-            type = StructureDescription.TABLE;
+            type = StructureDescription.TableTypes.TABLE.getType();
 
             addColumn( TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT) );
             addColumn( getCustomColumn(
@@ -301,7 +301,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public Orders() {
             super();
             name = StructureDescription.Orders.TABLE_NAME;
-            type = StructureDescription.TABLE;
+            type = StructureDescription.TableTypes.TABLE.getType();
 
             addColumn( getPrimaryKeyCustom(
                     StructureDescription.Orders.ID, DataTypes.TEXT
@@ -338,7 +338,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public ProjectsList() {
             super();
             name = StructureDescription.ProjectsList.TABLE_NAME;
-            type = StructureDescription.TABLE;
+            type = StructureDescription.TableTypes.TABLE.getType();
 
             addColumn( TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT) );
 
@@ -358,7 +358,7 @@ public class DBLiteStructure extends DataBaseSQL {
         public Incomes() {
             super();
             name = StructureDescription.Incomes.TABLE_NAME;
-            type = StructureDescription.TABLE;
+            type = StructureDescription.TableTypes.TABLE.getType();
 
             addColumn( TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT) );
 

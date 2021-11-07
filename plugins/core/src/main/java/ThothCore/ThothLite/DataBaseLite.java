@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class DataBaseLite {
 
@@ -78,6 +79,12 @@ public class DataBaseLite {
 
     public List<Table> getTables(){
         return structure.getTables();
+    }
+
+    public List<Table> getTablesByType(StructureDescription.TableTypes type){
+        return structure.getTables().stream()
+                .filter(table -> table.getType().equals(type))
+                .collect(Collectors.toList());
     }
 
     public void insert(String tableName, List<HashMap<String, Object>> datas) throws SQLException {

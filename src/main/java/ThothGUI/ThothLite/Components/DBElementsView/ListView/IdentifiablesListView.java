@@ -4,6 +4,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DataType;
 import ThothGUI.ThothLite.Components.DBElementsView.ListCell.IdentifiableListCell;
 import controls.Label;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
@@ -18,6 +19,8 @@ import java.util.List;
 public abstract class IdentifiablesListView<T extends Identifiable>
         extends BorderPane {
 
+    private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
+
     protected HBox sortedPane;
     protected List<T> datas;
     protected ListView<T> identifiableElementList;
@@ -27,6 +30,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         this.datas = datas;
         setTop(createSortedPane());
         setCenter(createContent());
+
+        getStylesheets().add(getClass().getResource(STYLESHEET_PATH).toExternalForm());
     }
 
     private HBox createSortedPane(){
@@ -61,15 +66,15 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 , createListView()
         );
 
-        haventItemsLabel.visibleProperty().bind(identifiableElementList.itemsProperty().isNotNull());
-        identifiableElementList.visibleProperty().bind(identifiableElementList.itemsProperty().isNull());
+        haventItemsLabel.visibleProperty().bind(new SimpleBooleanProperty(identifiableElementList.getItems().isEmpty()));
+        identifiableElementList.visibleProperty().bind(new SimpleBooleanProperty(!identifiableElementList.getItems().isEmpty()));
 
         return vBox;
     }
 
     protected ListView<T> createListView(){
         identifiableElementList = new ListView<>();
-        identifiableElementList.setPadding(new Insets(5));
+        identifiableElementList.setPadding(new Insets(2));
         identifiableElementList.getItems().setAll(datas);
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell());
         return identifiableElementList;

@@ -2,13 +2,27 @@ package ThothCore.ThothLite;
 
 public class StructureDescription {
 
-    public static final String TABLE = "table";
-    public static final String PROJECT_TABLE = "project_table";
-    public static final String GUIDE = "guide";
-    public static final String CONSTANTS = "constants";
-    public static final String SYSTEM_TABLE = "system_table";
-    public static final String SYSTEM_GUIDE = "system_guide";
-    public static final String SYSTEM_CONSTANTS = "system_constants";
+    public static enum TableTypes{
+        TABLE("table"),
+        PROJECT_TABLE("project_table"),
+        GUIDE("guide"),
+        CONSTANTS("constants"),
+        SYSTEM_TABLE("system_table"),
+        SYSTEM_GUIDE("system_guide"),
+        SYSTEM_CONSTANTS("system_constants")
+        ;
+
+        private String type;
+
+        TableTypes(String type) {
+            this.type = type;
+        }
+
+        public String getType(){
+            return type;
+        }
+    }
+
 
     /**
      * Таблица едениц измерения
@@ -109,7 +123,7 @@ public class StructureDescription {
      */
     public static class Purchases{
         public static final String TABLE_NAME = "purchases";
-//        public static final String ID = "id";
+        public static final String ID = "id";
         public static final String ORDER_ID = "order_id";
         public static final String STORE_ID = "store_id";
         public static final String PRODUCT_ID = "product_id";
