@@ -7,14 +7,14 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
-import ThothCore.ThothLite.StructureDescription;
+import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.StructureDescription.Products.*;
+import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Products.*;
 
 public class Products
         extends Data<Storagable>

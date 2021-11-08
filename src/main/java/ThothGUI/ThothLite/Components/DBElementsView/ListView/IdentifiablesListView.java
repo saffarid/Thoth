@@ -1,7 +1,7 @@
 package ThothGUI.ThothLite.Components.DBElementsView.ListView;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
-import ThothCore.ThothLite.DataType;
+import ThothCore.ThothLite.DataTables;
 import ThothGUI.ThothLite.Components.DBElementsView.ListCell.IdentifiableListCell;
 import controls.Label;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -81,20 +81,20 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     public static IdentifiablesListView getInstance(
-            DataType type
+            DataTables type
             , List<? extends Identifiable> datas
     ){
         switch (type){
-            case ORDER:{
+            case ORDERABLE:{
                 return new OrderableListView((List<Orderable>) datas);
             }
-            case PRODUCT:{
+            case STORAGABLE:{
                 return new StoragableListView((List<Storagable>) datas);
             }
-            case PROJECT:{
+            case PROJECTABLE:{
                 return new ProjectableListView((List<Projectable>) datas);
             }
-            case PURCHASE:{
+            case PURCHASABLE:{
                 return new PurchasableListView((List<Purchasable>) datas);
             }
             case STORING:{

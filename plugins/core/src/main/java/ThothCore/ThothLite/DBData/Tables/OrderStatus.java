@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.StructureDescription.OrderStatus.*;
+import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.OrderStatus.*;
 
 public class OrderStatus
         extends Data<Listed> {

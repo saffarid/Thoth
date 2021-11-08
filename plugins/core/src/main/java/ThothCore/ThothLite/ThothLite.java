@@ -1,9 +1,9 @@
 package ThothCore.ThothLite;
 
-import Database.Table;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.Tables.Data;
+import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.Timer.ThothTimer;
 import ThothCore.ThothLite.Timer.Traceable;
@@ -15,13 +15,15 @@ import java.util.concurrent.Flow;
 
 public class ThothLite {
 
+    private static ThothLite thoth;
+
     private DataBaseLite database;
     private DBData dbData;
 
     private Traceable watcherPurchasesFinish;
     private Traceable watcherOrdersFinish;
 
-    public ThothLite()
+    private ThothLite()
             throws SQLException, ClassNotFoundException, NotContainsException {
 
         dbData = DBData.getInstance();
@@ -35,31 +37,45 @@ public class ThothLite {
 
     }
 
+    public List<? extends Identifiable> getData(DataTables type)
+            throws NotContainsException {
+        switch (type){
+            case LISTED: return null;
+            default: return getDataFromTable(type.getTableName());
+        }
+    }
+
+    public List<? extends Identifiable> getData(ListedTables table)
+            throws NotContainsException {
+        return getDataFromTable(table.getTableName());
+    }
+
+    /**
+     * @return Массив доступных типов данных.
+     * */
+    public DataTables[] getDataTables(){
+        return DataTables.values();
+    }
+
+    public ListedTables[] getListedTables(){
+        return ListedTables.values();
+    }
+
     /**
      * @param tableName наименование запрашиваемой таблицы.
      * @return список содержимого таблицы.
      */
-    public List<? extends Identifiable> getDataFromTable(String tableName)
+    private List<? extends Identifiable> getDataFromTable(String tableName)
             throws NotContainsException {
         return dbData.getTable(tableName).getDatas();
     }
 
-    /**
-     * @return Список таблиц со списочными данными.
-     * */
-    public List<Data> getListedDatas(){
-        List<Data> res = new LinkedList<>();
-
-        List<Table> tablesByType = database.getTablesByType(StructureDescription.TableTypes.GUIDE);
-        for(Table table : tablesByType){
-            try {
-                res.add( dbData.getTable(table.getName()) );
-            } catch (NotContainsException e) {
-                e.printStackTrace();
-            }
+    public static ThothLite getInstance()
+            throws SQLException, NotContainsException, ClassNotFoundException {
+        if (thoth == null){
+            thoth = new ThothLite();
         }
-
-        return res;
+        return thoth;
     }
 
     /**

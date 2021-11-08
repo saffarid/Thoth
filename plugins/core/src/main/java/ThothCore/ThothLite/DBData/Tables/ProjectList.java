@@ -5,14 +5,14 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Projectable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
-import ThothCore.ThothLite.StructureDescription;
+import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.StructureDescription.ProjectsList.*;
+import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.ProjectsList.*;
 
 public class ProjectList
         extends Data<Projectable>

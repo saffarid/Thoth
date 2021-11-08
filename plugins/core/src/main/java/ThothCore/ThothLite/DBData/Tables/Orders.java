@@ -9,7 +9,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Projectable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
-import ThothCore.ThothLite.StructureDescription;
+import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.text.ParseException;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.StructureDescription.Orders.*;
+import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Orders.*;
 
 public class Orders
         extends Data<Orderable> {

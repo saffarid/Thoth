@@ -2,7 +2,7 @@ package ThothGUI.ThothLite;
 
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
-import ThothCore.ThothLite.DataType;
+import ThothCore.ThothLite.DataTables;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
@@ -118,7 +118,7 @@ public class ThothLiteWindow
                 STRING_KEY_ORDERS, thoth_styleconstants.Image.ORDER, event -> {}
         ));
         menuButtons.add(getMenuButton(
-                STRING_KEY_PURCHASES, thoth_styleconstants.Image.PURCHASE, event -> {openSubwindow(new IdentifiableListWindow("Покупки", DataType.PURCHASE));}
+                STRING_KEY_PURCHASES, thoth_styleconstants.Image.PURCHASE, event -> {openSubwindow(new IdentifiableListWindow("Покупки", DataTables.PURCHASABLE));}
         ));
         menuButtons.add(getMenuButton(
                 STRING_KEY_PROJECTS, thoth_styleconstants.Image.PROJECT, event -> {}
@@ -130,7 +130,7 @@ public class ThothLiteWindow
                 STRING_KEY_TABLES_GUIDE, thoth_styleconstants.Image.ANALYZE, event -> {}
         ));
         menuButtons.add(getMenuButton(
-                "Продукты", thoth_styleconstants.Image.PRODUCT, event -> {openSubwindow(new IdentifiableListWindow("Продукты", DataType.PRODUCT));}
+                "Продукты", thoth_styleconstants.Image.PRODUCT, event -> {openSubwindow(new IdentifiableListWindow("Продукты", DataTables.STORAGABLE));}
         ));
         menu = new NavigationMenu("", true, menuButtons);
         setLeft(menu);

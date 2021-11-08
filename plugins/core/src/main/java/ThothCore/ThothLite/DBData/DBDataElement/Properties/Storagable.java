@@ -1,5 +1,7 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Properties;
 
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Pricing;
@@ -13,4 +15,9 @@ public interface Storagable
         , Nameable
         , Typable
         , Pricing {
+
+    static Storagable getInstance(){
+        return new Product();
+    }
+
 }

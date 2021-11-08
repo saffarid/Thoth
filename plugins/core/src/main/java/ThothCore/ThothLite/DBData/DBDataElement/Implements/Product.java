@@ -13,6 +13,15 @@ public class Product
     private Currency currency;
     private String note;
 
+    public Product() {
+        this.article = "";
+        this.name = "";
+        this.type = null;
+        this.price = 0.0;
+        this.currency = null;
+        this.note = "";
+    }
+
     public Product(String article, String name, Listed type, Double price, Currency currency) {
         this.article = article;
         this.name = name;

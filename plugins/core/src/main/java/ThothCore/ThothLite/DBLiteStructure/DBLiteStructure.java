@@ -4,9 +4,7 @@ import Database.Column.*;
 import Database.DataBaseSQL;
 import Database.Exceptions.NotSupportedOperation;
 import Database.Table;
-import ThothCore.ThothLite.StructureDescription;
 
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class DBLiteStructure extends DataBaseSQL {

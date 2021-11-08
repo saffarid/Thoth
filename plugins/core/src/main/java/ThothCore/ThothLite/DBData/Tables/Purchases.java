@@ -4,12 +4,11 @@ import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.*;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
-import ThothCore.ThothLite.StructureDescription;
+import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.text.ParseException;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.StructureDescription.Purchases.*;
+import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Purchases.*;
 
 public class Purchases
         extends Data<Purchasable> {

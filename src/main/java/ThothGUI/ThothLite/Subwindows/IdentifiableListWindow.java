@@ -1,7 +1,7 @@
 package ThothGUI.ThothLite.Subwindows;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
-import ThothCore.ThothLite.DataType;
+import ThothCore.ThothLite.DataTables;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.ThothLite.Components.DBElementsView.ListView.IdentifiablesListView;
 import ThothGUI.ThothLite.ThothLiteWindow;
@@ -13,7 +13,7 @@ public class IdentifiableListWindow extends Subwindow {
 
     public IdentifiableListWindow(
             String title
-            , DataType type
+            , DataTables type
     ) {
         super(title);
         setId(title);
