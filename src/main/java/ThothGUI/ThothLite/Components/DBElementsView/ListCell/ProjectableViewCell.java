@@ -3,10 +3,10 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Projectable;
 import thoth_styleconstants.Image;
 
-public class ProjectViewCell
+public class ProjectableViewCell
         extends IdentifiableViewCell {
 
-    protected ProjectViewCell(Projectable project) {
+    protected ProjectableViewCell(Projectable project) {
         super(Image.PROJECT,
                 project.getName(),
                 project.getName(),  //Дата создания

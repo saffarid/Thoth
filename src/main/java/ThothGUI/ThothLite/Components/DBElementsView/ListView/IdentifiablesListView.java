@@ -86,16 +86,16 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     ){
         switch (type){
             case ORDER:{
-                return new OrderListView((List<Orderable>) datas);
+                return new OrderableListView((List<Orderable>) datas);
             }
             case PRODUCT:{
-                return new ProductListView((List<Storagable>) datas);
+                return new StoragableListView((List<Storagable>) datas);
             }
             case PROJECT:{
-                return new ProjectListView((List<Projectable>) datas);
+                return new ProjectableListView((List<Projectable>) datas);
             }
             case PURCHASE:{
-                return new PurchaseListView((List<Purchasable>) datas);
+                return new PurchasableListView((List<Purchasable>) datas);
             }
             case STORING:{
                 return new StoringListView((List<Storing>) datas);

@@ -26,7 +26,7 @@ public class Main extends Application{
         this.stage = stage;
 
         ThothLite thoth1 = new ThothLite();
-        ThothLiteWindow thoth = new ThothLiteWindow(stage, thoth1);
+        ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage, thoth1);
         thoth.setPrefSize(800, 600);
         stage.setScene(new Scene(thoth));
 

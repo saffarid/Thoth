@@ -1,14 +1,14 @@
 package ThothGUI.ThothLite.Components.DBElementsView.ListView;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Orderable;
 import javafx.scene.control.ListView;
 
 import java.util.List;
 
-public class PurchaseListView extends IdentifiablesListView<Purchasable> {
+public class OrderableListView extends IdentifiablesListView<Orderable> {
 
-    public PurchaseListView(List<Purchasable> datas) {
+    public OrderableListView(List<Orderable> datas) {
         super(datas);
     }
 

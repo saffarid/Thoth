@@ -2,9 +2,11 @@ package ThothGUI.ThothLite;
 
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
+import ThothCore.ThothLite.DataType;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
+import ThothGUI.ThothLite.Subwindows.IdentifiableListWindow;
 import ThothGUI.ThothLite.Subwindows.Products;
 import ThothGUI.ThothLite.Subwindows.Purchases;
 
@@ -47,6 +49,8 @@ public class ThothLiteWindow
 
     private static Logger LOG;
 
+    private static ThothLiteWindow window;
+
     private Stage mainStage;
 
     private NavigationMenu menu;
@@ -61,7 +65,7 @@ public class ThothLiteWindow
         LOG = Logger.getLogger("ThothLiteGUI");
     }
 
-    public ThothLiteWindow(Stage stage,
+    private ThothLiteWindow(Stage stage,
                            ThothLite thoth) {
         super(stage);
         this.thoth = thoth;
@@ -77,6 +81,20 @@ public class ThothLiteWindow
 
     }
 
+    public static ThothLiteWindow getInstance(){
+        if(window == null){
+            throw new NullPointerException();
+        }
+        return window;
+    }
+
+    public static ThothLiteWindow getInstance(Stage stage,
+                                              ThothLite thoth){
+        if(window == null){
+            window = new ThothLiteWindow(stage, thoth);
+        }
+        return window;
+    }
 
     private MenuButton getMenuButton(String mes, String url, EventHandler<ActionEvent> event){
         MenuButton menuButton = new MenuButton(mes);
@@ -100,7 +118,7 @@ public class ThothLiteWindow
                 STRING_KEY_ORDERS, thoth_styleconstants.Image.ORDER, event -> {}
         ));
         menuButtons.add(getMenuButton(
-                STRING_KEY_PURCHASES, thoth_styleconstants.Image.PURCHASE, event -> {openSubwindow(new Purchases(STRING_KEY_PURCHASES, this::closeSubwindow));}
+                STRING_KEY_PURCHASES, thoth_styleconstants.Image.PURCHASE, event -> {openSubwindow(new IdentifiableListWindow("Покупки", DataType.PURCHASE));}
         ));
         menuButtons.add(getMenuButton(
                 STRING_KEY_PROJECTS, thoth_styleconstants.Image.PROJECT, event -> {}
@@ -112,7 +130,7 @@ public class ThothLiteWindow
                 STRING_KEY_TABLES_GUIDE, thoth_styleconstants.Image.ANALYZE, event -> {}
         ));
         menuButtons.add(getMenuButton(
-                "Продукты", thoth_styleconstants.Image.PRODUCT, event -> {openSubwindow(new Products("Продукты", this::closeSubwindow, thoth));}
+                "Продукты", thoth_styleconstants.Image.PRODUCT, event -> {openSubwindow(new IdentifiableListWindow("Продукты", DataType.PRODUCT));}
         ));
         menu = new NavigationMenu("", true, menuButtons);
         setLeft(menu);

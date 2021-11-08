@@ -1,8 +1,6 @@
 package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
-import ThothCore.ThothLite.DataType;
-import controls.ListCell;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -48,13 +46,13 @@ public abstract class IdentifiableViewCell
     static IdentifiableViewCell getInstance(Identifiable identifiable) {
 
         if(identifiable instanceof Orderable) {
-            return new OrderViewCell((Orderable) identifiable);
+            return new OrderableViewCell((Orderable) identifiable);
         }else if(identifiable instanceof Storagable) {
-            return new ProductViewCell((Storagable) identifiable);
+            return new StoragableViewCell((Storagable) identifiable);
         }else if(identifiable instanceof Projectable) {
-            return new ProjectViewCell((Projectable) identifiable);
+            return new ProjectableViewCell((Projectable) identifiable);
         }else if(identifiable instanceof Purchasable) {
-            return new PurchaseViewCell((Purchasable) identifiable);
+            return new PurchasableViewCell((Purchasable) identifiable);
         }else if(identifiable instanceof Storing){
             return new StoringViewCell((Storing) identifiable);
         }
