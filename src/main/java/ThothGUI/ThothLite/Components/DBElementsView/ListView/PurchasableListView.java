@@ -12,4 +12,9 @@ public class PurchasableListView extends IdentifiablesListView<Purchasable> {
         super(datas);
     }
 
+    @Override
+    protected Purchasable getIdentifiableInstance() {
+        return null;
+    }
+
 }

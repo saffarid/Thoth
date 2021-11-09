@@ -12,4 +12,9 @@ public class StoringListView extends IdentifiablesListView<Storing> {
         super(datas);
     }
 
+    @Override
+    protected Storing getIdentifiableInstance() {
+        return null;
+    }
+
 }

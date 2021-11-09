@@ -24,7 +24,8 @@ public abstract class Window extends BorderPane {
         }catch (Exception e){
             setStyle("-fx-border-color:#707070;\n" +
                     "    -fx-border-style:solid;\n" +
-                    "    -fx-border-width:3px;");
+                    "    -fx-border-width:3px;\n" +
+                    "-fx-background-color:#343A40");
         }
     }
 }

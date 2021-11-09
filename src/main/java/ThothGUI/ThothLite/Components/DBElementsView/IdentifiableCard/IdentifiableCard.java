@@ -10,9 +10,11 @@ import controls.Button;
 import controls.ListCell;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.layout.BorderPane;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -44,6 +46,26 @@ public abstract class IdentifiableCard
         setBottom(createButtonBar());
     }
 
+    @Override
+    public void apply() {
+        LOG.log(Level.INFO, identifiable.toString());
+    }
+
+    @Override
+    public void cancel() {
+
+    }
+
+    private ButtonBar createButtonBar(){
+        ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setPadding(new Insets(2));
+        buttonBar.getButtons().addAll(
+                getButton(ButtonText.APPLY, event -> apply())
+                , getButton(ButtonText.CANCEL, event -> cancel())
+        );
+        return buttonBar;
+    }
+
     private Button getButton(
             ButtonText text
             , EventHandler<ActionEvent> event
@@ -52,15 +74,6 @@ public abstract class IdentifiableCard
         res.setId(text.text);
         res.setOnAction(event);
         return res;
-    }
-
-    private ButtonBar createButtonBar(){
-        ButtonBar buttonBar = new ButtonBar();
-        buttonBar.getButtons().addAll(
-                getButton(ButtonText.APPLY, event -> apply())
-                , getButton(ButtonText.CANCEL, event -> cancel())
-        );
-        return buttonBar;
     }
 
     public static IdentifiableCard getInstance(Identifiable identifiable){

@@ -1,4 +1,4 @@
-package thoth_styleconstants;
+package ThothGUI.thoth_styleconstants;
 
 public class Image {
 
@@ -7,6 +7,7 @@ public class Image {
     public static final String EDIT = "/image/ico/edit.png";
     public static final String EYE = "/image/ico/eye.png";
     public static final String ORDER = "/image/ico/order.png";
+    public static final String LIST = "/image/ico/list.png";
     public static final String PLUS = "/image/ico/plus.png";
     public static final String PRODUCT = "/image/ico/product.png";
     public static final String PROJECT = "/image/ico/order.png";

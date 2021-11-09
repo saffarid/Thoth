@@ -4,17 +4,26 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DataTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
+import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Components.DBElementsView.ListCell.IdentifiableListCell;
+import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
+import ThothGUI.ThothLite.ThothLiteWindow;
+import controls.Button;
 import controls.Label;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import layout.basepane.HBox;
 import layout.basepane.VBox;
+import ThothGUI.thoth_styleconstants.Image;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -22,8 +31,17 @@ import java.util.List;
 public abstract class IdentifiablesListView<T extends Identifiable>
         extends BorderPane {
 
+    private enum ButtonId{
+        IDENTIFIABLE_ADD("add");
+        private String id;
+        ButtonId(String id) {
+            this.id = id;
+        }
+    }
+
     private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
 
+    protected BorderPane pallete;
     protected HBox sortedPane;
     protected List<T> datas;
     protected ListView<T> identifiableElementList;
@@ -31,13 +49,23 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected IdentifiablesListView(List<T> datas) {
         super();
         this.datas = datas;
-        setTop(createSortedPane());
+        setTop(createPallete());
         setCenter(createContent());
 
         getStylesheets().add(getClass().getResource(STYLESHEET_PATH).toExternalForm());
     }
 
-    private HBox createSortedPane(){
+    private Node createPallete(){
+
+        pallete = new BorderPane();
+
+        pallete.setLeft(createSortedPane());
+        pallete.setRight(getButton(ButtonId.IDENTIFIABLE_ADD, this::openCreateNewIdentifiable ));
+
+        return pallete;
+    }
+
+    private Node createSortedPane(){
         sortedPane = new HBox();
 
         sortedPane.setPadding(new Insets(5));
@@ -83,6 +111,38 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return identifiableElementList;
     }
 
+    private Button getButton(
+            ButtonId id
+            , EventHandler<ActionEvent> event
+    ){
+        Button res;
+        String url;
+        switch (id){
+            case IDENTIFIABLE_ADD:{
+                url = Image.PLUS;
+                break;
+            }
+            default: url = null;
+        }
+
+        if(url == null) {
+            res = new Button(id.id);
+        }else{
+            res = new Button(
+                    new ImageView(
+                            new javafx.scene.image.Image(getClass().getResource(url).toExternalForm(), 30, 30, true, true)
+                    )
+            );
+        }
+
+        res.setId(id.id);
+        res.setOnAction(event);
+
+        return res;
+    }
+
+    protected abstract T getIdentifiableInstance();
+
     public static IdentifiablesListView getInstance(
             DataTables type
     ) {
@@ -115,5 +175,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void openCreateNewIdentifiable(ActionEvent event){
+        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", getIdentifiableInstance()) );
     }
 }

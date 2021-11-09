@@ -1,5 +1,5 @@
 .text-button{
-    -fx-pref-height:40px;
+    -fx-pref-height:30px;
     -fx-background-color:#6C757D;
     -fx-background-insets:0;
     -fx-background-radius:0;
@@ -23,6 +23,7 @@
     -fx-background-radius:0;
     -fx-border-radius:0;
     -fx-text-fill:#F8F9FA;
+    -fx-padding:0;
 }
 
 .img-button:hover{

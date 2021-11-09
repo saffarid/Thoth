@@ -5,15 +5,18 @@ import ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard.Identifiabl
 import window.Subwindow;
 
 /**
- *
+ * Subwindow для отображения карточки идентифицируемого объекта.
  * */
-public class IdentifiablePane extends Subwindow {
+public class IdentifiableCardWindow extends Subwindow {
 
-    public IdentifiablePane(
+    private final String TEMPLATE_ID = "%1s:%2s";
+
+    public IdentifiableCardWindow(
             String title
             , Identifiable identifiable) {
         super(title);
 
+        setId(String.format(TEMPLATE_ID, title, identifiable.getId()));
         setCenter(IdentifiableCard.getInstance(identifiable));
     }
 

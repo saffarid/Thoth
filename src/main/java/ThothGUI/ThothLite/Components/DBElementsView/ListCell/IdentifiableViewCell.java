@@ -29,7 +29,7 @@ public abstract class IdentifiableViewCell
         this.title = new Label();
         this.subtitle = new Label();
         this.property = new Label();
-        this.edit = setImageIcon(thoth_styleconstants.Image.ARROW_RIGHT);
+        this.edit = setImageIcon(ThothGUI.thoth_styleconstants.Image.ARROW_RIGHT);
 
         setTextTitle(title);
         setTextSubtitle(subtitle);
@@ -73,8 +73,8 @@ public abstract class IdentifiableViewCell
         GridPane res = new GridPane();
 
         res.getColumnConstraints().addAll(
-                new ColumnConstraints(100, 150, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                , new ColumnConstraints(100, 150, Double.MAX_VALUE, Priority.ALWAYS, HPos.RIGHT, true)
+                new ColumnConstraints(50, 75, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                , new ColumnConstraints(50, 75, Double.MAX_VALUE, Priority.ALWAYS, HPos.RIGHT, true)
         );
 
         res.getRowConstraints().addAll(

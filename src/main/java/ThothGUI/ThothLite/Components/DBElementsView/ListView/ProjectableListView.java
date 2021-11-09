@@ -12,4 +12,9 @@ public class ProjectableListView extends IdentifiablesListView<Projectable> {
         super(datas);
     }
 
+    @Override
+    protected Projectable getIdentifiableInstance() {
+        return null;
+    }
+
 }

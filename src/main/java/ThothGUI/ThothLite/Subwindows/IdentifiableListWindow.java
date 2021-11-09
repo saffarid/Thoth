@@ -1,13 +1,9 @@
 package ThothGUI.ThothLite.Subwindows;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DataTables;
-import ThothGUI.CloseSubwindow;
 import ThothGUI.ThothLite.Components.DBElementsView.ListView.IdentifiablesListView;
-import ThothGUI.ThothLite.ThothLiteWindow;
 import window.Subwindow;
 
-import java.util.LinkedList;
 
 public class IdentifiableListWindow extends Subwindow {
 
@@ -16,9 +12,8 @@ public class IdentifiableListWindow extends Subwindow {
             , DataTables type
     ) {
         super(title);
-        setId(title);
-        setCloseEvent( event -> ((CloseSubwindow)ThothLiteWindow.getInstance()).closeSubwindow(this) );
 
+        setId(title);
         setCenter( IdentifiablesListView.getInstance(
                 type
         ));

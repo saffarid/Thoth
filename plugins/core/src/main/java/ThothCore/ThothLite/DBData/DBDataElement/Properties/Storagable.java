@@ -15,8 +15,4 @@ public interface Storagable
         , Nameable
         , Typable
         , Pricing {
-
-    static Storagable getInstance(){
-        return new Product();
-    }
 }

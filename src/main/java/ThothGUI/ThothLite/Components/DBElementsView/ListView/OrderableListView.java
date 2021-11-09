@@ -12,4 +12,9 @@ public class OrderableListView extends IdentifiablesListView<Orderable> {
         super(datas);
     }
 
+    @Override
+    protected Orderable getIdentifiableInstance() {
+        return null;
+    }
+
 }

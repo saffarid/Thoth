@@ -2,12 +2,11 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothGUI.OpenSubwindow;
-import ThothGUI.ThothLite.Subwindows.IdentifiablePane;
+import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.MouseEvent;
-import window.Subwindow;
 
 public class IdentifiableListCell<T extends Identifiable>
         extends ListCell<T>
@@ -26,7 +25,7 @@ public class IdentifiableListCell<T extends Identifiable>
     }
 
     private void cellClick(MouseEvent mouseEvent) {
-        ((OpenSubwindow)ThothLiteWindow.getInstance()).openSubwindow(new IdentifiablePane("Карточка", identifiable));
+        ((OpenSubwindow)ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableCardWindow("Карточка", identifiable));
     }
 
     @Override

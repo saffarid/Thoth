@@ -29,10 +29,7 @@ public class Main extends Application{
     public void start(Stage stage) throws Exception {
         this.stage = stage;
 
-        LOG.log(Level.INFO, Currency.getAvailableCurrencies().toString());
-
-        ThothLite thoth1 = ThothLite.getInstance();
-        ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage, thoth1);
+        ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage, ThothLite.getInstance());
         thoth.setPrefSize(800, 600);
         stage.setScene(new Scene(thoth));
 
