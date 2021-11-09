@@ -19,5 +19,4 @@ public interface Storagable
     static Storagable getInstance(){
         return new Product();
     }
-
 }

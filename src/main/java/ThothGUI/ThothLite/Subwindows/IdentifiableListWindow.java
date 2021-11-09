@@ -21,7 +21,6 @@ public class IdentifiableListWindow extends Subwindow {
 
         setCenter( IdentifiablesListView.getInstance(
                 type
-                , new LinkedList<Storagable>()
         ));
     }
 }

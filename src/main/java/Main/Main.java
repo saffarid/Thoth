@@ -9,7 +9,11 @@ import javafx.stage.StageStyle;
 import window.StageResizer;
 
 import java.io.File;
+import java.util.Currency;
+import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Main extends Application{
 
@@ -25,7 +29,9 @@ public class Main extends Application{
     public void start(Stage stage) throws Exception {
         this.stage = stage;
 
-        ThothLite thoth1 = new ThothLite();
+        LOG.log(Level.INFO, Currency.getAvailableCurrencies().toString());
+
+        ThothLite thoth1 = ThothLite.getInstance();
         ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage, thoth1);
         thoth.setPrefSize(800, 600);
         stage.setScene(new Scene(thoth));

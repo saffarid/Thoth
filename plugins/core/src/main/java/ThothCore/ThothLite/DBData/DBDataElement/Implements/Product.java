@@ -97,4 +97,16 @@ public class Product
     public void setType(Listed type) {
 
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "article='" + article + '\'' +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", price=" + price +
+                ", currency=" + currency +
+                ", note='" + note + '\'' +
+                '}';
+    }
 }

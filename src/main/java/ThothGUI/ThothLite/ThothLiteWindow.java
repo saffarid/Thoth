@@ -7,8 +7,6 @@ import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Subwindows.IdentifiableListWindow;
-import ThothGUI.ThothLite.Subwindows.Products;
-import ThothGUI.ThothLite.Subwindows.Purchases;
 
 import controls.MenuButton;
 import javafx.collections.ObservableList;

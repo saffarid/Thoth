@@ -2,6 +2,8 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListView;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DataTables;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
+import ThothCore.ThothLite.ThothLite;
 import ThothGUI.ThothLite.Components.DBElementsView.ListCell.IdentifiableListCell;
 import controls.Label;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -14,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import layout.basepane.HBox;
 import layout.basepane.VBox;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
@@ -82,25 +85,35 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     public static IdentifiablesListView getInstance(
             DataTables type
-            , List<? extends Identifiable> datas
-    ){
-        switch (type){
-            case ORDERABLE:{
-                return new OrderableListView((List<Orderable>) datas);
+    ) {
+        try {
+
+            switch (type) {
+                case ORDERABLE: {
+                    return new OrderableListView((List<Orderable>) ThothLite.getInstance().getData(type));
+                }
+                case STORAGABLE: {
+                    return new StoragableListView((List<Storagable>) ThothLite.getInstance().getData(type));
+                }
+                case PROJECTABLE: {
+                    return new ProjectableListView((List<Projectable>) ThothLite.getInstance().getData(type));
+                }
+                case PURCHASABLE: {
+                    return new PurchasableListView((List<Purchasable>) ThothLite.getInstance().getData(type));
+                }
+                case STORING: {
+                    return new StoringListView((List<Storing>) ThothLite.getInstance().getData(type));
+                }
+                default:
+                    return null;
             }
-            case STORAGABLE:{
-                return new StoragableListView((List<Storagable>) datas);
-            }
-            case PROJECTABLE:{
-                return new ProjectableListView((List<Projectable>) datas);
-            }
-            case PURCHASABLE:{
-                return new PurchasableListView((List<Purchasable>) datas);
-            }
-            case STORING:{
-                return new StoringListView((List<Storing>) datas);
-            }
-            default: return null;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (NotContainsException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 }
