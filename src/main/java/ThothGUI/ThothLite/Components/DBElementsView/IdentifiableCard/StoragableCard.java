@@ -4,24 +4,18 @@ import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
-import ThothCore.ThothLite.ListedTables;
 import ThothCore.ThothLite.ThothLite;
 import controls.Label;
 import controls.TextField;
 import controls.Twin;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import layout.basepane.VBox;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 
 public class StoragableCard extends IdentifiableCard {
 
@@ -66,7 +60,7 @@ public class StoragableCard extends IdentifiableCard {
 
             switch (id) {
                 case PRICE_TYPE: {
-                    res.setItems(FXCollections.observableList(ThothLite.getInstance().getData(ListedTables.CURRENCIES)));
+                    res.setItems(FXCollections.observableList(ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES)));
                     res.setCellFactory(listedListView -> new ComboBoxCurrencyCell());
                     res.setButtonCell(new ComboBoxCurrencyCell());
                     Currency currency = ((Storagable) identifiable).getCurrency();
@@ -78,7 +72,7 @@ public class StoragableCard extends IdentifiableCard {
                     break;
                 }
                 case PRODUCT_TYPE: {
-                    res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getData(ListedTables.PRODUCT_TYPES)));
+                    res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.PRODUCT_TYPES)));
                     res.setCellFactory(listedListView -> new ComboBoxListedCell());
                     res.setButtonCell(new ComboBoxListedCell());
                     Listed type = ((Storagable) identifiable).getType();

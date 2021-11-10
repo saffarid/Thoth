@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Partners.*;
+import static ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription.Partners.*;
 
 
 public class Partners

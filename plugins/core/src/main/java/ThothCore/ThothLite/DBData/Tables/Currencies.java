@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Currency.*;
+import static ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription.Currency.*;
 
 public class Currencies
         extends Data<Currency> {

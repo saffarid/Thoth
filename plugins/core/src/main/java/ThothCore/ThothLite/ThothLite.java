@@ -3,7 +3,8 @@ package ThothCore.ThothLite;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.Tables.Data;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
+import ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.Timer.ThothTimer;
 import ThothCore.ThothLite.Timer.Traceable;
@@ -12,6 +13,8 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Flow;
+
+import static ThothCore.ThothLite.DBLiteStructure.AvaliableTables.*;
 
 public class ThothLite {
 
@@ -37,37 +40,13 @@ public class ThothLite {
 
     }
 
-    public List<? extends Identifiable> getData(DataTables type)
-            throws NotContainsException {
-        switch (type){
-            case LISTED: return null;
-            default: return getDataFromTable(type.getTableName());
-        }
-    }
-
-    public List<? extends Identifiable> getData(ListedTables table)
-            throws NotContainsException {
-        return getDataFromTable(table.getTableName());
-    }
-
     /**
-     * @return Массив доступных типов данных.
-     * */
-    public DataTables[] getDataTables(){
-        return DataTables.values();
-    }
-
-    public ListedTables[] getListedTables(){
-        return ListedTables.values();
-    }
-
-    /**
-     * @param tableName наименование запрашиваемой таблицы.
+     * @param table запрашиваемая таблица.
      * @return список содержимого таблицы.
      */
-    private List<? extends Identifiable> getDataFromTable(String tableName)
+    public List<? extends Identifiable> getDataFromTable(AvaliableTables table)
             throws NotContainsException {
-        return dbData.getTable(tableName).getDatas();
+        return dbData.getTable(getTableName(table)).getDatas();
     }
 
     public static ThothLite getInstance()
@@ -76,6 +55,45 @@ public class ThothLite {
             thoth = new ThothLite();
         }
         return thoth;
+    }
+
+    public String getTableName(AvaliableTables table){
+        switch (table){
+            case COUNT_TYPES:{
+                return StructureDescription.CountTypes.TABLE_NAME;
+            }
+            case CURRENCIES:{
+                return StructureDescription.Currency.TABLE_NAME;
+            }
+            case INCOMES_TYPES:{
+                return StructureDescription.IncomeTypes.TABLE_NAME;
+            }
+            case ORDERABLE:{
+                return StructureDescription.Orders.TABLE_NAME;
+            }
+            case ORDER_STATUS:{
+                return StructureDescription.OrderStatus.TABLE_NAME;
+            }
+            case PARTNERS:{
+                return StructureDescription.Partners.TABLE_NAME;
+            }
+            case PROJECTABLE:{
+                return StructureDescription.ProjectsList.TABLE_NAME;
+            }
+            case PRODUCT_TYPES:{
+                return StructureDescription.ProductTypes.TABLE_NAME;
+            }
+            case PURCHASABLE:{
+                return StructureDescription.Purchases.TABLE_NAME;
+            }
+            case STORAGABLE:{
+                return StructureDescription.Products.TABLE_NAME;
+            }
+            case STORING:{
+                return StructureDescription.Storage.TABLE_NAME;
+            }
+            default: return null;
+        }
     }
 
     /**

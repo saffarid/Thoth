@@ -4,14 +4,14 @@ import Database.Column.TableColumn;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Orderable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Incomes.*;
+import static ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription.Incomes.*;
 
 public class Incomes
         extends Data<Orderable> {

@@ -1,4 +1,4 @@
-package ThothCore.ThothLite.DBLiteStructure;
+package ThothCore.ThothLite.DBLiteStructure.FullStructure;
 
 public class StructureDescription {
 

@@ -1,6 +1,6 @@
 package ThothGUI.ThothLite.Subwindows;
 
-import ThothCore.ThothLite.DataTables;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothGUI.ThothLite.Components.DBElementsView.ListView.IdentifiablesListView;
 import window.Subwindow;
 
@@ -9,7 +9,7 @@ public class IdentifiableListWindow extends Subwindow {
 
     public IdentifiableListWindow(
             String title
-            , DataTables type
+            , AvaliableTables type
     ) {
         super(title);
 
@@ -18,4 +18,5 @@ public class IdentifiableListWindow extends Subwindow {
                 type
         ));
     }
+
 }

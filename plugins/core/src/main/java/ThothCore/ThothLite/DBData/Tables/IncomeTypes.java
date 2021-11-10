@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.IncomeTypes.*;
+import static ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription.IncomeTypes.*;
 
 public class IncomeTypes
         extends Data<Listed> {

@@ -6,8 +6,8 @@ import Database.DataBaseManager;
 import Database.Table;
 import Database.WhereValues;
 import ThothCore.ThothLite.DBData.DBData;
-import ThothCore.ThothLite.DBLiteStructure.DBLiteStructure;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBLiteStructure.FullStructure.DBLiteStructure;
+import ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 
 import java.io.File;

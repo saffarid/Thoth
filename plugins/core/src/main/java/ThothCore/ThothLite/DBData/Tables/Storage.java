@@ -7,14 +7,14 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
-import ThothCore.ThothLite.DBLiteStructure.StructureDescription;
+import ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ThothCore.ThothLite.DBLiteStructure.StructureDescription.Storage.*;
+import static ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription.Storage.*;
 
 public class Storage
         extends Data<Storing>

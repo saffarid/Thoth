@@ -1,7 +1,7 @@
 package ThothGUI.ThothLite.Components.DBElementsView.ListView;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
-import ThothCore.ThothLite.DataTables;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.OpenSubwindow;
@@ -144,28 +144,29 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected abstract T getIdentifiableInstance();
 
     public static IdentifiablesListView getInstance(
-            DataTables type
+            AvaliableTables type
     ) {
         try {
 
+            List<? extends Identifiable> dataFromTable = ThothLite.getInstance().getDataFromTable(type);
             switch (type) {
                 case ORDERABLE: {
-                    return new OrderableListView((List<Orderable>) ThothLite.getInstance().getData(type));
+                    return new OrderableListView((List<Orderable>) dataFromTable);
                 }
                 case STORAGABLE: {
-                    return new StoragableListView((List<Storagable>) ThothLite.getInstance().getData(type));
+                    return new StoragableListView((List<Storagable>) dataFromTable);
                 }
                 case PROJECTABLE: {
-                    return new ProjectableListView((List<Projectable>) ThothLite.getInstance().getData(type));
+                    return new ProjectableListView((List<Projectable>) dataFromTable);
                 }
                 case PURCHASABLE: {
-                    return new PurchasableListView((List<Purchasable>) ThothLite.getInstance().getData(type));
+                    return new PurchasableListView((List<Purchasable>) dataFromTable);
                 }
                 case STORING: {
-                    return new StoringListView((List<Storing>) ThothLite.getInstance().getData(type));
+                    return new StoringListView((List<Storing>) dataFromTable);
                 }
                 default:
-                    return null;
+                    return new ListedListView( (List<Listed>) dataFromTable);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
