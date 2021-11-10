@@ -1,9 +1,7 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Properties;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Composite;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.HasPartner;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Composite;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.HasPartner;
 
 public interface Purchasable
     extends Identifiable

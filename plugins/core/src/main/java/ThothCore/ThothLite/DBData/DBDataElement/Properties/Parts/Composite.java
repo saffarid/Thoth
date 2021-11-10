@@ -1,4 +1,6 @@
-package ThothCore.ThothLite.DBData.DBDataElement.Properties;
+package ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts;
+
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 
 import java.util.List;
 

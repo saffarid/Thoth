@@ -2,6 +2,9 @@ package ThothCore.ThothLite;
 
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Composite;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBData.Tables.Data;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription;
@@ -13,8 +16,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Flow;
-
-import static ThothCore.ThothLite.DBLiteStructure.AvaliableTables.*;
 
 public class ThothLite {
 

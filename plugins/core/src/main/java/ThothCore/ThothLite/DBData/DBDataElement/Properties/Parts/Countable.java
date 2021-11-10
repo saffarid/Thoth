@@ -1,4 +1,6 @@
-package ThothCore.ThothLite.DBData.DBDataElement.Properties;
+package ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts;
+
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 
 /**
  * Реализация интерфейса делает объект исчисляемым

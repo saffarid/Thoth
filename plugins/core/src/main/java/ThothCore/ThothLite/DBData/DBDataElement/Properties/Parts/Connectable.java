@@ -1,4 +1,4 @@
-package ThothCore.ThothLite.DBData.DBDataElement.Properties;
+package ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts;
 
 public interface Connectable {
 

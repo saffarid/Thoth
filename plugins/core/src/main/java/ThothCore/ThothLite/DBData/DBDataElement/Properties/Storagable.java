@@ -1,11 +1,9 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Properties;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Product;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Pricing;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Typable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Nameable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Pricing;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Typable;
 
 /**
  * Объект, который возможно хранить, использовать в личных проектах.

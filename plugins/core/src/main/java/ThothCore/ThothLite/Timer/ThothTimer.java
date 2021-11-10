@@ -2,7 +2,6 @@ package ThothCore.ThothLite.Timer;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;

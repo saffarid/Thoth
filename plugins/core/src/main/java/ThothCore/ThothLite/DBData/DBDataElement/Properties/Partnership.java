@@ -1,8 +1,7 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Properties;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Connectable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Connectable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Nameable;
 
 public interface Partnership
     extends Identifiable

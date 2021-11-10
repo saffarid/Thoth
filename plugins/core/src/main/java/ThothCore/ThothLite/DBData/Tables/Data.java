@@ -2,7 +2,7 @@ package ThothCore.ThothLite.DBData.Tables;
 
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Nameable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Nameable;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 
 import java.util.HashMap;
