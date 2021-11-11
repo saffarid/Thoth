@@ -1,6 +1,7 @@
 package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
@@ -15,17 +16,18 @@ public class IdentifiableListCell<T extends Identifiable>
     private final static String STYLE_CLASS_IDENTIFIABLE_CELL = "identifiable-cell";
 
     private Identifiable identifiable;
+    private AvaliableTables table;
 
-    public IdentifiableListCell() {
+    public IdentifiableListCell(AvaliableTables table) {
         super();
         getStyleClass().add(STYLE_CLASS_IDENTIFIABLE_CELL);
         setPadding(new Insets(1, 0, 1, 0));
-        
+        this.table = table;
         setOnMouseClicked(this::cellClick);
     }
 
     private void cellClick(MouseEvent mouseEvent) {
-        ((OpenSubwindow)ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableCardWindow("Карточка", identifiable));
+        ((OpenSubwindow)ThothLiteWindow.getInstance()).openSubwindow( new IdentifiableCardWindow("Карточка", table, identifiable) );
     }
 
     @Override

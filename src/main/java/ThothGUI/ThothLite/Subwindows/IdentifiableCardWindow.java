@@ -1,6 +1,7 @@
 package ThothGUI.ThothLite.Subwindows;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard.IdentifiableCard;
 import window.Subwindow;
 
@@ -13,11 +14,12 @@ public class IdentifiableCardWindow extends Subwindow {
 
     public IdentifiableCardWindow(
             String title
+            , AvaliableTables table
             , Identifiable identifiable) {
         super(title);
 
         setId(String.format(TEMPLATE_ID, title, identifiable.getId()));
-        setCenter(IdentifiableCard.getInstance(identifiable));
+        setCenter(IdentifiableCard.getInstance(table, identifiable));
     }
 
 }

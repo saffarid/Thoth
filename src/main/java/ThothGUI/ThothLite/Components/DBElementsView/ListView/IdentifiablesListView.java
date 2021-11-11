@@ -41,6 +41,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
+    protected AvaliableTables table;
 
     protected BorderPane pallete;
     protected HBox sortedPane;
@@ -108,7 +109,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         identifiableElementList = new ListView<>();
         identifiableElementList.setPadding(new Insets(2));
         identifiableElementList.getItems().setAll(datas);
-        identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell());
+        identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(table));
         return identifiableElementList;
     }
 
@@ -167,7 +168,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                     return new StoringListView((List<Storing>) dataFromTable);
                 }
                 default:
-                    return new ListedListView( (List<Listed>) dataFromTable);
+                    return new ListedListView( (List<Listed>) dataFromTable, type);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -180,6 +181,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     private void openCreateNewIdentifiable(ActionEvent event){
-        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", getIdentifiableInstance()) );
+        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, getIdentifiableInstance()) );
     }
 }

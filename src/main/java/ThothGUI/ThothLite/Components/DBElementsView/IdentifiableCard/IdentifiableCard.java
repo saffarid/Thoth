@@ -4,6 +4,9 @@ import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
+import ThothCore.ThothLite.ThothLite;
 import ThothGUI.Apply;
 import ThothGUI.Cancel;
 import controls.Button;
@@ -11,9 +14,14 @@ import controls.ListCell;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,21 +42,40 @@ public abstract class IdentifiableCard
     }
 
     protected Identifiable identifiable;
+    protected AvaliableTables table;
 
     static {
         LOG = Logger.getLogger(IdentifiableCard.class.getName());
     }
 
-    protected IdentifiableCard(Identifiable identifiable) {
+    protected IdentifiableCard(
+            Identifiable identifiable
+            , AvaliableTables table
+    ) {
         super();
         this.identifiable = identifiable;
+        this.table = table;
 
         setBottom(createButtonBar());
+        setCenter(createContent());
     }
 
     @Override
     public void apply() {
         LOG.log(Level.INFO, identifiable.toString());
+        if(identifiable != null){
+            List<Identifiable> list = new LinkedList<>();
+            list.add(identifiable);
+            try {
+                ThothLite.getInstance().insertToTable(AvaliableTables.STORAGABLE, list);
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -66,6 +93,8 @@ public abstract class IdentifiableCard
         return buttonBar;
     }
 
+    protected abstract Node createContent();
+
     private Button getButton(
             ButtonText text
             , EventHandler<ActionEvent> event
@@ -76,9 +105,17 @@ public abstract class IdentifiableCard
         return res;
     }
 
-    public static IdentifiableCard getInstance(Identifiable identifiable){
-        if (identifiable instanceof Storagable){
-            return new StoragableCard(identifiable);
+    public static IdentifiableCard getInstance(
+            AvaliableTables table
+            , Identifiable identifiable
+    ){
+        switch (table){
+            case STORAGABLE:{
+                return new StoragableCard(identifiable, table);
+            }
+            case PURCHASABLE:{
+                return new PurchasableCard(identifiable, table);
+            }
         }
         return null;
     }

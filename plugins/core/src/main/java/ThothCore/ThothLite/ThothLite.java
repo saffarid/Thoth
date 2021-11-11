@@ -97,6 +97,10 @@ public class ThothLite {
         }
     }
 
+    public void insertToTable(AvaliableTables table, List<? extends Identifiable> datas) throws NotContainsException, SQLException {
+        insertToTable(getTableName(table), datas);
+    }
+
     /**
      * Вставка новых записей в таблицы БД.
      *

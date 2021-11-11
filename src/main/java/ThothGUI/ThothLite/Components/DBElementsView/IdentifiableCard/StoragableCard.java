@@ -11,6 +11,7 @@ import controls.Label;
 import controls.TextField;
 import controls.Twin;
 import javafx.collections.FXCollections;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import layout.basepane.VBox;
 
@@ -33,12 +34,14 @@ public class StoragableCard extends IdentifiableCard {
 
     }
 
-    protected StoragableCard(Identifiable identifiable) {
-        super(identifiable);
-        setCenter(createContent());
+    protected StoragableCard(
+            Identifiable identifiable,
+            AvaliableTables table) {
+        super(identifiable, table);
     }
 
-    private VBox createContent() {
+    @Override
+    protected Node createContent() {
         VBox vBox = new VBox();
 
         vBox.getChildren().addAll(
@@ -52,7 +55,7 @@ public class StoragableCard extends IdentifiableCard {
         return vBox;
     }
 
-    private ComboBox getComboBox(PropetiesStoragableId id) {
+    protected ComboBox getComboBox(PropetiesStoragableId id) {
         ComboBox res = new ComboBox<>();
         res.setId(id.id);
 
@@ -66,6 +69,7 @@ public class StoragableCard extends IdentifiableCard {
                     Currency currency = ((Storagable) identifiable).getCurrency();
                     if (currency == null) {
                         res.setValue(res.getItems().get(0));
+                        ((Storagable) identifiable).setCurrency((Currency) res.getValue());
                     } else {
                         res.setValue(currency);
                     }
@@ -78,6 +82,7 @@ public class StoragableCard extends IdentifiableCard {
                     Listed type = ((Storagable) identifiable).getType();
                     if (type == null) {
                         res.setValue(res.getItems().get(0));
+                        ((Storagable) identifiable).setType((Listed) res.getValue());
                     } else {
                         res.setValue(type);
                     }
@@ -92,6 +97,19 @@ public class StoragableCard extends IdentifiableCard {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        res.valueProperty().addListener((observableValue, o, t1) -> {
+            switch (id){
+                case PRICE_TYPE:{
+                    ((Storagable)identifiable).setCurrency((Currency) res.getValue());
+                    break;
+                }
+                case PRODUCT_TYPE:{
+                    ((Storagable)identifiable).setType((Listed) res.getValue());
+                    break;
+                }
+            }
+        });
 
         return res;
     }
