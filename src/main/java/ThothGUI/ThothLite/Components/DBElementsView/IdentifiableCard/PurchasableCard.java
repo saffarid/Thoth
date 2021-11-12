@@ -1,23 +1,25 @@
 package ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import controls.Label;
 import controls.TextField;
+import controls.Toggle;
 import controls.Twin;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListView;
 import layout.basepane.VBox;
 
 import java.sql.SQLException;
 import java.util.List;
+
 
 public class PurchasableCard extends IdentifiableCard {
 
@@ -49,9 +51,21 @@ public class PurchasableCard extends IdentifiableCard {
 
         VBox vBox = new VBox();
 
-        vBox.getChildren().addAll(
-                new Twin()
-        );
+        try {
+            vBox.getChildren().addAll(
+                    new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), getTextField(PropertiesPurchasableId.TRACK_NUMBER))
+                    , new Twin(getLabel(PropertiesPurchasableId.STORE), getComboBox(PropertiesPurchasableId.TRACK_NUMBER))
+                    , new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), new DatePicker( ((Purchasable)identifiable).finishDate() ))
+                    , new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), new Toggle(false))
+                    , new CompositeListView( (List<Storing>) ThothLite.getInstance().getDataFromTable(table) )
+            );
+        } catch (NotContainsException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return vBox;
     }
@@ -73,8 +87,8 @@ public class PurchasableCard extends IdentifiableCard {
         return res;
     }
 
-    private Label getLabel(String text) {
-        Label res = new Label(text);
+    private Label getLabel(PropertiesPurchasableId id) {
+        Label res = new Label(id.id);
         return res;
     }
 
@@ -83,6 +97,10 @@ public class PurchasableCard extends IdentifiableCard {
         res.setId(id.id);
 
         switch (id) {
+            case TRACK_NUMBER:{
+                res.setText( ((Purchasable)identifiable).getId() );
+                break;
+            }
 
         }
 
