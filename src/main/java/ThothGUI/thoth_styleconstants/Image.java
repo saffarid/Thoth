@@ -9,6 +9,7 @@ public class Image {
     public static final String ORDER = "/image/ico/order.png";
     public static final String LIST = "/image/ico/list.png";
     public static final String PLUS = "/image/ico/plus.png";
+    public static final String POINT = "/image/ico/point.png";
     public static final String PRODUCT = "/image/ico/product.png";
     public static final String PROJECT = "/image/ico/order.png";
     public static final String PURCHASE = "/image/ico/purchase.png";

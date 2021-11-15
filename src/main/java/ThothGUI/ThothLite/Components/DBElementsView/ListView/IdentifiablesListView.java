@@ -9,6 +9,7 @@ import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Components.DBElementsView.ListCell.IdentifiableListCell;
 import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
+import ThothGUI.thoth_styleconstants.Stylesheets;
 import controls.Button;
 import controls.Label;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -40,7 +41,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         }
     }
 
-    private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
+    private static final String STYLESHEET_PATH = Stylesheets.IDENTIFIABLE_LIST;
     protected AvaliableTables table;
 
     protected BorderPane pallete;

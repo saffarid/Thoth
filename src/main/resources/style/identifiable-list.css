@@ -13,15 +13,15 @@
     -fx-padding:0;
 }
 
-.identifiable-cell:filled{
+.composite-cell, .identifiable-cell:filled{
     -fx-background-color:transparent;
 }
 
-.identifiable-cell:empty{
+.composite-cell, .identifiable-cell:empty{
     -fx-background-color:transparent;
 }
 
-.identifiable-cell-content{
+.composite-cell-content, .identifiable-cell-content{
     -fx-background-color:transparent;
     -fx-background-radius: 3px;
     -fx-border-width: 1px;
@@ -34,6 +34,6 @@
     -fx-background-color:grey;
 }
 
-.identifiable-cell .label{
+.composite-cell-content .label, .identifiable-cell .label{
     -fx-text-fill: white;
 }
