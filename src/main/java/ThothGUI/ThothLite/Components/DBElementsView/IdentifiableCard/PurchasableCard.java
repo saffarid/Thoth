@@ -23,15 +23,14 @@ import java.util.List;
 
 public class PurchasableCard extends IdentifiableCard {
 
-    private enum PropertiesPurchasableId{
+    private enum PropertiesPurchasableId {
         TRACK_NUMBER("track_number"),
         STORE("store"),
         DELIVERY_DATE("delivery_date"),
         IS_DELIVERED("is_delivered"),
         STORAGABLE("storagable"),
         COUNT("count"),
-        COUNT_TYPE("count_type")
-        ;
+        COUNT_TYPE("count_type");
         private String id;
 
         PropertiesPurchasableId(String id) {
@@ -51,21 +50,14 @@ public class PurchasableCard extends IdentifiableCard {
 
         VBox vBox = new VBox();
 
-        try {
-            vBox.getChildren().addAll(
-                    new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), getTextField(PropertiesPurchasableId.TRACK_NUMBER))
-                    , new Twin(getLabel(PropertiesPurchasableId.STORE), getComboBox(PropertiesPurchasableId.TRACK_NUMBER))
-                    , new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), new DatePicker( ((Purchasable)identifiable).finishDate() ))
-                    , new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), new Toggle(false))
-                    , new CompositeListView( (List<Storing>) ThothLite.getInstance().getDataFromTable(table) )
-            );
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        vBox.getChildren().addAll(
+                new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), getTextField(PropertiesPurchasableId.TRACK_NUMBER))
+                , new Twin(getLabel(PropertiesPurchasableId.STORE), getComboBox(PropertiesPurchasableId.TRACK_NUMBER))
+                , new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), new DatePicker(((Purchasable) identifiable).finishDate()))
+                , new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), new Toggle(false))
+                , new CompositeListView(((Purchasable) identifiable).getComposition())
+        );
 
         return vBox;
     }
@@ -73,13 +65,13 @@ public class PurchasableCard extends IdentifiableCard {
     protected ComboBox getComboBox(PropertiesPurchasableId id) {
         ComboBox res = new ComboBox<>();
         res.setId(id.id);
-            switch (id) {
+        switch (id) {
 
-            }
+        }
 
 
         res.valueProperty().addListener((observableValue, o, t1) -> {
-            switch (id){
+            switch (id) {
 
             }
         });
@@ -97,8 +89,8 @@ public class PurchasableCard extends IdentifiableCard {
         res.setId(id.id);
 
         switch (id) {
-            case TRACK_NUMBER:{
-                res.setText( ((Purchasable)identifiable).getId() );
+            case TRACK_NUMBER: {
+                res.setText(((Purchasable) identifiable).getId());
                 break;
             }
 
