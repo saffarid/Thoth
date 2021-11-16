@@ -43,7 +43,7 @@ public class Purchases
                 map.put(COUNT, storing.getCount());
                 map.put(COUNT_TYPE_ID, storing.getCountType().getValue());
                 map.put(DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
-                map.put(IS_DELIVERED, false);
+                map.put(IS_DELIVERED, purchasable.isDelivered());
 
                 res.add(map);
             }

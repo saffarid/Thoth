@@ -8,6 +8,7 @@ import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.thoth_styleconstants.Stylesheets;
 import controls.Button;
+import controls.ComboBox;
 import controls.Label;
 import controls.TextField;
 import javafx.beans.property.SimpleListProperty;
@@ -17,7 +18,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -56,12 +56,18 @@ public class CompositeListView
     private final static String SORT_BY_COUNT = "sort_by_count";
     private final static String SORT_BY_COUNT_TYPE = "sort_by_count_type";
 
+    private boolean identifiableIsNew;
+
     private SimpleListProperty<Storing> items;
 
-    public CompositeListView(List<Storing> items) {
+    public CompositeListView(
+            List<Storing> items
+            , boolean identifiableIsNew
+    ) {
         super();
 
         this.items = new SimpleListProperty<>(FXCollections.observableList(items));
+        this.identifiableIsNew = identifiableIsNew;
 
         getChildren().addAll(
                 createNewStoringRow()
@@ -77,6 +83,10 @@ public class CompositeListView
 
         hBox.setSpacing(5);
         hBox.setPadding(new Insets(2));
+
+        if(!identifiableIsNew){
+            hBox.setDisable(true);
+        }
 
         ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
         TextField count = getTextField(COUNT);
@@ -279,8 +289,13 @@ public class CompositeListView
 
         res.setValue(SORT_BY.ID_UP);
 
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
+
         res.setCellFactory(sort_byListView -> new SortedCell());
         res.setButtonCell(new SortedCell());
+
         return res;
     }
 
@@ -321,6 +336,10 @@ public class CompositeListView
         res.setId(id);
 
         if (text != null) res.setText(text);
+
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
 
         return res;
     }

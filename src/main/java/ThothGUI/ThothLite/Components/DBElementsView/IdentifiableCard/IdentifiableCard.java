@@ -9,14 +9,16 @@ import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.Apply;
 import ThothGUI.Cancel;
+import ThothGUI.CloseSubwindow;
+import ThothGUI.ThothLite.ThothLiteWindow;
 import controls.Button;
-import controls.ListCell;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.BorderPane;
 
 import java.sql.SQLException;
@@ -41,6 +43,7 @@ public abstract class IdentifiableCard
         }
     }
 
+    protected boolean identifiableIsNew;
     protected Identifiable identifiable;
     protected AvaliableTables table;
 
@@ -55,8 +58,10 @@ public abstract class IdentifiableCard
         super();
         if(identifiable != null) {
             this.identifiable = identifiable;
+            identifiableIsNew = false;
         }else{
             this.identifiable = identifiableInstance();
+            identifiableIsNew = true;
         }
         this.table = table;
 
@@ -126,7 +131,7 @@ public abstract class IdentifiableCard
         return null;
     }
 
-    protected class ComboBoxListedCell extends ListCell<Listed>{
+    protected class ComboBoxListedCell extends ListCell<Listed> {
         @Override
         protected void updateItem(Listed listed, boolean b) {
             if(listed != null){

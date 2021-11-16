@@ -7,12 +7,12 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
+import controls.ComboBox;
 import controls.Label;
 import controls.TextField;
 import controls.Twin;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
 import layout.basepane.VBox;
 
 import java.sql.SQLException;
@@ -111,6 +111,10 @@ public class StoragableCard extends IdentifiableCard {
             }
         });
 
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
+
         return res;
     }
 
@@ -187,6 +191,10 @@ public class StoragableCard extends IdentifiableCard {
 
             }
         });
+
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
 
         return res;
     }

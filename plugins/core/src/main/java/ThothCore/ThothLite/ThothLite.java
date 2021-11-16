@@ -185,6 +185,11 @@ public class ThothLite {
         database.remove(table.getName(), table.convertToMap(datas));
     }
 
+    public void updateInTable(AvaliableTables table, List<? extends Identifiable> datas)
+            throws NotContainsException, SQLException {
+        updateInTable(getTableName(table),datas);
+    }
+
     /**
      * Функция обновляет записи в таблице.
      *

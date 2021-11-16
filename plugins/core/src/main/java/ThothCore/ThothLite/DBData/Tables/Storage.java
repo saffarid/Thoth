@@ -52,7 +52,7 @@ public class Storage
                         new StorageCell(
                                 (String) row.get(ADRESS),
                                 (Storagable) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(PRODUCT_ID))),
-                                (Double) row.get(COUNT),
+                                Double.parseDouble( String.valueOf(row.get(COUNT)) ),
                                 (Listed) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(COUNT_TYPE_ID)))
                         )
                 );

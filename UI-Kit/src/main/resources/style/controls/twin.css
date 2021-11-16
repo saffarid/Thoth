@@ -1,5 +1,4 @@
 .twin{
-    -fx-alignment:center;
     -fx-column-halignment:left;
     -fx-hgap:5px;
     -fx-vgap:5px;
@@ -7,6 +6,4 @@
 }
 
 .twin .button, .twin .label, .twin .text-field{
-    -fx-pref-width:200px;
-    -fx-max-height:100px;
 }

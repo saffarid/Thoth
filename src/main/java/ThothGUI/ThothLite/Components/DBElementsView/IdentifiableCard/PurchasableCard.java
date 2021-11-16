@@ -5,17 +5,18 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
-import controls.Label;
-import controls.TextField;
-import controls.Toggle;
-import controls.Twin;
+import controls.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import layout.basepane.VBox;
 
 import java.sql.SQLException;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class PurchasableCard extends IdentifiableCard {
 
@@ -49,18 +51,71 @@ public class PurchasableCard extends IdentifiableCard {
     }
 
     @Override
-    protected Node createContent() {
-        VBox vBox = new VBox();
+    public void apply() {
+        if(identifiableIsNew){
+            super.apply();
+        }else{
 
+            Purchasable purchasable = (Purchasable) this.identifiable;
+            if( purchasable.isDelivered() ){
+
+                try {
+                    ThothLite instance = ThothLite.getInstance();
+
+                    List<Purchasable> data = new LinkedList<>();
+                    data.add(purchasable);
+
+                    instance.updateInTable(AvaliableTables.PURCHASABLE, data);
+                    instance.insertToTable(AvaliableTables.STORING, purchasable.getComposition());
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (NotContainsException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+    }
+
+    @Override
+    protected Node createContent() {
+
+        HBox hBox = new HBox();
+
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.TOP_LEFT);
         vBox.getChildren().addAll(
                 new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), getTextField(PropertiesPurchasableId.TRACK_NUMBER))
                 , new Twin(getLabel(PropertiesPurchasableId.STORE), getComboBox(PropertiesPurchasableId.TRACK_NUMBER))
                 , new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), getDatePicker())
-                , new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), new Toggle(false))
-                , new CompositeListView(((Purchasable) identifiable).getComposition())
+        );
+        vBox.setMinWidth(250);
+        vBox.setPadding(new Insets(2));
+
+        Twin twinDelivered = new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), getToggle());
+        twinDelivered.setMinWidth(250);
+        twinDelivered.setPrefWidth(250);
+
+        hBox.setPadding(new Insets(2));
+
+        hBox.getChildren().addAll(
+                vBox,
+                twinDelivered
         );
 
-        return vBox;
+        hBox.setAlignment(Pos.TOP_LEFT);
+
+        VBox res = new VBox();
+        res.getChildren().addAll(
+                hBox,
+                new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew)
+        );
+
+        return res;
     }
 
     protected ComboBox getComboBox(PropertiesPurchasableId id) {
@@ -86,6 +141,14 @@ public class PurchasableCard extends IdentifiableCard {
         res.setCellFactory(listView -> new PartnerCell());
         res.setButtonCell(new PartnerCell());
 
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
+
+        if(!identifiableIsNew){
+            res.setDisable(true);
+        }
+
         return res;
     }
 
@@ -98,11 +161,22 @@ public class PurchasableCard extends IdentifiableCard {
             }
         });
 
+        datePicker.setMinWidth(120);
+        datePicker.setPrefWidth(120);
+        datePicker.setMaxWidth(120);
+
+        if(!identifiableIsNew){
+            datePicker.setDisable(true);
+        }
+
         return datePicker;
     }
 
     private Label getLabel(PropertiesPurchasableId id) {
         Label res = new Label(id.id);
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
         return res;
     }
 
@@ -142,6 +216,26 @@ public class PurchasableCard extends IdentifiableCard {
             }
         });
 
+        if(!identifiableIsNew){
+            res.setDisable(true);
+        }
+
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
+
+        return res;
+    }
+
+    private Toggle getToggle(){
+        Toggle res = new Toggle(((Purchasable)identifiable).isDelivered());
+
+        res.isTrueProperty().addListener((observableValue, aBoolean, t1) -> {
+            if(t1 != null){
+                ((Purchasable)identifiable).delivered();
+            }
+        });
+
         return res;
     }
 
@@ -152,7 +246,7 @@ public class PurchasableCard extends IdentifiableCard {
             private String orderNumber;
             private Partnership store;
             private LocalDate deliveryDate;
-            private boolean isDelivered;
+            private boolean isDelivered = false;
             private List<Storing> purchasedProducts = new LinkedList<>();
 
             @Override
