@@ -18,7 +18,12 @@ public class IdentifiableCardWindow extends Subwindow {
             , Identifiable identifiable) {
         super(title);
 
-        setId(String.format(TEMPLATE_ID, title, identifiable.getId()));
+        if (identifiable == null){
+            setId(String.format(TEMPLATE_ID, title, "new"));
+        }else{
+            setId(String.format(TEMPLATE_ID, title, identifiable.getId()));
+        }
+
         setCenter(IdentifiableCard.getInstance(table, identifiable));
     }
 

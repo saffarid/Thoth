@@ -53,7 +53,11 @@ public abstract class IdentifiableCard
             , AvaliableTables table
     ) {
         super();
-        this.identifiable = identifiable;
+        if(identifiable != null) {
+            this.identifiable = identifiable;
+        }else{
+            this.identifiable = identifiableInstance();
+        }
         this.table = table;
 
         setBottom(createButtonBar());
@@ -67,7 +71,7 @@ public abstract class IdentifiableCard
             List<Identifiable> list = new LinkedList<>();
             list.add(identifiable);
             try {
-                ThothLite.getInstance().insertToTable(AvaliableTables.STORAGABLE, list);
+                ThothLite.getInstance().insertToTable(AvaliableTables.PURCHASABLE, list);
             } catch (NotContainsException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
@@ -94,6 +98,8 @@ public abstract class IdentifiableCard
     }
 
     protected abstract Node createContent();
+
+    protected abstract Identifiable identifiableInstance();
 
     private Button getButton(
             ButtonText text

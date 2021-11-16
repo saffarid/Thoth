@@ -248,6 +248,33 @@ public class CompositeListView
 
         res.valueProperty().addListener((observableValue, sort_by, t1) -> {
 
+            switch (res.getValue()){
+                case ID_UP:{
+                    items.sort((o1, o2) -> o1.getStoragable().getId().compareTo(o2.getStoragable().getId()));
+                    break;
+                }
+                case ID_DOWN:{
+                    items.sort((o1, o2) -> o2.getStoragable().getId().compareTo(o1.getStoragable().getId()));
+                    break;
+                }
+                case COUNT_UP:{
+                    items.sort((o1, o2) -> o1.getCount().compareTo(o2.getCount()));
+                    break;
+                }
+                case COUNT_DOWN:{
+                    items.sort((o1, o2) -> o2.getCount().compareTo(o1.getCount()));
+                    break;
+                }
+                case COUNT_TYPE_UP:{
+                    items.sort((o1, o2) -> o1.getCountType().getValue().compareTo(o2.getCountType().getValue()));
+                    break;
+                }
+                case COUNT_TYPE_DOWN:{
+                    items.sort((o1, o2) -> o2.getCountType().getValue().compareTo(o1.getCountType().getValue()));
+                    break;
+                }
+            }
+
         });
 
         res.setValue(SORT_BY.ID_UP);

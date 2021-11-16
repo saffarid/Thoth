@@ -182,6 +182,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     private void openCreateNewIdentifiable(ActionEvent event){
-        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, getIdentifiableInstance()) );
+//        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, getIdentifiableInstance()) );
+        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, null) );
     }
 }
