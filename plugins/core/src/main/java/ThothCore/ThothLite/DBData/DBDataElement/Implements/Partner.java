@@ -62,4 +62,14 @@ public class Partner
     public void setWeb(String web) {
         this.web = web;
     }
+
+    @Override
+    public void setIdInTable(Object idInTable) {
+        setId((String) idInTable);
+    }
+
+    @Override
+    public Object getIdInTable() {
+        return getId();
+    }
 }

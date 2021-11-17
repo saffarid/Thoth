@@ -9,33 +9,34 @@ public class Product
     private String article;
     private String name;
     private Listed type;
-    private Double price;
-    private Currency currency;
+    private Double count;
+    private Listed countType;
+    private Listed adress;
     private String note;
 
     public Product() {
         this.article = "";
         this.name = "";
         this.type = null;
-        this.price = 0.0;
-        this.currency = null;
         this.note = "";
     }
 
-    public Product(String article, String name, Listed type, Double price, Currency currency) {
+    public Product(String article, String name, Listed type, Double count, Listed countType, Listed adress) {
         this.article = article;
         this.name = name;
         this.type = type;
-        this.price = price;
-        this.currency = currency;
+        this.count = count;
+        this.countType = countType;
+        this.adress = adress;
     }
 
-    public Product(String article, String name, Listed type, Double price, Currency currency, String note) {
+    public Product(String article, String name, Listed type, Double count, Listed countType, Listed adress , String note) {
         this.article = article;
         this.name = name;
         this.type = type;
-        this.price = price;
-        this.currency = currency;
+        this.count = count;
+        this.countType = countType;
+        this.adress = adress;
         this.note = note;
     }
 
@@ -49,11 +50,6 @@ public class Product
     }
 
     @Override
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    @Override
     public String getId() {
         return article;
     }
@@ -64,18 +60,8 @@ public class Product
     }
 
     @Override
-    public Double getPrice() {
-        return price;
-    }
-
-    @Override
     public Listed getType() {
         return type;
-    }
-
-    @Override
-    public void setCurrency(Currency currency) {
-
     }
 
     @Override
@@ -89,11 +75,6 @@ public class Product
     }
 
     @Override
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    @Override
     public void setType(Listed type) {
 
     }
@@ -104,9 +85,47 @@ public class Product
                 "article='" + article + '\'' +
                 ", name='" + name + '\'' +
                 ", type=" + type +
-                ", price=" + price +
-                ", currency=" + currency +
                 ", note='" + note + '\'' +
                 '}';
+    }
+
+    @Override
+    public Double getCount() {
+        return count;
+    }
+
+    @Override
+    public void setCount(Double count) {
+        this.count = count;
+    }
+
+    @Override
+    public Listed getCountType() {
+        return countType;
+    }
+
+    @Override
+    public void setCountType(Listed countType) {
+        this.countType = countType;
+    }
+
+    @Override
+    public void setAdress(Listed adress) {
+        this.adress = adress;
+    }
+
+    @Override
+    public Listed getAdress() {
+        return adress;
+    }
+
+    @Override
+    public void setIdInTable(Object idInTable) {
+        setId((String) idInTable);
+    }
+
+    @Override
+    public Object getIdInTable() {
+        return getId();
     }
 }

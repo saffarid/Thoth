@@ -81,6 +81,7 @@ public class Purchases
 
                 if (storing == null) {
                     storing = new StorageCell(
+                            String.valueOf( row.get(ID) ),
                             (Storagable) getFromTableById(
                                     StructureDescription.Products.TABLE_NAME
                                     , String.valueOf(row.get(PRODUCT_ID))
@@ -88,7 +89,7 @@ public class Purchases
                             (Double) row.get(COUNT),
                             (Listed) getFromTableById(
                                     StructureDescription.CountTypes.TABLE_NAME
-                                    , String.valueOf( ((Double)row.get(COUNT_TYPE_ID)).intValue() )
+                                    , String.valueOf( row.get(COUNT_TYPE_ID) )
                             )
                     );
                     purchase.addStoring(storing);

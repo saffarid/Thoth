@@ -34,9 +34,9 @@ public class ProjectList
 
                 map.put(ID, projectable.getId());
                 map.put(NAME, projectable.getName());
-                map.put(StructureDescription.Storage.PRODUCT_ID, storagable.getId());
-                map.put(StructureDescription.Storage.COUNT, storing.getCount());
-                map.put(StructureDescription.Storage.COUNT_TYPE_ID, storing.getCountType().getId());
+//                map.put(StructureDescription.Storage.PRODUCT_ID, storagable.getId());
+//                map.put(StructureDescription.Storage.COUNT, storing.getCount());
+//                map.put(StructureDescription.Storage.COUNT_TYPE_ID, storing.getCountType().getId());
 
                 res.add(map);
             }

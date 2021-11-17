@@ -48,8 +48,8 @@ public class StoragableCard extends IdentifiableCard {
                 new Twin(getLabel(PropetiesStoragableId.ARTICLE.id), getTextField(PropetiesStoragableId.ARTICLE))
                 , new Twin(getLabel(PropetiesStoragableId.NAME.id), getTextField(PropetiesStoragableId.NAME))
                 , new Twin(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), getComboBox(PropetiesStoragableId.PRODUCT_TYPE))
-                , new Twin(getLabel(PropetiesStoragableId.PRICE.id), getTextField(PropetiesStoragableId.PRICE))
-                , new Twin(getLabel(PropetiesStoragableId.PRICE_TYPE.id), getComboBox(PropetiesStoragableId.PRICE_TYPE))
+//                , new Twin(getLabel(PropetiesStoragableId.PRICE.id), getTextField(PropetiesStoragableId.PRICE))
+//                , new Twin(getLabel(PropetiesStoragableId.PRICE_TYPE.id), getComboBox(PropetiesStoragableId.PRICE_TYPE))
         );
 
         return vBox;
@@ -62,19 +62,6 @@ public class StoragableCard extends IdentifiableCard {
         try {
 
             switch (id) {
-                case PRICE_TYPE: {
-                    res.setItems(FXCollections.observableList(ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES)));
-                    res.setCellFactory(listedListView -> new ComboBoxCurrencyCell());
-                    res.setButtonCell(new ComboBoxCurrencyCell());
-                    Currency currency = ((Storagable) identifiable).getCurrency();
-                    if (currency == null) {
-                        res.setValue(res.getItems().get(0));
-                        ((Storagable) identifiable).setCurrency((Currency) res.getValue());
-                    } else {
-                        res.setValue(currency);
-                    }
-                    break;
-                }
                 case PRODUCT_TYPE: {
                     res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.PRODUCT_TYPES)));
                     res.setCellFactory(listedListView -> new ComboBoxListedCell());
@@ -100,10 +87,6 @@ public class StoragableCard extends IdentifiableCard {
 
         res.valueProperty().addListener((observableValue, o, t1) -> {
             switch (id){
-                case PRICE_TYPE:{
-                    ((Storagable)identifiable).setCurrency((Currency) res.getValue());
-                    break;
-                }
                 case PRODUCT_TYPE:{
                     ((Storagable)identifiable).setType((Listed) res.getValue());
                     break;
@@ -136,10 +119,6 @@ public class StoragableCard extends IdentifiableCard {
                 res.setText(((Storagable) identifiable).getName());
                 break;
             }
-            case PRICE: {
-                res.setText(String.valueOf(((Storagable) identifiable).getPrice()));
-                break;
-            }
         }
 
         res.textProperty().addListener((observableValue, s, t1) -> {
@@ -151,18 +130,6 @@ public class StoragableCard extends IdentifiableCard {
                         break;
                     }
                     case NAME: {
-
-                        break;
-                    }
-                    case PRICE: {
-
-                        try{
-                            Double.parseDouble( res.getText() );
-                        } catch (NumberFormatException e){
-                            if(!res.getText().equals("")) {
-                                res.setText(s);
-                            }
-                        }
 
                         break;
                     }
@@ -183,10 +150,6 @@ public class StoragableCard extends IdentifiableCard {
                         ((Storagable) identifiable).setName(res.getText());
                         break;
                     }
-                    case PRICE: {
-                        ((Storagable) identifiable).setPrice( Double.parseDouble(res.getText()) );
-                        break;
-                    }
                 }
 
             }
@@ -201,74 +164,75 @@ public class StoragableCard extends IdentifiableCard {
 
     @Override
     protected Identifiable identifiableInstance() {
-        return new Storagable() {
-
-            private String id = null;
-            private String name = null;
-            private Double price = 0.0;
-            private Currency currency = null;
-            private Listed type = null;
-
-            @Override
-            public String getId() {
-                return id;
-            }
-
-            @Override
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            @Override
-            public String getName() {
-                return name;
-            }
-
-            @Override
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            @Override
-            public Double getPrice() {
-                return price;
-            }
-
-            @Override
-            public void setPrice(Double price) {
-                this.price = price;
-            }
-
-            @Override
-            public Currency getCurrency() {
-                return currency;
-            }
-
-            @Override
-            public void setCurrency(Currency currency) {
-                this.currency = currency;
-            }
-
-            @Override
-            public Listed getType() {
-                return type;
-            }
-
-            @Override
-            public void setType(Listed type) {
-                this.type = type;
-            }
-
-            @Override
-            public String toString() {
-                return "$classname{" +
-                        "id='" + id + '\'' +
-                        ", name='" + name + '\'' +
-                        ", price=" + price +
-                        ", currency=" + currency +
-                        ", type=" + type +
-                        '}';
-            }
-        };
+//        return new Storagable() {
+//
+//            private String id = null;
+//            private String name = null;
+//            private Double price = 0.0;
+//            private Currency currency = null;
+//            private Listed type = null;
+//
+//            @Override
+//            public String getId() {
+//                return id;
+//            }
+//
+//            @Override
+//            public void setId(String id) {
+//                this.id = id;
+//            }
+//
+//            @Override
+//            public String getName() {
+//                return name;
+//            }
+//
+//            @Override
+//            public void setName(String name) {
+//                this.name = name;
+//            }
+//
+//            @Override
+//            public Double getPrice() {
+//                return price;
+//            }
+//
+//            @Override
+//            public void setPrice(Double price) {
+//                this.price = price;
+//            }
+//
+//            @Override
+//            public Currency getCurrency() {
+//                return currency;
+//            }
+//
+//            @Override
+//            public void setCurrency(Currency currency) {
+//                this.currency = currency;
+//            }
+//
+//            @Override
+//            public Listed getType() {
+//                return type;
+//            }
+//
+//            @Override
+//            public void setType(Listed type) {
+//                this.type = type;
+//            }
+//
+//            @Override
+//            public String toString() {
+//                return "$classname{" +
+//                        "id='" + id + '\'' +
+//                        ", name='" + name + '\'' +
+//                        ", price=" + price +
+//                        ", currency=" + currency +
+//                        ", type=" + type +
+//                        '}';
+//            }
+//        };
+        return null;
     }
 }

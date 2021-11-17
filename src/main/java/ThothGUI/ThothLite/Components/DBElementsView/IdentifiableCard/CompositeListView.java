@@ -96,6 +96,16 @@ public class CompositeListView
         addButton.setOnAction(actionEvent -> {
             Storing newStoring = new Storing() {
 
+                @Override
+                public void setIdInTable(Object idInTable) {
+
+                }
+
+                @Override
+                public Object getIdInTable() {
+                    return null;
+                }
+
                 private Storagable storagable;
                 private String id;
                 private Double count;

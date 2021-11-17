@@ -1,6 +1,7 @@
 package ThothCore.ThothLite.DBLiteStructure.FullStructure;
 
 import Database.Column.*;
+import Database.Column.Implements.PrimaryKeyAutoncrement;
 import Database.DataBaseSQL;
 import Database.Exceptions.NotSupportedOperation;
 import Database.Table;
@@ -23,12 +24,12 @@ public class DBLiteStructure extends DataBaseSQL {
         tables.add(new OrderStatus());
         tables.add(new Partners());
         tables.add(new IncomeTypes());
+        tables.add(new Storage());
         //Таблица типа SYSTEM_GUIDE
         tables.add(new Currency());
         //Таблица типа TABLE
         tables.add(new Products());
         tables.add(new NotUsed());
-        tables.add(new Storage());
         tables.add(new Purchases());
         tables.add(new Orders());
         tables.add(new ProjectsList());
@@ -47,7 +48,7 @@ public class DBLiteStructure extends DataBaseSQL {
             column.setType(type);
             column.setUnique(isUnique);
             column.setNotNull(isNotNull);
-            if(foreignKey != null) column.setForeignKey(foreignKey);
+            if (foreignKey != null) column.setForeignKey(foreignKey);
         } catch (NotSupportedOperation notSupportedOperation) {
             notSupportedOperation.printStackTrace();
         }
@@ -206,24 +207,35 @@ public class DBLiteStructure extends DataBaseSQL {
             name = StructureDescription.Products.TABLE_NAME;
             type = StructureDescription.TableTypes.TABLE.getType();
 
-            addColumn( getPrimaryKeyCustom(
+            addColumn(getPrimaryKeyCustom(
                     StructureDescription.Products.ARTICLE, DataTypes.TEXT
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Products.NAME, DataTypes.TEXT, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Products.PRODUCT_TYPE_ID, DataTypes.INT, false, true
                     , getTable(StructureDescription.ProductTypes.TABLE_NAME).getColumnByName(StructureDescription.ProductTypes.PRODUCT_TYPES)
             ));
-            addColumn( getCustomColumn(
-                    StructureDescription.Products.PRICE, DataTypes.DOUBLE, false, true
+//            addColumn( getCustomColumn(
+//                    StructureDescription.Products.PRICE, DataTypes.DOUBLE, false, true
+//            ));
+//            addColumn( getCustomColumn(
+//                    StructureDescription.Products.CURRENCY_ID, DataTypes.INT, false, true
+//                    , getTable(StructureDescription.Currency.TABLE_NAME).getColumnByName(StructureDescription.Currency.CURRENCY)
+//            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Products.COUNT, DataTypes.INT, false, true
             ));
-            addColumn( getCustomColumn(
-                    StructureDescription.Products.CURRENCY_ID, DataTypes.INT, false, true
-                    , getTable(StructureDescription.Currency.TABLE_NAME).getColumnByName(StructureDescription.Currency.CURRENCY)
+            addColumn(getCustomColumn(
+                    StructureDescription.Products.COUNT_TYPE_ID, DataTypes.INT, false, true
+                    , getTable(StructureDescription.CountTypes.TABLE_NAME).getColumnByName(StructureDescription.CountTypes.COUNT_TYPE)
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
+                    StructureDescription.Products.ADRESS, DataTypes.INT, false, false
+                    , getTable(StructureDescription.Storage.TABLE_NAME).getColumnByName(StructureDescription.Storage.ID)
+            ));
+            addColumn(getCustomColumn(
                     StructureDescription.Products.NOTE, DataTypes.TEXT, false, false
             ));
         }
@@ -236,22 +248,23 @@ public class DBLiteStructure extends DataBaseSQL {
         public Storage() {
             super();
             name = StructureDescription.Storage.TABLE_NAME;
-            type = StructureDescription.TableTypes.TABLE.getType();
+            type = StructureDescription.TableTypes.GUIDE.getType();
 
-            addColumn( getPrimaryKeyCustom(
-                    StructureDescription.Storage.ADRESS, DataTypes.NOTE
-            ) );
-            addColumn( getCustomColumn(
-                    StructureDescription.Storage.COUNT, DataTypes.INT, false, true
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getCustomColumn(
+                    StructureDescription.Storage.ADRESS, DataTypes.NOTE, true, true
             ));
-            addColumn( getCustomColumn(
-                    StructureDescription.Storage.COUNT_TYPE_ID, DataTypes.INT, false, true
-                    , getTable(StructureDescription.CountTypes.TABLE_NAME).getColumnByName(StructureDescription.CountTypes.COUNT_TYPE)
-            ));
-            addColumn( getCustomColumn(
-                    StructureDescription.Storage.PRODUCT_ID, DataTypes.INT, true, true
-                    , getTable(StructureDescription.Products.TABLE_NAME).getColumnByName(StructureDescription.Products.ARTICLE)
-            ));
+//            addColumn( getCustomColumn(
+//                    StructureDescription.Storage.COUNT, DataTypes.INT, false, true
+//            ));
+//            addColumn( getCustomColumn(
+//                    StructureDescription.Storage.COUNT_TYPE_ID, DataTypes.INT, false, true
+//                    , getTable(StructureDescription.CountTypes.TABLE_NAME).getColumnByName(StructureDescription.CountTypes.COUNT_TYPE)
+//            ));
+//            addColumn( getCustomColumn(
+//                    StructureDescription.Storage.PRODUCT_ID, DataTypes.INT, true, true
+//                    , getTable(StructureDescription.Products.TABLE_NAME).getColumnByName(StructureDescription.Products.ARTICLE)
+//            ));
         }
     }
 
@@ -264,31 +277,39 @@ public class DBLiteStructure extends DataBaseSQL {
             name = StructureDescription.Purchases.TABLE_NAME;
             type = StructureDescription.TableTypes.TABLE.getType();
 
-            addColumn( TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT) );
-            addColumn( getCustomColumn(
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getCustomColumn(
                     StructureDescription.Purchases.ORDER_ID, DataTypes.NOTE, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Purchases.STORE_ID, DataTypes.INT, false, true
                     , getTable(StructureDescription.Partners.TABLE_NAME).getColumnByName(StructureDescription.Partners.ID)
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Purchases.PRODUCT_ID, DataTypes.INT, false, true
                     , getTable(StructureDescription.Products.TABLE_NAME).getColumnByName(StructureDescription.Products.ARTICLE)
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Purchases.COUNT, DataTypes.DOUBLE, false, true
             ));
-            addColumn( getCustomColumn(
-                    StructureDescription.Purchases.COUNT_TYPE_ID, DataTypes.DOUBLE, false, true
+            addColumn(getCustomColumn(
+                    StructureDescription.Purchases.COUNT_TYPE_ID, DataTypes.INT, false, true
                     , getTable(StructureDescription.CountTypes.TABLE_NAME).getColumnByName(StructureDescription.CountTypes.COUNT_TYPE)
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
+                    StructureDescription.Purchases.PRICE, DataTypes.DOUBLE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Purchases.CURRENCY_ID, DataTypes.INT, false, true
+                    , getTable(StructureDescription.Currency.TABLE_NAME).getColumnByName(StructureDescription.Currency.CURRENCY)
+            ));
+            addColumn(getCustomColumn(
                     StructureDescription.Purchases.DELIVERY_DATE, DataTypes.NOTE, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Purchases.IS_DELIVERED, DataTypes.BOOL, false, true
             ));
+
         }
     }
 
@@ -301,29 +322,29 @@ public class DBLiteStructure extends DataBaseSQL {
             name = StructureDescription.Orders.TABLE_NAME;
             type = StructureDescription.TableTypes.TABLE.getType();
 
-            addColumn( getPrimaryKeyCustom(
+            addColumn(getPrimaryKeyCustom(
                     StructureDescription.Orders.ID, DataTypes.TEXT
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Orders.CUSTOMER_ID, DataTypes.INT, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Orders.PROJECT_ID, DataTypes.INT, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Orders.IS_MONTHLY, DataTypes.BOOL, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Orders.DATE_START, DataTypes.NOTE, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Orders.DATE_FINISH, DataTypes.NOTE, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Orders.STATUS_ID, DataTypes.INT, false, true
                     , getTable(StructureDescription.OrderStatus.TABLE_NAME).getColumnByName(StructureDescription.OrderStatus.ORDER_STATUS)
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Orders.AUTOFINISH, DataTypes.BOOL, false, true
             ));
         }
@@ -338,12 +359,12 @@ public class DBLiteStructure extends DataBaseSQL {
             name = StructureDescription.ProjectsList.TABLE_NAME;
             type = StructureDescription.TableTypes.TABLE.getType();
 
-            addColumn( TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT) );
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
 
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.ProjectsList.NAME, DataTypes.NOTE, false, true
             ));
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.ProjectsList.DATE, DataTypes.NOTE, false, true
             ));
         }
@@ -358,9 +379,9 @@ public class DBLiteStructure extends DataBaseSQL {
             name = StructureDescription.Incomes.TABLE_NAME;
             type = StructureDescription.TableTypes.TABLE.getType();
 
-            addColumn( TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT) );
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
 
-            addColumn( getCustomColumn(
+            addColumn(getCustomColumn(
                     StructureDescription.Incomes.ORDER_ID, DataTypes.INT, false, true
             ));
         }

@@ -2,15 +2,14 @@ package ThothCore.ThothLite.DBLiteStructure.FullStructure;
 
 public class StructureDescription {
 
-    public static enum TableTypes{
+    public static enum TableTypes {
         TABLE("table"),
         PROJECT_TABLE("project_table"),
         GUIDE("guide"),
         CONSTANTS("constants"),
         SYSTEM_TABLE("system_table"),
         SYSTEM_GUIDE("system_guide"),
-        SYSTEM_CONSTANTS("system_constants")
-        ;
+        SYSTEM_CONSTANTS("system_constants");
 
         private String type;
 
@@ -18,7 +17,7 @@ public class StructureDescription {
             this.type = type;
         }
 
-        public String getType(){
+        public String getType() {
             return type;
         }
     }
@@ -27,7 +26,7 @@ public class StructureDescription {
     /**
      * Таблица едениц измерения
      */
-    public static class CountTypes{
+    public static class CountTypes {
         public static final String TABLE_NAME = "count_type";
         public static final String ID = "id";
         public static final String COUNT_TYPE = "count_type";
@@ -36,7 +35,7 @@ public class StructureDescription {
     /**
      * Таблица типов продуктов
      */
-    public  static class ProductTypes{
+    public static class ProductTypes {
         public static final String TABLE_NAME = "product_types";
         public static final String ID = "id";
         public static final String PRODUCT_TYPES = "product_types";
@@ -45,7 +44,7 @@ public class StructureDescription {
     /**
      * Таблица статусов заказа
      */
-    public static class OrderStatus{
+    public static class OrderStatus {
         public static final String TABLE_NAME = "order_status";
         public static final String ID = "id";
         public static final String ORDER_STATUS = "order_status";
@@ -54,7 +53,7 @@ public class StructureDescription {
     /**
      * Таблица партнеров
      */
-    public static class Partners{
+    public static class Partners {
         public static final String TABLE_NAME = "partners";
         public static final String ID = "id";
         public static final String NAME = "name";
@@ -65,7 +64,7 @@ public class StructureDescription {
     /**
      * Таблица категорий доходов
      */
-    public static class IncomeTypes{
+    public static class IncomeTypes {
         public static final String TABLE_NAME = "income_types";
         public static final String ID = "id";
         public static final String INCOME_TYPE = "income_type";
@@ -73,8 +72,8 @@ public class StructureDescription {
 
     /**
      * Таблица список валют
-     * */
-    public static class Currency{
+     */
+    public static class Currency {
         public static final String TABLE_NAME = "currency";
         public static final String ID = "id";
         public static final String CURRENCY = "currency";
@@ -83,11 +82,11 @@ public class StructureDescription {
 
     /**
      * Таблица для хранения неиспользуемых продуктов
-     * */
-    public static class NotUsed{
+     */
+    public static class NotUsed {
         public static final String TABLE_NAME = "not_used";
         public static final String ID = "id";
-//        public static final String ARTICLE = "article";
+        //        public static final String ARTICLE = "article";
 //        public static final String NAME = "name";
         public static final String CAUSE = "cause";
         public static final String PRODUCT_ID = "product_id";
@@ -96,32 +95,36 @@ public class StructureDescription {
     /**
      * Таблица для хранения продуктов
      */
-    public static class Products{
+    public static class Products {
         public static final String TABLE_NAME = "products";
-//        public static final String ID = "id";
+        //        public static final String ID = "id";
         public static final String ARTICLE = "article";
         public static final String NAME = "name";
         public static final String PRODUCT_TYPE_ID = "product_type_id";
-        public static final String PRICE = "price";
-        public static final String CURRENCY_ID = "currency_id";
+        //        public static final String PRICE = "price";
+//        public static final String CURRENCY_ID = "currency_id";
+        public static final String ADRESS = "adress";
+        public static final String COUNT = "count";
+        public static final String COUNT_TYPE_ID = "count_type_id";
         public static final String NOTE = "note";
     }
 
     /**
-     * Таблица для хранения содержимого склада
+     * Таблица для хранения списка мест хранения продуктов
      */
-    public static class Storage{
+    public static class Storage {
         public static final String TABLE_NAME = "storage";
+        public static final String ID = "id";
         public static final String ADRESS = "adress";
-        public static final String COUNT = "count";
-        public static final String COUNT_TYPE_ID = "count_type_id";
-        public static final String PRODUCT_ID = "product_id";
+//        public static final String COUNT = "count";
+//        public static final String COUNT_TYPE_ID = "count_type_id";
+//        public static final String PRODUCT_ID = "product_id";
     }
 
     /**
      * Таблица для хранения покупок
      */
-    public static class Purchases{
+    public static class Purchases {
         public static final String TABLE_NAME = "purchases";
         public static final String ID = "id";
         public static final String ORDER_ID = "order_id";
@@ -129,14 +132,16 @@ public class StructureDescription {
         public static final String PRODUCT_ID = "product_id";
         public static final String COUNT = "count";
         public static final String COUNT_TYPE_ID = "count_type_id";
+        public static final String PRICE = "price";
+        public static final String CURRENCY_ID = "currency_id";
         public static final String DELIVERY_DATE = "delivery_date";
         public static final String IS_DELIVERED = "is_delivered";
     }
 
     /**
      * Таблица заказов от клиентов
-     * */
-    public static class Orders{
+     */
+    public static class Orders {
         public static final String TABLE_NAME = "orders";
         public static final String ID = "order_id";
         public static final String CUSTOMER_ID = "customer_id";
@@ -150,8 +155,8 @@ public class StructureDescription {
 
     /**
      * Таблица списка проектов
-     * */
-    public static class ProjectsList{
+     */
+    public static class ProjectsList {
         public static final String TABLE_NAME = "projects_list";
         public static final String ID = "id";
         public static final String NAME = "name";
@@ -160,8 +165,8 @@ public class StructureDescription {
 
     /**
      * Таблица доходов
-     * */
-    public static class Incomes{
+     */
+    public static class Incomes {
         public static final String TABLE_NAME = "incomes";
         public static final String ID = "id";
         public static final String ORDER_ID = "order_id";

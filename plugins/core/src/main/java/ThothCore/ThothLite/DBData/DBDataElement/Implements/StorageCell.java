@@ -7,27 +7,17 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 public class StorageCell
         implements Storing {
 
-    private String adress;
+    private String id;
     private Storagable product;
     private Double count;
     private Listed countType;
-
-    public StorageCell(
-            Storagable product
-            , Double count
-            , Listed countType) {
-        this.adress = null;
-        this.product = product;
-        this.count = count;
-        this.countType = countType;
-    }
 
     public StorageCell(
             String id
             , Storagable product
             , Double count
             , Listed countType) {
-        this.adress = id;
+        this.id = id;
         this.product = product;
         this.count = count;
         this.countType = countType;
@@ -40,7 +30,7 @@ public class StorageCell
 
     @Override
     public String getId() {
-        return adress;
+        return id;
     }
 
     @Override
@@ -55,21 +45,31 @@ public class StorageCell
 
     @Override
     public void setId(String id) {
-        this.adress = id;
+        this.id = id;
     }
 
     @Override
     public void setCount(Double count) {
-
+        this.count = count;
     }
 
     @Override
     public void setCountType(Listed countType) {
-
+        this.countType = countType;
     }
 
     @Override
     public void setStorageable(Storagable storageable) {
         this.product = storageable;
+    }
+
+    @Override
+    public void setIdInTable(Object idInTable) {
+        setId((String) idInTable);
+    }
+
+    @Override
+    public Object getIdInTable() {
+        return getId();
     }
 }

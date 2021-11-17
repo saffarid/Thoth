@@ -104,4 +104,13 @@ public class Order
         this.status = status;
     }
 
+    @Override
+    public void setIdInTable(Object idInTable) {
+
+    }
+
+    @Override
+    public Object getIdInTable() {
+        return null;
+    }
 }

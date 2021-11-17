@@ -33,11 +33,12 @@ public class Products
             Storagable storagable = (Storagable) data;
 
             HashMap<String, Object> map = new HashMap<>();
-            map.put(ARTICLE, storagable.getId());
+            map.put(ARTICLE, storagable.getIdInTable());
             map.put(NAME, storagable.getName());
             map.put(PRODUCT_TYPE_ID, storagable.getType().getValue());
-            map.put(PRICE, storagable.getPrice());
-            map.put(CURRENCY_ID, storagable.getCurrency().getCurrency());
+            map.put(COUNT, storagable.getCount());
+            map.put(COUNT_TYPE_ID, storagable.getCountType().getValue());
+            map.put(ADRESS, storagable.getAdress());
 
             res.add(map);
         }
@@ -54,9 +55,9 @@ public class Products
                                 (String) row.get(ARTICLE),
                                 (String) row.get(NAME),
                                 (Listed) getFromTableById(StructureDescription.ProductTypes.TABLE_NAME, String.valueOf(row.get(PRODUCT_TYPE_ID))),
-                                (Double) row.get(PRICE),
-                                (Currency) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(CURRENCY_ID))),
-                                (String) row.get(NOTE)
+                                Double.parseDouble( String.valueOf(row.get(COUNT) ) ),
+                                (Listed) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(COUNT_TYPE_ID))),
+                                (Listed) getFromTableById(StructureDescription.Storage.TABLE_NAME, String.valueOf(row.get(ADRESS)))
                         )
                 );
             } catch (NotContainsException e) {
