@@ -11,7 +11,6 @@ public interface Storagable
         , Nameable
         , Typable
         , Countable
-        , IdentifiableInTable
 {
 
     void setAdress(Listed adress);

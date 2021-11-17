@@ -33,12 +33,12 @@ public class Products
             Storagable storagable = (Storagable) data;
 
             HashMap<String, Object> map = new HashMap<>();
-            map.put(ARTICLE, storagable.getIdInTable());
+            map.put(ARTICLE, storagable.getId());
             map.put(NAME, storagable.getName());
             map.put(PRODUCT_TYPE_ID, storagable.getType().getValue());
             map.put(COUNT, storagable.getCount());
             map.put(COUNT_TYPE_ID, storagable.getCountType().getValue());
-            map.put(ADRESS, storagable.getAdress());
+            map.put(ADRESS, storagable.getAdress().getValue());
 
             res.add(map);
         }

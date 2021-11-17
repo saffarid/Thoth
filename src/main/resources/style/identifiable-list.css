@@ -37,3 +37,9 @@
 .composite-cell-content .label, .identifiable-cell .label{
     -fx-text-fill: white;
 }
+
+.composite-cell:focused{
+    -fx-background-color:#6C757D;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+}

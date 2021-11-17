@@ -76,7 +76,7 @@ public abstract class IdentifiableCard
             List<Identifiable> list = new LinkedList<>();
             list.add(identifiable);
             try {
-                ThothLite.getInstance().insertToTable(AvaliableTables.PURCHASABLE, list);
+                ThothLite.getInstance().insertToTable(table, list);
             } catch (NotContainsException e) {
                 e.printStackTrace();
             } catch (SQLException e) {

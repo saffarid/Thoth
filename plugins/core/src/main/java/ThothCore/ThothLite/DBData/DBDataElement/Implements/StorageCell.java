@@ -5,22 +5,31 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 
 public class StorageCell
-        implements Storing {
+        implements Storing
+
+{
 
     private String id;
     private Storagable product;
     private Double count;
     private Listed countType;
+    private Double price;
+    private Currency currency;
 
     public StorageCell(
             String id
             , Storagable product
             , Double count
-            , Listed countType) {
+            , Listed countType
+            , Double price
+            , Currency currency
+    ) {
         this.id = id;
         this.product = product;
         this.count = count;
         this.countType = countType;
+        this.price = price;
+        this.currency = currency;
     }
 
     @Override
@@ -64,12 +73,22 @@ public class StorageCell
     }
 
     @Override
-    public void setIdInTable(Object idInTable) {
-        setId((String) idInTable);
+    public Double getPrice() {
+        return price;
     }
 
     @Override
-    public Object getIdInTable() {
-        return getId();
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    @Override
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    @Override
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 }

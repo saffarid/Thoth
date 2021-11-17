@@ -28,6 +28,7 @@ public class Partners
         for(Identifiable identifiable : list){
             HashMap<String, Object> map = new HashMap<>();
             Partnership partner = (Partnership) identifiable;
+            map.put(ID, partner.getId());
             map.put(NAME, partner.getName());
             map.put(PHONE, partner.getPhone());
             map.put(WEB, partner.getWeb());

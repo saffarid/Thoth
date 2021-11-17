@@ -35,7 +35,10 @@ public class PurchasableCard extends IdentifiableCard {
         IS_DELIVERED("is_delivered"),
         STORAGABLE("storagable"),
         COUNT("count"),
-        COUNT_TYPE("count_type");
+        COUNT_TYPE("count_type"),
+        PRICE("price"),
+        CURRENCY("currency")
+        ;
         private String id;
 
         PropertiesPurchasableId(String id) {

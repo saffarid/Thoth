@@ -1,11 +1,15 @@
 package ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard;
 
+import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
+import ThothGUI.OpenSubwindow;
+import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
+import ThothGUI.ThothLite.ThothLiteWindow;
 import ThothGUI.thoth_styleconstants.Stylesheets;
 import controls.Button;
 import controls.ComboBox;
@@ -14,6 +18,7 @@ import controls.TextField;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,11 +27,13 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class CompositeListView
         extends VBox {
@@ -35,6 +42,8 @@ public class CompositeListView
     private final static String STORAGABLE = "storagable";
     private final static String COUNT = "count";
     private final static String COUNT_TYPE = "count_type";
+    private final static String PRICE = "price";
+    private final static String CURRENCY = "currency";
     private final static String SEARCH = "search";
     private final static String SORT = "sort";
 
@@ -84,7 +93,7 @@ public class CompositeListView
         hBox.setSpacing(5);
         hBox.setPadding(new Insets(2));
 
-        if(!identifiableIsNew){
+        if (!identifiableIsNew) {
             hBox.setDisable(true);
         }
 
@@ -92,33 +101,21 @@ public class CompositeListView
         TextField count = getTextField(COUNT);
         ComboBox<Listed> countTypeComboBox = getCountTypeComboBox();
         Button addButton = getAddButton();
+        TextField price = getTextField(PRICE);
+        ComboBox<Currency> currencyComboBox = getCurrencyComboBox();
 
         addButton.setOnAction(actionEvent -> {
             Storing newStoring = new Storing() {
-
-                @Override
-                public void setIdInTable(Object idInTable) {
-
-                }
-
-                @Override
-                public Object getIdInTable() {
-                    return null;
-                }
-
-                private Storagable storagable;
                 private String id;
+                private Storagable product;
                 private Double count;
                 private Listed countType;
+                private Double price;
+                private Currency currency;
 
                 @Override
-                public Storagable getStoragable() {
-                    return storagable;
-                }
-
-                @Override
-                public void setStorageable(Storagable storageable) {
-                    this.storagable = storageable;
+                public Double getCount() {
+                    return count;
                 }
 
                 @Override
@@ -127,13 +124,18 @@ public class CompositeListView
                 }
 
                 @Override
-                public void setId(String id) {
-                    this.id = id;
+                public Listed getCountType() {
+                    return countType;
                 }
 
                 @Override
-                public Double getCount() {
-                    return count;
+                public Storagable getStoragable() {
+                    return product;
+                }
+
+                @Override
+                public void setId(String id) {
+                    this.id = id;
                 }
 
                 @Override
@@ -142,40 +144,64 @@ public class CompositeListView
                 }
 
                 @Override
-                public Listed getCountType() {
-                    return countType;
+                public void setCountType(Listed countType) {
+                    this.countType = countType;
                 }
 
                 @Override
-                public void setCountType(Listed countType) {
-                    this.countType = countType;
+                public void setStorageable(Storagable storageable) {
+                    this.product = storageable;
+                }
+
+                @Override
+                public Double getPrice() {
+                    return price;
+                }
+
+                @Override
+                public void setPrice(Double price) {
+                    this.price = price;
+                }
+
+                @Override
+                public Currency getCurrency() {
+                    return currency;
+                }
+
+                @Override
+                public void setCurrency(Currency currency) {
+                    this.currency = currency;
                 }
             };
 
             newStoring.setStorageable(storagableComboBox.getValue());
-            newStoring.setCount( Double.parseDouble(count.getText()) );
-            newStoring.setCountType( countTypeComboBox.getValue() );
+            newStoring.setCount(Double.parseDouble(count.getText()));
+            newStoring.setCountType(countTypeComboBox.getValue());
+            newStoring.setPrice(Double.parseDouble(price.getText()));
+            newStoring.setCurrency(currencyComboBox.getValue());
 
             //Нужна проверка на наличие продукта в списке
             //Флаг на наличине продукта в списке
             boolean alreadyExsist = false;
 
-            for(Storing storing : items.getValue()){
-                if (storing.getStoragable().equals(newStoring.getStoragable())){
+            for (Storing storing : items.getValue()) {
+                if (storing.getStoragable().equals(newStoring.getStoragable())) {
                     alreadyExsist = true;
                 }
             }
 
             //Если продукт уже есть в списке, то не добавляем его, необходимо выдавать оповещение что продукт уже добавлен.
-            if(!alreadyExsist) {
+            if (!alreadyExsist) {
                 items.add(
                         newStoring
                 );
             }
 
             storagableComboBox.setValue(null);
-            count.setText("");
-            countTypeComboBox.setValue(null);
+            count.setText(null);
+            countTypeComboBox.setValue(countTypeComboBox.getItems().get(0));
+            price.setText(null);
+            currencyComboBox.setValue(currencyComboBox.getItems().get(0));
         });
 
         hBox.getChildren().addAll(
@@ -184,6 +210,9 @@ public class CompositeListView
                 , getLabel(COUNT_TYPE)
                 , count
                 , countTypeComboBox
+                , getLabel(PRICE)
+                , price
+                , currencyComboBox
                 , addButton
         );
 
@@ -194,7 +223,15 @@ public class CompositeListView
         ListView<Storing> res = new ListView<>();
         setMargin(res, new Insets(2));
 
+
         res.setCellFactory(storingListView -> new CompositeCell());
+
+        items.addListener((observableValue, storings, t1) -> {
+
+            res.setCellFactory(null);
+            res.setCellFactory(storingListView -> new CompositeCell());
+
+        });
 
         res.itemsProperty().bind(items);
 
@@ -225,7 +262,7 @@ public class CompositeListView
         return res;
     }
 
-    public List<Storing> getComposite(){
+    public List<Storing> getComposite() {
         return items.getValue();
     }
 
@@ -234,6 +271,7 @@ public class CompositeListView
 
         try {
             res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
+            res.setValue( res.getItems().get(0) );
         } catch (NotContainsException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -259,6 +297,32 @@ public class CompositeListView
         return res;
     }
 
+    private ComboBox<Currency> getCurrencyComboBox(){
+        ComboBox<Currency> res = new ComboBox<>();
+
+        try {
+            res.setItems(  FXCollections.observableList( (List<Currency>) ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES ) ) );
+            res.setValue( res.getItems().get(0) );
+        } catch (NotContainsException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        res.setCellFactory(listedListView -> new CurrencyCell());
+        res.setButtonCell(new CurrencyCell());
+
+        res.setId(CURRENCY);
+
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
+
+        return res;
+    }
+
     private ComboBox<SORT_BY> getSortComboBox() {
         ComboBox<SORT_BY> res = new ComboBox<>();
 
@@ -268,28 +332,28 @@ public class CompositeListView
 
         res.valueProperty().addListener((observableValue, sort_by, t1) -> {
 
-            switch (res.getValue()){
-                case ID_UP:{
+            switch (res.getValue()) {
+                case ID_UP: {
                     items.sort((o1, o2) -> o1.getStoragable().getId().compareTo(o2.getStoragable().getId()));
                     break;
                 }
-                case ID_DOWN:{
+                case ID_DOWN: {
                     items.sort((o1, o2) -> o2.getStoragable().getId().compareTo(o1.getStoragable().getId()));
                     break;
                 }
-                case COUNT_UP:{
+                case COUNT_UP: {
                     items.sort((o1, o2) -> o1.getCount().compareTo(o2.getCount()));
                     break;
                 }
-                case COUNT_DOWN:{
+                case COUNT_DOWN: {
                     items.sort((o1, o2) -> o2.getCount().compareTo(o1.getCount()));
                     break;
                 }
-                case COUNT_TYPE_UP:{
+                case COUNT_TYPE_UP: {
                     items.sort((o1, o2) -> o1.getCountType().getValue().compareTo(o2.getCountType().getValue()));
                     break;
                 }
-                case COUNT_TYPE_DOWN:{
+                case COUNT_TYPE_DOWN: {
                     items.sort((o1, o2) -> o2.getCountType().getValue().compareTo(o1.getCountType().getValue()));
                     break;
                 }
@@ -371,6 +435,17 @@ public class CompositeListView
         }
     }
 
+    private class CurrencyCell
+            extends ListCell<Currency>{
+        @Override
+        protected void updateItem(Currency currency, boolean b) {
+            if(currency != null) {
+                super.updateItem(currency, b);
+                setText(currency.getCurrency());
+            }
+        }
+    }
+
     private class ListedCell
             extends ListCell<Listed> {
 
@@ -423,6 +498,7 @@ public class CompositeListView
         private final static String TEMPLATE_COUNT = "%1s: %2s";
         private final static String COUNT = "count";
         private final static String COUNT_TYPE = "count_type";
+        private final static String PRICE = "price";
 
         private Storing storing;
 
@@ -432,7 +508,36 @@ public class CompositeListView
             setLeft(createPoint());
             setCenter(createInform());
 
+            setOnMouseClicked(this::cellClick);
+
             getStyleClass().addAll(CLASS_NAME);
+        }
+
+        private void cellClick(MouseEvent mouseEvent) {
+            switch (mouseEvent.getButton()) {
+                case PRIMARY: {
+                    IdentifiableCard.LOG.log(Level.INFO, mouseEvent.getSource().toString());
+                    ((OpenSubwindow) ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableCardWindow("Карточка", AvaliableTables.STORAGABLE, storing.getStoragable()));
+                }
+            }
+        }
+
+        private Button createRemoveButton(){
+            Button res = new Button(
+                    new ImageView(
+                            new Image(
+                                    getClass().getResource(ThothGUI.thoth_styleconstants.Image.TRASH).toExternalForm(), 19, 19, true, true
+                            )
+                    )
+            );
+
+            res.setDisable(!identifiableIsNew);
+
+            res.setOnAction(actionEvent -> {
+                items.remove(storing);
+            });
+
+            return res;
         }
 
         private Pane createPoint() {
@@ -446,7 +551,7 @@ public class CompositeListView
                     )
             );
 
-            vBox.setPadding(new Insets(0,0,0,5));
+            vBox.setPadding(new Insets(0, 0, 0, 5));
             vBox.setAlignment(Pos.CENTER);
 
             return vBox;
@@ -455,16 +560,19 @@ public class CompositeListView
         private GridPane createInform() {
             GridPane res = new GridPane();
 
-            res.setPadding(new Insets(0, 0, 0, 10));
+            res.setPadding(new Insets(0, 10, 0, 10));
 
             res.getRowConstraints().addAll(
                     new RowConstraints(21)
             );
 
             res.getColumnConstraints().addAll(
-                      new ColumnConstraints(120, 120, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    , new ColumnConstraints(120, 120, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    , new ColumnConstraints(120, 120, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                      new ColumnConstraints(200, 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.RIGHT, true)
             );
 
             res.add(
@@ -472,12 +580,24 @@ public class CompositeListView
                     , 0, 0
             );
             res.add(
-                    new Label(String.format(TEMPLATE_COUNT, COUNT, storing.getCount() ))
+                    new Label(String.format(TEMPLATE_COUNT, COUNT, storing.getCount()))
                     , 1, 0
             );
             res.add(
                     new Label(storing.getCountType().getValue())
                     , 2, 0
+            );
+            res.add(
+                    new Label(String.format(TEMPLATE_COUNT, PRICE, storing.getPrice()))
+                    , 3, 0
+            );
+            res.add(
+                    new Label(storing.getCurrency().getCurrency())
+                    , 4, 0
+            );
+            res.add(
+                    createRemoveButton()
+                    , 5, 0
             );
 
             return res;

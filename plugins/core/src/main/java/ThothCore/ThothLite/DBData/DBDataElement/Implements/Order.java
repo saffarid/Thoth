@@ -8,6 +8,7 @@ public class Order
         implements Orderable{
 
     private String id;
+    private String orderNumber;
     private Partnership customer;
     private Projectable project;
     private boolean isMonthly;
@@ -17,6 +18,7 @@ public class Order
     private boolean autofinish;
 
     public Order(String id
+            , String orderNumber
             , Partnership customer
             , Projectable project
             , boolean isMonthly
@@ -25,6 +27,7 @@ public class Order
             , Listed status
             , boolean autofinish) {
         this.id = id;
+        this.orderNumber = orderNumber;
         this.customer = customer;
         this.project = project;
         this.isMonthly = isMonthly;
@@ -85,6 +88,16 @@ public class Order
     }
 
     @Override
+    public String orderNumber() {
+        return orderNumber;
+    }
+
+    @Override
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    @Override
     public Projectable getProjectable() {
         return project;
     }
@@ -104,13 +117,4 @@ public class Order
         this.status = status;
     }
 
-    @Override
-    public void setIdInTable(Object idInTable) {
-
-    }
-
-    @Override
-    public Object getIdInTable() {
-        return null;
-    }
 }

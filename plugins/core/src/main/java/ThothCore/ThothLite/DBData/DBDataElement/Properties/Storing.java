@@ -1,7 +1,7 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Properties;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Countable;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.IdentifiableInTable;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Pricing;
 
 /**
  * Объект реализует условную ячейку в которой хранится некоторое кол-во хранимого объекта.
@@ -9,7 +9,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.IdentifiableInT
 public interface Storing
         extends Countable
         , Identifiable
-        , IdentifiableInTable
+        , Pricing
 {
 
     Storagable getStoragable();

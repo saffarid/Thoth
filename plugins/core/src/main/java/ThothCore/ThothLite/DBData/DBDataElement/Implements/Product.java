@@ -119,13 +119,4 @@ public class Product
         return adress;
     }
 
-    @Override
-    public void setIdInTable(Object idInTable) {
-        setId((String) idInTable);
-    }
-
-    @Override
-    public Object getIdInTable() {
-        return getId();
-    }
 }

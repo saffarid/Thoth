@@ -90,13 +90,4 @@ public class Project
         createdDate = LocalDate.parse(startDate);
     }
 
-    @Override
-    public void setIdInTable(Object idInTable) {
-
-    }
-
-    @Override
-    public Object getIdInTable() {
-        return null;
-    }
 }

@@ -36,13 +36,4 @@ public class ListElement
         this.value = value;
     }
 
-    @Override
-    public void setIdInTable(Object idInTable) {
-        setId((String) idInTable);
-    }
-
-    @Override
-    public Object getIdInTable() {
-        return getId();
-    }
 }

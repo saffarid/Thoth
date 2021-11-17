@@ -42,6 +42,8 @@ public class Purchases
                 map.put(PRODUCT_ID, storing.getStoragable().getId());
                 map.put(COUNT, storing.getCount());
                 map.put(COUNT_TYPE_ID, storing.getCountType().getValue());
+                map.put(PRICE, storing.getPrice());
+                map.put(CURRENCY_ID, storing.getCurrency().getCurrency());
                 map.put(DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
                 map.put(IS_DELIVERED, purchasable.isDelivered());
 
@@ -81,15 +83,20 @@ public class Purchases
 
                 if (storing == null) {
                     storing = new StorageCell(
-                            String.valueOf( row.get(ID) ),
-                            (Storagable) getFromTableById(
-                                    StructureDescription.Products.TABLE_NAME
-                                    , String.valueOf(row.get(PRODUCT_ID))
+                            String.valueOf( row.get(ID) ), //Идентификатор
+                            (Storagable) getFromTableById(                          //
+                                    StructureDescription.Products.TABLE_NAME        //Продукт
+                                    , String.valueOf(row.get(PRODUCT_ID))           //
                             ),
-                            (Double) row.get(COUNT),
-                            (Listed) getFromTableById(
-                                    StructureDescription.CountTypes.TABLE_NAME
-                                    , String.valueOf( row.get(COUNT_TYPE_ID) )
+                            (Double) row.get(COUNT),                                //Кол-во
+                            (Listed) getFromTableById(                              //
+                                    StructureDescription.CountTypes.TABLE_NAME      //Единица измерения кол-ва
+                                    , String.valueOf( row.get(COUNT_TYPE_ID) )      //
+                            ),
+                            (Double) row.get(PRICE),
+                            (Currency) getFromTableById(
+                                    StructureDescription.Currency.TABLE_NAME
+                                    , String.valueOf( row.get(CURRENCY_ID) )
                             )
                     );
                     purchase.addStoring(storing);
