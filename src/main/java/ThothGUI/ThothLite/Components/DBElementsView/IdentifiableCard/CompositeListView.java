@@ -19,9 +19,8 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -36,7 +35,9 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class CompositeListView
-        extends VBox {
+        extends BorderPane {
+
+    private final static String BACKET = "backet";
 
     private final static String TITLE = "composite";
     private final static String STORAGABLE = "storagable";
@@ -78,23 +79,27 @@ public class CompositeListView
         this.items = new SimpleListProperty<>(FXCollections.observableList(items));
         this.identifiableIsNew = identifiableIsNew;
 
-        getChildren().addAll(
-                createNewStoringRow()
-                , createSortRow()
-                , createList()
-        );
+        setPadding(new Insets(2));
+
+        setTop(createTitle());
+        setCenter(createContent());
+        setBottom(createTotal());
 
         getStylesheets().add(getClass().getResource(Stylesheets.IDENTIFIABLE_LIST).toExternalForm());
     }
 
-    private HBox createNewStoringRow() {
-        HBox hBox = new HBox();
+    private Node createNewStoringRow() {
+        FlowPane newStoringNode = new FlowPane(Orientation.HORIZONTAL, 5, 5);
 
-        hBox.setSpacing(5);
-        hBox.setPadding(new Insets(2));
+        newStoringNode.setColumnHalignment(HPos.LEFT);
+        newStoringNode.setRowValignment(VPos.CENTER);
+
+        newStoringNode.setAlignment(Pos.CENTER_LEFT);
+
+        newStoringNode.setPadding(new Insets(2));
 
         if (!identifiableIsNew) {
-            hBox.setDisable(true);
+            newStoringNode.setDisable(true);
         }
 
         ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
@@ -204,36 +209,101 @@ public class CompositeListView
             currencyComboBox.setValue(currencyComboBox.getItems().get(0));
         });
 
-        hBox.getChildren().addAll(
-                getLabel(STORAGABLE)
+        HBox wrapStoragable = new HBox();
+        wrapStoragable.setSpacing(5);
+        wrapStoragable.getChildren().addAll(
+                  getLabel(STORAGABLE)
                 , storagableComboBox
-                , getLabel(COUNT_TYPE)
+        );
+
+        HBox wrapCount = new HBox();
+        wrapCount.setSpacing(5);
+        wrapCount.getChildren().addAll(
+                  getLabel(COUNT_TYPE)
                 , count
                 , countTypeComboBox
-                , getLabel(PRICE)
+        );
+
+        HBox wrapPrice = new HBox();
+        wrapPrice.setSpacing(5);
+        wrapPrice.getChildren().addAll(
+                  getLabel(PRICE)
                 , price
                 , currencyComboBox
+        );
+
+        newStoringNode.getChildren().addAll(
+                wrapStoragable
+                , wrapCount
+                , wrapPrice
                 , addButton
         );
 
-        return hBox;
+        return newStoringNode;
     }
 
-    private ListView<Storing> createList() {
-        ListView<Storing> res = new ListView<>();
-        setMargin(res, new Insets(2));
+    private Node createList() {
+        VBox res = new VBox();
+        res.setFillWidth(true);
 
+        ListView<Storing> listView = new ListView<>();
 
-        res.setCellFactory(storingListView -> new CompositeCell());
+        res.setPadding(new Insets(5, 0, 0, 2));
+
+        listView.setCellFactory(storingListView -> new CompositeCell());
 
         items.addListener((observableValue, storings, t1) -> {
 
-            res.setCellFactory(null);
-            res.setCellFactory(storingListView -> new CompositeCell());
+            listView.setCellFactory(null);
+            listView.setCellFactory(storingListView -> new CompositeCell());
 
         });
 
-        res.itemsProperty().bind(items);
+        listView.itemsProperty().bind(items);
+
+        listView.getSelectionModel().clearSelection();
+
+        listView.setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case ESCAPE: {
+                    listView.getSelectionModel().clearSelection();
+                    break;
+                }
+            }
+        });
+
+        res.getChildren().add(listView);
+
+        return res;
+    }
+
+    private Node createContent() {
+        VBox res = new VBox();
+
+        res.setPadding(new Insets(2));
+
+        res.getChildren().addAll(
+                createPallete()
+                , createList()
+        );
+
+        return res;
+    }
+
+    private Node createPallete() {
+        VBox res = new VBox();
+        res.setSpacing(5);
+        res.setPadding(new Insets(2));
+        res.getChildren().addAll(
+                createNewStoringRow()
+                , createSortRow()
+        );
+
+        res.setStyle("" +
+                "-fx-border-width: 1px 0 1px 0;" +
+                "-fx-border-color:grey;" +
+                "-fx-border-style:solid;" +
+                "");
 
         return res;
     }
@@ -251,11 +321,41 @@ public class CompositeListView
         return hBox;
     }
 
+    private Node createTitle() {
+        HBox res = new HBox();
+
+        res.getChildren().addAll(
+                getLabel(BACKET)
+        );
+
+        res.setPadding(new Insets(2));
+
+        return res;
+    }
+
+    private Node createTotal(){
+        HBox res = new HBox();
+
+        res.setPadding(new Insets(2, 0, 2, 0));
+
+        res.getChildren().addAll(
+                getLabel("total")
+        );
+
+        res.setStyle("" +
+                "-fx-border-width: 1px 0 0 0;" +
+                "-fx-border-color:grey;" +
+                "-fx-border-style:solid;" +
+                "");
+
+        return res;
+    }
+
     private Button getAddButton() {
         Button res = new Button(
                 new ImageView(
                         new Image(
-                                getClass().getResource(ThothGUI.thoth_styleconstants.Image.PLUS).toExternalForm(), 26, 26, true, true
+                                getClass().getResource(ThothGUI.thoth_styleconstants.Image.PLUS).toExternalForm(), 28, 28, true, true
                         )
                 )
         );
@@ -271,7 +371,7 @@ public class CompositeListView
 
         try {
             res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
-            res.setValue( res.getItems().get(0) );
+            res.setValue(res.getItems().get(0));
         } catch (NotContainsException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -285,9 +385,9 @@ public class CompositeListView
 
         res.setId(COUNT_TYPE);
 
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
+        res.setMinWidth(80);
+        res.setPrefWidth(80);
+        res.setMaxWidth(100);
 
         return res;
     }
@@ -297,12 +397,12 @@ public class CompositeListView
         return res;
     }
 
-    private ComboBox<Currency> getCurrencyComboBox(){
+    private ComboBox<Currency> getCurrencyComboBox() {
         ComboBox<Currency> res = new ComboBox<>();
 
         try {
-            res.setItems(  FXCollections.observableList( (List<Currency>) ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES ) ) );
-            res.setValue( res.getItems().get(0) );
+            res.setItems(FXCollections.observableList((List<Currency>) ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES)));
+            res.setValue(res.getItems().get(0));
         } catch (NotContainsException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -316,9 +416,9 @@ public class CompositeListView
 
         res.setId(CURRENCY);
 
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
+        res.setMinWidth(75);
+        res.setPrefWidth(75);
+        res.setMaxWidth(75);
 
         return res;
     }
@@ -411,9 +511,17 @@ public class CompositeListView
 
         if (text != null) res.setText(text);
 
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
+        res.textProperty().addListener((observableValue, s, t1) -> {
+            try {
+                Double.parseDouble(res.getText());
+            } catch (NumberFormatException e) {
+                res.setText(s);
+            }
+        });
+
+        res.setMinWidth(75);
+        res.setPrefWidth(75);
+        res.setMaxWidth(75);
 
         return res;
     }
@@ -436,10 +544,10 @@ public class CompositeListView
     }
 
     private class CurrencyCell
-            extends ListCell<Currency>{
+            extends ListCell<Currency> {
         @Override
         protected void updateItem(Currency currency, boolean b) {
-            if(currency != null) {
+            if (currency != null) {
                 super.updateItem(currency, b);
                 setText(currency.getCurrency());
             }
@@ -522,7 +630,7 @@ public class CompositeListView
             }
         }
 
-        private Button createRemoveButton(){
+        private Button createRemoveButton() {
             Button res = new Button(
                     new ImageView(
                             new Image(
@@ -567,7 +675,7 @@ public class CompositeListView
             );
 
             res.getColumnConstraints().addAll(
-                      new ColumnConstraints(200, 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    new ColumnConstraints(200, 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
                     , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
                     , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
                     , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)

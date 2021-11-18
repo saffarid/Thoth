@@ -12,7 +12,11 @@ import controls.Label;
 import controls.TextField;
 import controls.Twin;
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.TextArea;
+import layout.basepane.HBox;
 import layout.basepane.VBox;
 
 import java.sql.SQLException;
@@ -26,8 +30,8 @@ public class StoragableCard extends IdentifiableCard {
         PRODUCT_TYPE("product-type"),
         COUNT("count"),
         COUNT_TYPE("count_type"),
-        ADRESS("adress")
-        ;
+        ADRESS("adress"),
+        NOTE("note");
         private String id;
 
         PropetiesStoragableId(String id) {
@@ -46,16 +50,52 @@ public class StoragableCard extends IdentifiableCard {
     protected Node createContent() {
         VBox vBox = new VBox();
 
+//        vBox.getChildren().addAll(
+//                  new Twin(getLabel(PropetiesStoragableId.ARTICLE.id), getTextField(PropetiesStoragableId.ARTICLE))
+//                , new Twin(getLabel(PropetiesStoragableId.NAME.id), getTextField(PropetiesStoragableId.NAME))
+//                , new Twin(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), getComboBox(PropetiesStoragableId.PRODUCT_TYPE))
+//                , new Twin(getLabel(PropetiesStoragableId.COUNT.id), getTextField(PropetiesStoragableId.COUNT))
+//                , new Twin(getLabel(PropetiesStoragableId.COUNT_TYPE.id), getComboBox(PropetiesStoragableId.COUNT_TYPE))
+//                , new Twin(getLabel(PropetiesStoragableId.ADRESS.id), getComboBox(PropetiesStoragableId.ADRESS))
+//        );
+
+        HBox count = new HBox();
+        count.setSpacing(5);
+        count.setPadding(new Insets(2));
+        count.getChildren().addAll(
+                  getTextField(PropetiesStoragableId.COUNT)
+                , getComboBox(PropetiesStoragableId.COUNT_TYPE)
+        );
+
         vBox.getChildren().addAll(
-                new Twin(getLabel(PropetiesStoragableId.ARTICLE.id), getTextField(PropetiesStoragableId.ARTICLE))
-                , new Twin(getLabel(PropetiesStoragableId.NAME.id), getTextField(PropetiesStoragableId.NAME))
-                , new Twin(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), getComboBox(PropetiesStoragableId.PRODUCT_TYPE))
-                , new Twin(getLabel(PropetiesStoragableId.COUNT.id), getTextField(PropetiesStoragableId.COUNT))
-                , new Twin(getLabel(PropetiesStoragableId.COUNT_TYPE.id), getComboBox(PropetiesStoragableId.COUNT_TYPE))
-                , new Twin(getLabel(PropetiesStoragableId.ADRESS.id), getComboBox(PropetiesStoragableId.ADRESS))
+                  createRow(getLabel(PropetiesStoragableId.ARTICLE.id), getTextField(PropetiesStoragableId.ARTICLE))
+                , createRow(getLabel(PropetiesStoragableId.NAME.id), getTextField(PropetiesStoragableId.NAME))
+                , createRow(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), getComboBox(PropetiesStoragableId.PRODUCT_TYPE))
+                , createRow(getLabel(PropetiesStoragableId.COUNT.id), count)
+                , createRow(getLabel(PropetiesStoragableId.ADRESS.id), getComboBox(PropetiesStoragableId.ADRESS))
+                , createRow(getLabel(PropetiesStoragableId.NOTE.id), new TextArea())
+
         );
 
         return vBox;
+    }
+
+    private Node createRow(
+            Node titleNode
+            , Node enterNode
+    ) {
+        VBox res = new VBox();
+
+        res.setAlignment(Pos.TOP_LEFT);
+        res.setFillWidth(true);
+        res.setPadding(new Insets(2));
+
+        res.getChildren().addAll(
+                titleNode
+                , enterNode
+        );
+
+        return res;
     }
 
     protected ComboBox getComboBox(PropetiesStoragableId id) {
@@ -68,10 +108,9 @@ public class StoragableCard extends IdentifiableCard {
         Listed value = null;
 
         try {
-
             switch (id) {
                 case PRODUCT_TYPE: {
-                    res.setItems(FXCollections.observableList( (List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.PRODUCT_TYPES) ) );
+                    res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.PRODUCT_TYPES)));
 
                     value = ((Storagable) identifiable).getType();
                     if (value == null) {
@@ -82,32 +121,31 @@ public class StoragableCard extends IdentifiableCard {
                     }
                     break;
                 }
-                case COUNT_TYPE:{
-                    res.setItems(FXCollections.observableList( (List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES) ));
+                case COUNT_TYPE: {
+                    res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
 
-                    value = ((Storagable)identifiable).getCountType();
-                    if(value == null){
+                    value = ((Storagable) identifiable).getCountType();
+                    if (value == null) {
                         res.setValue(res.getItems().get(0));
                         ((Storagable) identifiable).setCountType((Listed) res.getValue());
-                    }else{
+                    } else {
                         res.setValue(value);
                     }
                     break;
                 }
-                case ADRESS:{
-                    res.setItems( FXCollections.observableList( (List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORING) ) );
+                case ADRESS: {
+                    res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORING)));
 
-                    value = ((Storagable)identifiable).getCountType();
-                    if(value == null){
+                    value = ((Storagable) identifiable).getAdress();
+                    if (value == null) {
                         res.setValue(res.getItems().get(0));
                         ((Storagable) identifiable).setAdress((Listed) res.getValue());
-                    }else{
+                    } else {
                         res.setValue(value);
                     }
                     break;
                 }
             }
-
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (NotContainsException e) {
@@ -117,31 +155,34 @@ public class StoragableCard extends IdentifiableCard {
         }
 
         res.valueProperty().addListener((observableValue, o, t1) -> {
-            switch (id){
-                case PRODUCT_TYPE:{
-                    ((Storagable)identifiable).setType((Listed) res.getValue());
+            switch (id) {
+                case PRODUCT_TYPE: {
+                    ((Storagable) identifiable).setType((Listed) res.getValue());
                     break;
                 }
-                case COUNT_TYPE:{
-                    ((Storagable)identifiable).setCountType((Listed) res.getValue());
+                case COUNT_TYPE: {
+                    ((Storagable) identifiable).setCountType((Listed) res.getValue());
                     break;
                 }
-                case ADRESS:{
-                    ((Storagable)identifiable).setAdress((Listed) res.getValue());
+                case ADRESS: {
+                    ((Storagable) identifiable).setAdress((Listed) res.getValue());
                     break;
                 }
             }
         });
 
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
+//        res.setMinWidth(120);
+//        res.setPrefWidth(120);
+//        res.setMaxWidth(120);
 
         return res;
     }
 
     private Label getLabel(String text) {
         Label res = new Label(text);
+        res.setMinWidth(120);
+        res.setPrefWidth(120);
+        res.setMaxWidth(120);
         return res;
     }
 
@@ -158,20 +199,20 @@ public class StoragableCard extends IdentifiableCard {
                 res.setText(((Storagable) identifiable).getName());
                 break;
             }
-            case COUNT:{
-                res.setText( String.valueOf( ((Storagable)identifiable).getCount() ) );
+            case COUNT: {
+                res.setText(String.valueOf(((Storagable) identifiable).getCount()));
                 break;
             }
         }
 
         res.textProperty().addListener((observableValue, s, t1) -> {
-            if(t1 != null){
-                switch (id){
-                    case COUNT:{
+            if (t1 != null) {
+                switch (id) {
+                    case COUNT: {
                         try {
                             Double.parseDouble(res.getText());
-                        }catch (NumberFormatException e){
-                            res.setText(s);
+                        } catch (NumberFormatException e) {
+                                res.setText(s);
                         }
                     }
                 }
@@ -190,17 +231,17 @@ public class StoragableCard extends IdentifiableCard {
                         ((Storagable) identifiable).setName(res.getText());
                         break;
                     }
-                    case COUNT:{
-                        ((Storagable)identifiable).setCount( Double.parseDouble(res.getText()) );
+                    case COUNT: {
+                        ((Storagable) identifiable).setCount(Double.parseDouble(res.getText()));
                     }
                 }
 
             }
         });
 
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
+//        res.setMinWidth(120);
+//        res.setPrefWidth(120);
+//        res.setMaxWidth(120);
 
         return res;
     }
