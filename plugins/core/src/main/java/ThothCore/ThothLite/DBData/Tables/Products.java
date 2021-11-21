@@ -57,7 +57,8 @@ public class Products
                                 (Listed) getFromTableById(StructureDescription.ProductTypes.TABLE_NAME, String.valueOf(row.get(PRODUCT_TYPE_ID))),
                                 Double.parseDouble( String.valueOf(row.get(COUNT) ) ),
                                 (Listed) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(COUNT_TYPE_ID))),
-                                (Listed) getFromTableById(StructureDescription.Storage.TABLE_NAME, String.valueOf(row.get(ADRESS)))
+                                (Listed) getFromTableById(StructureDescription.Storage.TABLE_NAME, String.valueOf(row.get(ADRESS))),
+                                (String) row.get(NOTE)
                         )
                 );
             } catch (NotContainsException e) {

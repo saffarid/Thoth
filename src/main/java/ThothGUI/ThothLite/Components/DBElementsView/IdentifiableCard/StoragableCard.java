@@ -32,6 +32,7 @@ public class StoragableCard extends IdentifiableCard {
     private ComboBox adress;
     private TextField count;
     private ComboBox countType;
+    private TextArea note;
 
     private enum PropetiesStoragableId {
         ARTICLE("article"),
@@ -74,6 +75,9 @@ public class StoragableCard extends IdentifiableCard {
         this.count = getTextField(PropetiesStoragableId.COUNT);
         countType = getComboBox(PropetiesStoragableId.COUNT_TYPE);
         adress = getComboBox(PropetiesStoragableId.ADRESS);
+        note = new TextArea();
+
+        note.setText( ((Storagable)identifiable).getNote() );
 
         HBox count = new HBox();
         count.setSpacing(5);
@@ -89,8 +93,7 @@ public class StoragableCard extends IdentifiableCard {
                 , createRow(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), type)
                 , createRow(getLabel(PropetiesStoragableId.COUNT.id), count)
                 , createRow(getLabel(PropetiesStoragableId.ADRESS.id), adress)
-                , createRow(getLabel(PropetiesStoragableId.NOTE.id), new TextArea())
-
+                , createRow(getLabel(PropetiesStoragableId.NOTE.id), note)
         );
 
         return vBox;
@@ -205,7 +208,6 @@ public class StoragableCard extends IdentifiableCard {
             if (t1 != null) {
                 switch (id) {
                     case COUNT: {
-
                         Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
                         Matcher matcher = pattern.matcher(t1);
 
@@ -245,16 +247,27 @@ public class StoragableCard extends IdentifiableCard {
     protected Identifiable identifiableInstance() {
         return new Storagable() {
 
-            private String id = null;
-            private String name = null;
+            private String id = "";
+            private String name = "";
             private Double count = 0.;
             private Listed countType = null;
             private Listed adress = null;
             private Listed type = null;
+            private String note = "";
 
             @Override
             public Listed getAdress() {
                 return adress;
+            }
+
+            @Override
+            public void setNote(String note) {
+                this.note = note;
+            }
+
+            @Override
+            public String getNote() {
+                return note;
             }
 
             @Override
@@ -324,6 +337,7 @@ public class StoragableCard extends IdentifiableCard {
         ((Storagable) identifiable).setCount( Double.parseDouble(count.getText()) );
         ((Storagable) identifiable).setCountType((Listed) countType.getValue());
         ((Storagable) identifiable).setAdress((Listed) adress.getValue());
+        ((Storagable) identifiable).setNote(note.getText());
 
     }
 }

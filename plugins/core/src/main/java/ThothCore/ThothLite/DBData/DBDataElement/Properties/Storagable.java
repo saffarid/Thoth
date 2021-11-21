@@ -16,4 +16,7 @@ public interface Storagable
     void setAdress(Listed adress);
     Listed getAdress();
 
+    void setNote(String note);
+    String getNote();
+
 }

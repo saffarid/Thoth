@@ -119,4 +119,14 @@ public class Product
         return adress;
     }
 
+    @Override
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    @Override
+    public String getNote() {
+        return note;
+    }
+
 }
