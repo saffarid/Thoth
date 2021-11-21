@@ -77,7 +77,7 @@ public class StoragableCard extends IdentifiableCard {
         adress = getComboBox(PropetiesStoragableId.ADRESS);
         note = new TextArea();
 
-        note.setText( ((Storagable)identifiable).getNote() );
+        note.setText(((Storagable) identifiable).getNote());
 
         HBox count = new HBox();
         count.setSpacing(5);
@@ -88,7 +88,7 @@ public class StoragableCard extends IdentifiableCard {
         );
 
         vBox.getChildren().addAll(
-                  createRow(getLabel(PropetiesStoragableId.ARTICLE.id), article)
+                createRow(getLabel(PropetiesStoragableId.ARTICLE.id), article)
                 , createRow(getLabel(PropetiesStoragableId.NAME.id), name)
                 , createRow(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), type)
                 , createRow(getLabel(PropetiesStoragableId.COUNT.id), count)
@@ -205,18 +205,15 @@ public class StoragableCard extends IdentifiableCard {
         }
 
         res.textProperty().addListener((observableValue, s, t1) -> {
-            if (t1 != null) {
-                switch (id) {
-                    case COUNT: {
+            switch (id) {
+                case COUNT: {
+                    if (!t1.equals("")) {
                         Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
                         Matcher matcher = pattern.matcher(t1);
 
-                        if (!matcher.matches()){
+                        if (!matcher.matches()) {
                             res.setText(s);
-                        } else if(t1.equals("")){
-                            res.setText(t1);
                         }
-
                     }
                 }
             }
@@ -227,8 +224,8 @@ public class StoragableCard extends IdentifiableCard {
 
                 switch (id) {
                     case COUNT: {
-                        if(res.getText().equals("")){
-                            res.setText( String.valueOf(0.0) );
+                        if (res.getText().equals("")) {
+                            res.setText(String.valueOf(0.0));
                         }
                     }
                 }
@@ -334,7 +331,7 @@ public class StoragableCard extends IdentifiableCard {
         ((Storagable) identifiable).setId(article.getText());
         ((Storagable) identifiable).setName(name.getText());
         ((Storagable) identifiable).setType((Listed) type.getValue());
-        ((Storagable) identifiable).setCount( Double.parseDouble(count.getText()) );
+        ((Storagable) identifiable).setCount(Double.parseDouble(count.getText()));
         ((Storagable) identifiable).setCountType((Listed) countType.getValue());
         ((Storagable) identifiable).setAdress((Listed) adress.getValue());
         ((Storagable) identifiable).setNote(note.getText());

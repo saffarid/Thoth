@@ -214,14 +214,14 @@ public class CompositeListView
         HBox wrapStoragable = new HBox();
         wrapStoragable.setSpacing(5);
         wrapStoragable.getChildren().addAll(
-                  getLabel(STORAGABLE)
+                getLabel(STORAGABLE)
                 , storagableComboBox
         );
 
         HBox wrapCount = new HBox();
         wrapCount.setSpacing(5);
         wrapCount.getChildren().addAll(
-                  getLabel(COUNT_TYPE)
+                getLabel(COUNT_TYPE)
                 , count
                 , countTypeComboBox
         );
@@ -229,7 +229,7 @@ public class CompositeListView
         HBox wrapPrice = new HBox();
         wrapPrice.setSpacing(5);
         wrapPrice.getChildren().addAll(
-                  getLabel(PRICE)
+                getLabel(PRICE)
                 , price
                 , currencyComboBox
         );
@@ -335,7 +335,7 @@ public class CompositeListView
         return res;
     }
 
-    private Node createTotal(){
+    private Node createTotal() {
         HBox res = new HBox();
 
         res.setPadding(new Insets(2, 0, 2, 0));
@@ -511,16 +511,28 @@ public class CompositeListView
         TextField res = new TextField();
         res.setId(id);
 
-        if (text != null) res.setText(text);
+        if (text != null){
+            res.setText(text);
+        }else{
+            res.setText( String.valueOf(0.0) );
+        }
 
         res.textProperty().addListener((observableValue, s, t1) -> {
-            Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
-            Matcher matcher = pattern.matcher(t1);
+            if (!t1.equals("")) {
+                Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
+                Matcher matcher = pattern.matcher(t1);
 
-            if (!matcher.matches()){
-                res.setText(s);
-            } else if(t1.equals("")){
-                res.setText(t1);
+                if (!matcher.matches()) {
+                    res.setText(s);
+                }
+            }
+        });
+
+        res.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1 == false) {
+                if (res.getText().equals("")) {
+                    res.setText(String.valueOf(0.0));
+                }
             }
         });
 

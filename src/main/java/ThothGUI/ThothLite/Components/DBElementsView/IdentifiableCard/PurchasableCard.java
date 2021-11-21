@@ -134,12 +134,6 @@ public class PurchasableCard extends IdentifiableCard {
         ComboBox res = new ComboBox<>();
         res.setId(id.id);
 
-        res.valueProperty().addListener((observableValue, o, t1) -> {
-            if(t1 != null){
-                ((Purchasable)identifiable).setPartner((Partnership) res.getValue());
-            }
-        });
-
         try {
             res.setItems( FXCollections.observableList( ThothLite.getInstance().getDataFromTable(AvaliableTables.PARTNERS) ) );
         } catch (NotContainsException e) {
@@ -166,12 +160,6 @@ public class PurchasableCard extends IdentifiableCard {
 
     private DatePicker getDatePicker(){
         DatePicker datePicker = new DatePicker(((Purchasable) identifiable).finishDate());
-
-        datePicker.valueProperty().addListener((observableValue, localDate, t1) -> {
-            if(t1 != null) {
-                ((Purchasable) identifiable).setFinishDate( t1 );
-            }
-        });
 
         datePicker.setMinWidth(120);
         datePicker.setPrefWidth(120);
@@ -203,31 +191,6 @@ public class PurchasableCard extends IdentifiableCard {
             }
         }
 
-        res.textProperty().addListener((observableValue, s, t1) -> {
-            if (t1 != null) {
-
-                switch (id) {
-                    case TRACK_NUMBER:{
-                        ((Purchasable)identifiable).setId(t1);
-                        break;
-                    }
-                }
-
-            }
-        });
-        res.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 == false) {
-
-                switch (id){
-                    case TRACK_NUMBER:{
-                        ((Purchasable)identifiable).setId(res.getText());
-                        break;
-                    }
-                }
-
-            }
-        });
-
         if(!identifiableIsNew){
             res.setDisable(true);
         }
@@ -241,12 +204,6 @@ public class PurchasableCard extends IdentifiableCard {
 
     private Toggle getToggle(){
         Toggle res = new Toggle(((Purchasable)identifiable).isDelivered());
-
-        res.isTrueProperty().addListener((observableValue, aBoolean, t1) -> {
-            if(t1 != null){
-                ((Purchasable)identifiable).delivered();
-            }
-        });
 
         return res;
     }
@@ -364,7 +321,9 @@ public class PurchasableCard extends IdentifiableCard {
 
     @Override
     protected void updateIdentifiable() {
-
+        ((Purchasable)identifiable).setId(trackNumber.getText());
+        ((Purchasable)identifiable).setPartner((Partnership) store.getValue());
+        ((Purchasable)identifiable).setFinishDate(datePicker.getValue());
     }
 
     private class PartnerCell
