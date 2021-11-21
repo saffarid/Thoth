@@ -21,8 +21,17 @@ import layout.basepane.VBox;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StoragableCard extends IdentifiableCard {
+
+    private TextField article;
+    private TextField name;
+    private ComboBox type;
+    private ComboBox adress;
+    private TextField count;
+    private ComboBox countType;
 
     private enum PropetiesStoragableId {
         ARTICLE("article"),
@@ -59,20 +68,27 @@ public class StoragableCard extends IdentifiableCard {
 //                , new Twin(getLabel(PropetiesStoragableId.ADRESS.id), getComboBox(PropetiesStoragableId.ADRESS))
 //        );
 
+        article = getTextField(PropetiesStoragableId.ARTICLE);
+        name = getTextField(PropetiesStoragableId.NAME);
+        type = getComboBox(PropetiesStoragableId.PRODUCT_TYPE);
+        this.count = getTextField(PropetiesStoragableId.COUNT);
+        countType = getComboBox(PropetiesStoragableId.COUNT_TYPE);
+        adress = getComboBox(PropetiesStoragableId.ADRESS);
+
         HBox count = new HBox();
         count.setSpacing(5);
         count.setPadding(new Insets(2));
         count.getChildren().addAll(
-                  getTextField(PropetiesStoragableId.COUNT)
-                , getComboBox(PropetiesStoragableId.COUNT_TYPE)
+                this.count
+                , countType
         );
 
         vBox.getChildren().addAll(
-                  createRow(getLabel(PropetiesStoragableId.ARTICLE.id), getTextField(PropetiesStoragableId.ARTICLE))
-                , createRow(getLabel(PropetiesStoragableId.NAME.id), getTextField(PropetiesStoragableId.NAME))
-                , createRow(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), getComboBox(PropetiesStoragableId.PRODUCT_TYPE))
+                  createRow(getLabel(PropetiesStoragableId.ARTICLE.id), article)
+                , createRow(getLabel(PropetiesStoragableId.NAME.id), name)
+                , createRow(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), type)
                 , createRow(getLabel(PropetiesStoragableId.COUNT.id), count)
-                , createRow(getLabel(PropetiesStoragableId.ADRESS.id), getComboBox(PropetiesStoragableId.ADRESS))
+                , createRow(getLabel(PropetiesStoragableId.ADRESS.id), adress)
                 , createRow(getLabel(PropetiesStoragableId.NOTE.id), new TextArea())
 
         );
@@ -115,7 +131,6 @@ public class StoragableCard extends IdentifiableCard {
                     value = ((Storagable) identifiable).getType();
                     if (value == null) {
                         res.setValue(res.getItems().get(0));
-                        ((Storagable) identifiable).setType((Listed) res.getValue());
                     } else {
                         res.setValue(value);
                     }
@@ -127,7 +142,6 @@ public class StoragableCard extends IdentifiableCard {
                     value = ((Storagable) identifiable).getCountType();
                     if (value == null) {
                         res.setValue(res.getItems().get(0));
-                        ((Storagable) identifiable).setCountType((Listed) res.getValue());
                     } else {
                         res.setValue(value);
                     }
@@ -139,7 +153,6 @@ public class StoragableCard extends IdentifiableCard {
                     value = ((Storagable) identifiable).getAdress();
                     if (value == null) {
                         res.setValue(res.getItems().get(0));
-                        ((Storagable) identifiable).setAdress((Listed) res.getValue());
                     } else {
                         res.setValue(value);
                     }
@@ -153,23 +166,6 @@ public class StoragableCard extends IdentifiableCard {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-        res.valueProperty().addListener((observableValue, o, t1) -> {
-            switch (id) {
-                case PRODUCT_TYPE: {
-                    ((Storagable) identifiable).setType((Listed) res.getValue());
-                    break;
-                }
-                case COUNT_TYPE: {
-                    ((Storagable) identifiable).setCountType((Listed) res.getValue());
-                    break;
-                }
-                case ADRESS: {
-                    ((Storagable) identifiable).setAdress((Listed) res.getValue());
-                    break;
-                }
-            }
-        });
 
 //        res.setMinWidth(120);
 //        res.setPrefWidth(120);
@@ -209,11 +205,16 @@ public class StoragableCard extends IdentifiableCard {
             if (t1 != null) {
                 switch (id) {
                     case COUNT: {
-                        try {
-                            Double.parseDouble(res.getText());
-                        } catch (NumberFormatException e) {
-                                res.setText(s);
+
+                        Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
+                        Matcher matcher = pattern.matcher(t1);
+
+                        if (!matcher.matches()){
+                            res.setText(s);
+                        } else if(t1.equals("")){
+                            res.setText(t1);
                         }
+
                     }
                 }
             }
@@ -223,16 +224,10 @@ public class StoragableCard extends IdentifiableCard {
             if (t1 == false) {
 
                 switch (id) {
-                    case ARTICLE: {
-                        identifiable.setId(res.getText());
-                        break;
-                    }
-                    case NAME: {
-                        ((Storagable) identifiable).setName(res.getText());
-                        break;
-                    }
                     case COUNT: {
-                        ((Storagable) identifiable).setCount(Double.parseDouble(res.getText()));
+                        if(res.getText().equals("")){
+                            res.setText( String.valueOf(0.0) );
+                        }
                     }
                 }
 
@@ -318,5 +313,17 @@ public class StoragableCard extends IdentifiableCard {
             }
 
         };
+    }
+
+    @Override
+    protected void updateIdentifiable() {
+
+        ((Storagable) identifiable).setId(article.getText());
+        ((Storagable) identifiable).setName(name.getText());
+        ((Storagable) identifiable).setType((Listed) type.getValue());
+        ((Storagable) identifiable).setCount( Double.parseDouble(count.getText()) );
+        ((Storagable) identifiable).setCountType((Listed) countType.getValue());
+        ((Storagable) identifiable).setAdress((Listed) adress.getValue());
+
     }
 }

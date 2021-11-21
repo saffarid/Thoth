@@ -33,6 +33,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CompositeListView
         extends BorderPane {
@@ -512,10 +514,13 @@ public class CompositeListView
         if (text != null) res.setText(text);
 
         res.textProperty().addListener((observableValue, s, t1) -> {
-            try {
-                Double.parseDouble(res.getText());
-            } catch (NumberFormatException e) {
+            Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
+            Matcher matcher = pattern.matcher(t1);
+
+            if (!matcher.matches()){
                 res.setText(s);
+            } else if(t1.equals("")){
+                res.setText(t1);
             }
         });
 

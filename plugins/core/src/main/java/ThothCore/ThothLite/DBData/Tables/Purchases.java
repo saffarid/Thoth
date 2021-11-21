@@ -12,6 +12,7 @@ import ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -66,7 +67,7 @@ public class Purchases
                     purchase = new Purchase(
                             String.valueOf(row.get(ORDER_ID)),
                             (Partner) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(STORE_ID))),
-                            (String) row.get(DELIVERY_DATE),
+                            LocalDate.parse( (String) row.get(DELIVERY_DATE) ),
                             (int) row.get(IS_DELIVERED) == Purchase.DELIVERED
                     );
 

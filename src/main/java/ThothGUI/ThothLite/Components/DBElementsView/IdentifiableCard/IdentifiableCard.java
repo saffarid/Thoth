@@ -43,6 +43,9 @@ public abstract class IdentifiableCard
         }
     }
 
+    protected Button apply;
+    protected Button cancel;
+
     protected boolean identifiableIsNew;
     protected Identifiable identifiable;
     protected AvaliableTables table;
@@ -73,10 +76,15 @@ public abstract class IdentifiableCard
     public void apply() {
         LOG.log(Level.INFO, identifiable.toString());
         if(identifiable != null){
+            updateIdentifiable();
             List<Identifiable> list = new LinkedList<>();
             list.add(identifiable);
             try {
-                ThothLite.getInstance().insertToTable(table, list);
+                if (identifiableIsNew) {
+                    ThothLite.getInstance().insertToTable(table, list);
+                }else{
+                    ThothLite.getInstance().updateInTable(table, list);
+                }
             } catch (NotContainsException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
@@ -95,9 +103,11 @@ public abstract class IdentifiableCard
     private ButtonBar createButtonBar(){
         ButtonBar buttonBar = new ButtonBar();
         buttonBar.setPadding(new Insets(2));
+        apply = getButton(ButtonText.APPLY, event -> apply());
+        cancel = getButton(ButtonText.CANCEL, event -> cancel());
         buttonBar.getButtons().addAll(
-                getButton(ButtonText.APPLY, event -> apply())
-                , getButton(ButtonText.CANCEL, event -> cancel())
+                apply
+                , cancel
         );
         return buttonBar;
     }
@@ -130,6 +140,8 @@ public abstract class IdentifiableCard
         }
         return null;
     }
+
+    protected abstract void updateIdentifiable();
 
     protected class ComboBoxListedCell extends ListCell<Listed> {
         @Override

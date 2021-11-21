@@ -22,8 +22,8 @@ public class Order
             , Partnership customer
             , Projectable project
             , boolean isMonthly
-            , String startDate
-            , String finishDate
+            , LocalDate startDate
+            , LocalDate finishDate
             , Listed status
             , boolean autofinish) {
         this.id = id;
@@ -31,8 +31,8 @@ public class Order
         this.customer = customer;
         this.project = project;
         this.isMonthly = isMonthly;
-        this.startDate = LocalDate.parse(startDate);
-        this.finishDate = LocalDate.parse(finishDate);
+        this.startDate = startDate;
+        this.finishDate = finishDate;
         this.status = status;
         this.autofinish = autofinish;
     }
@@ -43,8 +43,8 @@ public class Order
     }
 
     @Override
-    public void setFinishDate(String finishDate) {
-        this.finishDate = LocalDate.parse(finishDate);
+    public void setFinishDate(LocalDate finishDate) {
+        this.finishDate = finishDate;
     }
 
     @Override

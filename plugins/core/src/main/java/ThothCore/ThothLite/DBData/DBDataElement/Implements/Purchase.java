@@ -19,10 +19,10 @@ public class Purchase
     private boolean isDelivered;
     private List<Storing> purchasedProducts;
 
-    public Purchase(String orderNumber, Partnership store, String deliveryDate, boolean isDelivered) {
+    public Purchase(String orderNumber, Partnership store, LocalDate deliveryDate, boolean isDelivered) {
         this.orderNumber = orderNumber;
         this.store = store;
-        this.deliveryDate = LocalDate.parse(deliveryDate);
+        this.deliveryDate = deliveryDate;
         this.isDelivered = isDelivered;
         purchasedProducts = new LinkedList<>();
     }
@@ -48,8 +48,8 @@ public class Purchase
     }
 
     @Override
-    public void setFinishDate(String finishDate) {
-        this.deliveryDate = LocalDate.parse(finishDate);
+    public void setFinishDate(LocalDate finishDate) {
+        this.deliveryDate = finishDate;
     }
 
     @Override

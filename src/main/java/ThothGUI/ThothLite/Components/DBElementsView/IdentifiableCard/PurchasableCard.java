@@ -28,6 +28,11 @@ import java.util.logging.Level;
 
 public class PurchasableCard extends IdentifiableCard {
 
+    private TextField trackNumber;
+    private ComboBox store;
+    private DatePicker datePicker;
+    private CompositeListView compositeListView;
+
     private enum PropertiesPurchasableId {
         TRACK_NUMBER("track_number"),
         STORE("store"),
@@ -91,10 +96,13 @@ public class PurchasableCard extends IdentifiableCard {
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.TOP_LEFT);
+        trackNumber = getTextField(PropertiesPurchasableId.TRACK_NUMBER);
+        store = getComboBox(PropertiesPurchasableId.TRACK_NUMBER);
+        datePicker = getDatePicker();
         vBox.getChildren().addAll(
-                new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), getTextField(PropertiesPurchasableId.TRACK_NUMBER))
-                , new Twin(getLabel(PropertiesPurchasableId.STORE), getComboBox(PropertiesPurchasableId.TRACK_NUMBER))
-                , new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), getDatePicker())
+                new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), trackNumber)
+                , new Twin(getLabel(PropertiesPurchasableId.STORE), store)
+                , new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), datePicker)
         );
         vBox.setMinWidth(250);
         vBox.setPadding(new Insets(2));
@@ -113,9 +121,10 @@ public class PurchasableCard extends IdentifiableCard {
         hBox.setAlignment(Pos.TOP_LEFT);
 
         VBox res = new VBox();
+        compositeListView = new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew);
         res.getChildren().addAll(
                 hBox,
-                new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew)
+                compositeListView
         );
 
         return res;
@@ -160,7 +169,7 @@ public class PurchasableCard extends IdentifiableCard {
 
         datePicker.valueProperty().addListener((observableValue, localDate, t1) -> {
             if(t1 != null) {
-                ((Purchasable) identifiable).setFinishDate(t1.format(DateTimeFormatter.ISO_DATE));
+                ((Purchasable) identifiable).setFinishDate( t1 );
             }
         });
 
@@ -273,8 +282,8 @@ public class PurchasableCard extends IdentifiableCard {
             }
 
             @Override
-            public void setFinishDate(String finishDate) {
-                this.deliveryDate = LocalDate.parse(finishDate);
+            public void setFinishDate(LocalDate finishDate) {
+                this.deliveryDate = finishDate;
             }
 
             @Override
@@ -351,6 +360,11 @@ public class PurchasableCard extends IdentifiableCard {
                         '}';
             }
         };
+    }
+
+    @Override
+    protected void updateIdentifiable() {
+
     }
 
     private class PartnerCell

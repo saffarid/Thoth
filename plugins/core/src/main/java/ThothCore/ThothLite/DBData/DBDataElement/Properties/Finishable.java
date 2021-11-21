@@ -14,7 +14,7 @@ public interface Finishable {
     /**
      * @param finishDate дата завершения
      * */
-    void setFinishDate(String finishDate);
+    void setFinishDate(LocalDate finishDate);
 
     /**
      * Действие при наступлении даты завершения
