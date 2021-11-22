@@ -155,7 +155,9 @@ public class ThothLiteWindow
 
         if (!first.isPresent()){
             workspace.getChildren().add(subwindow);
-            subwindow.setCloseEvent(event -> closeSubwindow(subwindow));
+            subwindow.setCloseEvent(event -> {
+                closeSubwindow(subwindow);
+            });
         }else{
             subwindow.toFront();
         }

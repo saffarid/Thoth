@@ -2,6 +2,7 @@ package window;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import layout.title.TitleSubwindow;
 
@@ -44,5 +45,9 @@ public class Subwindow extends Window{
 
     public void setCloseEvent(EventHandler<ActionEvent> event){
         title.getClose().setOnAction(event);
+    }
+
+    public Button getClose(){
+        return title.getClose();
     }
 }

@@ -34,6 +34,8 @@ public abstract class IdentifiableCard
 
     protected static final Logger LOG;
 
+    private EventHandler<ActionEvent> closeEvent;
+
     private enum ButtonText{
         APPLY("apply"),
         CANCEL("cancel");
@@ -67,6 +69,8 @@ public abstract class IdentifiableCard
             identifiableIsNew = true;
         }
         this.table = table;
+
+        setPadding(new Insets(2));
 
         setBottom(createButtonBar());
         setCenter(createContent());
@@ -109,6 +113,13 @@ public abstract class IdentifiableCard
                 apply
                 , cancel
         );
+
+        buttonBar.setStyle("" +
+                "-fx-border-width: 1px 0 0 0;" +
+                "-fx-border-color:grey;" +
+                "-fx-border-style:solid;" +
+                "");
+
         return buttonBar;
     }
 

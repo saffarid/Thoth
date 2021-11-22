@@ -6,8 +6,11 @@ import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import controls.*;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -105,7 +108,7 @@ public class PurchasableCard extends IdentifiableCard {
                 , new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), datePicker)
         );
         vBox.setMinWidth(250);
-        vBox.setPadding(new Insets(2));
+//        vBox.setPadding(new Insets(2));
 
         Twin twinDelivered = new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), getToggle());
         twinDelivered.setMinWidth(250);
@@ -125,6 +128,12 @@ public class PurchasableCard extends IdentifiableCard {
         res.getChildren().addAll(
                 hBox,
                 compositeListView
+        );
+
+        apply.disableProperty().bind(
+                trackNumber.textProperty().isEqualTo("")
+                        .or(store.valueProperty().isNull())
+                        .or(datePicker.valueProperty().isNull())
         );
 
         return res;

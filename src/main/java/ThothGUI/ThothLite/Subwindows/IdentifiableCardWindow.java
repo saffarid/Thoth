@@ -3,6 +3,8 @@ package ThothGUI.ThothLite.Subwindows;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard.IdentifiableCard;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import window.Subwindow;
 
 /**
@@ -23,6 +25,7 @@ public class IdentifiableCardWindow extends Subwindow {
         }else{
             setId(String.format(TEMPLATE_ID, title, identifiable.getId()));
         }
+
 
         setCenter(IdentifiableCard.getInstance(table, identifiable));
     }

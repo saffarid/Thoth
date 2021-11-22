@@ -81,7 +81,7 @@ public class CompositeListView
         this.items = new SimpleListProperty<>(FXCollections.observableList(items));
         this.identifiableIsNew = identifiableIsNew;
 
-        setPadding(new Insets(2));
+//        setPadding(new Insets(2));
 
         setTop(createTitle());
         setCenter(createContent());
@@ -205,9 +205,9 @@ public class CompositeListView
             }
 
             storagableComboBox.setValue(null);
-            count.setText(null);
+            count.setText("");
             countTypeComboBox.setValue(countTypeComboBox.getItems().get(0));
-            price.setText(null);
+            price.setText("");
             currencyComboBox.setValue(currencyComboBox.getItems().get(0));
         });
 

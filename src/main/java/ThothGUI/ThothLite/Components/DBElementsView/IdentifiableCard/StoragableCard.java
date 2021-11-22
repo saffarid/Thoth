@@ -12,6 +12,8 @@ import controls.Label;
 import controls.TextField;
 import controls.Twin;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -51,8 +53,9 @@ public class StoragableCard extends IdentifiableCard {
     }
 
     protected StoragableCard(
-            Identifiable identifiable,
-            AvaliableTables table) {
+            Identifiable identifiable
+            , AvaliableTables table
+    ) {
         super(identifiable, table);
     }
 
@@ -79,9 +82,18 @@ public class StoragableCard extends IdentifiableCard {
 
         note.setText(((Storagable) identifiable).getNote());
 
+        apply.disableProperty().bind(
+                article.textProperty().isEqualTo("")
+                        .or(name.textProperty().isEqualTo(""))
+                        .or(type.valueProperty().isNull())
+                        .or(this.count.textProperty().isEqualTo(""))
+                        .or(countType.valueProperty().isNull())
+                        .or(adress.valueProperty().isNull())
+        );
+
         HBox count = new HBox();
         count.setSpacing(5);
-        count.setPadding(new Insets(2));
+//        count.setPadding(new Insets(2));
         count.getChildren().addAll(
                 this.count
                 , countType
