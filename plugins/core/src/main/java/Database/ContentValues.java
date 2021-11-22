@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class ContentValues extends HashMap<TableColumn, Object> {
 
     private final String TEMPLATE_COMAND_INSERT = "(\n\t%2s\n) values (\n\t%3s)";
-    private final String TEMPLATE_COMAND_UPDATE = "`%1s`=%2s,";
+    private final String TEMPLATE_COMAND_UPDATE = "`%1s`=%2s\n";
 
     /**
      * Преобразование объекта в строку при создании таблицы в БД
@@ -34,10 +34,16 @@ public class ContentValues extends HashMap<TableColumn, Object> {
 
             if (column instanceof ForeignKey && ((ForeignKey)column).hasForeignKey()) {
                 //Колонка содержит внешний ключ
-                toStringInsertWithSubrequest(colValue, (ForeignKey) column, value);
+                colValue.append( getValueSubrequest( (ForeignKey) column, value ) );
             } else {
                 //Колонка не содержит внешний ключ
-                toStringInsertWithoutSubrequest(colValue, strColValTemplate, value);
+                if (value instanceof String) {
+                    colValue.append(
+                            String.format(strColValTemplate, value)
+                    );
+                } else {
+                    colValue.append(value);
+                }
             }
             colName.append(
                     String.format(strColNameTemplate, column.getName())
@@ -53,29 +59,16 @@ public class ContentValues extends HashMap<TableColumn, Object> {
     }
 
     /**
-     * Функция формирует значения для использования в блоке values запроса Insert
-     */
-    private void toStringInsertWithoutSubrequest(StringBuilder colValue, String strColValTemplate, Object value) {
-        if (value instanceof String) {
-            colValue.append(
-                    String.format(strColValTemplate, value)
-            );
-        } else {
-            colValue.append(value);
-        }
-    }
-
-    /**
      * Функция формирует строки подзапросов для использования в блоке values запроса Insert
      */
-    private void toStringInsertWithSubrequest(StringBuilder colValue, ForeignKey column, Object value) {
+    private String getValueSubrequest(ForeignKey column, Object value) {
         TableColumn foreignKey = column.getForeignKey();
         //Если внешний ключ установлен, объект не будет равен null
         if (foreignKey != null) {
             /*
              * Необходимо определить ID строки внешней таблицы, в contentValues содержится значения для пользователя
              * */
-            String subRequestTemplate = "select `%1s` from `%2s` where %3s";
+            String subRequestTemplate = "(select `%1s` from `%2s` where %3s)";
             String whereTempalte =
                     (value instanceof String)
                             ? ("`%1s` = \'%2s\'")
@@ -107,27 +100,28 @@ public class ContentValues extends HashMap<TableColumn, Object> {
                 }
 
                 //Формируем строку подзапроса
-                String subRequest = String.format(
+                return String.format(
                         subRequestTemplate,
                         foreignKey.getName(),   //1
                         foreignKey.getTable().getName(),     //2
                         whereBuilder.toString()
                 );
 
-                colValue.append("(" + subRequest + ")");
+//                colValue.append("(" + subRequest + ")");
             } else {
                 //Обработка подзапроса если есть информация, какой столбец интересует внешний ключ
                 //foreignKey - представляет столбец в котором ищем информацию для определения идентификатора
                 Table tableParent = foreignKey.getTable();
-                String subRequest = String.format(
+                return String.format(
                         subRequestTemplate,
                         tableParent.getPrimaryKeyColumn().getName(),   //1
                         tableParent.getName(),     //2
                         String.format(whereTempalte, foreignKey.getName(), value)
                 );
-                colValue.append("(" + subRequest + ")");
+//                colValue.append("(" + subRequest + ")");
             }
         }
+        return null;
     }
 
     /**
@@ -135,15 +129,35 @@ public class ContentValues extends HashMap<TableColumn, Object> {
      */
     public String toStringUpdate() {
         StringBuilder res = new StringBuilder("");
-        keySet().stream().forEach(tableColumn -> {
-            Object value = get(tableColumn);
-            if (value.getClass().getName().equals(String.class.getName())) {
-                res.append(String.format(TEMPLATE_COMAND_UPDATE, tableColumn.getName(), "\'" + value.toString() + "\'"));
+
+        List<TableColumn> columns = new LinkedList<>(keySet());
+        //Отфильтруем все значения по null
+        columns = columns.stream().filter(column -> get(column) != null).collect(Collectors.toList());
+
+        for( TableColumn column : columns ){
+
+            Object value = get(column);
+
+            if(column instanceof ForeignKey && ((ForeignKey)column).hasForeignKey()){
+
+                res.append(String.format(TEMPLATE_COMAND_UPDATE, column.getName(), getValueSubrequest((ForeignKey) column, value) ) );
+
             } else {
-                res.append(String.format(TEMPLATE_COMAND_UPDATE, tableColumn.getName(), value.toString()));
+
+                if(value instanceof String){
+                    res.append(String.format(TEMPLATE_COMAND_UPDATE, column.getName(), "\'" + value.toString() + "\'"));
+                }else{
+                    res.append(String.format(TEMPLATE_COMAND_UPDATE, column.getName(), value.toString()));
+                }
+
             }
-        });
-        res.deleteCharAt(res.lastIndexOf(","));
+
+            if (columns.indexOf(column) != (columns.size() - 1)) {
+                res.append(", ");
+            }
+
+        }
+
         return res.toString();
     }
 }
