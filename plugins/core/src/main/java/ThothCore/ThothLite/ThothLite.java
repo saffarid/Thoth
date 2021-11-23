@@ -41,6 +41,31 @@ public class ThothLite {
 
     }
 
+    public void acceptPurchase(Purchasable purchasable) throws NotContainsException, SQLException {
+
+        /*   Приём покупки включает в себя:
+        *  1. Обновление записей в таблице покупок - установка флага isDelivered.
+        *  2. Обновление записей в таблице продуктов - обновление кол-ва продукта.
+        * */
+        //Определим список продуктов и обновим их кол-во.
+        List<Storagable> listStoragable = new LinkedList<>();;
+        for(Storing storing : purchasable.getComposition()){
+            Storagable storagable = storing.getStoragable();
+            /*--- При обновлении цены, необходимо проверять совпадение цены в БД с считанными данными. ---*/
+            storagable.setCount( storagable.getCount() + storing.getCount() );
+            listStoragable.add(storagable);
+        }
+
+        //Упакуем покупку в список для дальнейшей обработки
+        List<Purchasable> purchase = new LinkedList<>();
+        purchase.add(purchasable);
+
+        database.beginTransaction();
+        updateInTable(AvaliableTables.PURCHASABLE, purchase);
+        updateInTable(AvaliableTables.STORAGABLE, listStoragable);
+        database.commitTransaction();
+    }
+
     /**
      * @param table запрашиваемая таблица.
      * @return список содержимого таблицы.

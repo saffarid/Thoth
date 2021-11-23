@@ -43,9 +43,20 @@ public class DataBaseManager {
     }
 
     /**
+     * Функция инициирует начало транцакции
+     * */
+    public void beginTransaction(File db)
+            throws SQLException {
+        if(conns.containsKey(db)) {
+            DataBaseWrapper.beginTransaction(conns.get(db), null);
+        }
+    }
+
+    /**
      * Функция закрывает соединение с БД
      */
-    public void closeConnection(File db) throws SQLException {
+    public void closeConnection(File db)
+            throws SQLException {
         if (conns.containsKey(db)) {
             conns.get(db).close();
             conns.remove(db);
@@ -57,6 +68,16 @@ public class DataBaseManager {
      */
     public void clear(String tableName)
             throws SQLException {
+    }
+
+    /**
+     * Завершение транзакции
+     * */
+    public void commitTransaction(File db)
+            throws SQLException {
+        if(conns.containsKey(db)){
+            DataBaseWrapper.commitTransaction(conns.get(db), null);
+        }
     }
 
     /**

@@ -67,30 +67,21 @@ public class PurchasableCard extends IdentifiableCard {
             super.apply();
         }else{
 
-            Purchasable purchasable = (Purchasable) this.identifiable;
-            if( purchasable.isDelivered() ){
-
-                try {
-                    ThothLite instance = ThothLite.getInstance();
-
-                    List<Purchasable> data = new LinkedList<>();
-                    data.add(purchasable);
-
-                    instance.updateInTable(AvaliableTables.PURCHASABLE, data);
-                    instance.insertToTable(AvaliableTables.STORING, purchasable.getComposition());
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (NotContainsException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-
+            ((Purchasable) identifiable).delivered();
+            try {
+                ThothLite.getInstance().acceptPurchase((Purchasable) identifiable);
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
 
         }
     }
+
+
 
     @Override
     protected Node createContent() {
@@ -128,12 +119,6 @@ public class PurchasableCard extends IdentifiableCard {
         res.getChildren().addAll(
                 hBox,
                 compositeListView
-        );
-
-        apply.disableProperty().bind(
-                trackNumber.textProperty().isEqualTo("")
-                        .or(store.valueProperty().isNull())
-                        .or(datePicker.valueProperty().isNull())
         );
 
         return res;

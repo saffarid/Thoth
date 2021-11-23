@@ -33,7 +33,8 @@ public class DataBaseLite {
         LOG = Logger.getLogger(DBLiteStructure.class.getName());
     }
 
-    public DataBaseLite() throws SQLException, ClassNotFoundException {
+    public DataBaseLite()
+            throws SQLException, ClassNotFoundException {
         dbManager = DataBaseManager.getDbManager();
         this.structure = new DBLiteStructure();
         dbFile = new File(URL_DB);
@@ -47,7 +48,8 @@ public class DataBaseLite {
     /**
      * Первичная инициализация БД
      * */
-    private void firstInit() throws SQLException, ClassNotFoundException {
+    private void firstInit()
+            throws SQLException, ClassNotFoundException {
         LOG.log(Level.INFO, "Создаю БД");
         dbManager.createDatabase(this.dbFile);
 
@@ -56,6 +58,19 @@ public class DataBaseLite {
             dbManager.createTable(table, this.dbFile);
         }
         LOG.log(Level.INFO, "Создание структуры успешно пройдено");
+    }
+
+    /**
+     * Инициализация начала транзакции
+     * */
+    public void beginTransaction()
+            throws SQLException {
+        dbManager.beginTransaction(dbFile);
+    }
+
+    public void commitTransaction()
+            throws SQLException {
+        dbManager.commitTransaction(dbFile);
     }
 
     private ContentValues convertToContentValues(String tableName, HashMap<String, Object> data){
@@ -88,7 +103,8 @@ public class DataBaseLite {
                 .collect(Collectors.toList());
     }
 
-    public void insert(String tableName, List<HashMap<String, Object>> datas) throws SQLException {
+    public void insert(String tableName, List<HashMap<String, Object>> datas)
+            throws SQLException {
         for(HashMap<String, Object> data : datas){
             dbManager.insert(
                     structure.getTable(tableName),
@@ -101,7 +117,8 @@ public class DataBaseLite {
     /**
      * Чтение содержимого таблиц БД
      * */
-    public void readDataBase() throws SQLException, ClassNotFoundException {
+    public void readDataBase()
+            throws SQLException, ClassNotFoundException {
         for(Table table : structure.getTables()){
             readTable(
                     table,
@@ -128,7 +145,8 @@ public class DataBaseLite {
      * @param tableName имя таблицы.
      * @param datas удаляемые данные.
      * */
-    public void remove(String tableName, List<HashMap<String, Object>> datas) throws SQLException {
+    public void remove(String tableName, List<HashMap<String, Object>> datas)
+            throws SQLException {
         for(HashMap<String, Object> data : datas){
             dbManager.removedRow(
                     structure.getTable(tableName)
@@ -138,7 +156,8 @@ public class DataBaseLite {
         }
     }
 
-    public void update(String tableName, List<HashMap<String, Object>> datas) throws SQLException {
+    public void update(String tableName, List<HashMap<String, Object>> datas)
+            throws SQLException {
         for(HashMap<String, Object> data : datas){
             dbManager.update(
                     structure.getTable(tableName)
