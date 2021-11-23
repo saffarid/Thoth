@@ -151,8 +151,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return res;
     }
 
-    protected abstract T getIdentifiableInstance();
-
     public static IdentifiablesListView getInstance(
             AvaliableTables type
     ) {
@@ -188,7 +186,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return null;
     }
 
-    private void openCreateNewIdentifiable(ActionEvent event){
+    protected void openCreateNewIdentifiable(ActionEvent event){
 //        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, getIdentifiableInstance()) );
         ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, null) );
     }

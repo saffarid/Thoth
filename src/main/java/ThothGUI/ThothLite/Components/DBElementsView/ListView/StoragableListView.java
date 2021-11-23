@@ -88,11 +88,6 @@ public class StoragableListView extends IdentifiablesListView<Storagable>{
         return sortedPane;
     }
 
-    @Override
-    protected Storagable getIdentifiableInstance() {
-        return null;
-    }
-
     private class SortedCell
             extends ListCell<SORT_BY> {
         @Override

@@ -2,12 +2,16 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothGUI.OpenSubwindow;
+import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
+import ThothGUI.ThothLite.ThothLiteWindow;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 public abstract class IdentifiableViewCell
@@ -25,7 +29,8 @@ public abstract class IdentifiableViewCell
             String url,
             String title,
             String subtitle,
-            String property) {
+            String property)
+    {
         this.icon = setImageIcon(url);
         this.title = new Label();
         this.subtitle = new Label();
@@ -98,7 +103,7 @@ public abstract class IdentifiableViewCell
         return res;
     }
 
-    public ImageView setImageIcon(String url) {
+    protected ImageView setImageIcon(String url) {
         ImageView node = new ImageView();
         node.setImage(
                 new Image(getClass().getResource(url).toExternalForm(), 40, 40, true, true)

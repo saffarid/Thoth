@@ -84,11 +84,6 @@ public class PurchasableListView extends IdentifiablesListView<Purchasable> {
         return sortedPane;
     }
 
-    @Override
-    protected Purchasable getIdentifiableInstance() {
-        return null;
-    }
-
     private class SortedCell
             extends ListCell<SORT_BY> {
         @Override

@@ -14,9 +14,4 @@ public class OrderableListView extends IdentifiablesListView<Orderable> {
         table = AvaliableTables.ORDERABLE;
     }
 
-    @Override
-    protected Orderable getIdentifiableInstance() {
-        return null;
-    }
-
 }

@@ -14,9 +14,4 @@ public class ProjectableListView extends IdentifiablesListView<Projectable> {
         table = AvaliableTables.PROJECTABLE;
     }
 
-    @Override
-    protected Projectable getIdentifiableInstance() {
-        return null;
-    }
-
 }

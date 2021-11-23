@@ -14,9 +14,5 @@ public class StoringListView extends IdentifiablesListView<Storing> {
         table = AvaliableTables.STORING;
     }
 
-    @Override
-    protected Storing getIdentifiableInstance() {
-        return null;
-    }
 
 }
