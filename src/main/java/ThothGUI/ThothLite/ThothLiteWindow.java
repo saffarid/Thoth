@@ -110,21 +110,21 @@ public class ThothLiteWindow
 
     private void menuConfig(){
         List<MenuButton> menuButtons = new LinkedList<>();
-        menuButtons.add(getMenuButton(
-                STRING_KEY_INCOME_EXPENSES, ThothGUI.thoth_styleconstants.Image.ANALYZE, event -> {}
-        ));
-        menuButtons.add(getMenuButton(
-                STRING_KEY_ORDERS, ThothGUI.thoth_styleconstants.Image.ORDER, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.ORDERABLE), AvaliableTables.ORDERABLE) );}
-        ));
+//        menuButtons.add(getMenuButton(
+//                STRING_KEY_INCOME_EXPENSES, ThothGUI.thoth_styleconstants.Image.ANALYZE, event -> {}
+//        ));
+//        menuButtons.add(getMenuButton(
+//                STRING_KEY_ORDERS, ThothGUI.thoth_styleconstants.Image.ORDER, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.ORDERABLE), AvaliableTables.ORDERABLE) );}
+//        ));
         menuButtons.add(getMenuButton(
                 STRING_KEY_PURCHASES, ThothGUI.thoth_styleconstants.Image.PURCHASE, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.PURCHASABLE) , AvaliableTables.PURCHASABLE) );}
         ));
-        menuButtons.add(getMenuButton(
-                STRING_KEY_PROJECTS, ThothGUI.thoth_styleconstants.Image.PROJECT, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.PROJECTABLE), AvaliableTables.PROJECTABLE) );}
-        ));
-        menuButtons.add(getMenuButton(
-                STRING_KEY_STORAGE, ThothGUI.thoth_styleconstants.Image.STORAGE_CELL, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.STORING), AvaliableTables.STORING) );}
-        ));
+//        menuButtons.add(getMenuButton(
+//                STRING_KEY_PROJECTS, ThothGUI.thoth_styleconstants.Image.PROJECT, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.PROJECTABLE), AvaliableTables.PROJECTABLE) );}
+//        ));
+//        menuButtons.add(getMenuButton(
+//                STRING_KEY_STORAGE, ThothGUI.thoth_styleconstants.Image.STORAGE_CELL, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.STORING), AvaliableTables.STORING) );}
+//        ));
         menuButtons.add(getMenuButton(
                 STRING_KEY_TABLES_GUIDE, ThothGUI.thoth_styleconstants.Image.LIST, event -> {openSubwindow( new ListedListWindow(STRING_KEY_TABLES_GUIDE));}
         ));

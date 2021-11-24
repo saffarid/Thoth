@@ -20,6 +20,9 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Окно отображения таблиц с константами
+ * */
 public class ListedListWindow extends Subwindow {
 
     private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
@@ -31,6 +34,7 @@ public class ListedListWindow extends Subwindow {
         super(title);
 
         datas = new LinkedList<>();
+        datas.add(AvaliableTables.STORING);
         datas.add(AvaliableTables.COUNT_TYPES);
         datas.add(AvaliableTables.CURRENCIES);
         datas.add(AvaliableTables.INCOMES_TYPES);
