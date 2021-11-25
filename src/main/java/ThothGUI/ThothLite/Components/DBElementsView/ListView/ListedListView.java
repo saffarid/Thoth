@@ -97,6 +97,7 @@ public class ListedListView extends IdentifiablesListView<Listed>{
     protected void openCreateNewIdentifiable(ActionEvent event) {
         Listed listedInstance = new Listed() {
 
+            private String id = "-1";
             private String value = "default";
 
             @Override
@@ -111,7 +112,7 @@ public class ListedListView extends IdentifiablesListView<Listed>{
 
             @Override
             public String getId() {
-                return null;
+                return id;
             }
 
             @Override

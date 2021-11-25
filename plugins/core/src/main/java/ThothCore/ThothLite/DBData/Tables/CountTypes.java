@@ -28,6 +28,7 @@ public class CountTypes
         for (Identifiable data : identifiable) {
             HashMap<String, Object> map = new HashMap<>();
             Listed listed = (Listed) data;
+            map.put(ID, listed.getId());
             map.put(COUNT_TYPE, listed.getValue());
             res.add(map);
         }

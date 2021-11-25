@@ -1,6 +1,8 @@
 package ThothCore.ThothLite;
 
+import Database.Column.Autoincrement;
 import Database.Column.PrimaryKey;
+import Database.Column.TableColumn;
 import Database.ContentValues;
 import Database.DataBaseManager;
 import Database.Table;
@@ -77,7 +79,12 @@ public class DataBaseLite {
         ContentValues contentValues = new ContentValues();
 
         for(String columnName : data.keySet()){
-            contentValues.put(structure.getTable(tableName).getColumnByName(columnName), data.get(columnName));
+
+            TableColumn columnByName = structure.getTable(tableName).getColumnByName(columnName);
+            //Исключает колонки с автоинкрементируемым индексом
+            if(!(columnByName instanceof Autoincrement)) {
+                contentValues.put(columnByName, data.get(columnName));
+            }
         }
 
         return contentValues;

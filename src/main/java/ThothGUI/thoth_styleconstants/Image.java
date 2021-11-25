@@ -4,6 +4,8 @@ public class Image {
 
     public static final String ANALYZE = "/image/ico/analyze.png";
     public static final String ARROW_RIGHT = "/image/ico/arrow-right.png";
+    public static final String CHECKMARK = "/image/ico/checkmark.png";
+    public static final String CLOSE = "/image/ico/close.png";
     public static final String EDIT = "/image/ico/edit.png";
     public static final String EYE = "/image/ico/eye.png";
     public static final String ORDER = "/image/ico/order.png";

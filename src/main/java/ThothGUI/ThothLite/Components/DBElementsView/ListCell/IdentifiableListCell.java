@@ -38,9 +38,9 @@ public class IdentifiableListCell<T extends Identifiable>
         if(identifiable != null) {
             super.updateItem(identifiable, b);
             if(this.identifiable == null) this.identifiable = identifiable;
-            setGraphic(
-                    IdentifiableViewCell.getInstance(identifiable)
-            );
+            IdentifiableViewCell instance = IdentifiableViewCell.getInstance(identifiable);
+            setGraphic( instance );
+            instance.setTable(table);
         }
     }
 

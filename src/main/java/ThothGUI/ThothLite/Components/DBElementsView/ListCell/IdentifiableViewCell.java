@@ -2,6 +2,7 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
@@ -25,17 +26,19 @@ public abstract class IdentifiableViewCell
     protected Label property;
     protected ImageView edit;
 
+    protected AvaliableTables table;
+
     protected IdentifiableViewCell(
             String url,
             String title,
             String subtitle,
             String property)
     {
-        this.icon = setImageIcon(url);
+        this.icon = getImageIcon(url, 40, 40);
         this.title = new Label();
         this.subtitle = new Label();
         this.property = new Label();
-        this.edit = setImageIcon(ThothGUI.thoth_styleconstants.Image.ARROW_RIGHT);
+        this.edit = getImageIcon(ThothGUI.thoth_styleconstants.Image.ARROW_RIGHT, 40, 40);
 
         setTextTitle(title);
         setTextSubtitle(subtitle);
@@ -47,6 +50,10 @@ public abstract class IdentifiableViewCell
 
         getStyleClass().add(STYLE_CLASS_CELL_CONTENT);
         setMargin(this, new Insets(0));
+    }
+
+    public void setTable(AvaliableTables table){
+        this.table = table;
     }
 
     static IdentifiableViewCell getInstance(Identifiable identifiable) {
@@ -103,12 +110,13 @@ public abstract class IdentifiableViewCell
         return res;
     }
 
-    protected ImageView setImageIcon(String url) {
-        ImageView node = new ImageView();
-        node.setImage(
-                new Image(getClass().getResource(url).toExternalForm(), 40, 40, true, true)
+    protected ImageView getImageIcon(String url, double width, double height) {
+        return new ImageView(
+                new javafx.scene.image.Image(
+                        getClass().getResource(url).toExternalForm()
+                        , width, height, true, true
+                )
         );
-        return node;
     }
 
     public void setTextTitle(String text) {
