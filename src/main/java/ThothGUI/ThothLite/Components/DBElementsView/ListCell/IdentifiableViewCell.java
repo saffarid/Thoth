@@ -6,6 +6,7 @@ import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
+import controls.TextField;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -28,12 +29,20 @@ public abstract class IdentifiableViewCell
 
     protected AvaliableTables table;
 
+    public IdentifiableViewCell() {
+        super();
+        init();
+    }
+
     protected IdentifiableViewCell(
             String url,
             String title,
             String subtitle,
             String property)
     {
+        super();
+        init();
+
         this.icon = getImageIcon(url, 40, 40);
         this.title = new Label();
         this.subtitle = new Label();
@@ -48,6 +57,9 @@ public abstract class IdentifiableViewCell
         setCenter(getFillCenter());
         setRight(this.edit);
 
+    }
+
+    private void init() {
         getStyleClass().add(STYLE_CLASS_CELL_CONTENT);
         setMargin(this, new Insets(0));
     }
@@ -57,7 +69,6 @@ public abstract class IdentifiableViewCell
     }
 
     static IdentifiableViewCell getInstance(Identifiable identifiable) {
-
         if(identifiable instanceof Orderable) {
             return new OrderableViewCell((Orderable) identifiable);
         }else if(identifiable instanceof Storagable) {
@@ -70,8 +81,9 @@ public abstract class IdentifiableViewCell
             return new StoringViewCell((Storing) identifiable);
         }else if(identifiable instanceof Listed){
             return new ListedViewCell((Listed) identifiable);
+        }else if(identifiable instanceof Finance){
+            return new FinanceViewCell((Finance) identifiable);
         }
-
         return null;
     }
 
@@ -117,6 +129,13 @@ public abstract class IdentifiableViewCell
                         , width, height, true, true
                 )
         );
+    }
+
+    protected TextField getTextField(String text){
+        TextField node = new TextField(text);
+
+
+        return node;
     }
 
     public void setTextTitle(String text) {

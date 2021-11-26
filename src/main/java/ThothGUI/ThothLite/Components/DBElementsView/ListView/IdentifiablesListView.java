@@ -153,7 +153,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     public static IdentifiablesListView getInstance(
             AvaliableTables type
-    ) {
+    )   {
         try {
 
             List<? extends Identifiable> dataFromTable = ThothLite.getInstance().getDataFromTable(type);
@@ -172,6 +172,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 }
                 case STORING: {
                     return new StoringListView((List<Storing>) dataFromTable);
+                }
+                case CURRENCIES:{
+                    return new FinanceListView((List<Finance>) dataFromTable);
                 }
                 default:
                     return new ListedListView( (List<Listed>) dataFromTable, type);

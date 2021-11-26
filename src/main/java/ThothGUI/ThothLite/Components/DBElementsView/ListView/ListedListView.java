@@ -19,20 +19,6 @@ import java.util.logging.Level;
 
 public class ListedListView extends IdentifiablesListView<Listed>{
 
-    private enum ButtonText{
-        APPLY("apply"),
-        CANCEL("cancel");
-        private String text;
-        ButtonText(String text) {
-            this.text = text;
-        }
-    }
-
-    private List<Listed> newListed;
-    private List<Listed> removedListed;
-
-    protected Button apply;
-    protected Button cancel;
 
     protected ListedListView(
             List<Listed> datas
@@ -40,57 +26,6 @@ public class ListedListView extends IdentifiablesListView<Listed>{
     ) {
         super(datas);
         this.table = table;
-        newListed = new LinkedList<>();
-        removedListed = new LinkedList<>();
-
-        setBottom(createButtonBar());
-    }
-
-    public void apply() {
-
-        try {
-            ThothLite.getInstance().insertToTable(table, newListed);
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void cancel() {
-
-    }
-
-    private ButtonBar createButtonBar(){
-        ButtonBar buttonBar = new ButtonBar();
-        buttonBar.setPadding(new Insets(2));
-        apply = getButton(ButtonText.APPLY, event -> apply());
-        cancel = getButton(ButtonText.CANCEL, event -> cancel());
-        buttonBar.getButtons().addAll(
-                apply
-                , cancel
-        );
-
-        buttonBar.setStyle("" +
-                "-fx-border-width: 1px 0 0 0;" +
-                "-fx-border-color:grey;" +
-                "-fx-border-style:solid;" +
-                "");
-
-        return buttonBar;
-    }
-
-    private Button getButton(
-            ButtonText text
-            , EventHandler<ActionEvent> event
-    ){
-        Button res = new Button(text.text);
-        res.setId(text.text);
-        res.setOnAction(event);
-        return res;
     }
 
     @Override
@@ -120,7 +55,6 @@ public class ListedListView extends IdentifiablesListView<Listed>{
             }
         };
         identifiableElementList.getItems().add( listedInstance );
-        newListed.add(listedInstance);
     }
 
 }

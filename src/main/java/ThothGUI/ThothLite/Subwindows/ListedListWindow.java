@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Окно отображения таблиц с константами
- * */
+ */
 public class ListedListWindow extends Subwindow {
 
     private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
@@ -45,7 +45,7 @@ public class ListedListWindow extends Subwindow {
         setCenter(createContent());
     }
 
-    private VBox createContent(){
+    private VBox createContent() {
         VBox vBox = new VBox();
 
         vBox.setPadding(new Insets(5));
@@ -60,7 +60,7 @@ public class ListedListWindow extends Subwindow {
         return vBox;
     }
 
-    protected ListView<AvaliableTables> createListView(){
+    protected ListView<AvaliableTables> createListView() {
         datasView = new ListView<>();
         datasView.setPadding(new Insets(2));
         datasView.getItems().setAll(datas);
@@ -83,7 +83,7 @@ public class ListedListWindow extends Subwindow {
 
         protected AvaliableTables table;
 
-        protected ViewCell( ) {
+        protected ViewCell() {
             super();
 
             setOnMouseClicked(this::cellClick);
@@ -92,19 +92,29 @@ public class ListedListWindow extends Subwindow {
             setPadding(new Insets(1, 0, 1, 0));
         }
 
-        private void cellClick(MouseEvent event){
-            try {
-                ( (OpenSubwindow) ThothLiteWindow.getInstance()).openSubwindow( new IdentifiableListWindow( (ThothLite.getInstance().getTableName(table)) , table ) );
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            } catch (NotContainsException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+        private void cellClick(MouseEvent event) {
+            switch (event.getButton()) {
+                case PRIMARY: {
+//                    if (table != AvaliableTables.CURRENCIES) {
+                        try {
+                            ((OpenSubwindow) ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableListWindow((ThothLite.getInstance().getTableName(table)), table));
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        } catch (NotContainsException e) {
+                            e.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+//                    } else {
+//
+//                    }
+                    break;
+                }
             }
+
         }
 
-        private BorderPane createGraphic(){
+        private BorderPane createGraphic() {
             BorderPane res = new BorderPane();
 
             this.icon = setImageIcon(ThothGUI.thoth_styleconstants.Image.LIST);
@@ -135,12 +145,12 @@ public class ListedListWindow extends Subwindow {
 
         @Override
         protected void updateItem(AvaliableTables table, boolean b) {
-            if(table != null) {
+            if (table != null) {
                 super.updateItem(table, b);
-                if(this.table == null) this.table = table;
+                if (this.table == null) this.table = table;
                 setGraphic(createGraphic());
                 try {
-                    setTextTitle( (ThothLite.getInstance().getTableName(table)) );
+                    setTextTitle((ThothLite.getInstance().getTableName(table)));
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (NotContainsException e) {

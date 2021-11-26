@@ -1,6 +1,8 @@
 package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finance;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
+import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.Apply;
@@ -10,52 +12,56 @@ import controls.Button;
 import controls.Label;
 import controls.TextField;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.temporal.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ListedViewCell
+public class FinanceViewCell
         extends IdentifiableViewCell
-        implements Apply, Cancel {
+        implements Apply, Cancel
+{
+
+    private Finance finance;
 
     private HBox pallete;
+    private HBox content;
 
     private LocalDateTime prevClick;
     private String bufferListedValue;
 
     private boolean modeIsEdit = false;
 
-    private Listed listed;
+    private Label courseLabel;
+    private Label currencyLabel;
+    private TextField course;
+    private TextField currency;
 
-    private TextField value;
-    private Label valueLabel;
+    protected FinanceViewCell(Finance finance) {
+        super();
+        this.finance = finance;
 
-    protected ListedViewCell(Listed listed) {
-        super(Image.LIST, listed.getValue(), "", "");
-        this.listed = listed;
         ImageView point = getImageIcon(Image.POINT, 7.5, 7.5);
 
-        value = new TextField( listed.getValue() );
-        valueLabel = new Label();
-
-        valueLabel.textProperty().bind(value.textProperty());
+        currency = getTextField( this.finance.getCurrency() );
+        currencyLabel = new Label();
+        currencyLabel.textProperty().bind(currency.textProperty());
+        course = getTextField( String.valueOf(this.finance.getCourse()) );
+        courseLabel = new Label();
+        courseLabel.textProperty().bind(course.textProperty());
 
         setLeft(point);
         createContent();
         setRight(createPallete());
 
-        setOnMouseClicked(this::mouseClick);
+        setTable(AvaliableTables.CURRENCIES);
 
         setPadding(new Insets(5, 2, 5, 2));
         setAlignment(point, Pos.CENTER);
@@ -63,13 +69,14 @@ public class ListedViewCell
 
     @Override
     public void apply() {
-        listed.setValue(value.getText());
-        List<Listed> list = new LinkedList<>();
-        list.add(listed);
+        finance.setCurrency( currency.getText() );
+        finance.setCourse( Double.parseDouble(course.getText()) );
+        List<Finance> list = new LinkedList<>();
+        list.add(finance);
         try {
-            if (listed.getId().equals("-1")) {
+            if (finance.getId().equals("-1")) {
                 //Вставляем запись в таблицу БД
-                ThothLite.getInstance().insertToTable(table, list);
+                ThothLite.getInstance().insertToTable(AvaliableTables.CURRENCIES, list);
             } else {
                 //Обновляем запись
                 ThothLite.getInstance().updateInTable(table, list);
@@ -86,8 +93,7 @@ public class ListedViewCell
 
     @Override
     public void cancel() {
-        value.setText(listed.getValue());
-        changeStatusView();
+
     }
 
     private void changeStatusView() {
@@ -97,10 +103,22 @@ public class ListedViewCell
     }
 
     private void createContent() {
+        if(content == null){
+            content = new HBox();
+            content.setPadding(new Insets(2, 5, 2, 15));
+            content.setSpacing(10);
+            content.setAlignment(Pos.CENTER_LEFT);
+            setCenter( content );
+            setAlignment(content, Pos.CENTER);
+        }
         if (modeIsEdit) {
-            setCenter(value);
+            content.getChildren().setAll(
+                    currency, course
+            );
         } else {
-            setCenter(valueLabel);
+            content.getChildren().setAll(
+                    currencyLabel, courseLabel
+            );
         }
     }
 
@@ -143,37 +161,10 @@ public class ListedViewCell
         return node;
     }
 
-    private void mouseClick(MouseEvent mouseEvent) {
-        switch (mouseEvent.getButton()) {
-            case PRIMARY: {
-                LocalDateTime now = LocalDateTime.now();
-                long aLong = now.getLong(ChronoField.SECOND_OF_DAY);
-                if ((prevClick != null) && (aLong - prevClick.getLong(ChronoField.SECOND_OF_DAY)) < 1) {
-                    changeStatusView();
-                } else {
-                    prevClick = now;
-                }
-            }
-        }
-
-    }
-
     private void toEditMode(ActionEvent event) {
         changeStatusView();
     }
 
     private void remove(ActionEvent event) {
 
-        List<Listed> list = new LinkedList<>();
-        list.add(listed);
-        try {
-            ThothLite.getInstance().removeFromTable(table, list);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-}
+    }}

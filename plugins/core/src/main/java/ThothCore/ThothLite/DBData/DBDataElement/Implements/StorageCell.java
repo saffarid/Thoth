@@ -1,5 +1,6 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Implements;
 
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finance;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
@@ -14,7 +15,7 @@ public class StorageCell
     private Double count;
     private Listed countType;
     private Double price;
-    private Currency currency;
+    private Finance currency;
 
     public StorageCell(
             String id
@@ -22,7 +23,7 @@ public class StorageCell
             , Double count
             , Listed countType
             , Double price
-            , Currency currency
+            , Finance currency
     ) {
         this.id = id;
         this.product = product;
@@ -83,12 +84,12 @@ public class StorageCell
     }
 
     @Override
-    public Currency getCurrency() {
+    public Finance getCurrency() {
         return currency;
     }
 
     @Override
-    public void setCurrency(Currency currency) {
+    public void setCurrency(Finance currency) {
         this.currency = currency;
     }
 }

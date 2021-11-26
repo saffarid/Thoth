@@ -1,6 +1,7 @@
 package ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finance;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storing;
@@ -118,7 +119,7 @@ public class CompositeListView
                 private Double count;
                 private Listed countType;
                 private Double price;
-                private Currency currency;
+                private Finance currency;
 
                 @Override
                 public Double getCount() {
@@ -171,12 +172,12 @@ public class CompositeListView
                 }
 
                 @Override
-                public Currency getCurrency() {
+                public Finance getCurrency() {
                     return currency;
                 }
 
                 @Override
-                public void setCurrency(Currency currency) {
+                public void setCurrency(Finance currency) {
                     this.currency = currency;
                 }
             };

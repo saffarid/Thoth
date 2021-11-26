@@ -1,7 +1,6 @@
 package ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts;
 
-
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
+import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finance;
 
 /**
  * Ценовое свойство объекта
@@ -22,12 +21,12 @@ public interface Pricing {
     /**
      * @return валюта
      * */
-    Currency getCurrency();
+    Finance getCurrency();
 
     /**
      * Функция устанавливает валюту.
      * @param currency валюта
      * */
-    void setCurrency(Currency currency);
+    void setCurrency(Finance currency);
 
 }

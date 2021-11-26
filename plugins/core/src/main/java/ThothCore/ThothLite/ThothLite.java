@@ -201,6 +201,17 @@ public class ThothLite {
     /**
      * Функция удаляет данные из таблицы.
      *
+     * @param table  таблица из которой удаляются записи.
+     * @param datas  удаляемые записи.
+     */
+    public void removeFromTable(AvaliableTables table, List<? extends Identifiable> datas)
+            throws SQLException, NotContainsException {
+        removeFromTable(getTableName(table), datas);
+    }
+
+    /**
+     * Функция удаляет данные из таблицы.
+     *
      * @param tableName наименование таблицы из которой удаляются записи.
      * @param datas     удаляемые записи.
      */
