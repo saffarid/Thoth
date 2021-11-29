@@ -6,21 +6,18 @@ import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.OpenSubwindow;
-import ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard.CompositeListView;
 import ThothGUI.ThothLite.Components.DBElementsView.ListCell.IdentifiableListCell;
 import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import ThothGUI.thoth_styleconstants.Stylesheets;
 import controls.Button;
 import controls.Label;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 
 import javafx.scene.image.ImageView;
@@ -31,9 +28,12 @@ import ThothGUI.thoth_styleconstants.Image;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
         extends BorderPane {
+
+    private IdentifiableListCell identifiableListCell;
 
     protected enum Ids {
         IDENTIFIABLE_ADD("add"),
@@ -47,6 +47,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         }
     }
 
+    protected static Logger LOG;
+
     private static final String STYLESHEET_PATH = Stylesheets.IDENTIFIABLE_LIST;
     protected AvaliableTables table;
 
@@ -55,8 +57,16 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected List<T> datas;
     protected ListView<T> identifiableElementList;
 
-    protected IdentifiablesListView(List<T> datas) {
+    static {
+        LOG = Logger.getLogger(IdentifiablesListView.class.getName());
+    }
+
+    protected IdentifiablesListView(
+            List<T> datas
+            , AvaliableTables table
+    ) {
         super();
+        this.table = table;
         this.datas = datas;
         setCenter(createContent());
         setTop(createPallete());
@@ -97,18 +107,12 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
         vBox.setPadding(new Insets(5));
 
-        Label haventItemsLabel = new Label("В списке нет элементов");
-        haventItemsLabel.setAlignment(Pos.CENTER);
         vBox.setFillWidth(true);
         vBox.setAlignment(Pos.CENTER);
 
         vBox.getChildren().setAll(
-                haventItemsLabel
-                , createListView()
+                 createListView()
         );
-
-        haventItemsLabel.visibleProperty().bind(new SimpleBooleanProperty(identifiableElementList.getItems().isEmpty()));
-        identifiableElementList.visibleProperty().bind(new SimpleBooleanProperty(!identifiableElementList.getItems().isEmpty()));
 
         return vBox;
     }
@@ -117,7 +121,10 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         identifiableElementList = new ListView<>();
         identifiableElementList.setPadding(new Insets(2));
         identifiableElementList.getItems().setAll(datas);
-        identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(table));
+        identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
+        Label haventItemsLabel = new Label("В списке нет элементов");
+        haventItemsLabel.setAlignment(Pos.CENTER);
+        identifiableElementList.setPlaceholder(haventItemsLabel);
         return identifiableElementList;
     }
 
@@ -170,9 +177,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 case PURCHASABLE: {
                     return new PurchasableListView((List<Purchasable>) dataFromTable);
                 }
-                case STORING: {
-                    return new StoringListView((List<Storing>) dataFromTable);
-                }
+//                case STORING: {
+//                    return new StoringListView((List<Storing>) dataFromTable);
+//                }
                 case CURRENCIES:{
                     return new FinanceListView((List<Finance>) dataFromTable);
                 }

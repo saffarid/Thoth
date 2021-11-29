@@ -1,12 +1,12 @@
 package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finance;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.Apply;
 import ThothGUI.Cancel;
+import ThothGUI.ThothLite.Components.DBElementsView.ListView.RemoveItem;
 import ThothGUI.thoth_styleconstants.Image;
 import controls.Button;
 import controls.Label;
@@ -17,16 +17,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FinanceViewCell
         extends IdentifiableViewCell
-        implements Apply, Cancel
+        implements Apply, Cancel, RemoveItemFromList
 {
 
     private Finance finance;
@@ -35,7 +37,6 @@ public class FinanceViewCell
     private HBox content;
 
     private LocalDateTime prevClick;
-    private String bufferListedValue;
 
     private boolean modeIsEdit = false;
 
@@ -43,6 +44,8 @@ public class FinanceViewCell
     private Label currencyLabel;
     private TextField course;
     private TextField currency;
+
+    private RemoveItem removeItem;
 
     protected FinanceViewCell(Finance finance) {
         super();
@@ -62,6 +65,8 @@ public class FinanceViewCell
         setRight(createPallete());
 
         setTable(AvaliableTables.CURRENCIES);
+
+        setOnMouseClicked(this::mouseClick);
 
         setPadding(new Insets(5, 2, 5, 2));
         setAlignment(point, Pos.CENTER);
@@ -93,7 +98,9 @@ public class FinanceViewCell
 
     @Override
     public void cancel() {
-
+        currency.setText(finance.getCurrency());
+        course.setText( String.valueOf(finance.getCourse()) );
+        changeStatusView();
     }
 
     private void changeStatusView() {
@@ -161,10 +168,48 @@ public class FinanceViewCell
         return node;
     }
 
+    private void mouseClick(MouseEvent mouseEvent) {
+        switch (mouseEvent.getButton()) {
+            case PRIMARY: {
+                LocalDateTime now = LocalDateTime.now();
+                long aLong = now.getLong(ChronoField.SECOND_OF_DAY);
+                if ((prevClick != null) && (aLong - prevClick.getLong(ChronoField.SECOND_OF_DAY)) < 1) {
+                    changeStatusView();
+                } else {
+                    prevClick = now;
+                }
+            }
+        }
+    }
+
     private void toEditMode(ActionEvent event) {
         changeStatusView();
     }
 
     private void remove(ActionEvent event) {
+        List<Finance> list = new LinkedList<>();
+        list.add(finance);
+        if (!finance.getId().equals("-1")) {
+            try {
+                ThothLite.getInstance().removeFromTable(AvaliableTables.CURRENCIES, list);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        removeItem.removeItem(finance);
+    }
 
-    }}
+    @Override
+    public boolean hasRemoveItem() {
+        return removeItem != null;
+    }
+
+    @Override
+    public void setRemoveItem(RemoveItem removeItem) {
+        this.removeItem = removeItem;
+    }
+}

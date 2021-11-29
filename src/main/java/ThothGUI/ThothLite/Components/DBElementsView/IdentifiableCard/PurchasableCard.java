@@ -1,33 +1,23 @@
 package ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import controls.*;
-import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import layout.basepane.VBox;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class PurchasableCard extends IdentifiableCard {
 

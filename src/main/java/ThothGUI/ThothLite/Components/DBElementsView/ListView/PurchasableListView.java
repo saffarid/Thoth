@@ -4,6 +4,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Purchasable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
+import ThothGUI.ThothLite.Components.DBElementsView.ListView.IdentifiablesListView;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -31,8 +32,7 @@ public class PurchasableListView extends IdentifiablesListView<Purchasable> {
     }
 
     public PurchasableListView(List<Purchasable> datas) {
-        super(datas);
-        table = AvaliableTables.PURCHASABLE;
+        super(datas, AvaliableTables.PURCHASABLE);
     }
 
     @Override

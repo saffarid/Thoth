@@ -5,12 +5,12 @@ import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.Apply;
 import ThothGUI.Cancel;
+import ThothGUI.ThothLite.Components.DBElementsView.ListView.RemoveItem;
 import ThothGUI.thoth_styleconstants.Image;
 import controls.Button;
 import controls.Label;
 import controls.TextField;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,12 +27,11 @@ import java.util.List;
 
 public class ListedViewCell
         extends IdentifiableViewCell
-        implements Apply, Cancel {
+        implements Apply, Cancel, RemoveItemFromList {
 
     private HBox pallete;
 
     private LocalDateTime prevClick;
-    private String bufferListedValue;
 
     private boolean modeIsEdit = false;
 
@@ -40,6 +39,8 @@ public class ListedViewCell
 
     private TextField value;
     private Label valueLabel;
+
+    private RemoveItem removeItem;
 
     protected ListedViewCell(Listed listed) {
         super(Image.LIST, listed.getValue(), "", "");
@@ -163,17 +164,29 @@ public class ListedViewCell
     }
 
     private void remove(ActionEvent event) {
-
-        List<Listed> list = new LinkedList<>();
-        list.add(listed);
-        try {
-            ThothLite.getInstance().removeFromTable(table, list);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        if(!listed.getId().equals("-1")) {
+            List<Listed> list = new LinkedList<>();
+            list.add(listed);
+            try {
+                ThothLite.getInstance().removeFromTable(table, list);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
+        removeItem.removeItem(listed);
+    }
+
+    @Override
+    public boolean hasRemoveItem() {
+        return removeItem != null;
+    }
+
+    @Override
+    public void setRemoveItem(RemoveItem removeItem) {
+        this.removeItem = removeItem;
     }
 }

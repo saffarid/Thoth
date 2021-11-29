@@ -4,6 +4,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
+import ThothGUI.ThothLite.Components.DBElementsView.ListView.IdentifiablesListView;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -13,7 +14,7 @@ import layout.basepane.HBox;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StoragableListView extends IdentifiablesListView<Storagable>{
+public class StoragableListView extends IdentifiablesListView<Storagable> {
 
     private enum SORT_BY {
         ID_UP("sort_by_id_up"),
@@ -31,8 +32,7 @@ public class StoragableListView extends IdentifiablesListView<Storagable>{
 
 
     public StoragableListView(List<Storagable> datas) {
-        super(datas);
-        table = AvaliableTables.STORAGABLE;
+        super(datas, AvaliableTables.STORAGABLE);
     }
 
     @Override

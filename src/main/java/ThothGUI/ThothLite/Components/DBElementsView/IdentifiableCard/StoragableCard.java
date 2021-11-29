@@ -7,6 +7,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
+import ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard.IdentifiableCard;
 import controls.ComboBox;
 import controls.Label;
 import controls.TextField;

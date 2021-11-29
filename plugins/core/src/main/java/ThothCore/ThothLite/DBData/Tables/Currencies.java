@@ -27,6 +27,7 @@ public class Currencies
         for (Identifiable identifiable : list) {
             HashMap<String, Object> map = new HashMap<>();
             Finance currency = (Finance) identifiable;
+            map.put(ID, currency.getId());
             map.put(CURRENCY, currency.getCurrency());
             map.put(COURSE, currency.getCourse());
             res.add(map);

@@ -9,6 +9,7 @@ import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.OpenSubwindow;
+import ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard.IdentifiableCard;
 import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import ThothGUI.thoth_styleconstants.Stylesheets;
@@ -642,7 +643,6 @@ public class CompositeListView
         private void cellClick(MouseEvent mouseEvent) {
             switch (mouseEvent.getButton()) {
                 case PRIMARY: {
-                    IdentifiableCard.LOG.log(Level.INFO, mouseEvent.getSource().toString());
                     ((OpenSubwindow) ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableCardWindow("Карточка", AvaliableTables.STORAGABLE, storing.getStoragable()));
                 }
             }

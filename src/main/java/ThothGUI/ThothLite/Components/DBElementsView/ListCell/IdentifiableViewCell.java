@@ -3,17 +3,12 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
-import ThothGUI.OpenSubwindow;
-import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
-import ThothGUI.ThothLite.ThothLiteWindow;
 import controls.TextField;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 public abstract class IdentifiableViewCell
