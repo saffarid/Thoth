@@ -16,10 +16,13 @@ import java.io.File;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 
 public class DataBaseLite {
 
@@ -40,23 +43,23 @@ public class DataBaseLite {
         dbManager = DataBaseManager.getDbManager();
         this.structure = new DBLiteStructure();
         dbFile = new File(URL_DB);
-        if(!this.dbFile.exists()){
+        if (!this.dbFile.exists()) {
             firstInit();
-        }else{
+        } else {
             readDataBase();
         }
     }
 
     /**
      * Первичная инициализация БД
-     * */
+     */
     private void firstInit()
             throws SQLException, ClassNotFoundException {
         LOG.log(Level.INFO, "Создаю БД");
         dbManager.createDatabase(this.dbFile);
 
         LOG.log(Level.INFO, "Добавляю таблицы в БД");
-        for(Table table : structure.getTables()){
+        for (Table table : structure.getTables()) {
             dbManager.createTable(table, this.dbFile);
         }
         LOG.log(Level.INFO, "Создание структуры успешно пройдено");
@@ -64,7 +67,7 @@ public class DataBaseLite {
 
     /**
      * Инициализация начала транзакции
-     * */
+     */
     public void beginTransaction()
             throws SQLException {
         dbManager.beginTransaction(dbFile);
@@ -75,14 +78,14 @@ public class DataBaseLite {
         dbManager.commitTransaction(dbFile);
     }
 
-    private ContentValues convertToContentValues(String tableName, HashMap<String, Object> data){
+    private ContentValues convertToContentValues(String tableName, HashMap<String, Object> data) {
         ContentValues contentValues = new ContentValues();
 
-        for(String columnName : data.keySet()){
+        for (String columnName : data.keySet()) {
 
             TableColumn columnByName = structure.getTable(tableName).getColumnByName(columnName);
             //Исключает колонки с автоинкрементируемым индексом
-            if(!(columnByName instanceof Autoincrement)) {
+            if (!(columnByName instanceof Autoincrement)) {
                 contentValues.put(columnByName, data.get(columnName));
             }
         }
@@ -90,7 +93,7 @@ public class DataBaseLite {
         return contentValues;
     }
 
-    private WhereValues convertToWhereValues(String tableName, HashMap<String, Object> data){
+    private WhereValues convertToWhereValues(String tableName, HashMap<String, Object> data) {
         WhereValues whereValues = new WhereValues();
 
         PrimaryKey primaryKeyColumn = structure.getTable(tableName).getPrimaryKeyColumn();
@@ -100,11 +103,11 @@ public class DataBaseLite {
         return whereValues;
     }
 
-    public List<Table> getTables(){
+    public List<Table> getTables() {
         return structure.getTables();
     }
 
-    public List<Table> getTablesByType(StructureDescription.TableTypes type){
+    public List<Table> getTablesByType(StructureDescription.TableTypes type) {
         return structure.getTables().stream()
                 .filter(table -> table.getType().equals(type))
                 .collect(Collectors.toList());
@@ -112,7 +115,7 @@ public class DataBaseLite {
 
     public void insert(String tableName, List<HashMap<String, Object>> datas)
             throws SQLException {
-        for(HashMap<String, Object> data : datas){
+        for (HashMap<String, Object> data : datas) {
             dbManager.insert(
                     structure.getTable(tableName),
                     convertToContentValues(tableName, data),
@@ -123,10 +126,10 @@ public class DataBaseLite {
 
     /**
      * Чтение содержимого таблиц БД
-     * */
+     */
     public void readDataBase()
             throws SQLException, ClassNotFoundException {
-        for(Table table : structure.getTables()){
+        for (Table table : structure.getTables()) {
             readTable(
                     table,
                     dbManager.getDataTable(dbFile, table, false)
@@ -136,8 +139,39 @@ public class DataBaseLite {
 
     /**
      * Чтение содержимого таблицы
-     * */
-    public void readTable(Table table, List<HashMap<String, Object>> data){
+     */
+    public void readTable(String table)
+            throws SQLException, ClassNotFoundException {
+        Table readingTable = structure.getTable(table);
+        LOG.log(Level.INFO, "Reread table " + table + " start");
+        CompletableFuture.supplyAsync(() -> {
+
+            List<HashMap<String, Object>> dataTable = new LinkedList<>();
+            try {
+                LOG.log(Level.INFO, "Try reread table " + table);
+                dataTable = dbManager.getDataTable(dbFile, readingTable, false);
+                LOG.log(Level.INFO, "Reread table " + table + " successful");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return dataTable;
+
+        }).thenAccept(hashMaps -> {
+            LOG.log(Level.INFO, "Read in table " + table + " start");
+            readTable(readingTable, hashMaps);
+        });
+//        readTable(
+//                readingTable,
+//                dbManager.getDataTable(dbFile, readingTable, false)
+//        );
+    }
+
+    /**
+     * Чтение содержимого таблицы
+     */
+    private void readTable(Table table, List<HashMap<String, Object>> data) {
         try {
             DBData.getInstance().getTableReadable(table.getName()).readTable(data);
         } catch (ParseException e) {
@@ -149,12 +183,13 @@ public class DataBaseLite {
 
     /**
      * Функция удаляет записи из таблицы.
+     *
      * @param tableName имя таблицы.
-     * @param datas удаляемые данные.
-     * */
+     * @param datas     удаляемые данные.
+     */
     public void remove(String tableName, List<HashMap<String, Object>> datas)
             throws SQLException {
-        for(HashMap<String, Object> data : datas){
+        for (HashMap<String, Object> data : datas) {
             dbManager.removedRow(
                     structure.getTable(tableName)
                     , convertToWhereValues(tableName, data)
@@ -165,7 +200,7 @@ public class DataBaseLite {
 
     public void update(String tableName, List<HashMap<String, Object>> datas)
             throws SQLException {
-        for(HashMap<String, Object> data : datas){
+        for (HashMap<String, Object> data : datas) {
             dbManager.update(
                     structure.getTable(tableName)
                     , convertToContentValues(tableName, data)

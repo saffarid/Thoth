@@ -12,6 +12,9 @@ import ThothGUI.ThothLite.ThothLiteWindow;
 import ThothGUI.thoth_styleconstants.Stylesheets;
 import controls.Button;
 import controls.Label;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -28,6 +31,7 @@ import ThothGUI.thoth_styleconstants.Image;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
@@ -54,8 +58,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     protected BorderPane pallete;
     protected HBox sortedPane;
-    protected List<T> datas;
     protected ListView<T> identifiableElementList;
+
+    protected SimpleListProperty<T> datas;
 
     static {
         LOG = Logger.getLogger(IdentifiablesListView.class.getName());
@@ -67,8 +72,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     ) {
         super();
         this.table = table;
-        this.datas = datas;
-        setCenter(createContent());
+        this.datas = new SimpleListProperty<T>( FXCollections.observableList(datas) );
+        setCenter(createListView());
         setTop(createPallete());
 
         getStylesheets().add(getClass().getResource(STYLESHEET_PATH).toExternalForm());
@@ -102,28 +107,16 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return sortedPane;
     }
 
-    protected VBox createContent(){
-        VBox vBox = new VBox();
-
-        vBox.setPadding(new Insets(5));
-
-        vBox.setFillWidth(true);
-        vBox.setAlignment(Pos.CENTER);
-
-        vBox.getChildren().setAll(
-                 createListView()
-        );
-
-        return vBox;
-    }
-
     protected ListView<T> createListView(){
         identifiableElementList = new ListView<>();
         identifiableElementList.setPadding(new Insets(2));
-        identifiableElementList.getItems().setAll(datas);
+        identifiableElementList.itemsProperty().bind( datas );
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
+
+        setMargin(identifiableElementList, new Insets(5));
+
         Label haventItemsLabel = new Label("В списке нет элементов");
-        haventItemsLabel.setAlignment(Pos.CENTER);
+        haventItemsLabel.setAlignment(Pos.TOP_CENTER);
         identifiableElementList.setPlaceholder(haventItemsLabel);
         return identifiableElementList;
     }

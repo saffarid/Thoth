@@ -47,7 +47,7 @@ public class IdentifiableListCell<T extends Identifiable>
     protected void updateItem(T identifiable, boolean b) {
         if(identifiable != null) {
             super.updateItem(identifiable, b);
-            if(this.identifiable == null) this.identifiable = identifiable;
+            this.identifiable = identifiable;
             instance = IdentifiableViewCell.getInstance(identifiable);
             setGraphic( instance );
             instance.setTable(table);

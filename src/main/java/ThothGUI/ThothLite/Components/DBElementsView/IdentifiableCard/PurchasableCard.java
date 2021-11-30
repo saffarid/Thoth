@@ -25,6 +25,7 @@ public class PurchasableCard extends IdentifiableCard {
     private ComboBox store;
     private DatePicker datePicker;
     private CompositeListView compositeListView;
+    private Toggle toggleDelivered;
 
     private enum PropertiesPurchasableId {
         TRACK_NUMBER("track_number"),
@@ -57,7 +58,9 @@ public class PurchasableCard extends IdentifiableCard {
             super.apply();
         }else{
 
-            ((Purchasable) identifiable).delivered();
+            if(toggleDelivered.isIsTrue()) {
+                ((Purchasable) identifiable).delivered();
+            }
             try {
                 ThothLite.getInstance().acceptPurchase((Purchasable) identifiable);
             } catch (NotContainsException e) {
@@ -70,8 +73,6 @@ public class PurchasableCard extends IdentifiableCard {
 
         }
     }
-
-
 
     @Override
     protected Node createContent() {
@@ -91,7 +92,8 @@ public class PurchasableCard extends IdentifiableCard {
         vBox.setMinWidth(250);
 //        vBox.setPadding(new Insets(2));
 
-        Twin twinDelivered = new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), getToggle());
+        toggleDelivered = getToggle();
+        Twin twinDelivered = new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), toggleDelivered);
         twinDelivered.setMinWidth(250);
         twinDelivered.setPrefWidth(250);
 

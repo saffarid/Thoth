@@ -38,6 +38,7 @@ public class NotUsed
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) throws ParseException {
+        datas.clear();
         for (HashMap<String, Object> row : data) {
             try {
                 datas.add(

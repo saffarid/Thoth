@@ -46,7 +46,7 @@ public class ProjectList
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
-
+        datas.clear();
     }
 
     @Override

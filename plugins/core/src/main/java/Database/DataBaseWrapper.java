@@ -199,6 +199,7 @@ public class DataBaseWrapper {
 
         Class.forName(CLASS_NAME_SQLITE);
         connection = DriverManager.getConnection(url.toString());
+        connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
         return connection;
     }

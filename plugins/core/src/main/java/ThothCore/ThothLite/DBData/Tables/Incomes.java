@@ -35,6 +35,7 @@ public class Incomes
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
+        datas.clear();
         for(HashMap<String, Object> row : data){
             try {
                 Orderable orderable = (Orderable) getFromTableById(StructureDescription.Orders.TABLE_NAME, String.valueOf(row.get(ORDER_ID)));

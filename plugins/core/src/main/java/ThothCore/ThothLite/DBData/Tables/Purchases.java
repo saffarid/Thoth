@@ -38,6 +38,7 @@ public class Purchases
             for (Storing storing : purchasable.getComposition()) {
                 HashMap<String, Object> map = new HashMap<>();
 
+                map.put(ID, storing.getId());
                 map.put(ORDER_ID, purchasable.getId());
                 map.put(STORE_ID, purchasable.getPartner().getName());
                 map.put(PRODUCT_ID, storing.getStoragable().getId());
@@ -46,7 +47,7 @@ public class Purchases
                 map.put(PRICE, storing.getPrice());
                 map.put(CURRENCY_ID, storing.getCurrency().getCurrency());
                 map.put(DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
-                map.put(IS_DELIVERED, purchasable.isDelivered());
+                map.put(IS_DELIVERED, purchasable.isDelivered() );
 
                 res.add(map);
             }
@@ -57,6 +58,7 @@ public class Purchases
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) throws ParseException {
+        datas.clear();
         for (HashMap<String, Object> row : data) {
 
             Purchasable purchase = null;

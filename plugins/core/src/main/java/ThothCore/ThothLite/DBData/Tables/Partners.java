@@ -39,6 +39,7 @@ public class Partners
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
+        datas.clear();
         for(HashMap<String, Object> row : data){
             datas.add(new Partner(
                     String.valueOf(row.get(ID)),

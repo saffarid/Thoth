@@ -45,6 +45,7 @@ public class Storage
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
+        datas.clear();
         for (HashMap<String, Object> row : data) {
             addData(
                     new ListElement(

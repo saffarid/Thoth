@@ -48,6 +48,7 @@ public class Products
 
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
+        datas.clear();
         for(HashMap<String, Object> row : data){
             try {
                 addData(

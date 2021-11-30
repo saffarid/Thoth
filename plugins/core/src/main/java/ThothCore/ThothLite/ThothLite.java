@@ -60,10 +60,12 @@ public class ThothLite {
         List<Purchasable> purchase = new LinkedList<>();
         purchase.add(purchasable);
 
+        //Для атомарности операции стартуем транзакцию
         database.beginTransaction();
-        updateInTable(AvaliableTables.PURCHASABLE, purchase);
-        updateInTable(AvaliableTables.STORAGABLE, listStoragable);
+        updateInTable(getTableName(AvaliableTables.PURCHASABLE), purchase);
+        updateInTable(getTableName(AvaliableTables.STORAGABLE), listStoragable);
         database.commitTransaction();
+        //При удачном выполнении завершаем транзакцию
     }
 
     /**
@@ -122,17 +124,23 @@ public class ThothLite {
         }
     }
 
-    public void insertToTable(AvaliableTables table, List<? extends Identifiable> datas) throws NotContainsException, SQLException {
-        insertToTable(getTableName(table), datas);
+    public void insertToTable(AvaliableTables table, List<? extends Identifiable> datas)
+            throws NotContainsException, SQLException, ClassNotFoundException {
+        String tableName = getTableName(table);
+        database.beginTransaction();
+        insertToTable(tableName, datas);
+        database.commitTransaction();
+        database.readTable(tableName);
     }
 
     /**
      * Вставка новых записей в таблицы БД.
+     * Отличие от public функции заключается в начале и закреплении транзакции.
      *
      * @param tableName наименование таблицы для вставки новых записей.
      * @param datas     добавляемые данные.
      */
-    public void insertToTable(String tableName, List<? extends Identifiable> datas)
+    private void insertToTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
 
         Data table = dbData.getTable(tableName);
@@ -155,13 +163,10 @@ public class ThothLite {
                 if (!datasProducts.isEmpty()) {
                     database.insert(products.getName(), products.convertToMap(datasProducts));
                 }
-
             }
-
         }
 
         database.insert(table.getName(), table.convertToMap(datas));
-
     }
 
     /**
@@ -206,16 +211,19 @@ public class ThothLite {
      */
     public void removeFromTable(AvaliableTables table, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
+        database.beginTransaction();
         removeFromTable(getTableName(table), datas);
+        database.commitTransaction();
     }
 
     /**
      * Функция удаляет данные из таблицы.
+     * Отличие от public функции заключается в начале и закреплении транзакции.
      *
      * @param tableName наименование таблицы из которой удаляются записи.
      * @param datas     удаляемые записи.
      */
-    public void removeFromTable(String tableName, List<? extends Identifiable> datas)
+    private void removeFromTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
         Data table = dbData.getTable(tableName);
         database.remove(table.getName(), table.convertToMap(datas));
@@ -223,16 +231,19 @@ public class ThothLite {
 
     public void updateInTable(AvaliableTables table, List<? extends Identifiable> datas)
             throws NotContainsException, SQLException {
+        database.beginTransaction();
         updateInTable(getTableName(table),datas);
+        database.commitTransaction();
     }
 
     /**
      * Функция обновляет записи в таблице.
+     * Отличие от public функции заключается в начале и закреплении транзакции.
      *
      * @param tableName наименование таблицы в которой обновляются записи.
      * @param datas     обновлённые записи.
      */
-    public void updateInTable(String tableName, List<? extends Identifiable> datas)
+    private void updateInTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
         Data table = dbData.getTable(tableName);
         database.update(tableName, table.convertToMap(datas));
