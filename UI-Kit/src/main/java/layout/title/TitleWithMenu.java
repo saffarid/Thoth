@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 public class TitleWithMenu extends Title{
 
+    private final static String URL_MENU = "/image/icons/more-horizontal.png";
+
     /**
      * Кнопка развернуть на весь экран
      * */
@@ -45,6 +47,8 @@ public class TitleWithMenu extends Title{
                 stage.setMaximized(true);
             }
         });
+
+        setLeft(addButton(URL_MENU));
     }
 
 }

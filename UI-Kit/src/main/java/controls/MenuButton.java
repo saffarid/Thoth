@@ -3,6 +3,7 @@ package controls;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 
 import java.util.Collection;
 
@@ -22,12 +23,14 @@ public class MenuButton extends Button {
     public MenuButton(String s) {
         super(s);
         this.text = s;
+        setTooltip(new Tooltip(s));
         init();
     }
 
     public MenuButton(String s, Node node) {
         super(s, node);
         this.text = s;
+        setTooltip(new Tooltip(s));
         init();
     }
 
