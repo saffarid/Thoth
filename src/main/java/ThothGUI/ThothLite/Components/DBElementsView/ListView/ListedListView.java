@@ -21,7 +21,6 @@ public class ListedListView
         extends IdentifiablesListView<Listed>
         implements RemoveItem {
 
-
     private final ScheduleTask scheduleTask;
 
     protected ListedListView(
@@ -32,10 +31,10 @@ public class ListedListView
 
         scheduleTask = new ScheduleTask(this);
         ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
-        poolExecutor.schedule(scheduleTask, 1, TimeUnit.SECONDS);
+        poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
 
         identifiableElementList.getItems().addListener((ListChangeListener<? super Listed>) change -> {
-            poolExecutor.schedule(scheduleTask, 1, TimeUnit.SECONDS);
+            poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
         });
     }
 

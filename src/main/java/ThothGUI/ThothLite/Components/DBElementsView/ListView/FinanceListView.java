@@ -28,10 +28,10 @@ public class FinanceListView
 
         scheduleTask = new ScheduleTask(this);
         ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
-        poolExecutor.schedule(scheduleTask, 1, TimeUnit.SECONDS);
+        poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
 
         identifiableElementList.getItems().addListener((ListChangeListener<? super Finance>) change -> {
-            poolExecutor.schedule(scheduleTask, 1, TimeUnit.SECONDS);
+            poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
         });
     }
 

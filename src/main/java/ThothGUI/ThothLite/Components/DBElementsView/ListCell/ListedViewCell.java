@@ -6,6 +6,8 @@ import ThothCore.ThothLite.ThothLite;
 import ThothGUI.Apply;
 import ThothGUI.Cancel;
 import ThothGUI.ThothLite.Components.DBElementsView.ListView.RemoveItem;
+import ThothGUI.ThothLite.DialogWindows.DialogWindow;
+import ThothGUI.ThothLite.DialogWindows.DialogWindowType;
 import ThothGUI.thoth_styleconstants.Image;
 import controls.Button;
 import controls.Label;
@@ -15,7 +17,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
@@ -24,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class ListedViewCell
         extends IdentifiableViewCell
@@ -42,6 +47,8 @@ public class ListedViewCell
 
     private RemoveItem removeItem;
 
+    private Button remove;
+
     protected ListedViewCell(Listed listed) {
         super(Image.LIST, listed.getValue(), "", "");
         this.listed = listed;
@@ -57,6 +64,7 @@ public class ListedViewCell
         setRight(createPallete());
 
         setOnMouseClicked(this::mouseClick);
+        setOnKeyPressed(this::keyPress);
 
         setPadding(new Insets(5, 2, 5, 2));
         setAlignment(point, Pos.CENTER);
@@ -116,9 +124,11 @@ public class ListedViewCell
         double imgButtonWidth = 17;
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
+            remove = getButton(Image.TRASH, imgButtonWidth, imgButtonHeight, this::remove);
+            remove.setDisable(!hasRemoveItem());
             pallete.getChildren().setAll(
                     getButton(Image.EDIT, imgButtonWidth, imgButtonHeight, this::toEditMode)
-                    , getButton(Image.TRASH, imgButtonWidth, imgButtonHeight, this::remove)
+                    , remove
             );
         } else {
             pallete.getChildren().setAll(
@@ -144,6 +154,24 @@ public class ListedViewCell
         return node;
     }
 
+    @Override
+    public boolean hasRemoveItem() {
+        return removeItem != null;
+    }
+
+    private void keyPress(KeyEvent keyEvent) {
+        switch(keyEvent.getCode()){
+            case ENTER: {
+                if(modeIsEdit) apply();
+                break;
+            }
+            case ESCAPE:{
+                if(modeIsEdit) cancel();
+                break;
+            }
+        }
+    }
+
     private void mouseClick(MouseEvent mouseEvent) {
         switch (mouseEvent.getButton()) {
             case PRIMARY: {
@@ -165,28 +193,33 @@ public class ListedViewCell
 
     private void remove(ActionEvent event) {
         if(!listed.getId().equals("-1")) {
-            List<Listed> list = new LinkedList<>();
-            list.add(listed);
-            try {
-                ThothLite.getInstance().removeFromTable(table, list);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (NotContainsException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
+            Optional<ButtonType> optional = instance.showAndWait();
+            if(optional.isPresent()){
+                if(optional.get() == ButtonType.YES){
+                    List<Listed> list = new LinkedList<>();
+                    list.add(listed);
+                    try {
+                        ThothLite.getInstance().removeFromTable(table, list);
+                        removeItem.removeItem(listed);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } catch (NotContainsException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+        }else{
+            removeItem.removeItem(listed);
         }
-        removeItem.removeItem(listed);
-    }
 
-    @Override
-    public boolean hasRemoveItem() {
-        return removeItem != null;
     }
 
     @Override
     public void setRemoveItem(RemoveItem removeItem) {
         this.removeItem = removeItem;
+        remove.setDisable(!hasRemoveItem());
     }
 }

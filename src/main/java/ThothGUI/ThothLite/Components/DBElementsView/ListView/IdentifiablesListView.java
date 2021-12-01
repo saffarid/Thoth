@@ -59,8 +59,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected BorderPane pallete;
     protected HBox sortedPane;
     protected ListView<T> identifiableElementList;
-
-    protected SimpleListProperty<T> datas;
+    protected List<T> datas;
+//    protected SimpleListProperty<T> datas;
 
     static {
         LOG = Logger.getLogger(IdentifiablesListView.class.getName());
@@ -72,7 +72,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     ) {
         super();
         this.table = table;
-        this.datas = new SimpleListProperty<T>( FXCollections.observableList(datas) );
+//        this.datas = new SimpleListProperty<T>( FXCollections.observableList(datas) );
+        this.datas = datas;
         setCenter(createListView());
         setTop(createPallete());
 
@@ -110,7 +111,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected ListView<T> createListView(){
         identifiableElementList = new ListView<>();
         identifiableElementList.setPadding(new Insets(2));
-        identifiableElementList.itemsProperty().bind( datas );
+//        identifiableElementList.itemsProperty().bind( datas );
+        identifiableElementList.getItems().addAll(datas);
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
 
         setMargin(identifiableElementList, new Insets(5));
