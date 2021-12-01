@@ -131,7 +131,7 @@ public class ThothLiteWindow
         menuButtons.add(getMenuButton(
                 "Продукты", ThothGUI.thoth_styleconstants.Image.PRODUCT, event -> {openSubwindow(new IdentifiableListWindow( thoth.getTableName(AvaliableTables.STORAGABLE), AvaliableTables.STORAGABLE));}
         ));
-        menu = new NavigationMenu("", true, menuButtons);
+        menu = new NavigationMenu( menuButtons );
         setLeft(menu);
     }
 

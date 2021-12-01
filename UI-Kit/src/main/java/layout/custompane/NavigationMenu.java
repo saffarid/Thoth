@@ -1,15 +1,15 @@
 package layout.custompane;
 
-
-import controls.Label;
+import java.util.logging.*;
 import controls.MenuButton;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import layout.basepane.BorderPane;
+
 import layout.basepane.ScrollPane;
 import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
@@ -26,9 +26,10 @@ public class NavigationMenu extends BorderPane {
     private final String STYLE_CLASS_TITLE = "title";
     private final String STYLE_CLASS_CONTENT = "content";
 
-    private final double MAX_SIZE = 270;
-    private final double MIN_SIZE = 50;
+    private final double MAX_SIZE = 200;
+    private final double MIN_SIZE = 40;
 
+    private static Logger LOG;
 
     /**
      * Флаг отслеживания отображения навигационного меню.
@@ -51,13 +52,19 @@ public class NavigationMenu extends BorderPane {
      * */
     private VBox content;
 
-    public NavigationMenu(String title, boolean hasMinifyButton, List<MenuButton> menuButtons){
+    static {
+        LOG = Logger.getLogger(NavigationMenu.class.getName());
+    }
+
+    public NavigationMenu( List<MenuButton> menuButtons ){
         super();
         init();
 
-        setTitleText(title);
-        if(hasMinifyButton) setMinifyButton();
-        content.getChildren().setAll(menuButtons);
+        setMinifyButton();
+        for(MenuButton menuButton : menuButtons){
+            content.getChildren().add(menuButton);
+            menuButton.isMiniProperty().bind(isMinified);
+        }
     }
 
     /**
@@ -73,13 +80,17 @@ public class NavigationMenu extends BorderPane {
         setTop(this.title);
         setCenter(scrollPane);
         scrollPane.setFitToWidth(true);
+
         title.setMaxWidth(MAX_SIZE);
 
         getStylesheets().add(getClass().getResource(Stylesheets.COLOR).toExternalForm());
         getStylesheets().add(getClass().getResource("/style/layout/panes/custom/navigation_menu.css").toExternalForm());
         getStyleClass().addAll(STYLE_CLASS_NAV_MENU, Styleclasses.DARK);
         content.getStyleClass().add(STYLE_CLASS_CONTENT);
-        title.getStyleClass().add(STYLE_CLASS_TITLE);
+
+        setMinWidth(MIN_SIZE);
+        setPrefWidth(MAX_SIZE);
+        setMaxWidth(MAX_SIZE);
 
     }
 
@@ -87,7 +98,13 @@ public class NavigationMenu extends BorderPane {
      * Обработчик нажатия на кнопку минификации навигационного меню
      * */
     private void minify(ActionEvent event) {
+        LOG.log(Level.INFO, "minify Click");
         isMinified.set(!isMinified.get());
+        if(isMinified.getValue()){
+            setPrefWidth(MIN_SIZE);
+        }else {
+            setPrefWidth(MAX_SIZE);
+        }
     }
 
     /**
@@ -99,13 +116,11 @@ public class NavigationMenu extends BorderPane {
         );
         minifyButton = new Button();
         minifyButton.setGraphic(imageView);
-        title.setLeft(minifyButton);
         minifyButton.setOnAction(this::minify);
         minifyButton.getStyleClass().add(STYLE_CLASS_MINIFY_BTN);
+
+        title.setLeft(minifyButton);
     }
 
-    private void setTitleText(String title){
-        this.title.setCenter(new Label(title));
-    }
 
 }

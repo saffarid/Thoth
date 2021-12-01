@@ -6,8 +6,11 @@
     -fx-border-color:transparent;
     -fx-border-style:solid;
     -fx-border-width:1px;
-    -fx-padding: 2.5px 10px 2.5px 10px;
+    -fx-padding: 2.5px 2.5px 2.5px 2.5px;
     -fx-text-alignment:left;
     -fx-text-fill:white;
+}
 
+.menu-button:hover{
+    -fx-background-color: grey;
 }
