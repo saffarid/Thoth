@@ -46,6 +46,7 @@ public class Currencies
                     (Double) row.get(COURSE)
             ));
         }
+        publisher.submit(datas);
     }
 
     @Override

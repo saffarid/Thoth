@@ -47,6 +47,7 @@ public class CountTypes
                     )
             );
         }
+        publisher.submit(datas);
     }
 
     @Override

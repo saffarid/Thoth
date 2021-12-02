@@ -3,6 +3,8 @@ package ThothGUI.ThothLite.Subwindows;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
+import ThothGUI.CloseSubwindow;
+import ThothGUI.Closeable;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import javafx.geometry.Insets;
@@ -23,9 +25,14 @@ import java.util.List;
 /**
  * Окно отображения таблиц с константами
  */
-public class ListedListWindow extends Subwindow {
+public class ListedListWindow
+        extends Subwindow
+        implements Closeable
+{
 
     private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
+
+    private CloseSubwindow closeSubwindow;
 
     private List<AvaliableTables> datas;
     private ListView<AvaliableTables> datasView;
@@ -43,6 +50,10 @@ public class ListedListWindow extends Subwindow {
 
         setId(title);
         setCenter(createContent());
+
+        setCloseEvent(event -> {
+            closeSubwindow.closeSubwindow(this);
+        });
     }
 
     private VBox createContent() {
@@ -69,6 +80,11 @@ public class ListedListWindow extends Subwindow {
         datasView.getStylesheets().add(getClass().getResource(STYLESHEET_PATH).toExternalForm());
 
         return datasView;
+    }
+
+    @Override
+    public void setClose(CloseSubwindow close) {
+        this.closeSubwindow = close;
     }
 
     private class ViewCell

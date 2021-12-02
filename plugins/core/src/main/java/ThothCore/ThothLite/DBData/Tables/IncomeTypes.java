@@ -43,6 +43,7 @@ public class IncomeTypes
                     )
             );
         }
+        publisher.submit(datas);
     }
 
     @Override

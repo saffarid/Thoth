@@ -229,6 +229,16 @@ public class ThothLite {
         database.remove(table.getName(), table.convertToMap(datas));
     }
 
+    /**
+     * Функция подписывает на изменения в таблице
+     * */
+    public void subscribeOnTable(
+            AvaliableTables table
+            , Flow.Subscriber subscriber
+    ) throws NotContainsException {
+        DBData.getInstance().getTable(getTableName(table)).subscribe(subscriber);
+    }
+
     public void updateInTable(AvaliableTables table, List<? extends Identifiable> datas)
             throws NotContainsException, SQLException {
         database.beginTransaction();

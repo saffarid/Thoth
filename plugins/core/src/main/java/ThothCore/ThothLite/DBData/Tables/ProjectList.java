@@ -47,6 +47,7 @@ public class ProjectList
     @Override
     public void readTable(List<HashMap<String, Object>> data) {
         datas.clear();
+        publisher.submit(datas);
     }
 
     @Override

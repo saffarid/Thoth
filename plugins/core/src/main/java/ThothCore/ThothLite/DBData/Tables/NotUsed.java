@@ -52,6 +52,7 @@ public class NotUsed
                 e.printStackTrace();
             }
         }
+        publisher.submit(datas);
     }
 
     @Override

@@ -127,9 +127,8 @@ public abstract class IdentifiableCard
             ButtonText text
             , EventHandler<ActionEvent> event
     ){
-        Button res = new Button(text.text);
+        Button res = ThothGUI.ThothLite.Components.Controls.Button.getInstance(text.text, event);
         res.setId(text.text);
-        res.setOnAction(event);
         return res;
     }
 

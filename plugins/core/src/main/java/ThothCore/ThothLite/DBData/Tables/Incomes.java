@@ -44,6 +44,7 @@ public class Incomes
                 e.printStackTrace();
             }
         }
+        publisher.submit(datas);
     }
 
     @Override

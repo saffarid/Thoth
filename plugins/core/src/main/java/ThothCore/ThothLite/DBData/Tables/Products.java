@@ -66,6 +66,7 @@ public class Products
                 e.printStackTrace();
             }
         }
+        publisher.submit(datas);
     }
 
     @Override

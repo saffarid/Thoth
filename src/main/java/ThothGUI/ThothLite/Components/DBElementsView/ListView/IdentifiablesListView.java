@@ -12,9 +12,10 @@ import ThothGUI.ThothLite.ThothLiteWindow;
 import ThothGUI.thoth_styleconstants.Stylesheets;
 import controls.Button;
 import controls.Label;
+
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -26,16 +27,18 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import layout.basepane.HBox;
-import layout.basepane.VBox;
 import ThothGUI.thoth_styleconstants.Image;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Flow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
-        extends BorderPane {
+        extends BorderPane
+        implements Flow.Subscriber<List<T>>
+{
 
     private IdentifiableListCell identifiableListCell;
 
@@ -59,8 +62,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected BorderPane pallete;
     protected HBox sortedPane;
     protected ListView<T> identifiableElementList;
-    protected List<T> datas;
-//    protected SimpleListProperty<T> datas;
+//    protected List<T> datas;
+    protected SimpleListProperty<T> datas;
 
     static {
         LOG = Logger.getLogger(IdentifiablesListView.class.getName());
@@ -72,10 +75,25 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     ) {
         super();
         this.table = table;
-//        this.datas = new SimpleListProperty<T>( FXCollections.observableList(datas) );
-        this.datas = datas;
+        this.datas = new SimpleListProperty<T>(  );
+//        this.datas = datas;
         setCenter(createListView());
         setTop(createPallete());
+
+        this.datas.addListener((InvalidationListener) change -> {
+            identifiableElementList.getItems().addAll(this.datas.getValue());
+        });
+        this.datas.setValue(FXCollections.observableList(datas));
+
+        try {
+            ThothLite.getInstance().subscribeOnTable(this.table, this);
+        } catch (NotContainsException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         getStylesheets().add(getClass().getResource(STYLESHEET_PATH).toExternalForm());
     }
@@ -112,7 +130,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         identifiableElementList = new ListView<>();
         identifiableElementList.setPadding(new Insets(2));
 //        identifiableElementList.itemsProperty().bind( datas );
-        identifiableElementList.getItems().addAll(datas);
+
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
 
         setMargin(identifiableElementList, new Insets(5));
@@ -138,17 +156,15 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         }
 
         if(url == null) {
-            res = new Button(id.id);
+            res = ThothGUI.ThothLite.Components.Controls.Button.getInstance(id.id, event);
         }else{
-            res = new Button(
-                    new ImageView(
-                            new javafx.scene.image.Image(getClass().getResource(url).toExternalForm(), 30, 30, true, true)
-                    )
+            res = ThothGUI.ThothLite.Components.Controls.Button.getInstance(
+                    ThothGUI.ThothLite.Components.Controls.ImageView.getInstance( url, 30, 30 ),
+                    event
             );
         }
 
         res.setId(id.id);
-        res.setOnAction(event);
 
         return res;
     }
@@ -196,4 +212,22 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, null) );
     }
 
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+        subscription.request(1);
+    }
+
+    @Override
+    public void onNext(List<T> item) {
+        this.datas.setValue( FXCollections.observableList(item) );
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onComplete() {
+    }
 }

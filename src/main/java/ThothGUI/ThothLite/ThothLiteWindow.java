@@ -5,6 +5,7 @@ import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
+import ThothGUI.Closeable;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Subwindows.IdentifiableListWindow;
 
@@ -155,18 +156,16 @@ public class ThothLiteWindow
 
         if (!first.isPresent()){
             workspace.getChildren().add(subwindow);
-            subwindow.setCloseEvent(event -> {
-                closeSubwindow(subwindow);
-            });
+            ((Closeable)subwindow).setClose(this::closeSubwindow);
         }else{
             subwindow.toFront();
         }
     }
 
     @Override
-    public void closeSubwindow(Subwindow subwindow) {
-        if (workspace.getChildren().contains(subwindow)) {
-            workspace.getChildren().remove(subwindow);
+    public void closeSubwindow(Closeable closeable) {
+        if (workspace.getChildren().contains(closeable)) {
+            workspace.getChildren().remove(closeable);
         }
     }
 

@@ -8,9 +8,13 @@ import ThothGUI.ThothLite.Components.DBElementsView.ListCell.FinanceViewCell;
 import ThothGUI.ThothLite.Components.DBElementsView.ListCell.IdentifiableListCell;
 import ThothGUI.ThothLite.Components.DBElementsView.ListCell.RemoveItemFromList;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.skin.VirtualFlow;
+import layout.basepane.HBox;
 
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -20,6 +24,20 @@ import java.util.logging.Level;
 public class FinanceListView
         extends IdentifiablesListView<Finance>
         implements RemoveItem {
+
+    private enum SORT_BY{
+        SORT_BY_CURRENCY_UP("sort_by_currency_up"),
+        SORT_BY_CURRENCY_DOWN("sort_by_currency_down"),
+        SORT_BY_COURSE_UP("sort_by_course_up"),
+        SORT_BY_COURSE_DOWN("sort_by_course_down");
+        private String sortBy;
+        SORT_BY(String sortBy) {
+            this.sortBy = sortBy;
+        }
+        public String getSortBy() {
+            return sortBy;
+        }
+    }
 
     private final ScheduleTask scheduleTask;
 
@@ -33,6 +51,51 @@ public class FinanceListView
         identifiableElementList.getItems().addListener((ListChangeListener<? super Finance>) change -> {
             poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
         });
+    }
+
+    @Override
+    protected Node createSortedPane() {
+        HBox sortedPane = (HBox) super.createSortedPane();
+
+        ComboBox<SORT_BY> sortedBox = (ComboBox<SORT_BY>) sortedPane.getChildren()
+                .stream()
+                .filter(node -> node.getId() != null)
+                .filter(node -> node.getId().equals(Ids.SORTED_BOX.toString()))
+                .findFirst()
+                .get();
+
+        for(SORT_BY sort : SORT_BY.values()){
+            sortedBox.getItems().add(sort);
+        }
+
+        sortedBox.setCellFactory(sort_byListView -> new SortedCell());
+        sortedBox.setButtonCell(new SortedCell());
+
+        sortedBox.valueProperty().addListener((observableValue, sort_by, t1) -> {
+            ObservableList<Finance> items = identifiableElementList.getItems();
+            switch (t1){
+                case SORT_BY_CURRENCY_UP:{
+                    items.sort((o1, o2) -> o1.getCurrency().compareTo(o2.getCurrency()));
+                    break;
+                }
+                case SORT_BY_CURRENCY_DOWN:{
+                    items.sort((o1, o2) -> o2.getCurrency().compareTo(o1.getCurrency()));
+                    break;
+                }
+                case SORT_BY_COURSE_UP:{
+                    items.sort((o1, o2) -> o1.getCourse().compareTo(o2.getCourse()));
+                    break;
+                }
+                case SORT_BY_COURSE_DOWN:{
+                    items.sort((o1, o2) -> o2.getCourse().compareTo(o1.getCourse()));
+                    break;
+                }
+            }
+        });
+
+        sortedBox.setValue(SORT_BY.SORT_BY_CURRENCY_UP);
+
+        return sortedPane;
     }
 
     @Override
@@ -106,6 +169,17 @@ public class FinanceListView
                         view1.setRemoveItem(financeListView::removeItem);
                     }
                 }
+            }
+        }
+    }
+
+    private class SortedCell
+            extends ListCell<SORT_BY> {
+        @Override
+        protected void updateItem(SORT_BY sort_by, boolean b) {
+            if (sort_by != null) {
+                super.updateItem(sort_by, b);
+                setText(sort_by.sortBy);
             }
         }
     }

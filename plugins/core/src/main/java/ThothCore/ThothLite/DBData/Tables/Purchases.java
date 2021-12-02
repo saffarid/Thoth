@@ -109,6 +109,7 @@ public class Purchases
             }
         }
 
+        publisher.submit(datas);
     }
 
     @Override

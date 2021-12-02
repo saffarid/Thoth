@@ -43,6 +43,7 @@ public class OrderStatus
                     )
             );
         }
+        publisher.submit(datas);
     }
 
     @Override

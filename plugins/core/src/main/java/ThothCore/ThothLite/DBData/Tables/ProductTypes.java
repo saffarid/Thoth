@@ -43,6 +43,7 @@ public class ProductTypes
                     )
             );
         }
+        publisher.submit(datas);
     }
 
     @Override

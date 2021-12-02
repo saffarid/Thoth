@@ -54,6 +54,7 @@ public class Storage
                     )
             );
         }
+        publisher.submit(datas);
     }
 
     @Override

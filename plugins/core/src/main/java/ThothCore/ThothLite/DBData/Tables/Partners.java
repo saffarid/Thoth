@@ -48,6 +48,7 @@ public class Partners
                     (String) row.get(WEB)
             ));
         }
+        publisher.submit(datas);
     }
 
     @Override

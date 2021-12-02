@@ -68,6 +68,7 @@ public class Orders
 //                e.printStackTrace();
 //            }
         }
+        publisher.submit(datas);
     }
 
     @Override

@@ -124,12 +124,14 @@ public class ListedViewCell
         double imgButtonWidth = 17;
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
-            remove = getButton(Image.TRASH, imgButtonWidth, imgButtonHeight, this::remove);
-            remove.setDisable(!hasRemoveItem());
             pallete.getChildren().setAll(
                     getButton(Image.EDIT, imgButtonWidth, imgButtonHeight, this::toEditMode)
-                    , remove
             );
+            if(listed.getId().equals("-1")) {
+                remove = getButton(Image.TRASH, imgButtonWidth, imgButtonHeight, this::remove);
+                remove.setDisable(!hasRemoveItem());
+                pallete.getChildren().add( remove );
+            }
         } else {
             pallete.getChildren().setAll(
                     getButton(Image.CHECKMARK, imgButtonWidth, imgButtonHeight, event -> apply())
@@ -145,11 +147,10 @@ public class ListedViewCell
             , double width, double height
             , EventHandler<ActionEvent> event
     ) {
-        Button node = new Button(
-                getImageIcon(url, width, height)
+        Button node = ThothGUI.ThothLite.Components.Controls.Button.getInstance(
+                ThothGUI.ThothLite.Components.Controls.ImageView.getInstance(url, width, height),
+                event
         );
-
-        node.setOnAction(event);
         node.setPadding(new Insets(5));
         return node;
     }
@@ -193,24 +194,24 @@ public class ListedViewCell
 
     private void remove(ActionEvent event) {
         if(!listed.getId().equals("-1")) {
-            DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
-            Optional<ButtonType> optional = instance.showAndWait();
-            if(optional.isPresent()){
-                if(optional.get() == ButtonType.YES){
-                    List<Listed> list = new LinkedList<>();
-                    list.add(listed);
-                    try {
-                        ThothLite.getInstance().removeFromTable(table, list);
-                        removeItem.removeItem(listed);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    } catch (NotContainsException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+//            DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
+//            Optional<ButtonType> optional = instance.showAndWait();
+//            if(optional.isPresent()){
+//                if(optional.get() == ButtonType.YES){
+//                    List<Listed> list = new LinkedList<>();
+//                    list.add(listed);
+//                    try {
+//                        ThothLite.getInstance().removeFromTable(table, list);
+//                        removeItem.removeItem(listed);
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    } catch (NotContainsException e) {
+//                        e.printStackTrace();
+//                    } catch (ClassNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
         }else{
             removeItem.removeItem(listed);
         }
@@ -220,6 +221,8 @@ public class ListedViewCell
     @Override
     public void setRemoveItem(RemoveItem removeItem) {
         this.removeItem = removeItem;
-        remove.setDisable(!hasRemoveItem());
+        if(remove != null) {
+            remove.setDisable(!hasRemoveItem());
+        }
     }
 }
