@@ -1,6 +1,6 @@
 package ThothGUI;
 
-import window.Subwindow;
+import ThothGUI.ThothLite.Subwindows.Subwindow;
 
 @FunctionalInterface
 public interface OpenSubwindow {

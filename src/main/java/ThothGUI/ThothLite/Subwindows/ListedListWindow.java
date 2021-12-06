@@ -4,7 +4,6 @@ import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
-import ThothGUI.Closeable;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import javafx.geometry.Insets;
@@ -16,7 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import layout.basepane.VBox;
-import window.Subwindow;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -27,12 +25,9 @@ import java.util.List;
  */
 public class ListedListWindow
         extends Subwindow
-        implements Closeable
+
 {
-
     private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
-
-    private CloseSubwindow closeSubwindow;
 
     private List<AvaliableTables> datas;
     private ListView<AvaliableTables> datasView;
@@ -51,9 +46,6 @@ public class ListedListWindow
         setId(title);
         setCenter(createContent());
 
-        setCloseEvent(event -> {
-            closeSubwindow.closeSubwindow(this);
-        });
     }
 
     private VBox createContent() {
@@ -83,8 +75,8 @@ public class ListedListWindow
     }
 
     @Override
-    public void setClose(CloseSubwindow close) {
-        this.closeSubwindow = close;
+    public void close() {
+        closeSubwindow.closeSubwindow(this);
     }
 
     private class ViewCell

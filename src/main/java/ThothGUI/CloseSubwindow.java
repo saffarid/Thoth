@@ -1,9 +1,9 @@
 package ThothGUI;
 
-import window.Subwindow;
+import ThothGUI.ThothLite.Subwindows.Subwindow;
 
 public interface CloseSubwindow {
 
-    void closeSubwindow(Closeable closeable);
+    void closeSubwindow(Subwindow subwindow);
 
 }

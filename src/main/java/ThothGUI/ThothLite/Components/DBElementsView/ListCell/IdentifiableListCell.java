@@ -9,12 +9,13 @@ import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 
 public class IdentifiableListCell<T extends Identifiable>
-        extends ListCell<T>
-{
+        extends ListCell<T> {
 
     private final static String STYLE_CLASS_IDENTIFIABLE_CELL = "identifiable-cell";
 
@@ -32,24 +33,56 @@ public class IdentifiableListCell<T extends Identifiable>
     }
 
     private void cellClick(MouseEvent mouseEvent) {
-        if( !(identifiable instanceof Listed)  &&
-            !(identifiable instanceof Finance) &&
-             (identifiable != null) ){
-            ((OpenSubwindow)ThothLiteWindow.getInstance()).openSubwindow( new IdentifiableCardWindow("Карточка", table, identifiable) );
+
+        switch (mouseEvent.getButton()) {
+            case PRIMARY: {
+                if (!(identifiable instanceof Listed) &&
+                        !(identifiable instanceof Finance) &&
+                        (identifiable != null)) {
+                    open();
+                }
+                break;
+            }
+            case SECONDARY:{
+                if (!(identifiable instanceof Listed) &&
+                        !(identifiable instanceof Finance) &&
+                        (identifiable != null)) {
+                    setContextMenu(createContextMenu());
+                }
+                break;
+            }
         }
     }
 
-    public Node getView(){
+    private ContextMenu createContextMenu(){
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem open = new MenuItem("open");
+        open.setOnAction(event -> open());
+
+        MenuItem remove = new MenuItem("remove");
+
+        contextMenu.getItems().add(open);
+        contextMenu.getItems().add(remove);
+
+        return contextMenu;
+    }
+
+    public Node getView() {
         return instance;
+    }
+
+    private void open(){
+        ((OpenSubwindow) ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableCardWindow("Карточка", table, identifiable));
     }
 
     @Override
     protected void updateItem(T identifiable, boolean b) {
-        if(identifiable != null) {
+        if (identifiable != null) {
             super.updateItem(identifiable, b);
             this.identifiable = identifiable;
             instance = IdentifiableViewCell.getInstance(identifiable);
-            setGraphic( instance );
+            setGraphic(instance);
             instance.setTable(table);
         }
     }

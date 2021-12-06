@@ -1,6 +1,5 @@
-package window;
+package ThothGUI.ThothLite.Subwindows;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import styleconstants.Styleclasses;

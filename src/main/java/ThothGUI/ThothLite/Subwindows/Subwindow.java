@@ -1,16 +1,26 @@
-package window;
+package ThothGUI.ThothLite.Subwindows;
 
+import ThothGUI.CloseSubwindow;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
-import layout.title.TitleSubwindow;
+import layout.custompane.Title;
+import window.Closeable;
+import window.Window;
 
-public class Subwindow extends Window{
+public abstract class Subwindow
+        extends Window
+        implements Closeable
+{
+
+    protected CloseSubwindow closeSubwindow;
 
     public Subwindow(String title) {
         super();
-        this.title = new TitleSubwindow(title);
+        this.title = new Title()
+                .addClose(event -> close())
+                .addText(title);
 
         this.title.setOnMousePressed(this::press);
         this.title.setOnMouseDragged(this::drag);
@@ -43,11 +53,7 @@ public class Subwindow extends Window{
         super.toFront();
     }
 
-    public void setCloseEvent(EventHandler<ActionEvent> event){
-        title.getClose().setOnAction(event);
-    }
-
-    public Button getClose(){
-        return title.getClose();
+    public void setCloseSubwindow(CloseSubwindow closeSubwindow) {
+        this.closeSubwindow = closeSubwindow;
     }
 }

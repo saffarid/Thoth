@@ -24,15 +24,14 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import layout.basepane.HBox;
 import ThothGUI.thoth_styleconstants.Image;
+import window.Closeable;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Flow;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
@@ -207,19 +206,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return null;
     }
 
-    protected void openCreateNewIdentifiable(ActionEvent event){
-//        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, getIdentifiableInstance()) );
-        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, null) );
-    }
-
     @Override
-    public void onSubscribe(Flow.Subscription subscription) {
-        subscription.request(1);
-    }
-
-    @Override
-    public void onNext(List<T> item) {
-        this.datas.setValue( FXCollections.observableList(item) );
+    public void onComplete() {
     }
 
     @Override
@@ -228,6 +216,18 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     @Override
-    public void onComplete() {
+    public void onNext(List<T> item) {
+        this.datas.setValue( FXCollections.observableList(item) );
     }
+
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+        subscription.request(1);
+    }
+
+    protected void openCreateNewIdentifiable(ActionEvent event){
+//        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, getIdentifiableInstance()) );
+        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, null) );
+    }
+
 }

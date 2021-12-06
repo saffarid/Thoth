@@ -2,7 +2,7 @@ package window;
 
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import layout.title.TitleWithoutMenu;
+import layout.custompane.Title;
 
 public class SecondaryWindow extends Window{
 
@@ -11,12 +11,12 @@ public class SecondaryWindow extends Window{
     public SecondaryWindow(Stage stage, String title) {
         super();
         this.stage = stage;
-        this.title = new TitleWithoutMenu(title);
+        this.title = new Title()
+                .addText(title)
+                .addClose(event -> stage.close());
 
         this.title.setOnMousePressed(this::stagePress);
         this.title.setOnMouseDragged(this::stageDrag);
-
-        this.title.getClose().setOnAction(event -> stage.close());
 
         setTop(this.title);
     }

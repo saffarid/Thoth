@@ -1,16 +1,15 @@
 package ThothGUI.ThothLite;
 
-
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.ThothLite;
-import ThothGUI.CloseSubwindow;
-import ThothGUI.Closeable;
-import ThothGUI.OpenSubwindow;
-import ThothGUI.ThothLite.Subwindows.IdentifiableListWindow;
 
-import ThothGUI.ThothLite.Subwindows.ListedListWindow;
+import ThothGUI.CloseSubwindow;
+import ThothGUI.OpenSubwindow;
+import ThothGUI.ThothLite.Subwindows.*;
+
 import controls.MenuButton;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,8 +20,8 @@ import javafx.stage.Stage;
 
 import layout.basepane.StackPane;
 import layout.custompane.NavigationMenu;
+
 import window.PrimaryWindow;
-import window.Subwindow;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -156,16 +155,16 @@ public class ThothLiteWindow
 
         if (!first.isPresent()){
             workspace.getChildren().add(subwindow);
-            ((Closeable)subwindow).setClose(this::closeSubwindow);
+            subwindow.setCloseSubwindow(this::closeSubwindow);
         }else{
             subwindow.toFront();
         }
     }
 
     @Override
-    public void closeSubwindow(Closeable closeable) {
-        if (workspace.getChildren().contains(closeable)) {
-            workspace.getChildren().remove(closeable);
+    public void closeSubwindow(Subwindow subwindow) {
+        if (workspace.getChildren().contains(subwindow)) {
+            workspace.getChildren().remove(subwindow);
         }
     }
 

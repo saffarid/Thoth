@@ -1,11 +1,9 @@
 package window;
 
 import javafx.scene.layout.BorderPane;
-import layout.title.Title;
+import layout.custompane.Title;
 import styleconstants.Styleclasses;
 import styleconstants.Stylesheets;
-
-import java.net.URL;
 
 public abstract class Window extends BorderPane {
 

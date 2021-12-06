@@ -16,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.BorderPane;
+import window.Closeable;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -47,6 +48,8 @@ public abstract class IdentifiableCard
     protected boolean identifiableIsNew;
     protected Identifiable identifiable;
     protected AvaliableTables table;
+
+    private Closeable parentClose;
 
     static {
         LOG = Logger.getLogger(IdentifiableCard.class.getName());
@@ -85,6 +88,7 @@ public abstract class IdentifiableCard
                 }else{
                     ThothLite.getInstance().updateInTable(table, list);
                 }
+                parentClose.close();
             } catch (NotContainsException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
@@ -97,7 +101,7 @@ public abstract class IdentifiableCard
 
     @Override
     public void cancel() {
-
+        parentClose.close();
     }
 
     private ButtonBar createButtonBar(){
@@ -145,6 +149,10 @@ public abstract class IdentifiableCard
             }
         }
         return null;
+    }
+
+    public void setParentClose(Closeable parentClose) {
+        this.parentClose = parentClose;
     }
 
     protected abstract void updateIdentifiable();

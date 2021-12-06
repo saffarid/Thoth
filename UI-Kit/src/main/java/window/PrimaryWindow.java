@@ -1,9 +1,8 @@
 package window;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import layout.title.TitleWithMenu;
+import layout.custompane.Title;
 
 import java.awt.*;
 
@@ -16,12 +15,15 @@ public class PrimaryWindow extends Window{
 
         this.stage = stage;
 
-        title = new TitleWithMenu(stage);
-
+        title = new Title();
+        title
+                .addIconify(event -> {})
+                .addMinify(event -> {})
+                .addClose(event -> stage.close());
         title.setOnMousePressed(this::stagePress);
         title.setOnMouseDragged(this::stageDrag);
 
-        title.getClose().setOnAction(event -> stage.close());
+//        title.getClose().setOnAction(event -> stage.close());
 
         setTop(this.title);
     }
