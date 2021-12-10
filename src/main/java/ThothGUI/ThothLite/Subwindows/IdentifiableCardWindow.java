@@ -12,9 +12,7 @@ import window.Closeable;
 public class IdentifiableCardWindow
         extends Subwindow
 {
-
     private final String TEMPLATE_ID = "%1s:%2s";
-
 
     public IdentifiableCardWindow(
             String title
@@ -28,15 +26,9 @@ public class IdentifiableCardWindow
             setId(String.format(TEMPLATE_ID, title, identifiable.getId()));
         }
 
-        IdentifiableCard instance = IdentifiableCard.getInstance(table, identifiable);
-        instance.setParentClose(this::close);
-        setCenter(instance);
+        content = IdentifiableCard.getInstance(table, identifiable);
+        ((IdentifiableCard)content).setParentClose(this::close);
+        setCenter(content);
     }
-
-    @Override
-    public void close() {
-        closeSubwindow.closeSubwindow(this);
-    }
-
 
 }

@@ -1,5 +1,6 @@
 package ThothGUI.ThothLite;
 
+import Main.Main;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.ThothLite;
@@ -13,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
@@ -20,7 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import layout.basepane.StackPane;
 import layout.custompane.NavigationMenu;
 import window.PrimaryWindow;
@@ -40,6 +42,18 @@ public class ThothLiteWindow
         , CloseSubwindow
         , Flow.Subscriber<Finishable>
 {
+
+    public enum DEFAULT_SIZE {
+        HEIGHT(600),
+        WIDTH(900);
+        private double size;
+        DEFAULT_SIZE(double size) {
+            this.size = size;
+        }
+        public double getSize() {
+            return size;
+        }
+    }
 
     private final String STRING_KEY_INCOME_EXPENSES = "Доходы/расходы";
     private final String STRING_KEY_ORDERS = "Заказы";
@@ -80,7 +94,6 @@ public class ThothLiteWindow
         styleConfig();
 
         thoth.purchasesSubscribe(this);
-
     }
 
     public static ThothLiteWindow getInstance(){
@@ -121,7 +134,20 @@ public class ThothLiteWindow
         MenuItem config = new MenuItem("config");
         config.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         config.setOnAction(event -> {
-            LOG.log(Level.INFO, "config");
+
+            Stage settings = new Stage(StageStyle.TRANSPARENT);
+            settings.setScene(
+                    new Scene(
+                            new Settings(settings, "settings"),
+                            Settings.DEFAULT_SIZE.WIDTH.getSize(), Settings.DEFAULT_SIZE.HEIGHT.getSize()
+                    )
+            );
+            settings.initModality(Modality.APPLICATION_MODAL);
+            settings.initOwner(mainStage);
+            settings.show();
+
+            settings.setX( mainStage.getX() + ((mainStage.getWidth() - settings.getWidth())/2) );
+            settings.setY( mainStage.getY() + ((mainStage.getHeight() - settings.getHeight())/2) );
         });
 
         MenuItem about = new MenuItem("about");

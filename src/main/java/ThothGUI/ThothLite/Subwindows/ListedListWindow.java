@@ -75,12 +75,6 @@ public class ListedListWindow
         return datasView;
     }
 
-    @Override
-    public void close() {
-        closeSubwindow.closeSubwindow(this);
-
-    }
-
     private class ViewCell
             extends ListCell<AvaliableTables> {
 

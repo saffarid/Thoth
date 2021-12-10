@@ -42,7 +42,8 @@ import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
         extends BorderPane
-        implements Flow.Subscriber<List<T>>
+        implements Closeable,
+        Flow.Subscriber<List<T>>
 {
 
     private IdentifiableListCell identifiableListCell;
@@ -86,19 +87,18 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         super();
         this.table = table;
         this.datas = new SimpleListProperty<T>(  );
-//        this.datas = datas;
         setCenter(createListView());
         setTop(createPallete());
 
         this.datas.addListener((ListChangeListener<? super T>) change -> {
+            //Для обновления отображения списка создаём задачу и выполняем её в потоке JavaFX
             Platform.runLater(() -> {
-                LOG.log(Level.INFO, "Обновление отображения списка");
                 identifiableElementList.setCellFactory(tListView -> null);
-//                identifiableElementList.getItems().clear();
                 identifiableElementList.getItems().setAll(this.datas.getValue());
                 identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
             });
         });
+
         this.datas.setValue(FXCollections.observableList(datas));
 
         try {
@@ -224,7 +224,11 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return null;
     }
 
-    public void finishProccess(){
+    /**
+     * Функция завершает все текущие процессы
+     * */
+    @Override
+    public void close(){
         this.subscription.cancel();
     }
 

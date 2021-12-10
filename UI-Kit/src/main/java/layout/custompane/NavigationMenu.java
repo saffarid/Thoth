@@ -112,7 +112,11 @@ public class NavigationMenu extends BorderPane {
      * */
     private void setMinifyButton(){
         ImageView imageView = new ImageView(
-                new Image(getClass().getResourceAsStream("/image/icons/menu.png"), 30, 30, false, false)
+                new Image(
+                        getClass().getResourceAsStream("/image/icons/menu.png")
+                        , 20, 20
+                        , false, false
+                )
         );
         minifyButton = new Button();
         minifyButton.setGraphic(imageView);

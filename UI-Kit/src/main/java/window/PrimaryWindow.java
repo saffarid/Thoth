@@ -16,15 +16,12 @@ public class PrimaryWindow
 
         this.stage = stage;
 
-        title = new Title();
-        title
+        title = new Title()
                 .addIconify(event -> {})
                 .addMinify(event -> {})
                 .addClose(event -> close());
         title.setOnMousePressed(this::stagePress);
         title.setOnMouseDragged(this::stageDrag);
-
-//        title.getClose().setOnAction(event -> stage.close());
 
         setTop(this.title);
     }

@@ -4,14 +4,12 @@ import controls.Button;
 import controls.Label;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import styleconstants.Images;
@@ -80,8 +78,8 @@ public class Title
                 new ImageView(
                         new Image(
                                 getClass().getResource(Images.THREE_POINT_H.getUrl()).toExternalForm(),
-                                20, 20,
-                                true, true
+                                20, 24,
+                                false, true
                         )
                 )
         );
@@ -120,6 +118,7 @@ public class Title
     }
 
     public Title addText(String text){
+        setAlignment(title, Pos.CENTER_LEFT);
         title.setText(text);
         setCenter(title);
         return this;
@@ -149,7 +148,7 @@ public class Title
         getStyleClass().add(STYLE_CLASS.TITLE.getStyleClass());
 
         getStylesheets().addAll(
-                getClass().getResource("/style/layout/title/title.css").toExternalForm()
+                getClass().getResource("/style/layout/panes/custom/title.css").toExternalForm()
                 , getClass().getResource(Stylesheets.CONTEXT_MENU).toExternalForm()
 
         );

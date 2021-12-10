@@ -19,7 +19,7 @@
 .minify-button{
     -fx-background-color:transparent;
     -fx-background-radius:0;
-    -fx-padding:2.5px;
+    -fx-padding:2px 2px 2px 7px;
 }
 
 .content{

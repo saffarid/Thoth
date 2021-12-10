@@ -8,8 +8,6 @@ public class IdentifiableListWindow
         extends Subwindow
 {
 
-    private IdentifiablesListView instanceListView;
-
     public IdentifiableListWindow(
             String title
             , AvaliableTables type
@@ -17,16 +15,11 @@ public class IdentifiableListWindow
         super(title);
 
         setId(title);
-        instanceListView = IdentifiablesListView.getInstance(
+        content = IdentifiablesListView.getInstance(
                 type
         );
-        setCenter(instanceListView);
+        setCenter(content);
 
     }
 
-    @Override
-    public void close() {
-        closeSubwindow.closeSubwindow(this);
-        instanceListView.finishProccess();
-    }
 }

@@ -3,6 +3,7 @@ package ThothGUI.ThothLite.Subwindows;
 import ThothGUI.CloseSubwindow;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import layout.custompane.Title;
@@ -15,6 +16,7 @@ public abstract class Subwindow
 {
 
     protected CloseSubwindow closeSubwindow;
+    protected Node content;
 
     public Subwindow(String title) {
         super();
@@ -27,6 +29,14 @@ public abstract class Subwindow
 
         setTop(this.title);
 
+    }
+
+    @Override
+    public void close() {
+        closeSubwindow.closeSubwindow(this);
+        if(content instanceof Closeable){
+            ((Closeable)content).close();
+        }
     }
 
     private void drag(MouseEvent mouseEvent) {
@@ -48,12 +58,12 @@ public abstract class Subwindow
         }
     }
 
+    public void setCloseSubwindow(CloseSubwindow closeSubwindow) {
+        this.closeSubwindow = closeSubwindow;
+    }
+
     @Override
     public void toFront() {
         super.toFront();
-    }
-
-    public void setCloseSubwindow(CloseSubwindow closeSubwindow) {
-        this.closeSubwindow = closeSubwindow;
     }
 }

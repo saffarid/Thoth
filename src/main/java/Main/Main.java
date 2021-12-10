@@ -30,7 +30,7 @@ public class Main extends Application{
         this.stage = stage;
 
         ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage, ThothLite.getInstance());
-        thoth.setPrefSize(800, 600);
+        thoth.setPrefSize(ThothLiteWindow.DEFAULT_SIZE.WIDTH.getSize(), ThothLiteWindow.DEFAULT_SIZE.HEIGHT.getSize());
         stage.setScene(new Scene(thoth));
 
         stage.initStyle(StageStyle.UNDECORATED);
