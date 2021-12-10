@@ -3,24 +3,26 @@ package ThothGUI.ThothLite;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.ThothLite;
-
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
-import ThothGUI.ThothLite.Subwindows.*;
-
+import ThothGUI.ThothLite.Subwindows.IdentifiableListWindow;
+import ThothGUI.ThothLite.Subwindows.ListedListWindow;
+import ThothGUI.ThothLite.Subwindows.Subwindow;
 import controls.MenuButton;
-
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
-
 import layout.basepane.StackPane;
 import layout.custompane.NavigationMenu;
-
 import window.PrimaryWindow;
 
 import java.util.ArrayList;
@@ -73,6 +75,7 @@ public class ThothLiteWindow
         openSubwindows = new ArrayList<>();
 
         menuConfig();
+        navigationMenuConfig();
         workspaceConfig();
         styleConfig();
 
@@ -95,7 +98,12 @@ public class ThothLiteWindow
         return window;
     }
 
-    private MenuButton getMenuButton(String mes, String url, EventHandler<ActionEvent> event){
+    @Override
+    public void close() {
+        mainStage.close();
+    }
+
+    private MenuButton getNavigationMenuButton(String mes, String url, EventHandler<ActionEvent> event){
         MenuButton menuButton = new MenuButton(mes);
         if(url != null) {
             menuButton.setGraphic(
@@ -109,6 +117,24 @@ public class ThothLiteWindow
     }
 
     private void menuConfig(){
+
+        MenuItem config = new MenuItem("config");
+        config.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
+        config.setOnAction(event -> {
+            LOG.log(Level.INFO, "config");
+        });
+
+        MenuItem about = new MenuItem("about");
+
+        MenuItem exit = new MenuItem("exit");
+        exit.setOnAction(event -> close());
+        exit.setAccelerator(new KeyCodeCombination(KeyCode.F4, KeyCombination.ALT_DOWN));
+
+
+        title.addContextMenu(config, about, new SeparatorMenuItem(), exit);
+    }
+
+    private void navigationMenuConfig(){
         List<MenuButton> menuButtons = new LinkedList<>();
 //        menuButtons.add(getMenuButton(
 //                STRING_KEY_INCOME_EXPENSES, ThothGUI.thoth_styleconstants.Image.ANALYZE, event -> {}
@@ -116,7 +142,7 @@ public class ThothLiteWindow
 //        menuButtons.add(getMenuButton(
 //                STRING_KEY_ORDERS, ThothGUI.thoth_styleconstants.Image.ORDER, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.ORDERABLE), AvaliableTables.ORDERABLE) );}
 //        ));
-        menuButtons.add(getMenuButton(
+        menuButtons.add(getNavigationMenuButton(
                 STRING_KEY_PURCHASES, ThothGUI.thoth_styleconstants.Image.PURCHASE, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.PURCHASABLE) , AvaliableTables.PURCHASABLE) );}
         ));
 //        menuButtons.add(getMenuButton(
@@ -125,10 +151,10 @@ public class ThothLiteWindow
 //        menuButtons.add(getMenuButton(
 //                STRING_KEY_STORAGE, ThothGUI.thoth_styleconstants.Image.STORAGE_CELL, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.STORING), AvaliableTables.STORING) );}
 //        ));
-        menuButtons.add(getMenuButton(
+        menuButtons.add(getNavigationMenuButton(
                 STRING_KEY_TABLES_GUIDE, ThothGUI.thoth_styleconstants.Image.LIST, event -> {openSubwindow( new ListedListWindow(STRING_KEY_TABLES_GUIDE));}
         ));
-        menuButtons.add(getMenuButton(
+        menuButtons.add(getNavigationMenuButton(
                 "Продукты", ThothGUI.thoth_styleconstants.Image.PRODUCT, event -> {openSubwindow(new IdentifiableListWindow( thoth.getTableName(AvaliableTables.STORAGABLE), AvaliableTables.STORAGABLE));}
         ));
         menu = new NavigationMenu( menuButtons );

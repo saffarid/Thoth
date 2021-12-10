@@ -1,24 +1,22 @@
 package ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.Currency;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Identifiable;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Listed;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.ThothLite;
-import ThothGUI.ThothLite.Components.DBElementsView.IdentifiableCard.IdentifiableCard;
+
 import controls.ComboBox;
 import controls.Label;
+import controls.TextArea;
 import controls.TextField;
-import controls.Twin;
+
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.TextArea;
+
 import layout.basepane.HBox;
 import layout.basepane.VBox;
 
@@ -27,7 +25,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StoragableCard extends IdentifiableCard {
+public class StoragableCard
+       extends IdentifiableCard {
 
     private TextField article;
     private TextField name;
@@ -64,15 +63,6 @@ public class StoragableCard extends IdentifiableCard {
     protected Node createContent() {
         VBox vBox = new VBox();
 
-//        vBox.getChildren().addAll(
-//                  new Twin(getLabel(PropetiesStoragableId.ARTICLE.id), getTextField(PropetiesStoragableId.ARTICLE))
-//                , new Twin(getLabel(PropetiesStoragableId.NAME.id), getTextField(PropetiesStoragableId.NAME))
-//                , new Twin(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), getComboBox(PropetiesStoragableId.PRODUCT_TYPE))
-//                , new Twin(getLabel(PropetiesStoragableId.COUNT.id), getTextField(PropetiesStoragableId.COUNT))
-//                , new Twin(getLabel(PropetiesStoragableId.COUNT_TYPE.id), getComboBox(PropetiesStoragableId.COUNT_TYPE))
-//                , new Twin(getLabel(PropetiesStoragableId.ADRESS.id), getComboBox(PropetiesStoragableId.ADRESS))
-//        );
-
         article = getTextField(PropetiesStoragableId.ARTICLE);
         name = getTextField(PropetiesStoragableId.NAME);
         type = getComboBox(PropetiesStoragableId.PRODUCT_TYPE);
@@ -80,6 +70,7 @@ public class StoragableCard extends IdentifiableCard {
         countType = getComboBox(PropetiesStoragableId.COUNT_TYPE);
         adress = getComboBox(PropetiesStoragableId.ADRESS);
         note = new TextArea();
+
 
         note.setText(((Storagable) identifiable).getNote());
 

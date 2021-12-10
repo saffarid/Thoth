@@ -6,7 +6,8 @@ import layout.custompane.Title;
 
 import java.awt.*;
 
-public class PrimaryWindow extends Window{
+public class PrimaryWindow
+        extends Window{
 
     private Stage stage;
 
@@ -19,7 +20,7 @@ public class PrimaryWindow extends Window{
         title
                 .addIconify(event -> {})
                 .addMinify(event -> {})
-                .addClose(event -> stage.close());
+                .addClose(event -> close());
         title.setOnMousePressed(this::stagePress);
         title.setOnMouseDragged(this::stageDrag);
 
@@ -49,5 +50,10 @@ public class PrimaryWindow extends Window{
                 stage.setY(mouseEvent.getScreenY() - title.getSwitchSceneY());
             }
         }
+    }
+
+    @Override
+    public void close() {
+
     }
 }

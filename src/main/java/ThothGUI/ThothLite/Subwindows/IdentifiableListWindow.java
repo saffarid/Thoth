@@ -8,6 +8,7 @@ public class IdentifiableListWindow
         extends Subwindow
 {
 
+    private IdentifiablesListView instanceListView;
 
     public IdentifiableListWindow(
             String title
@@ -16,7 +17,7 @@ public class IdentifiableListWindow
         super(title);
 
         setId(title);
-        IdentifiablesListView instanceListView = IdentifiablesListView.getInstance(
+        instanceListView = IdentifiablesListView.getInstance(
                 type
         );
         setCenter(instanceListView);
@@ -26,5 +27,6 @@ public class IdentifiableListWindow
     @Override
     public void close() {
         closeSubwindow.closeSubwindow(this);
+        instanceListView.finishProccess();
     }
 }

@@ -4,7 +4,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import layout.custompane.Title;
 
-public class SecondaryWindow extends Window{
+public class SecondaryWindow
+        extends Window{
 
     private Stage stage;
 
@@ -38,5 +39,10 @@ public class SecondaryWindow extends Window{
                 stage.setY(mouseEvent.getScreenY() - title.getSwitchSceneY());
             }
         }
+    }
+
+    @Override
+    public void close() {
+
     }
 }

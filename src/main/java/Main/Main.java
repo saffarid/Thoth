@@ -11,6 +11,7 @@ import window.StageResizer;
 import java.io.File;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.concurrent.ForkJoinPool;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 public class Main extends Application{
 
     public static Logger LOG;
-
     private Stage stage;
 
     static {

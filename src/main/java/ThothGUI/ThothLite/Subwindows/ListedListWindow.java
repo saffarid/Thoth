@@ -44,7 +44,7 @@ public class ListedListWindow
         datas.add(AvaliableTables.PRODUCT_TYPES);
 
         setId(title);
-        setCenter(createContent());
+        setCenter(createListView());
 
     }
 
@@ -65,6 +65,7 @@ public class ListedListWindow
 
     protected ListView<AvaliableTables> createListView() {
         datasView = new ListView<>();
+        setMargin(datasView, new Insets(2));
         datasView.setPadding(new Insets(2));
         datasView.getItems().setAll(datas);
         datasView.setCellFactory(tListView -> new ViewCell());
@@ -77,6 +78,7 @@ public class ListedListWindow
     @Override
     public void close() {
         closeSubwindow.closeSubwindow(this);
+
     }
 
     private class ViewCell

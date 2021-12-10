@@ -127,11 +127,11 @@ public class ListedViewCell
             pallete.getChildren().setAll(
                     getButton(Image.EDIT, imgButtonWidth, imgButtonHeight, this::toEditMode)
             );
-            if(listed.getId().equals("-1")) {
+//            if(listed.getId().equals("-1")) {
                 remove = getButton(Image.TRASH, imgButtonWidth, imgButtonHeight, this::remove);
                 remove.setDisable(!hasRemoveItem());
                 pallete.getChildren().add( remove );
-            }
+//            }
         } else {
             pallete.getChildren().setAll(
                     getButton(Image.CHECKMARK, imgButtonWidth, imgButtonHeight, event -> apply())

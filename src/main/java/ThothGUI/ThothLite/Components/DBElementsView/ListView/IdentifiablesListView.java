@@ -11,17 +11,19 @@ import ThothGUI.ThothLite.Subwindows.IdentifiableCardWindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import ThothGUI.thoth_styleconstants.Stylesheets;
 import controls.Button;
+import controls.ComboBox;
 import controls.Label;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 
 import javafx.scene.layout.BorderPane;
@@ -32,6 +34,10 @@ import window.Closeable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Flow;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
@@ -58,6 +64,11 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     private static final String STYLESHEET_PATH = Stylesheets.IDENTIFIABLE_LIST;
     protected AvaliableTables table;
 
+    /**
+     * Объект подписки
+     * */
+    private Flow.Subscription subscription;
+
     protected BorderPane pallete;
     protected HBox sortedPane;
     protected ListView<T> identifiableElementList;
@@ -79,8 +90,14 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         setCenter(createListView());
         setTop(createPallete());
 
-        this.datas.addListener((InvalidationListener) change -> {
-            identifiableElementList.getItems().addAll(this.datas.getValue());
+        this.datas.addListener((ListChangeListener<? super T>) change -> {
+            Platform.runLater(() -> {
+                LOG.log(Level.INFO, "Обновление отображения списка");
+                identifiableElementList.setCellFactory(tListView -> null);
+//                identifiableElementList.getItems().clear();
+                identifiableElementList.getItems().setAll(this.datas.getValue());
+                identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
+            });
         });
         this.datas.setValue(FXCollections.observableList(datas));
 
@@ -110,8 +127,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected Node createSortedPane(){
         sortedPane = new HBox();
 
-        sortedPane.setPadding(new Insets(5));
+        sortedPane.setPadding(new Insets(2, 2, 2, 5));
         sortedPane.setSpacing(2);
+        sortedPane.setAlignment(Pos.CENTER_LEFT);
 
         Label sortLabel = new Label("Сортировка:");
         ComboBox sortBox = new ComboBox<>();
@@ -206,6 +224,10 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return null;
     }
 
+    public void finishProccess(){
+        this.subscription.cancel();
+    }
+
     @Override
     public void onComplete() {
     }
@@ -217,11 +239,14 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     @Override
     public void onNext(List<T> item) {
+        this.subscription.request(1);
+        LOG.log(Level.INFO, "Обновление datas");
         this.datas.setValue( FXCollections.observableList(item) );
     }
 
     @Override
     public void onSubscribe(Flow.Subscription subscription) {
+        this.subscription = subscription;
         subscription.request(1);
     }
 

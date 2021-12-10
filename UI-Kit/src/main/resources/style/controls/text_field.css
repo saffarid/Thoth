@@ -1,17 +1,33 @@
-.text-field{
+.text-area, .text-field{
     -fx-background-color:transparent;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
     -fx-border-color:#FFC107;
     -fx-border-style:solid;
     -fx-border-width:0 0 2px 0;
     -fx-text-fill:#F8F9FA;
 }
 
-.text-field:hover{
+.text-area{
+    -fx-pref-row-count:3;
+    -fx-pref-column-count:1;
+    -fx-border-width:1px;
+    -fx-wrap-text:true;
+}
+
+.text-area .scroll-pane, .text-area .scroll-pane .content{
+    -fx-background-color:#343A40;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+
+}
+
+.text-area:hover, .text-field:hover{
     -fx-border-color:#E0A800;
     -fx-text-fill:#E2E6EA;
 }
 
-.text-field:disabled{
+.text-area:disabled, .text-field:disabled{
     -fx-border-color:#FFD75E;
     -fx-text-fill:#FAFCFC;
 }

@@ -4,14 +4,18 @@ import controls.Button;
 import controls.Label;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import styleconstants.Images;
+import styleconstants.Stylesheets;
 
 public class Title
         extends BorderPane {
@@ -71,19 +75,23 @@ public class Title
      * */
     public Title addContextMenu(MenuItem... es){
         iconMenu = new Menu();
+
         iconMenu.setGraphic(
                 new ImageView(
                         new Image(
                                 getClass().getResource(Images.THREE_POINT_H.getUrl()).toExternalForm(),
-                                15, 15,
+                                20, 20,
                                 true, true
                         )
                 )
         );
+
         iconMenu.getItems().setAll(es);
         contextMenu.getMenus().add(iconMenu);
 
+        setAlignment(contextMenu, Pos.CENTER);
         setLeft(contextMenu);
+
         return this;
     }
 
@@ -140,7 +148,11 @@ public class Title
     public void init(){
         getStyleClass().add(STYLE_CLASS.TITLE.getStyleClass());
 
-        getStylesheets().add(getClass().getResource("/style/layout/title/title.css").toExternalForm());
+        getStylesheets().addAll(
+                getClass().getResource("/style/layout/title/title.css").toExternalForm()
+                , getClass().getResource(Stylesheets.CONTEXT_MENU).toExternalForm()
+
+        );
     }
 
     public void setSwitchSceneX(double switchSceneX) {

@@ -3,6 +3,8 @@ package ThothGUI.ThothLite.Components.DBElementsView.ListCell;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Storagable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
+import ThothCore.ThothLite.ThothLite;
 import controls.TextField;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -10,6 +12,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class IdentifiableViewCell
         extends BorderPane {

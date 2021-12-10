@@ -150,11 +150,11 @@ public class FinanceViewCell
             pallete.getChildren().setAll(
                     getButton(Image.EDIT, imgButtonWidth, imgButtonHeight, this::toEditMode)
             );
-            if(finance.getId().equals("-1")) {
+//            if(finance.getId().equals("-1")) {
                 remove = getButton(Image.TRASH, imgButtonWidth, imgButtonHeight, this::remove);
                 remove.setDisable(!hasRemoveItem());
                 pallete.getChildren().add( remove );
-            }
+//            }
         } else {
             pallete.getChildren().setAll(
                     getButton(Image.CHECKMARK, imgButtonWidth, imgButtonHeight, event -> apply())
@@ -218,22 +218,22 @@ public class FinanceViewCell
         List<Finance> list = new LinkedList<>();
         list.add(finance);
         if (!finance.getId().equals("-1")) {
-//            try {
-//                DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
-//                Optional<ButtonType> optional = instance.showAndWait();
-//                if (optional.isPresent()) {
-//                    if (optional.get() == ButtonType.YES) {
-//                        ThothLite.getInstance().removeFromTable(AvaliableTables.CURRENCIES, list);
-//                        removeItem.removeItem(finance);
-//                    }
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            } catch (NotContainsException e) {
-//                e.printStackTrace();
-//            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
+                Optional<ButtonType> optional = instance.showAndWait();
+                if (optional.isPresent()) {
+                    if (optional.get() == ButtonType.YES) {
+                        ThothLite.getInstance().removeFromTable(AvaliableTables.CURRENCIES, list);
+                        removeItem.removeItem(finance);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         } else {
             removeItem.removeItem(finance);
         }

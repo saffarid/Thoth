@@ -210,10 +210,12 @@ public class ThothLite {
      * @param datas  удаляемые записи.
      */
     public void removeFromTable(AvaliableTables table, List<? extends Identifiable> datas)
-            throws SQLException, NotContainsException {
+            throws SQLException, NotContainsException, ClassNotFoundException {
         database.beginTransaction();
-        removeFromTable(getTableName(table), datas);
+        String tableName = getTableName(table);
+        removeFromTable(tableName, datas);
         database.commitTransaction();
+        database.readTable(tableName);
     }
 
     /**

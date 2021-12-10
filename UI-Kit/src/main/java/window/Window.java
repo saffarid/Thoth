@@ -5,7 +5,10 @@ import layout.custompane.Title;
 import styleconstants.Styleclasses;
 import styleconstants.Stylesheets;
 
-public abstract class Window extends BorderPane {
+public abstract class Window
+        extends BorderPane
+        implements Closeable
+{
 
     protected Title title;
 
@@ -25,5 +28,9 @@ public abstract class Window extends BorderPane {
                     "    -fx-border-width:3px;\n" +
                     "-fx-background-color:#343A40");
         }
+    }
+
+    public Title getTitle() {
+        return title;
     }
 }
