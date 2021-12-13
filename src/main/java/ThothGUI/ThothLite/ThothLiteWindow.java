@@ -116,7 +116,11 @@ public class ThothLiteWindow
         mainStage.close();
     }
 
-    private MenuButton getNavigationMenuButton(String mes, String url, EventHandler<ActionEvent> event){
+    private MenuButton getNavigationMenuButton(
+            String mes
+            , String url
+            , EventHandler<ActionEvent> event
+    ){
         MenuButton menuButton = new MenuButton(mes);
         if(url != null) {
             menuButton.setGraphic(

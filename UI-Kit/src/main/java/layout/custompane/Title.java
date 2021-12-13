@@ -2,9 +2,12 @@ package layout.custompane;
 
 import controls.Button;
 import controls.Label;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -14,6 +17,10 @@ import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import styleconstants.Images;
 import styleconstants.Stylesheets;
+import styleconstants.imagesvg.Close;
+import styleconstants.imagesvg.Iconfy;
+import styleconstants.imagesvg.Maximize;
+import styleconstants.imagesvg.Minify;
 
 public class Title
         extends BorderPane {
@@ -34,6 +41,7 @@ public class Title
 
     protected double switchSceneX;
     protected double switchSceneY;
+    private SimpleBooleanProperty isMinify;
 
     private Button close;
     private Button minify;
@@ -60,7 +68,8 @@ public class Title
     }
 
     public Title addClose(EventHandler<ActionEvent> event){
-        close = getButton(Images.URL_CLOSE.getUrl());
+//        close = getButton(Images.URL_CLOSE.getUrl());
+        close = getButton(Close.getInstance());
         close.setOnAction(event);
         close.getStyleClass().add(STYLE_CLASS.CLOSE.getStyleClass());
         controls.getChildren().add(close);
@@ -94,7 +103,8 @@ public class Title
     }
 
     public Title addIconify(EventHandler<ActionEvent> event){
-        iconify = getButton(Images.URL_MINIFY_TO_TASK_BAR.getUrl());
+//        iconify = getButton(Images.URL_MINIFY_TO_TASK_BAR.getUrl());
+        iconify = getButton(Iconfy.getInstance());
         iconify.setOnAction(event);
         controls.getChildren().add(iconify);
         return this;
@@ -110,10 +120,24 @@ public class Title
         return this;
     }
 
-    public Title addMinify(EventHandler<ActionEvent> event){
-        minify = getButton(Images.URL_SQUARE.getUrl());
+    public Title addMinify(
+            EventHandler<ActionEvent> event
+            , ReadOnlyBooleanProperty isMinify
+    ){
+        minify = getButton(Maximize.getInstance());
         minify.setOnAction(event);
         controls.getChildren().add(minify);
+        this.isMinify = new SimpleBooleanProperty(true);
+        this.isMinify.bind(isMinify);
+
+        this.isMinify.addListener((observableValue, aBoolean, t1) -> {
+            if(t1){
+                minify.setGraphic(Minify.getInstance());
+            }else{
+                minify.setGraphic(Maximize.getInstance());
+            }
+        });
+
         return this;
     }
 
@@ -124,14 +148,22 @@ public class Title
         return this;
     }
 
+    public Button getButton(Node node){
+        return new Button(node);
+    }
+
     public Button getButton(String url){
         return new Button(
-                new ImageView(
-                        new Image(
-                                getClass().getResource(url).toExternalForm(),
-                                25, 25,
-                                true, true
-                        )
+                getImageView(url)
+        );
+    }
+
+    protected ImageView getImageView(String url){
+        return new ImageView(
+                new Image(
+                        getClass().getResource(url).toExternalForm(),
+                        25, 25,
+                        true, true
                 )
         );
     }
@@ -161,4 +193,9 @@ public class Title
     public void setSwitchSceneY(double switchSceneY) {
         this.switchSceneY = switchSceneY;
     }
+
+    public void bindMinify(SimpleBooleanProperty isMinify){
+        this.isMinify.bind(isMinify);
+    }
+
 }

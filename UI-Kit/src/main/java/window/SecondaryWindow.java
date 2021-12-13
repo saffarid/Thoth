@@ -10,7 +10,6 @@ import java.util.logging.Level;
 public class SecondaryWindow
         extends Window{
 
-    private Stage stage;
 
     public SecondaryWindow(Stage stage, String title) {
         super();

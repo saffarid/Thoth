@@ -9,21 +9,40 @@ import java.awt.*;
 public class PrimaryWindow
         extends Window{
 
-    private Stage stage;
-
     public PrimaryWindow(Stage stage) {
         super();
-
         this.stage = stage;
 
         title = new Title()
-                .addIconify(event -> {})
-                .addMinify(event -> {})
+                .addIconify(event -> iconify())
+                .addMinify(event -> minify(), stage.maximizedProperty())
                 .addClose(event -> close());
+        isMinify.bind(stage.maximizedProperty());
         title.setOnMousePressed(this::stagePress);
         title.setOnMouseDragged(this::stageDrag);
 
+        stage.maximizedProperty().addListener((observableValue, aBoolean, t1) -> {
+            if(isMinify.getValue()){
+
+                stage.setWidth(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth());
+                stage.setHeight(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight());
+            }else{
+
+                stage.setWidth(900);
+                stage.setHeight(600);
+            }
+        });
+
         setTop(this.title);
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    private void minify(){
+        stage.setMaximized(!stage.isMaximized());
     }
 
     public void stagePress(MouseEvent mouseEvent) {
@@ -47,10 +66,5 @@ public class PrimaryWindow
                 stage.setY(mouseEvent.getScreenY() - title.getSwitchSceneY());
             }
         }
-    }
-
-    @Override
-    public void close() {
-
     }
 }
