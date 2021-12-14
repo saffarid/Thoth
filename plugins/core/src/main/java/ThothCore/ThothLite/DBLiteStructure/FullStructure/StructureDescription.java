@@ -2,7 +2,7 @@ package ThothCore.ThothLite.DBLiteStructure.FullStructure;
 
 public class StructureDescription {
 
-    public static enum TableTypes {
+    public enum TableTypes {
         TABLE("table"),
         PROJECT_TABLE("project_table"),
         GUIDE("guide"),
@@ -10,18 +10,24 @@ public class StructureDescription {
         SYSTEM_TABLE("system_table"),
         SYSTEM_GUIDE("system_guide"),
         SYSTEM_CONSTANTS("system_constants");
-
         private String type;
-
         TableTypes(String type) {
             this.type = type;
         }
-
         public String getType() {
             return type;
         }
     }
 
+    /**
+     * Таблица информации о системе
+     * */
+    public static class Info{
+        public static final String TABLE_NAME = "info";
+        public static final String ID = "id";
+        public static final String MODULE = "module";
+        public static final String VERSION = "version";
+    }
 
     /**
      * Таблица едениц измерения

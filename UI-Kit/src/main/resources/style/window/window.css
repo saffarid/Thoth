@@ -1,4 +1,5 @@
 .window{
+    -fx-background-color: #343A40;
     -fx-border-color:#707070;
     -fx-border-style:solid;
     -fx-border-width:3px;

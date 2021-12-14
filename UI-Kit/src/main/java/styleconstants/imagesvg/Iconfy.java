@@ -10,10 +10,10 @@ public class Iconfy {
     public static Node getInstance(){
         Pane pane = new Pane();
 
-        Line line = new Line(5, 12.5, 20, 12.5);
+        Line line = new Line(7.5, 12.5, 17.5, 12.5);
 
         line.setStroke(Color.WHITE);
-        line.setStrokeWidth(1.5);
+        line.setStrokeWidth(1);
 
         line.setFill(Color.TRANSPARENT);
 

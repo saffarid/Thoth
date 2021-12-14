@@ -17,10 +17,7 @@ import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import styleconstants.Images;
 import styleconstants.Stylesheets;
-import styleconstants.imagesvg.Close;
-import styleconstants.imagesvg.Iconfy;
-import styleconstants.imagesvg.Maximize;
-import styleconstants.imagesvg.Minify;
+import styleconstants.imagesvg.*;
 
 public class Title
         extends BorderPane {
@@ -68,7 +65,6 @@ public class Title
     }
 
     public Title addClose(EventHandler<ActionEvent> event){
-//        close = getButton(Images.URL_CLOSE.getUrl());
         close = getButton(Close.getInstance());
         close.setOnAction(event);
         close.getStyleClass().add(STYLE_CLASS.CLOSE.getStyleClass());
@@ -83,15 +79,8 @@ public class Title
     public Title addContextMenu(MenuItem... es){
         iconMenu = new Menu();
 
-        iconMenu.setGraphic(
-                new ImageView(
-                        new Image(
-                                getClass().getResource(Images.THREE_POINT_H.getUrl()).toExternalForm(),
-                                20, 24,
-                                false, true
-                        )
-                )
-        );
+//        iconMenu.setGraphic( getImageView(Images.THREE_POINT_H.getUrl()) );
+        iconMenu.setGraphic( ThreePointH.getInstance() );
 
         iconMenu.getItems().setAll(es);
         contextMenu.getMenus().add(iconMenu);
@@ -103,7 +92,6 @@ public class Title
     }
 
     public Title addIconify(EventHandler<ActionEvent> event){
-//        iconify = getButton(Images.URL_MINIFY_TO_TASK_BAR.getUrl());
         iconify = getButton(Iconfy.getInstance());
         iconify.setOnAction(event);
         controls.getChildren().add(iconify);

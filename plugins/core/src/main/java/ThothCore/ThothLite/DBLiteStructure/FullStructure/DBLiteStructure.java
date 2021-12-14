@@ -67,6 +67,28 @@ public class DBLiteStructure extends DataBaseSQL {
         return column;
     }
 
+    class Info extends Table{
+        public Info() {
+            super();
+            name = StructureDescription.Info.TABLE_NAME;
+            type = StructureDescription.TableTypes.SYSTEM_TABLE.getType();
+
+            addColumn(
+                    TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT)
+            );
+            addColumn(
+                    getCustomColumn(
+                            StructureDescription.Info.MODULE, DataTypes.NOTE, false, true
+                    )
+            );
+            addColumn(
+                    getCustomColumn(
+                            StructureDescription.Info.VERSION, DataTypes.NOTE, false, true
+                    )
+            );
+        }
+    }
+
     /**
      * Таблица едениц измерения
      */

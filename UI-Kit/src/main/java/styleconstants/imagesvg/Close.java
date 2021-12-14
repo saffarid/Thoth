@@ -11,11 +11,11 @@ public class Close {
     public static Node getInstance(){
         Pane pane = new Pane();
 
-        Line line1 = new Line(5, 5, 20, 20);
-        line1.setStrokeWidth(1.5);
+        Line line1 = new Line(7.5, 7.5, 17.5, 17.5);
+        line1.setStrokeWidth(1);
 
-        Line line2 = new Line(5, 20, 20, 5);
-        line2.setStrokeWidth(1.5);
+        Line line2 = new Line(7.5, 17.5, 17.5, 7.5);
+        line2.setStrokeWidth(1);
 
         Shape union = Shape.union(line1, line2);
         union.setStroke(Color.TRANSPARENT);

@@ -143,29 +143,20 @@ public class DataBaseLite {
     public void readTable(String table)
             throws SQLException, ClassNotFoundException {
         Table readingTable = structure.getTable(table);
-        LOG.log(Level.INFO, "Reread table " + table + " start");
-        CompletableFuture.supplyAsync(() -> {
 
+        CompletableFuture.supplyAsync(() -> {
             List<HashMap<String, Object>> dataTable = new LinkedList<>();
             try {
-                LOG.log(Level.INFO, "Try reread table " + table);
                 dataTable = dbManager.getDataTable(dbFile, readingTable, false);
-                LOG.log(Level.INFO, "Reread table " + table + " successful");
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             return dataTable;
-
         }).thenAccept(hashMaps -> {
-            LOG.log(Level.INFO, "Read in table " + table + " start");
             readTable(readingTable, hashMaps);
         });
-//        readTable(
-//                readingTable,
-//                dbManager.getDataTable(dbFile, readingTable, false)
-//        );
     }
 
     /**

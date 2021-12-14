@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import layout.basepane.ScrollPane;
 import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
+import styleconstants.imagesvg.ThreeLineV;
 
 import java.util.List;
 
@@ -111,20 +112,12 @@ public class NavigationMenu extends BorderPane {
      * Функция инициализирует кнопку минификации, добавляет на панель и прикрепляет слушателя.
      * */
     private void setMinifyButton(){
-        ImageView imageView = new ImageView(
-                new Image(
-                        getClass().getResourceAsStream("/image/icons/menu.png")
-                        , 20, 20
-                        , false, false
-                )
-        );
         minifyButton = new Button();
-        minifyButton.setGraphic(imageView);
+        minifyButton.setGraphic(ThreeLineV.getInstance());
         minifyButton.setOnAction(this::minify);
         minifyButton.getStyleClass().add(STYLE_CLASS_MINIFY_BTN);
 
         title.setLeft(minifyButton);
     }
-
 
 }

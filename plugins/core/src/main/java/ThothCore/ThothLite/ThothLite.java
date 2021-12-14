@@ -15,17 +15,29 @@ import ThothCore.ThothLite.Timer.Traceable;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Flow;
+import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ThothLite {
 
+    public static Logger LOG;
     private static ThothLite thoth;
+    private ScheduledFuture<?> scheduledFutureReReadDb;
 
     private DataBaseLite database;
     private DBData dbData;
 
     private Traceable watcherPurchasesFinish;
     private Traceable watcherOrdersFinish;
+
+    private ScheduledThreadPoolExecutor periodReReadDb;
+
+    private Runnable reReader;
+
+    static {
+        LOG = Logger.getLogger(ThothLite.class.getName());
+    }
 
     private ThothLite()
             throws SQLException, ClassNotFoundException, NotContainsException {
@@ -38,6 +50,10 @@ public class ThothLite {
 
         watcherPurchasesFinish.setTraceableObjects(dbData.getTable(StructureDescription.Purchases.TABLE_NAME).getDatas());
         watcherOrdersFinish.setTraceableObjects(dbData.getTable(StructureDescription.Orders.TABLE_NAME).getDatas());
+
+        reReader = new ReReadDatabase();
+        periodReReadDb = new ScheduledThreadPoolExecutor(1);
+        scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, 5, TimeUnit.SECONDS);
 
     }
 
@@ -66,6 +82,18 @@ public class ThothLite {
         updateInTable(getTableName(AvaliableTables.STORAGABLE), listStoragable);
         database.commitTransaction();
         //При удачном выполнении завершаем транзакцию
+    }
+
+    public void changeDelayReReadDb(long newDelay){
+
+        LOG.log(Level.INFO, "Отменяем старую задачу");
+
+        scheduledFutureReReadDb.cancel(false);
+        LOG.log(Level.INFO, "Старая задача отменена");
+        if(newDelay != -1) {
+            LOG.log(Level.INFO, "Запускаем новую задачу");
+            scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -204,6 +232,15 @@ public class ThothLite {
     }
 
     /**
+     * Функция для считывания БД
+     * */
+    public void reReadDb() {
+        LOG.log(Level.INFO, "enter to reReadDb");
+        CompletableFuture.runAsync(reReader);
+        LOG.log(Level.INFO, "exit from reReadDb");
+    }
+
+    /**
      * Функция удаляет данные из таблицы.
      *
      * @param table  таблица из которой удаляются записи.
@@ -259,6 +296,22 @@ public class ThothLite {
             throws SQLException, NotContainsException {
         Data table = dbData.getTable(tableName);
         database.update(tableName, table.convertToMap(datas));
+    }
+
+    class ReReadDatabase
+            implements Runnable{
+        @Override
+        public void run() {
+            try {
+                LOG.log(Level.INFO, "start reRead");
+                database.readDataBase();
+                LOG.log(Level.INFO, "finish successful reRead");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
