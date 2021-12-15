@@ -6,7 +6,9 @@ module thoth {
     exports ThothCore.ThothLite.DBData.DBDataElement.Properties;
     exports ThothCore.ThothLite.DBData.DBDataElement.Implements;
     exports ThothCore.ThothLite.Exceptions;
+    exports ThothCore.ThothLite.Config;
 
     requires java.sql;
+    requires json.simple;
 
 }

@@ -52,8 +52,8 @@ public class ThothLite {
         watcherOrdersFinish.setTraceableObjects(dbData.getTable(StructureDescription.Orders.TABLE_NAME).getDatas());
 
         reReader = new ReReadDatabase();
-        periodReReadDb = new ScheduledThreadPoolExecutor(1);
-        scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, 5, TimeUnit.SECONDS);
+//        periodReReadDb = new ScheduledThreadPoolExecutor(1);
+//        scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, 5, TimeUnit.SECONDS);
 
     }
 
@@ -84,15 +84,13 @@ public class ThothLite {
         //При удачном выполнении завершаем транзакцию
     }
 
-    public void changeDelayReReadDb(long newDelay){
-
+    public void changeDelayReReadDb(PeriodAutoupdateDatabase newDelay){
         LOG.log(Level.INFO, "Отменяем старую задачу");
-
         scheduledFutureReReadDb.cancel(false);
         LOG.log(Level.INFO, "Старая задача отменена");
-        if(newDelay != -1) {
+        if(newDelay != PeriodAutoupdateDatabase.NEVER) {
             LOG.log(Level.INFO, "Запускаем новую задачу");
-            scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay, TimeUnit.SECONDS);
+            scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay.getPeriod(), TimeUnit.MINUTES);
         }
     }
 

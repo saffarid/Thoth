@@ -10,5 +10,6 @@ module launcher {
     requires uikit;
     requires thoth;
     requires java.sql;
+    requires java.desktop;
 
 }

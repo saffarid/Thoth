@@ -3,6 +3,7 @@ package ThothGUI.ThothLite;
 import Main.Main;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
+import ThothCore.ThothLite.PeriodAutoupdateDatabase;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
 import ThothGUI.OpenSubwindow;
@@ -98,7 +99,7 @@ public class ThothLiteWindow
 
         setBottom(
                 ThothGUI.ThothLite.Components.Controls.Button.getInstance("Сменить время обновления", event -> {
-                    this.thoth.changeDelayReReadDb(-1);
+                    this.thoth.changeDelayReReadDb(PeriodAutoupdateDatabase.NEVER);
                 })
         );
 
