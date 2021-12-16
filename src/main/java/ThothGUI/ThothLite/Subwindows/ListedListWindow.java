@@ -44,17 +44,17 @@ public class ListedListWindow
         datas.add(AvaliableTables.PRODUCT_TYPES);
 
         setId(title);
-        setCenter(createListView());
+        setCenter(createContent());
 
     }
 
     private VBox createContent() {
         VBox vBox = new VBox();
 
-        vBox.setPadding(new Insets(5));
+        vBox.setPadding(new Insets(2, 5, 2, 5));
 
         vBox.setFillWidth(true);
-        vBox.setAlignment(Pos.CENTER);
+        vBox.setAlignment(Pos.TOP_CENTER);
 
         vBox.getChildren().setAll(
                 createListView()
@@ -65,8 +65,8 @@ public class ListedListWindow
 
     protected ListView<AvaliableTables> createListView() {
         datasView = new ListView<>();
-        setMargin(datasView, new Insets(2));
-        datasView.setPadding(new Insets(2));
+        setMargin(datasView, new Insets(2, 5, 2, 5));
+        datasView.setPadding(new Insets(2, 5, 2, 5));
         datasView.getItems().setAll(datas);
         datasView.setCellFactory(tListView -> new ViewCell());
 

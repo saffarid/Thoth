@@ -1,6 +1,9 @@
 package ThothGUI.ThothLite;
 
+import ThothCore.ThothLite.Config.Config;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.PeriodAutoupdateDatabase;
+import ThothCore.ThothLite.ThothLite;
 import controls.ComboBox;
 import controls.Label;
 import controls.Toggle;
@@ -17,6 +20,7 @@ import layout.basepane.VBox;
 import window.SecondaryWindow;
 
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -121,9 +125,18 @@ public class Settings extends SecondaryWindow {
 
         switch (id){
             case DELAY_REREAD_DATABASE:{
-                res.setItems(
-                        FXCollections.observableList(Arrays.asList(PeriodAutoupdateDatabase.values()))
-                );
+                try {
+                    res.setItems(
+                            FXCollections.observableList(Arrays.asList(PeriodAutoupdateDatabase.values()))
+                    );
+                    res.setValue(ThothLite.getInstance().getConfig().getDatabase().getPeriod());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                } catch (NotContainsException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
             case FONT_FAMILY:{

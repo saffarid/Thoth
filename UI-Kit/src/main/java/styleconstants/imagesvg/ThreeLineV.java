@@ -22,15 +22,16 @@ public class ThreeLineV {
         line2.setFill(Color.WHITE);
         line3.setFill(Color.WHITE);
 
-        line1.setStrokeWidth(1.2);
-        line2.setStrokeWidth(1.2);
-        line3.setStrokeWidth(1.2);
+        line1.setStrokeWidth(1);
+        line2.setStrokeWidth(1);
+        line3.setStrokeWidth(1);
 
         line1.setStroke(Color.WHITE);
         line2.setStroke(Color.WHITE);
         line3.setStroke(Color.WHITE);
 
         Group group = new Group(line1, line2, line3);
+        group.setAutoSizeChildren(true);
 
         Pane pane = new Pane();
         pane.getChildren().add(group);

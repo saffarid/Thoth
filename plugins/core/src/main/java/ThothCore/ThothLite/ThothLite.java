@@ -1,5 +1,6 @@
 package ThothCore.ThothLite;
 
+import ThothCore.ThothLite.Config.Config;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Composite;
@@ -11,7 +12,9 @@ import ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.Timer.ThothTimer;
 import ThothCore.ThothLite.Timer.Traceable;
+import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +27,8 @@ public class ThothLite {
     public static Logger LOG;
     private static ThothLite thoth;
     private ScheduledFuture<?> scheduledFutureReReadDb;
+
+    private Config config;
 
     private DataBaseLite database;
     private DBData dbData;
@@ -52,9 +57,22 @@ public class ThothLite {
         watcherOrdersFinish.setTraceableObjects(dbData.getTable(StructureDescription.Orders.TABLE_NAME).getDatas());
 
         reReader = new ReReadDatabase();
+
+        try {
+            config = Config.getInstance();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 //        periodReReadDb = new ScheduledThreadPoolExecutor(1);
 //        scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, 5, TimeUnit.SECONDS);
 
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public void acceptPurchase(Purchasable purchasable) throws NotContainsException, SQLException {
