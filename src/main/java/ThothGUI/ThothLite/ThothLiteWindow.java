@@ -99,7 +99,7 @@ public class ThothLiteWindow
 
         setBottom(
                 ThothGUI.ThothLite.Components.Controls.Button.getInstance("Сменить время обновления", event -> {
-                    this.thoth.changeDelayReReadDb(PeriodAutoupdateDatabase.NEVER);
+                    this.thoth.changeDelayReReadDb();
                 })
         );
 

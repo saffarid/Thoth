@@ -47,6 +47,15 @@ public class ThothLite {
     private ThothLite()
             throws SQLException, ClassNotFoundException, NotContainsException {
 
+
+        try {
+            config = Config.getInstance();
+        } catch (IOException e) {
+            LOG.log(Level.INFO, "Ошибка открытия файла конфигурации.");
+        } catch (ParseException e) {
+            LOG.log(Level.INFO, "Ошибка чтения файла конфигурации.");
+        }
+
         dbData = DBData.getInstance();
         database = new DataBaseLite();
 
@@ -58,13 +67,7 @@ public class ThothLite {
 
         reReader = new ReReadDatabase();
 
-        try {
-            config = Config.getInstance();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
 
 //        periodReReadDb = new ScheduledThreadPoolExecutor(1);
 //        scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, 5, TimeUnit.SECONDS);
@@ -102,13 +105,26 @@ public class ThothLite {
         //При удачном выполнении завершаем транзакцию
     }
 
-    public void changeDelayReReadDb(PeriodAutoupdateDatabase newDelay){
+    /**
+     * Отмена периодического перечитывания базы
+     * */
+    public void cancelAutoReReadDb(){
         LOG.log(Level.INFO, "Отменяем старую задачу");
         scheduledFutureReReadDb.cancel(false);
         LOG.log(Level.INFO, "Старая задача отменена");
-        if(newDelay != PeriodAutoupdateDatabase.NEVER) {
-            LOG.log(Level.INFO, "Запускаем новую задачу");
-            scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay.getPeriod(), TimeUnit.MINUTES);
+    }
+
+    /**
+     * Изменение периода перечитывания базы
+     * */
+    public void changeDelayReReadDb(){
+        PeriodAutoupdateDatabase newDelay = config.getDatabase().getPeriod();
+        if(config.getDatabase().isAutoupdate()) {
+            cancelAutoReReadDb();
+            if (newDelay != PeriodAutoupdateDatabase.NEVER) {
+                LOG.log(Level.INFO, "Запускаем новую задачу");
+                scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay.getPeriod(), TimeUnit.MINUTES);
+            }
         }
     }
 
@@ -251,9 +267,13 @@ public class ThothLite {
      * Функция для считывания БД
      * */
     public void reReadDb() {
-        LOG.log(Level.INFO, "enter to reReadDb");
-        CompletableFuture.runAsync(reReader);
-        LOG.log(Level.INFO, "exit from reReadDb");
+        if(config.getDatabase().isAutoupdate()) {
+            if (config.getDatabase().isUpdateAfterTrans()) {
+                LOG.log(Level.INFO, "enter to reReadDb");
+                CompletableFuture.runAsync(reReader);
+                LOG.log(Level.INFO, "exit from reReadDb");
+            }
+        }
     }
 
     /**
