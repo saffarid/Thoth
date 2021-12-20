@@ -3,9 +3,11 @@ package ThothGUI.ThothLite;
 import Main.Main;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Finishable;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothCore.ThothLite.PeriodAutoupdateDatabase;
 import ThothCore.ThothLite.ThothLite;
 import ThothGUI.CloseSubwindow;
+import ThothGUI.Config.Config;
 import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.Subwindows.IdentifiableListWindow;
 import ThothGUI.ThothLite.Subwindows.ListedListWindow;
@@ -27,8 +29,12 @@ import javafx.scene.input.KeyCombination;
 import javafx.stage.*;
 import layout.basepane.StackPane;
 import layout.custompane.NavigationMenu;
+import org.json.simple.parser.ParseException;
 import window.PrimaryWindow;
+import window.StageResizer;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +50,8 @@ public class ThothLiteWindow
         OpenSubwindow
         , CloseSubwindow
         , Flow.Subscriber<Finishable> {
+
+    private Config config;
 
     public enum DEFAULT_SIZE {
         HEIGHT(600),
@@ -84,13 +92,27 @@ public class ThothLiteWindow
         LOG = Logger.getLogger("ThothLiteGUI");
     }
 
-    private ThothLiteWindow(Stage stage,
-                            ThothLite thoth) {
+    private ThothLiteWindow(Stage stage) {
         super(stage);
-        CompletableFuture.runAsync(() -> this.thoth = thoth);
-//        this.thoth = thoth;
-        mainStage = stage;
+        try {
+            this.thoth = ThothLite.getInstance();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NotContainsException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
+        try {
+            this.config = Config.getInstance();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        mainStage = stage;
         openSubwindows = new ArrayList<>();
 
         menuConfig();
@@ -115,16 +137,16 @@ public class ThothLiteWindow
         return window;
     }
 
-    public static ThothLiteWindow getInstance(Stage stage,
-                                              ThothLite thoth) {
+    public static ThothLiteWindow getInstance(Stage stage) {
         if (window == null) {
-            window = new ThothLiteWindow(stage, thoth);
+            window = new ThothLiteWindow(stage);
         }
         return window;
     }
 
     @Override
     public void close() {
+        thoth.close();
         mainStage.close();
     }
 
@@ -155,12 +177,18 @@ public class ThothLiteWindow
             settings.setScene(
                     new Scene(
                             new Settings(settings, "settings"),
-                            Settings.DEFAULT_SIZE.WIDTH.getSize(), Settings.DEFAULT_SIZE.HEIGHT.getSize()
+                            this.config.getWindow().getWidthSecondary(), this.config.getWindow().getHeightSecondary()
                     )
             );
+            settings.setMinWidth(this.config.getWindow().getWidthSecondaryMin());
+            settings.setMinHeight(this.config.getWindow().getHeightSecondaryMin());
+
             settings.initModality(Modality.APPLICATION_MODAL);
             settings.initOwner(mainStage);
+
             settings.show();
+
+            new StageResizer(settings);
 
             settings.setX(mainStage.getX() + ((mainStage.getWidth() - settings.getWidth()) / 2));
             settings.setY(mainStage.getY() + ((mainStage.getHeight() - settings.getHeight()) / 2));

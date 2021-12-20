@@ -57,7 +57,7 @@ public class Config {
         }
     }
 
-    private void exportConfig(){
+    public void exportConfig(){
 
         if(!configFile.getParentFile().exists()){
             configFile.getParentFile().mkdir();

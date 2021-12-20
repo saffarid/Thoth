@@ -1,21 +1,26 @@
 package Main;
 
+import ThothCore.ThothLite.Exceptions.NotContainsException;
 import ThothGUI.Config.Config;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import ThothCore.ThothLite.ThothLite;
+import controls.Label;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.json.simple.parser.ParseException;
 import window.StageResizer;
 
-import java.io.File;
-import java.util.Currency;
-import java.util.Locale;
-import java.util.concurrent.ForkJoinPool;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class Main extends Application{
 
@@ -31,22 +36,59 @@ public class Main extends Application{
     @Override
     public void init() throws Exception {
         super.init();
-        config = Config.getInstance();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
 
-        ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage, ThothLite.getInstance());
-//        thoth.setPrefSize(ThothLiteWindow.DEFAULT_SIZE.WIDTH.getSize(), ThothLiteWindow.DEFAULT_SIZE.HEIGHT.getSize());
-        thoth.setPrefSize(config.getWindow().getWidth(), config.getWindow().getHeight());
-        stage.setScene(new Scene(thoth));
+        this.stage.initStyle(StageStyle.UNDECORATED);
+        this.stage.show();
+        CompletableFuture.runAsync(() -> {
+            try {
+                ThothLite.getInstance();
+                config = Config.getInstance();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (NotContainsException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }).thenAccept(unused -> {
 
-        stage.initStyle(StageStyle.UNDECORATED);
+            Platform.runLater(() -> {
+                LOG.log(Level.INFO, "start");
+                ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage);
 
-        stage.show();
-        new StageResizer(stage);
+                thoth.setPrefSize(
+                        config.getWindow().getWidthPrimary()
+                        , config.getWindow().getHeightPrimary()
+                );
+
+                this.stage.setMinWidth(config.getWindow().getWidthPrimaryMin());
+                this.stage.setMinHeight(config.getWindow().getHeightPrimaryMin());
+
+                stage.setScene(
+                        new Scene(
+                                thoth
+//                                , config.getWindow().getWidthPrimary()
+//                                , config.getWindow().getHeightPrimary()
+                        )
+                );
+
+//                stage.show();
+
+                new StageResizer(stage);
+            });
+
+        });
+
+
     }
 
     public static void main(String[] args) {
@@ -56,6 +98,7 @@ public class Main extends Application{
     @Override
     public void stop() throws Exception {
         super.stop();
+        config.exportConfig();
         System.exit(-1);
     }
 }

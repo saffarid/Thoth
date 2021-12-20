@@ -1,7 +1,8 @@
 package ThothGUI.Config;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.text.Font;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -64,7 +65,7 @@ public class Config {
 
     }
 
-    private void exportConfig() {
+    public void exportConfig() {
 
         if (!configFile.getParentFile().exists()) {
             configFile.getParentFile().mkdir();
@@ -148,90 +149,161 @@ public class Config {
 
     public class Window {
 
-        private final String KEY_START_X = "startX";
-        private final String KEY_START_Y = "startY";
-        private final String KEY_WIDTH = "width";
-        private final String KEY_HEIGHT = "height";
+        private final String KEY_X_PRIMARY = "x_primary";
+        private final String KEY_Y_PRIMARY = "y_primary";
+        private final String KEY_WIDTH_PRIMARY = "width_primary";
+        private final String KEY_HEIGHT_PRIMARY = "height_primary";
         private final String KEY_ISMAX = "isMax";
 
-        private final double startXDefault = 0;
-        private final double startYDefault = 0;
-        private final double widthDefault = 1006;
-        private final double heightDefault = 606;
+        private final String KEY_X_SECONDARY = "x_secondary";
+        private final String KEY_Y_SECONDARY = "y_secondary";
+        private final String KEY_WIDTH_SECONDARY = "width_secondary";
+        private final String KEY_HEIGHT_SECONDARY = "height_secondary";
+
+        private final double xPrimaryDefault = 0;
+        private final double yPrimaryDefault = 0;
+        private final double widthPrimaryMin = 806;
+        private final double heightPrimaryMin = 406;
+        private final double widthPrimaryDefault = 1006;
+        private final double heightPrimaryDefault = 606;
         private final boolean isMaxDefault = false;
 
-        private Double startX;
-        private Double startY;
-        private Double width;
-        private Double height;
-        private Boolean isMax;
+        private final double widthSecondaryDefault = 806;
+        private final double heightSecondaryDefault = 606;
+        private final double widthSecondaryMin = 806;
+        private final double heightSecondaryMin = 406;
+
+        private SimpleDoubleProperty xPrimary;
+        private SimpleDoubleProperty yPrimary;
+        private SimpleDoubleProperty widthPrimary;
+        private SimpleDoubleProperty heightPrimary;
+        private SimpleBooleanProperty isMax;
+
+        private SimpleDoubleProperty xSecondary;
+        private SimpleDoubleProperty ySecondary;
+        private SimpleDoubleProperty widthSecondary;
+        private SimpleDoubleProperty heightSecondary;
 
         public Window() {
-            startX = startXDefault;
-            startY = startYDefault;
-            width = widthDefault;
-            height = heightDefault;
-            isMax = isMaxDefault;
+            xPrimary      = new SimpleDoubleProperty(xPrimaryDefault);
+            yPrimary      = new SimpleDoubleProperty(yPrimaryDefault);
+            widthPrimary  = new SimpleDoubleProperty(widthPrimaryDefault);
+            heightPrimary = new SimpleDoubleProperty(heightPrimaryDefault);
+            isMax         = new SimpleBooleanProperty(isMaxDefault);
+
+            widthSecondary  = new SimpleDoubleProperty(widthSecondaryDefault);
+            heightSecondary = new SimpleDoubleProperty(heightSecondaryDefault);
         }
 
         public Window(JSONObject data) {
-            startX = (double) data.get(KEY_START_X);
-            startY = (double) data.get(KEY_START_Y);
-            width  = (double) data.get(KEY_WIDTH);
-            height = (double) data.get(KEY_HEIGHT);
-            isMax  = (boolean) data.get(KEY_ISMAX);
+            xPrimary      = new SimpleDoubleProperty( (double) data.get(KEY_X_PRIMARY) );
+            yPrimary      = new SimpleDoubleProperty( (double) data.get(KEY_Y_PRIMARY) );
+            widthPrimary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_PRIMARY) );
+            heightPrimary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_PRIMARY) );
+            isMax         = new SimpleBooleanProperty( (boolean) data.get(KEY_ISMAX) );
+
+            widthSecondary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_SECONDARY) );
+            heightSecondary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_SECONDARY) );
         }
 
         public JSONObject exportJSON() {
             JSONObject res = new JSONObject();
 
-            res.put(KEY_START_X, startX);
-            res.put(KEY_START_Y, startY);
-            res.put(KEY_WIDTH, width);
-            res.put(KEY_HEIGHT, height);
-            res.put(KEY_ISMAX, isMax);
+            res.put(KEY_X_PRIMARY, xPrimary.doubleValue());
+            res.put(KEY_Y_PRIMARY, yPrimary.doubleValue());
+            res.put(KEY_WIDTH_PRIMARY, widthPrimary.doubleValue());
+            res.put(KEY_HEIGHT_PRIMARY, heightPrimary.doubleValue());
+            res.put(KEY_WIDTH_SECONDARY, widthSecondary.doubleValue());
+            res.put(KEY_HEIGHT_SECONDARY, heightSecondary.doubleValue());
+            res.put(KEY_ISMAX, isMax.get());
 
             return res;
         }
 
-        public Double getStartX() {
-            return startX;
+        /*
+        * Функции для работы с первичным окном
+        * */
+        public double getHeightPrimary() {
+            return heightPrimary.get();
+        }
+        public double getWidthPrimary() {
+            return widthPrimary.get();
         }
 
-        public void setStartX(Double startX) {
-            this.startX = startX;
+        public double getHeightPrimaryMin() {
+            return heightPrimaryMin;
+        }
+        public double getWidthPrimaryMin() {
+            return widthPrimaryMin;
         }
 
-        public Double getStartY() {
-            return startY;
+        public double getxPrimary() {
+            return xPrimary.get();
+        }
+        public double getyPrimary() {
+            return yPrimary.get();
         }
 
-        public void setStartY(Double startY) {
-            this.startY = startY;
+        public boolean isIsMax() {
+            return isMax.get();
         }
-
-        public Double getWidth() {
-            return width;
+        public boolean isMaxDefault() {
+            return isMaxDefault;
         }
-
-        public void setWidth(Double width) {
-            this.width = width;
-        }
-
-        public Double getHeight() {
-            return height;
-        }
-
-        public void setHeight(Double height) {
-            this.height = height;
-        }
-
-        public Boolean getMax() {
+        public SimpleBooleanProperty isMaxProperty() {
             return isMax;
         }
 
-        public void setMax(Boolean max) {
-            isMax = max;
+        public SimpleDoubleProperty widthPrimaryProperty() {
+            return widthPrimary;
+        }
+        public SimpleDoubleProperty heightPrimaryProperty() {
+            return heightPrimary;
+        }
+
+        public SimpleDoubleProperty xPrimaryProperty() {
+            return xPrimary;
+        }
+        public SimpleDoubleProperty yPrimaryProperty() {
+            return yPrimary;
+        }
+
+        /*
+        * Функции для работы с вторичным окном
+        * */
+        public double getHeightSecondary() {
+            return heightSecondary.get();
+        }
+        public double getWidthSecondary() {
+            return widthSecondary.get();
+        }
+
+        public double getHeightSecondaryMin() {
+            return heightSecondaryMin;
+        }
+        public double getWidthSecondaryMin() {
+            return widthSecondaryMin;
+        }
+
+        public SimpleDoubleProperty heightSecondaryProperty() {
+            return heightSecondary;
+        }
+        public SimpleDoubleProperty widthSecondaryProperty() {
+            return widthSecondary;
+        }
+
+        public SimpleDoubleProperty xSecondaryProperty() {
+            return xSecondary;
+        }
+        public SimpleDoubleProperty ySecondaryProperty() {
+            return ySecondary;
+        }
+
+        public double getxSecondary() {
+            return xSecondary.get();
+        }
+        public double getySecondary() {
+            return ySecondary.get();
         }
     }
 

@@ -129,6 +129,14 @@ public class ThothLite {
     }
 
     /**
+     * Функция завершает выполнение всех процессов
+     * */
+    public void close(){
+        config.exportConfig();
+        LOG.log(Level.INFO, "Good bye, my friend. I will miss you.");
+    }
+
+    /**
      * @param table запрашиваемая таблица.
      * @return список содержимого таблицы.
      */
