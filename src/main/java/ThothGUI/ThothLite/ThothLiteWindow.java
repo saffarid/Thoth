@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,7 +87,8 @@ public class ThothLiteWindow
     private ThothLiteWindow(Stage stage,
                             ThothLite thoth) {
         super(stage);
-        this.thoth = thoth;
+        CompletableFuture.runAsync(() -> this.thoth = thoth);
+//        this.thoth = thoth;
         mainStage = stage;
 
         openSubwindows = new ArrayList<>();

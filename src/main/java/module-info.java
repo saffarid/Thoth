@@ -11,5 +11,6 @@ module launcher {
     requires thoth;
     requires java.sql;
     requires java.desktop;
+    requires json.simple;
 
 }

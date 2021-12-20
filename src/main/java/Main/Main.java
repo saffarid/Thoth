@@ -1,5 +1,6 @@
 package Main;
 
+import ThothGUI.Config.Config;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import ThothCore.ThothLite.ThothLite;
 import javafx.application.Application;
@@ -21,8 +22,16 @@ public class Main extends Application{
     public static Logger LOG;
     private Stage stage;
 
+    private Config config;
+
     static {
         LOG = Logger.getLogger("Thoth");
+    }
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+        config = Config.getInstance();
     }
 
     @Override
@@ -30,7 +39,8 @@ public class Main extends Application{
         this.stage = stage;
 
         ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage, ThothLite.getInstance());
-        thoth.setPrefSize(ThothLiteWindow.DEFAULT_SIZE.WIDTH.getSize(), ThothLiteWindow.DEFAULT_SIZE.HEIGHT.getSize());
+//        thoth.setPrefSize(ThothLiteWindow.DEFAULT_SIZE.WIDTH.getSize(), ThothLiteWindow.DEFAULT_SIZE.HEIGHT.getSize());
+        thoth.setPrefSize(config.getWindow().getWidth(), config.getWindow().getHeight());
         stage.setScene(new Scene(thoth));
 
         stage.initStyle(StageStyle.UNDECORATED);
