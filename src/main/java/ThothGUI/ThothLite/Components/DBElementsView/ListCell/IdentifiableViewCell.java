@@ -22,7 +22,7 @@ public abstract class IdentifiableViewCell
 
     private final static String STYLE_CLASS_CELL_CONTENT = "identifiable-cell-content";
 
-    protected ImageView icon;
+    protected Node icon;
     protected Label title;
     protected Label subtitle;
     protected Label property;
@@ -45,6 +45,31 @@ public abstract class IdentifiableViewCell
         init();
 
         this.icon = getImageIcon(url, 40, 40);
+        this.title = new Label();
+        this.subtitle = new Label();
+        this.property = new Label();
+        this.edit = getImageIcon(ThothGUI.thoth_styleconstants.Image.ARROW_RIGHT, 40, 40);
+
+        setTextTitle(title);
+        setTextSubtitle(subtitle);
+        setTextProperty(property);
+
+        setLeft(this.icon);
+        setCenter(getFillCenter());
+        setRight(this.edit);
+
+    }
+
+    protected IdentifiableViewCell(
+            Node node,
+            String title,
+            String subtitle,
+            String property)
+    {
+        super();
+        init();
+
+        this.icon = node;
         this.title = new Label();
         this.subtitle = new Label();
         this.property = new Label();

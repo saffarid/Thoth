@@ -167,6 +167,19 @@ public class ThothLiteWindow
         return menuButton;
     }
 
+    private MenuButton getNavigationMenuButton(
+            String mes
+            , Node node
+            , EventHandler<ActionEvent> event
+    ) {
+        MenuButton menuButton = new MenuButton(mes);
+        if (node != null) {
+            menuButton.setGraphic( node );
+        }
+        menuButton.setOnAction(event);
+        return menuButton;
+    }
+
     private void menuConfig() {
 
         MenuItem config = new MenuItem("config");
@@ -233,7 +246,7 @@ public class ThothLiteWindow
 //                STRING_KEY_STORAGE, ThothGUI.thoth_styleconstants.Image.STORAGE_CELL, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.STORING), AvaliableTables.STORING) );}
 //        ));
         menuButtons.add(getNavigationMenuButton(
-                STRING_KEY_TABLES_GUIDE, ThothGUI.thoth_styleconstants.Image.LIST, event -> {
+                STRING_KEY_TABLES_GUIDE, ThothGUI.thoth_styleconstants.svg.List.getInstance(), event -> {
                     openSubwindow(new ListedListWindow(STRING_KEY_TABLES_GUIDE));
                 }
         ));

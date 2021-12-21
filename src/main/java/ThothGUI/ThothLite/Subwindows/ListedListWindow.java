@@ -8,6 +8,7 @@ import ThothGUI.OpenSubwindow;
 import ThothGUI.ThothLite.ThothLiteWindow;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -77,11 +78,10 @@ public class ListedListWindow
 
     private class ViewCell
             extends ListCell<AvaliableTables> {
-
         private final static String STYLE_CLASS_IDENTIFIABLE_CELL = "identifiable-cell";
         private final static String STYLE_CLASS_CELL_CONTENT = "identifiable-cell-content";
 
-        protected ImageView icon;
+        protected Node icon;
         protected javafx.scene.control.Label title;
         protected ImageView edit;
 
@@ -89,7 +89,6 @@ public class ListedListWindow
 
         protected ViewCell() {
             super();
-
             setOnMouseClicked(this::cellClick);
 
             getStyleClass().add(STYLE_CLASS_IDENTIFIABLE_CELL);
@@ -115,13 +114,13 @@ public class ListedListWindow
                     break;
                 }
             }
-
         }
 
         private BorderPane createGraphic() {
             BorderPane res = new BorderPane();
 
-            this.icon = setImageIcon(ThothGUI.thoth_styleconstants.Image.LIST);
+            this.icon = ThothGUI.thoth_styleconstants.svg.List.getInstance();
+
             this.title = new javafx.scene.control.Label();
             this.edit = setImageIcon(ThothGUI.thoth_styleconstants.Image.ARROW_RIGHT);
 

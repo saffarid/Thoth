@@ -95,12 +95,10 @@ public class ListedListView
     @Override
     public void removeItem(Identifiable identifiable) {
         if (identifiableElementList.getItems().contains(identifiable)) {
-            LOG.log(Level.INFO, "I have element");
+
             identifiableElementList.setCellFactory(null);
             identifiableElementList.getItems().remove(identifiable);
             identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
-        } else {
-            LOG.log(Level.INFO, "No element");
         }
     }
 

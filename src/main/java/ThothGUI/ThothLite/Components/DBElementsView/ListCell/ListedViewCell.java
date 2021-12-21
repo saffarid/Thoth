@@ -50,7 +50,7 @@ public class ListedViewCell
     private Button remove;
 
     protected ListedViewCell(Listed listed) {
-        super(Image.LIST, listed.getValue(), "", "");
+        super(ThothGUI.thoth_styleconstants.svg.List.getInstance(), listed.getValue(), "", "");
         this.listed = listed;
         ImageView point = getImageIcon(Image.POINT, 7.5, 7.5);
 
