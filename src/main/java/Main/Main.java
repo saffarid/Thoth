@@ -62,28 +62,35 @@ public class Main extends Application{
         }).thenAccept(unused -> {
 
             Platform.runLater(() -> {
+
                 LOG.log(Level.INFO, "start");
                 ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage);
 
-                thoth.setPrefSize(
-                        config.getWindow().getWidthPrimary()
+                Scene scene = new Scene(
+                        thoth
+                        , config.getWindow().getWidthPrimary()
                         , config.getWindow().getHeightPrimary()
                 );
 
-                this.stage.setMinWidth(config.getWindow().getWidthPrimaryMin());
-                this.stage.setMinHeight(config.getWindow().getHeightPrimaryMin());
+                //Установка начального положения
+                this.stage.setX( config.getWindow().getxPrimary() );
+                this.stage.setY( config.getWindow().getyPrimary() );
+                //Установка минимальных размеров
+                this.stage.setMinWidth( config.getWindow().getWidthPrimaryMin() );
+                this.stage.setMinHeight( config.getWindow().getHeightPrimaryMin() );
+                //Связываем свойства начальных положений
+                config.getWindow().xPrimaryProperty().bind( this.stage.xProperty() );
+                config.getWindow().yPrimaryProperty().bind( this.stage.yProperty() );
+                //Связываем размеры окна
+                config.getWindow().widthPrimaryProperty().bind( this.stage.widthProperty() );
+                config.getWindow().heightPrimaryProperty().bind( this.stage.heightProperty() );
 
-                stage.setScene(
-                        new Scene(
-                                thoth
-//                                , config.getWindow().getWidthPrimary()
-//                                , config.getWindow().getHeightPrimary()
-                        )
-                );
+                stage.setScene( scene );
 
 //                stage.show();
 
                 new StageResizer(stage);
+
             });
 
         });

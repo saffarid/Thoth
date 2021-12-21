@@ -191,8 +191,11 @@ public class Config {
             heightPrimary = new SimpleDoubleProperty(heightPrimaryDefault);
             isMax         = new SimpleBooleanProperty(isMaxDefault);
 
+
             widthSecondary  = new SimpleDoubleProperty(widthSecondaryDefault);
             heightSecondary = new SimpleDoubleProperty(heightSecondaryDefault);
+            xSecondary      = new SimpleDoubleProperty(xPrimary.get() + ((widthPrimary.get() - widthSecondary.get()) / 2));
+            ySecondary      = new SimpleDoubleProperty(yPrimary.get() + ((heightPrimary.get() - heightSecondary.get()) / 2));
         }
 
         public Window(JSONObject data) {
@@ -204,6 +207,8 @@ public class Config {
 
             widthSecondary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_SECONDARY) );
             heightSecondary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_SECONDARY) );
+            xSecondary      = new SimpleDoubleProperty( (double) data.get(KEY_X_SECONDARY) );
+            ySecondary      = new SimpleDoubleProperty( (double) data.get(KEY_Y_SECONDARY) );
         }
 
         public JSONObject exportJSON() {
@@ -213,9 +218,12 @@ public class Config {
             res.put(KEY_Y_PRIMARY, yPrimary.doubleValue());
             res.put(KEY_WIDTH_PRIMARY, widthPrimary.doubleValue());
             res.put(KEY_HEIGHT_PRIMARY, heightPrimary.doubleValue());
+            res.put(KEY_ISMAX, isMax.get());
+
             res.put(KEY_WIDTH_SECONDARY, widthSecondary.doubleValue());
             res.put(KEY_HEIGHT_SECONDARY, heightSecondary.doubleValue());
-            res.put(KEY_ISMAX, isMax.get());
+            res.put(KEY_X_SECONDARY, xSecondary.doubleValue());
+            res.put(KEY_Y_SECONDARY, ySecondary.doubleValue());
 
             return res;
         }

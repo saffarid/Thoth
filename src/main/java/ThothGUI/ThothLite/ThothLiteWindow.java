@@ -174,24 +174,33 @@ public class ThothLiteWindow
         config.setOnAction(event -> {
 
             Stage settings = new Stage(StageStyle.TRANSPARENT);
-            settings.setScene(
-                    new Scene(
-                            new Settings(settings, "settings"),
-                            this.config.getWindow().getWidthSecondary(), this.config.getWindow().getHeightSecondary()
-                    )
+            Scene settingsScene = new Scene(
+                    new Settings(settings, "settings")
+                    , this.config.getWindow().getWidthSecondary()
+                    , this.config.getWindow().getHeightSecondary()
             );
-            settings.setMinWidth(this.config.getWindow().getWidthSecondaryMin());
-            settings.setMinHeight(this.config.getWindow().getHeightSecondaryMin());
+
+            //Установка начального положения
+            settings.setX( this.config.getWindow().getxSecondary() );
+            settings.setY( this.config.getWindow().getySecondary() );
+            //Установка минимальных размеров
+            settings.setMinWidth( this.config.getWindow().getWidthSecondaryMin() );
+            settings.setMinHeight( this.config.getWindow().getHeightSecondaryMin() );
+            //Связываем свойства начальных положений
+            this.config.getWindow().xSecondaryProperty().bind( settings.xProperty() );
+            this.config.getWindow().ySecondaryProperty().bind( settings.yProperty() );
+            //Связываем размеры окна
+            this.config.getWindow().widthSecondaryProperty().bind( settings.widthProperty() );
+            this.config.getWindow().heightSecondaryProperty().bind( settings.heightProperty() );
 
             settings.initModality(Modality.APPLICATION_MODAL);
             settings.initOwner(mainStage);
 
+            settings.setScene(settingsScene);
+
             settings.show();
 
             new StageResizer(settings);
-
-            settings.setX(mainStage.getX() + ((mainStage.getWidth() - settings.getWidth()) / 2));
-            settings.setY(mainStage.getY() + ((mainStage.getHeight() - settings.getHeight()) / 2));
         });
 
         MenuItem about = new MenuItem("about");
