@@ -58,6 +58,11 @@ public class Order
     }
 
     @Override
+    public boolean isFinish() {
+        return false;
+    }
+
+    @Override
     public Partnership getPartner() {
         return customer;
     }

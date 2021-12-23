@@ -225,6 +225,11 @@ public class PurchasableCard extends IdentifiableCard {
             }
 
             @Override
+            public boolean isFinish() {
+                return isDelivered;
+            }
+
+            @Override
             public void setFinishDate(LocalDate finishDate) {
                 this.deliveryDate = finishDate;
             }

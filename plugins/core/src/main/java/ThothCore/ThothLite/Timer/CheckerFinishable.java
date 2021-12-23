@@ -19,8 +19,7 @@ public class CheckerFinishable
         implements
         Traceable
         , Flow.Subscriber<List<Finishable>>
-        , Closeable
-{
+        , Closeable {
 
     private final int POOL_SIZE = 5;
 
@@ -38,11 +37,11 @@ public class CheckerFinishable
         buffer = new LinkedList<>();
     }
 
-    private boolean isFinishableNotificationPlanning(Identifiable identifiable){
+    private boolean isFinishableNotificationPlanning(Identifiable identifiable) {
 
         return taskMap.keySet()
                 .stream()
-                .filter( finishable -> ((Identifiable)finishable).getId().equals(identifiable.getId()) )
+                .filter(finishable -> ((Identifiable) finishable).getId().equals(identifiable.getId()))
                 .findAny()
                 .isPresent();
 
@@ -50,34 +49,36 @@ public class CheckerFinishable
 
     /**
      * Функция распределяет запланированные задачи для оповещения наступления даты
-     * */
+     */
     public void notificationPlanning(List<Finishable> finishables) {
         LocalDate currentDate = LocalDate.now();
 
-        for(Finishable finishable : finishables){
+        for (Finishable finishable : finishables) {
 
-            //Планируем задачу только если она ещё на запланирована
-            if( !isFinishableNotificationPlanning( (Identifiable) finishable ) ){
-                LocalDate finishDate = finishable.finishDate();
-                int daysDelay = Period.between(currentDate, finishDate).getDays();
+            if (!finishable.isFinish()) {
+                //Планируем задачу только если она ещё на запланирована
+                if (!isFinishableNotificationPlanning((Identifiable) finishable)) {
+                    LocalDate finishDate = finishable.finishDate();
+                    int daysDelay = Period.between(currentDate, finishDate).getDays();
 
-                Runnable task = () -> notifySubscribers(finishable);
+                    Runnable task = () -> notifySubscribers(finishable);
 
-                try {
-                    if( (daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getDay()) && (finishDate.isAfter(currentDate)) ){
-                        taskMap.put(
-                                finishable, poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
-                        );
-                    }else {
-                        poolExecutor.schedule(task, 1, TimeUnit.SECONDS);
+                    try {
+                        if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getDay()) && (finishDate.isAfter(currentDate))) {
+                            taskMap.put(
+                                    finishable, poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
+                            );
+                        } else {
+                            poolExecutor.schedule(task, 1, TimeUnit.SECONDS);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
-            }
 
+            }
         }
     }
 
@@ -96,8 +97,8 @@ public class CheckerFinishable
     public void subscribe(Flow.Subscriber subscriber) {
         boolean hadSubscribers = publisher.hasSubscribers();
         publisher.subscribe(subscriber);
-        if(!hadSubscribers){
-            for (Finishable finishable : buffer){
+        if (!hadSubscribers) {
+            for (Finishable finishable : buffer) {
                 notifySubscribers(finishable);
                 buffer.remove(finishable);
             }
@@ -105,10 +106,10 @@ public class CheckerFinishable
     }
 
     private void notifySubscribers(Finishable finishable) {
-        if(publisher.hasSubscribers()){
+        if (publisher.hasSubscribers()) {
             ThothLite.LOG.log(Level.INFO, "Публикация finishable");
             publisher.submit(finishable);
-        }else{
+        } else {
             buffer.add(finishable);
         }
     }

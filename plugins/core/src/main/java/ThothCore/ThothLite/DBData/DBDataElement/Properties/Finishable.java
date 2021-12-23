@@ -26,4 +26,8 @@ public interface Finishable {
      * */
     String message();
 
+    /**
+     * Функция возвращает статус завершённости
+     * */
+    boolean isFinish();
 }
