@@ -1,6 +1,7 @@
 package ThothCore.ThothLite;
 
 import ThothCore.ThothLite.Config.Config;
+import ThothCore.ThothLite.Config.PeriodAutoupdateDatabase;
 import ThothCore.ThothLite.DBData.DBData;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
 import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.Composite;
@@ -10,7 +11,7 @@ import ThothCore.ThothLite.DBData.Tables.Data;
 import ThothCore.ThothLite.DBLiteStructure.AvaliableTables;
 import ThothCore.ThothLite.DBLiteStructure.FullStructure.StructureDescription;
 import ThothCore.ThothLite.Exceptions.NotContainsException;
-import ThothCore.ThothLite.Timer.ThothTimer;
+import ThothCore.ThothLite.Timer.CheckerFinishable;
 import ThothCore.ThothLite.Timer.Traceable;
 import org.json.simple.parser.ParseException;
 
@@ -47,7 +48,6 @@ public class ThothLite {
     private ThothLite()
             throws SQLException, ClassNotFoundException, NotContainsException {
 
-
         try {
             config = Config.getInstance();
         } catch (IOException e) {
@@ -55,20 +55,18 @@ public class ThothLite {
         } catch (ParseException e) {
             LOG.log(Level.INFO, "Ошибка чтения файла конфигурации.");
         }
-
+        //Инициализация пустой локальной БД
         dbData = DBData.getInstance();
+        //Инициализация системы оповещения
+        watcherPurchasesFinish = new CheckerFinishable();
+        watcherOrdersFinish = new CheckerFinishable();
+        DBData.getInstance().getTable(getTableName(AvaliableTables.PURCHASABLE)).subscribe((Flow.Subscriber) watcherPurchasesFinish);
+
+        //Инициализация и считывание БД
         database = new DataBaseLite();
 
-        watcherPurchasesFinish = new ThothTimer();
-        watcherOrdersFinish = new ThothTimer();
-
-        watcherPurchasesFinish.setTraceableObjects(dbData.getTable(StructureDescription.Purchases.TABLE_NAME).getDatas());
-        watcherOrdersFinish.setTraceableObjects(dbData.getTable(StructureDescription.Orders.TABLE_NAME).getDatas());
 
         reReader = new ReReadDatabase();
-
-
-
 //        periodReReadDb = new ScheduledThreadPoolExecutor(1);
 //        scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, 5, TimeUnit.SECONDS);
 

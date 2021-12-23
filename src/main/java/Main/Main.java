@@ -1,16 +1,12 @@
 package Main;
 
 import ThothCore.ThothLite.Exceptions.NotContainsException;
-import ThothGUI.Config.Config;
-import ThothGUI.ThothLite.ThothLiteWindow;
+import ThothGUI.config.Config;
+import ThothGUI.thoth_lite.main_window.ThothLiteWindow;
 import ThothCore.ThothLite.ThothLite;
-import controls.Label;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.json.simple.parser.ParseException;

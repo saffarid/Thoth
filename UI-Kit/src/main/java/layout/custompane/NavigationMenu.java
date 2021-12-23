@@ -20,7 +20,8 @@ import java.util.List;
 /**
  * Навигационное меню.
  * */
-public class NavigationMenu extends BorderPane {
+public class NavigationMenu
+        extends BorderPane {
 
     private final String STYLE_CLASS_NAV_MENU = "navigation-menu";
     private final String STYLE_CLASS_MINIFY_BTN = "minify-button";
@@ -61,7 +62,6 @@ public class NavigationMenu extends BorderPane {
         super();
         init();
 
-        setMinifyButton();
         for(MenuButton menuButton : menuButtons){
             content.getChildren().add(menuButton);
             menuButton.isMiniProperty().bind(isMinified);
@@ -111,7 +111,7 @@ public class NavigationMenu extends BorderPane {
     /**
      * Функция инициализирует кнопку минификации, добавляет на панель и прикрепляет слушателя.
      * */
-    private void setMinifyButton(){
+    public void setMinifyButton(){
         minifyButton = new Button();
         minifyButton.setGraphic(ThreeLineV.getInstance());
         minifyButton.setOnAction(this::minify);

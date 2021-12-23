@@ -1,6 +1,6 @@
 package ThothGUI;
 
-import ThothGUI.ThothLite.Subwindows.Subwindow;
+import ThothGUI.thoth_lite.subwindows.Subwindow;
 
 public interface CloseSubwindow {
 

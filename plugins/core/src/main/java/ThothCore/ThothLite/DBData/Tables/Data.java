@@ -22,11 +22,9 @@ public abstract class Data<T extends Identifiable>
     protected List<T> datas;
     protected SubmissionPublisher<List<T>> publisher;
 
-
     public Data() {
         datas = new LinkedList<>();
         publisher = new SubmissionPublisher<>();
-
     }
 
     public void addData(T data) {
@@ -71,7 +69,6 @@ public abstract class Data<T extends Identifiable>
 
     @Override
     public void subscribe(Flow.Subscriber subscriber) {
-
         System.out.println(publisher.getSubscribers().size());
         if(!publisher.isSubscribed(subscriber)) {
             publisher.subscribe(subscriber);

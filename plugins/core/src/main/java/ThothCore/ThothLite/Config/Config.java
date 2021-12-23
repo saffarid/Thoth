@@ -1,6 +1,5 @@
 package ThothCore.ThothLite.Config;
 
-import ThothCore.ThothLite.PeriodAutoupdateDatabase;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -14,9 +13,9 @@ public class Config {
      */
     private enum Keys {
         DATABASE("database"),
+        DELIVERY("delivery"),
         ;
         private String key;
-
         Keys(String key) {
             this.key = key;
         }
@@ -40,6 +39,11 @@ public class Config {
      */
     private Database database;
 
+    /**
+     * Конфигурация работы системы оповещения
+     * */
+    private Delivered delivered;
+
     private Config()
             throws IOException, ParseException {
 
@@ -49,11 +53,13 @@ public class Config {
 
         if(!configFile.exists()){
             database = new Database();
+            delivered = new Delivered();
 
             exportConfig();
         }else{
             JSONObject parse = importConfig();
-            database = new Database( (JSONObject)parse.get(Keys.DATABASE.key) );
+            database = new Database( (JSONObject) parse.get(Keys.DATABASE.key) );
+            delivered = new Delivered( (JSONObject) parse.get(Keys.DELIVERY.key) );
         }
     }
 
@@ -64,7 +70,8 @@ public class Config {
         }
         JSONObject config = new JSONObject();
 
-        config.put(Keys.DATABASE.key, database.exportJSON());
+        config.put( Keys.DATABASE.key, database.exportJSON() );
+        config.put( Keys.DELIVERY.key, delivered.exportJSON() );
 
         try (FileWriter writer = new FileWriter(configFile)){
             writer.write(config.toJSONString());
@@ -91,6 +98,10 @@ public class Config {
 
     public Database getDatabase() {
         return database;
+    }
+
+    public Delivered getDelivered() {
+        return delivered;
     }
 
     /**
@@ -173,4 +184,38 @@ public class Config {
         }
     }
 
+    /**
+     * Конфигурация работы с объектами доставки
+     * */
+    public class Delivered{
+
+        private final String KEY_DAY_BEFORE_DELIVERY = "day_before_delivery";
+
+        /**
+         * За сколько дней перед доставкой система должна начать оповещять пользователя
+         * */
+        private DayBeforeDelivery dayBeforeDelivery;
+        private DayBeforeDelivery dayBeforeDeliveryDefault = DayBeforeDelivery.FIVE;
+
+        public Delivered(){
+            dayBeforeDelivery = dayBeforeDeliveryDefault;
+        }
+        public Delivered(JSONObject data){
+            dayBeforeDelivery = DayBeforeDelivery.valueOf( (String) data.get(KEY_DAY_BEFORE_DELIVERY) );
+        }
+
+        public JSONObject exportJSON(){
+            JSONObject res = new JSONObject();
+
+            res.put(KEY_DAY_BEFORE_DELIVERY, dayBeforeDelivery.toString());
+
+            return res;
+        }
+        public DayBeforeDelivery getDayBeforeDelivery() {
+            return dayBeforeDelivery;
+        }
+        public void setDayBeforeDelivery(DayBeforeDelivery dayBeforeDelivery) {
+            this.dayBeforeDelivery = dayBeforeDelivery;
+        }
+    }
 }
