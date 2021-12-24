@@ -1,6 +1,6 @@
 module launcher {
 
-    exports Main;
+    exports main;
 
     requires javafx.base;
     requires javafx.controls;
