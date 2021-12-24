@@ -1,6 +1,6 @@
 package thoth_core.thoth_lite.db_data.db_data_element.properties;
 
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.Parts.*;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.*;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Countable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Nameable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Typable;

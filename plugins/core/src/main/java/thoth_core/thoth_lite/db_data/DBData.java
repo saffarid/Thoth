@@ -1,6 +1,5 @@
 package thoth_core.thoth_lite.db_data;
 
-import ThothCore.ThothLite.DBData.Tables.*;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.db_data.tables.*;
 

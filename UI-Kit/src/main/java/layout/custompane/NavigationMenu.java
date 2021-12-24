@@ -33,6 +33,10 @@ public class NavigationMenu
 
     private static Logger LOG;
 
+    static {
+        LOG = Logger.getLogger(NavigationMenu.class.getName());
+    }
+
     /**
      * Флаг отслеживания отображения навигационного меню.
      * True - меню отображается в свернутом виде, false - в развернутом.
@@ -53,10 +57,6 @@ public class NavigationMenu
      * Содержимое навигационного меню
      * */
     private VBox content;
-
-    static {
-        LOG = Logger.getLogger(NavigationMenu.class.getName());
-    }
 
     public NavigationMenu( List<MenuButton> menuButtons ){
         super();
@@ -82,17 +82,19 @@ public class NavigationMenu
         setCenter(scrollPane);
         scrollPane.setFitToWidth(true);
 
-        title.setMaxWidth(MAX_SIZE);
-
-        getStylesheets().add(getClass().getResource(Stylesheets.COLOR).toExternalForm());
-        getStylesheets().add(getClass().getResource("/style/layout/panes/custom/navigation_menu.css").toExternalForm());
+        getStylesheets().add(NavigationMenu.class.getResource(Stylesheets.COLOR).toExternalForm());
+        getStylesheets().add(NavigationMenu.class.getResource("/style/layout/panes/custom/navigation_menu.css").toExternalForm());
         getStyleClass().addAll(STYLE_CLASS_NAV_MENU, Styleclasses.DARK);
         content.getStyleClass().add(STYLE_CLASS_CONTENT);
 
-        setMinWidth(MIN_SIZE);
-        setPrefWidth(MAX_SIZE);
-        setMaxWidth(MAX_SIZE);
+        setWidth(MAX_SIZE);
+    }
 
+    public void setWidth(double width){
+        title.setMaxWidth(width);
+        setMinWidth(width);
+        setPrefWidth(width);
+        setMaxWidth(width);
     }
 
     /**

@@ -3,7 +3,7 @@ package thoth_core.thoth_lite;
 import thoth_core.thoth_lite.config.Config;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
 import thoth_core.thoth_lite.db_data.DBData;
-import ThothCore.ThothLite.DBData.DBDataElement.Properties.*;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Composite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finishable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;

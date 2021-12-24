@@ -50,7 +50,10 @@ public class ThothLiteWindow
 
     public enum DEFAULT_SIZE {
         HEIGHT(600),
-        WIDTH(900);
+        WIDTH(900),
+        WIDTH_LEFT_BLOCK(200),
+
+        ;
         private double size;
 
         DEFAULT_SIZE(double size) {
@@ -135,8 +138,7 @@ public class ThothLiteWindow
     private Node createLeftNode(){
         VBox vBox = new VBox();
 
-        FinishableView finishableViewPurchase = new FinishableView();
-
+        FinishableView finishableViewPurchase = getFinishableView();
         thoth.purchasesSubscribe(finishableViewPurchase);
 
         vBox.getChildren().addAll(
@@ -259,6 +261,7 @@ public class ThothLiteWindow
                 }
         ));
         menu = new NavigationMenu(menuButtons);
+        menu.setWidth(DEFAULT_SIZE.WIDTH_LEFT_BLOCK.getSize());
 //        menu.setMinifyButton();
 
         return menu;
@@ -273,6 +276,12 @@ public class ThothLiteWindow
     private void workspaceConfig() {
         workspace = new StackPane();
         setCenter(workspace);
+    }
+
+    private FinishableView getFinishableView(){
+        FinishableView res = new FinishableView();
+
+        return res;
     }
 
     @Override

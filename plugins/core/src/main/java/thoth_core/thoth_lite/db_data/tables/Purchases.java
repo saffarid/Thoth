@@ -1,7 +1,7 @@
 package thoth_core.thoth_lite.db_data.tables;
 
 import database.Column.TableColumn;
-import ThothCore.ThothLite.DBData.DBDataElement.Implements.*;
+import thoth_core.thoth_lite.db_data.db_data_element.implement.*;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Purchasable;

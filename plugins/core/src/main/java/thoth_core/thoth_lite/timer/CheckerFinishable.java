@@ -53,6 +53,7 @@ public class CheckerFinishable
 
         for (Finishable finishable : finishables) {
 
+            //Игнорируем задачу если она уже завершена
             if (!finishable.isFinish()) {
                 //Планируем задачу только если она ещё на запланирована
                 if (!isFinishableNotificationPlanning((Identifiable) finishable)) {
@@ -75,8 +76,8 @@ public class CheckerFinishable
                         e.printStackTrace();
                     }
                 }
-
             }
+
         }
     }
 
@@ -121,7 +122,6 @@ public class CheckerFinishable
 
     @Override
     public void onNext(List<Finishable> item) {
-        ThothLite.LOG.log(Level.INFO, "Получен новый finishable");
         notificationPlanning(item);
         this.subscription.request(1);
     }
