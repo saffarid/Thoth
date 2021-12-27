@@ -3,7 +3,9 @@ package layout.basepane;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import layout.BackgroundWrapper;
 import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
@@ -28,14 +30,14 @@ public class BorderPane extends javafx.scene.layout.BorderPane {
     }
 
     private void init() {
-        try {
-            getStyleClass().addAll(SCLASS_BPANE, Styleclasses.DARK);
-            getStylesheets().addAll(
-                    BorderPane.class.getResource(Stylesheets.COLOR).toExternalForm(),
-                    BorderPane.class.getResource(SSHEET_BPANE).toExternalForm()
-            );
-//        setBackground(new Background(new BackgroundFill(Paint.valueOf("#343A40"), null, null)));
-        }catch (NullPointerException e){
-        }
+        addStyle();
+    }
+
+    private void addStyle(){
+        setBackground(
+                new BackgroundWrapper()
+                        .setColor(Color.TRANSPARENT)
+                        .commit()
+        );
     }
 }

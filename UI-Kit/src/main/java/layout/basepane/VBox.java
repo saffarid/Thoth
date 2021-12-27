@@ -1,6 +1,8 @@
 package layout.basepane;
 
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import layout.BackgroundWrapper;
 import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
@@ -30,11 +32,14 @@ public class VBox extends javafx.scene.layout.VBox {
     }
 
     private void init() {
-        getStylesheets().addAll(
-                getClass().getResource(Stylesheets.COLOR).toExternalForm(),
-                getClass().getResource(SSHEET_VBOX).toExternalForm()
-        );
+        addStyle();
+    }
 
-        getStyleClass().addAll(VBOX, Styleclasses.DARK);
+    private void addStyle(){
+        setBackground(
+                new BackgroundWrapper()
+                        .setColor(Color.TRANSPARENT)
+                        .commit()
+        );
     }
 }

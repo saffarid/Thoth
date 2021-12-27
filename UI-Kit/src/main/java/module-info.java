@@ -5,7 +5,7 @@ module uikit {
     exports controls;
     exports window;
     exports styleconstants;
-
+    exports layout;
 
 
     requires javafx.base;

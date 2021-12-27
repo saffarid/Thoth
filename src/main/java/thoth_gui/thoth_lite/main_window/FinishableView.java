@@ -5,12 +5,10 @@ import controls.ListView;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
-import layout.basepane.BorderWrapper;
+import layout.BorderWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finishable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import javafx.application.Platform;
@@ -39,6 +37,14 @@ public class FinishableView
         super();
 
         list = new ListView();
+        list.setBorder(
+                new BorderWrapper()
+                        .addTopBorder(1)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .setColor(Color.valueOf("#23272b"))
+                        .commit()
+        );
+
         list.setPlaceholder(new Label(NO_ELEMENTS_LABEL));
         finishables = new SimpleListProperty<>();
         finishables.setValue(FXCollections.observableList(new LinkedList<>()));
@@ -47,11 +53,10 @@ public class FinishableView
             Platform.runLater(() -> {
                 synchronized (list) {
                     list.setCellFactory(finishableListView -> null);
-                    list.getItems().setAll(change.getList());
-                    list.setCellFactory(finishableListView -> new FinishableCell());
-                    for(Node node : list.getChildrenUnmodifiable()){
-                        System.out.println(node);
+                    synchronized (change) {
+                        list.getItems().setAll(change.getList());
                     }
+                    list.setCellFactory(finishableListView -> new FinishableCell());
                 }
             });
         });

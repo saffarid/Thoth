@@ -1,9 +1,9 @@
 package thoth_gui.thoth_lite.main_window;
 
 import javafx.geometry.Insets;
-import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import layout.basepane.BorderWrapper;
+import layout.BorderWrapper;
+import layout.basepane.HBox;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
@@ -11,6 +11,7 @@ import thoth_gui.CloseSubwindow;
 import thoth_gui.config.Config;
 import thoth_gui.OpenSubwindow;
 import thoth_gui.thoth_lite.Settings;
+import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.subwindows.IdentifiableListWindow;
 import thoth_gui.thoth_lite.subwindows.ListedListWindow;
 import thoth_gui.thoth_lite.subwindows.Subwindow;
@@ -22,8 +23,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -32,6 +31,7 @@ import layout.basepane.StackPane;
 import layout.basepane.VBox;
 import layout.custompane.NavigationMenu;
 import org.json.simple.parser.ParseException;
+import thoth_gui.thoth_styleconstants.svg.Refresh;
 import window.PrimaryWindow;
 import window.StageResizer;
 
@@ -141,7 +141,6 @@ public class ThothLiteWindow
 
     private Node createLeftNode(){
         VBox vBox = new VBox();
-
         vBox.setPadding(new Insets(2));
 
         FinishableView finishableViewPurchase = getFinishableView();
@@ -155,8 +154,9 @@ public class ThothLiteWindow
         );
 
         vBox.getChildren().addAll(
-                navigationMenuConfig(),
-                finishableViewPurchase
+                getPallete()
+                , navigationMenuConfig()
+                , finishableViewPurchase
         );
 
         return vBox;
@@ -166,23 +166,6 @@ public class ThothLiteWindow
     public void close() {
         thoth.close();
         mainStage.close();
-    }
-
-    private MenuButton getNavigationMenuButton(
-            String mes
-            , String url
-            , EventHandler<ActionEvent> event
-    ) {
-        MenuButton menuButton = new MenuButton(mes);
-        if (url != null) {
-            menuButton.setGraphic(
-                    new ImageView(
-                            new Image(getClass().getResource(url).toExternalForm(), 20, 20, true, true)
-                    )
-            );
-        }
-        menuButton.setOnAction(event);
-        return menuButton;
     }
 
     private MenuButton getNavigationMenuButton(
@@ -253,7 +236,7 @@ public class ThothLiteWindow
 //                STRING_KEY_ORDERS, ThothGUI.thoth_styleconstants.Image.ORDER, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.ORDERABLE), AvaliableTables.ORDERABLE) );}
 //        ));
         menuButtons.add(getNavigationMenuButton(
-                STRING_KEY_PURCHASES, thoth_gui.thoth_styleconstants.Image.PURCHASE, event -> {
+                STRING_KEY_PURCHASES, thoth_gui.thoth_styleconstants.svg.Purchase.getInstance(), event -> {
                     openSubwindow(new IdentifiableListWindow(thoth.getTableName(AvaliableTables.PURCHASABLE), AvaliableTables.PURCHASABLE));
                 }
         ));
@@ -269,13 +252,12 @@ public class ThothLiteWindow
                 }
         ));
         menuButtons.add(getNavigationMenuButton(
-                "Продукты", thoth_gui.thoth_styleconstants.Image.PRODUCT, event -> {
+                "Продукты", thoth_gui.thoth_styleconstants.svg.Product.getInstance(), event -> {
                     openSubwindow(new IdentifiableListWindow(thoth.getTableName(AvaliableTables.STORAGABLE), AvaliableTables.STORAGABLE));
                 }
         ));
         menu = new NavigationMenu(menuButtons);
         menu.setWidth(DEFAULT_SIZE.WIDTH_LEFT_BLOCK.getSize());
-//        menu.setMinifyButton();
 
         return menu;
     }
@@ -295,6 +277,16 @@ public class ThothLiteWindow
         FinishableView res = new FinishableView();
 
         return res;
+    }
+
+    private Node getPallete(){
+        HBox hBox = new HBox();
+
+        hBox.getChildren().addAll(
+                Button.getInstance(Refresh.getInstance())
+        );
+
+        return hBox;
     }
 
     @Override

@@ -1,11 +1,14 @@
-package layout.basepane;
+package layout;
 
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-import java.util.LinkedList;
-
+/**
+ * Класс обёртка для упрощённого создания границы графических узлов.
+ * @version 1.0
+ * @author PavlovNO
+ * */
 public class BorderWrapper {
 
     private Color colorDefault = Color.valueOf("#707070");

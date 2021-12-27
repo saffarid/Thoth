@@ -6,6 +6,7 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Menu;
@@ -13,6 +14,10 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.paint.Color;
+import layout.BackgroundWrapper;
+import layout.BorderWrapper;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import styleconstants.Images;
@@ -62,6 +67,24 @@ public class Title
 
         setRight(controls);
         init();
+    }
+
+    private void addStyle(){
+
+        setBackground(
+                new BackgroundWrapper()
+                        .setColor(Color.valueOf("#343A40"))
+                        .commit()
+        );
+        setBorder(
+                new BorderWrapper()
+                        .addBottomBorder(1)
+                        .setColor(Color.valueOf("#707070"))
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .commit()
+        );
+        setPadding(new Insets(0));
+
     }
 
     public Title addClose(EventHandler<ActionEvent> event){
@@ -172,6 +195,8 @@ public class Title
                 , getClass().getResource(Stylesheets.CONTEXT_MENU).toExternalForm()
 
         );
+
+        addStyle();
     }
 
     public void setSwitchSceneX(double switchSceneX) {

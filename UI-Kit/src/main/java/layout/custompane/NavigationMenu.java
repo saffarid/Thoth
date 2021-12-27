@@ -68,6 +68,10 @@ public class NavigationMenu
         }
     }
 
+    private void addStyle(){
+
+    }
+
     /**
      * Общая инициализация контейнера.
      * */

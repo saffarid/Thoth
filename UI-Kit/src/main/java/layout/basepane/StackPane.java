@@ -1,6 +1,8 @@
 package layout.basepane;
 
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import layout.BackgroundWrapper;
 import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 
@@ -19,11 +21,15 @@ public class StackPane extends javafx.scene.layout.StackPane {
         init();
     }
 
-    private void init(){
-        getStylesheets().addAll(
-                getClass().getResource(Stylesheets.COLOR).toExternalForm(),
-                getClass().getResource(SSHEET_SPANE).toExternalForm()
+    private void init() {
+        addStyle();
+    }
+
+    private void addStyle(){
+        setBackground(
+                new BackgroundWrapper()
+                        .setColor(Color.TRANSPARENT)
+                        .commit()
         );
-        getStyleClass().addAll(Styleclasses.DARK, SCLASS_SPANE);
     }
 }
