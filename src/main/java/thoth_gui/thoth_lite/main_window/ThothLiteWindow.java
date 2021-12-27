@@ -1,5 +1,6 @@
 package thoth_gui.thoth_lite.main_window;
 
+import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import layout.basepane.BorderWrapper;
@@ -140,6 +141,8 @@ public class ThothLiteWindow
 
     private Node createLeftNode(){
         VBox vBox = new VBox();
+
+        vBox.setPadding(new Insets(2));
 
         FinishableView finishableViewPurchase = getFinishableView();
         thoth.purchasesSubscribe(finishableViewPurchase);

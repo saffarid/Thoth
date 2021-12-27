@@ -31,12 +31,11 @@ public class BorderPane extends javafx.scene.layout.BorderPane {
         try {
             getStyleClass().addAll(SCLASS_BPANE, Styleclasses.DARK);
             getStylesheets().addAll(
-                    getClass().getResource(Stylesheets.COLOR).toExternalForm(),
-                    getClass().getResource(SSHEET_BPANE).toExternalForm()
+                    BorderPane.class.getResource(Stylesheets.COLOR).toExternalForm(),
+                    BorderPane.class.getResource(SSHEET_BPANE).toExternalForm()
             );
 //        setBackground(new Background(new BackgroundFill(Paint.valueOf("#343A40"), null, null)));
         }catch (NullPointerException e){
-            
         }
     }
 }

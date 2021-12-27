@@ -1,13 +1,20 @@
 package thoth_gui.thoth_lite.main_window;
 
+import controls.Label;
+import controls.ListView;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.ListCell;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.paint.Color;
+import layout.basepane.BorderWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finishable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import javafx.application.Platform;
-import javafx.scene.control.ListView;
+
 import layout.basepane.BorderPane;
 
 import java.time.format.DateTimeFormatter;
@@ -19,6 +26,7 @@ public class FinishableView
         implements
         Flow.Subscriber<Finishable> {
 
+    private final String NO_ELEMENTS_LABEL = "no_elements";
     private final double WIDTH_SIZE = 200;
 
     private Flow.Subscription subscription;
@@ -29,15 +37,22 @@ public class FinishableView
 
     public FinishableView() {
         super();
+
         list = new ListView();
+        list.setPlaceholder(new Label(NO_ELEMENTS_LABEL));
         finishables = new SimpleListProperty<>();
         finishables.setValue(FXCollections.observableList(new LinkedList<>()));
 
         finishables.addListener((ListChangeListener<? super Finishable>) change -> {
             Platform.runLater(() -> {
-                list.setCellFactory(finishableListView -> null);
-                list.getItems().setAll(change.getList());
-                list.setCellFactory(finishableListView -> new FinishableCell());
+                synchronized (list) {
+                    list.setCellFactory(finishableListView -> null);
+                    list.getItems().setAll(change.getList());
+                    list.setCellFactory(finishableListView -> new FinishableCell());
+                    for(Node node : list.getChildrenUnmodifiable()){
+                        System.out.println(node);
+                    }
+                }
             });
         });
 

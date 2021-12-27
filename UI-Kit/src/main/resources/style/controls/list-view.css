@@ -1,0 +1,14 @@
+.list-view{
+    -fx-background-color:white;
+    -fx-border-width:2px;
+    -fx-border-color:red;
+    -fx-border-style:solid;
+}
+
+.list-view .clipped-container{
+    -fx-background-color:white;
+}
+
+.list-view .sheet{
+    -fx-background-color:white;
+}

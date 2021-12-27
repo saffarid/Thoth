@@ -1,14 +1,14 @@
 .menu-button{
-    -fx-alignment:center-left;
+    -fx-alignment: center-left;
     -fx-background-color: transparent;
-    -fx-background-insets:0;
-    -fx-background-radius:0;
-    -fx-border-color:transparent;
-    -fx-border-style:solid;
-    -fx-border-width:1px;
-    -fx-padding: 2.5px 2.5px 2.5px 2.5px;
-    -fx-text-alignment:left;
-    -fx-text-fill:white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-padding: 2.5px;
+    -fx-text-alignment: left;
+    -fx-text-fill: white;
 }
 
 .menu-button:hover{
