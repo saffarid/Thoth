@@ -1,5 +1,8 @@
 package thoth_gui.thoth_lite.main_window;
 
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import layout.basepane.BorderWrapper;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
@@ -140,6 +143,13 @@ public class ThothLiteWindow
 
         FinishableView finishableViewPurchase = getFinishableView();
         thoth.purchasesSubscribe(finishableViewPurchase);
+
+        vBox.setBorder(
+                new BorderWrapper()
+                        .addRightBorder(1)
+                        .setColor(Color.valueOf("#707070"))
+                        .commit()
+        );
 
         vBox.getChildren().addAll(
                 navigationMenuConfig(),
