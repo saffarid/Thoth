@@ -68,7 +68,7 @@ public class NavigationMenu
         }
     }
 
-    private void addStyle(){
+    private void addDefaultStyle(){
 
     }
 

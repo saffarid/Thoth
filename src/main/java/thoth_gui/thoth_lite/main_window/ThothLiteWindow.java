@@ -283,7 +283,7 @@ public class ThothLiteWindow
         HBox hBox = new HBox();
 
         hBox.getChildren().addAll(
-                Button.getInstance(Refresh.getInstance())
+                Button.getInstance(Refresh.getInstance(), event -> thoth.reReadDb())
         );
 
         return hBox;

@@ -42,7 +42,9 @@ public class Main extends Application{
         this.stage.show();
         CompletableFuture.runAsync(() -> {
             try {
+                LOG.log(Level.INFO, "Init Thoth.");
                 ThothLite.getInstance();
+                LOG.log(Level.INFO, "Read config.");
                 config = Config.getInstance();
             } catch (SQLException e) {
                 e.printStackTrace();

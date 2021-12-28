@@ -3,8 +3,6 @@ package layout.basepane;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import layout.BackgroundWrapper;
-import styleconstants.Stylesheets;
-import styleconstants.Styleclasses;
 
 public class VBox extends javafx.scene.layout.VBox {
 
@@ -32,10 +30,10 @@ public class VBox extends javafx.scene.layout.VBox {
     }
 
     private void init() {
-        addStyle();
+        addDefaultStyle();
     }
 
-    private void addStyle(){
+    private void addDefaultStyle(){
         setBackground(
                 new BackgroundWrapper()
                         .setColor(Color.TRANSPARENT)

@@ -1,10 +1,14 @@
 package thoth_gui.thoth_lite;
 
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.paint.Color;
+import layout.BorderWrapper;
+import org.json.simple.JSONObject;
+import thoth_core.thoth_lite.config.Keys;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
 import thoth_core.thoth_lite.ThothLite;
 import controls.ComboBox;
-import controls.Label;
 import controls.Toggle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -18,47 +22,74 @@ import layout.basepane.HBox;
 import layout.basepane.VBox;
 import window.SecondaryWindow;
 
+import thoth_gui.thoth_lite.components.controls.Label;
+
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class Settings extends SecondaryWindow {
 
-    enum DEFAULT_SIZE {
+    enum DefaultSize {
         HEIGHT(500),
         WIDTH(800);
         private double size;
-        DEFAULT_SIZE(double size) {
+
+        DefaultSize(double size) {
             this.size = size;
         }
+
         public double getSize() {
             return size;
         }
     }
-    enum COMBO_BOXES_ID{
+
+    enum ComboBoxesId {
         DELAY_REREAD_DATABASE("delay_reread_database"),
         FONT_FAMILY("font_family"),
         FONT_SIZE("font_size"),
         ;
         private String id;
-        COMBO_BOXES_ID(String id) {
+
+        ComboBoxesId(String id) {
             this.id = id;
         }
     }
+
+    enum SectorTitles {
+        TEXT("text"),
+        DATABASE("database"),
+        DELIVERY("delivery"),
+        ;
+        private String title;
+        SectorTitles(String title) {
+            this.title = title;
+        }
+    }
+
+    private HashMap<String, Object> jsonConfig;
 
     private Font newFont;
 
     public Settings(Stage stage, String title) {
         super(stage, title);
-
+        try {
+            jsonConfig = ThothLite.getInstance().getConfig();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NotContainsException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         setCenter(fillCenter());
-
     }
 
-    private Node fillCenter(){
+    private Node fillCenter() {
         VBox res = new VBox();
         res.setPadding(new Insets(2));
         res.setSpacing(2);
@@ -67,27 +98,65 @@ public class Settings extends SecondaryWindow {
         res.getChildren().addAll(
                 fontConfig()
                 , databaseConfig()
+                , deliveryConfig()
         );
 
         return res;
     }
 
-    private Node databaseConfig(){
+    private Node databaseConfig() {
         VBox res = new VBox();
         res.setAlignment(Pos.TOP_LEFT);
+        res.setPadding( new Insets(0, 0, 0, 5) );
+        res.setSpacing(5);
 
         res.getChildren().addAll(
-                getTitle("database")
-                , gethBox(new Label("autoupdate"), new Toggle(false))
-                , gethBox(new Label("autoupdate after transaction"), new Toggle(false))
-                , gethBox(new Label(COMBO_BOXES_ID.DELAY_REREAD_DATABASE.id), getComboBox(COMBO_BOXES_ID.DELAY_REREAD_DATABASE))
+                getTitle(SectorTitles.DATABASE.title)
+                , gethBox(
+                        Label.getInstanse("autoupdate")
+                        , new Toggle(
+                                (Boolean) ((JSONObject) jsonConfig.get(Keys.Section.DATABASE.getKey())).get(Keys.Database.AUTOUPDATE.getKey())
+                        )
+                )
+                , gethBox(
+                        Label.getInstanse("autoupdate after transaction")
+                        , new Toggle(
+                                (Boolean) ((JSONObject) jsonConfig.get(Keys.Section.DATABASE.getKey())).get(Keys.Database.UPDATE_AFTER_TRANS.getKey())
+                        )
+                )
+                , gethBox(
+                        Label.getInstanse(ComboBoxesId.DELAY_REREAD_DATABASE.id)
+                        , getComboBox(ComboBoxesId.DELAY_REREAD_DATABASE)
+                )
 
         );
 
         return res;
     }
-    private Node fontConfig(){
+
+    private Node deliveryConfig() {
         VBox res = new VBox();
+        res.setAlignment(Pos.TOP_LEFT);
+        res.setPadding( new Insets(0, 0, 0, 5) );
+        res.setSpacing(5);
+
+        res.getChildren().addAll(
+                getTitle(SectorTitles.DELIVERY.title)
+                , gethBox(
+                        Label.getInstanse("delivery system state")
+                        , new Toggle(
+                                (Boolean) ( (HashMap<String, Object>) jsonConfig.get(Keys.Section.DELIVERY.getKey()) ).get(Keys.Delivery.IS_CHECKDAY_BEFORE_DELIVERY.getKey())
+                        )
+                )
+
+        );
+
+        return res;
+    }
+
+    private Node fontConfig() {
+        VBox res = new VBox();
+        res.setSpacing(5);
 
         FlowPane font = new FlowPane();
         font.setAlignment(Pos.CENTER_LEFT);
@@ -96,13 +165,13 @@ public class Settings extends SecondaryWindow {
         font.setPadding(new Insets(2));
 
         HBox family = gethBox(
-                new Label(COMBO_BOXES_ID.FONT_FAMILY.id)
-                , getComboBox(COMBO_BOXES_ID.FONT_FAMILY)
+                Label.getInstanse(ComboBoxesId.FONT_FAMILY.id)
+                , getComboBox(ComboBoxesId.FONT_FAMILY)
         );
 
         HBox size = gethBox(
-                new Label(COMBO_BOXES_ID.FONT_SIZE.id)
-                , getComboBox(COMBO_BOXES_ID.FONT_SIZE)
+                Label.getInstanse(ComboBoxesId.FONT_SIZE.id)
+                , getComboBox(ComboBoxesId.FONT_SIZE)
         );
 
         font.getChildren().addAll(
@@ -111,34 +180,28 @@ public class Settings extends SecondaryWindow {
         );
 
         res.getChildren().addAll(
-                getTitle("font")
+                getTitle(SectorTitles.TEXT.title)
                 , font
         );
 
         return res;
     }
 
-    private ComboBox getComboBox(COMBO_BOXES_ID id){
+    private ComboBox getComboBox(ComboBoxesId id) {
         ComboBox res = new ComboBox();
         res.setId(id.id);
 
-        switch (id){
-            case DELAY_REREAD_DATABASE:{
-                try {
-                    res.setItems(
-                            FXCollections.observableList(Arrays.asList(PeriodAutoupdateDatabase.values()))
-                    );
-                    res.setValue(ThothLite.getInstance().getConfig().getDatabase().getPeriod());
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                } catch (NotContainsException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+        switch (id) {
+            case DELAY_REREAD_DATABASE: {
+                res.setItems(
+                        FXCollections.observableList(Arrays.asList(PeriodAutoupdateDatabase.values()))
+                );
+                res.setValue(
+                        ((JSONObject) jsonConfig.get(Keys.Section.DATABASE.getKey())).get(Keys.Database.DELAY_AUTOUPDATE.getKey())
+                );
                 break;
             }
-            case FONT_FAMILY:{
+            case FONT_FAMILY: {
                 res.setPrefWidth(150);
                 CompletableFuture.supplyAsync(() -> {
                     GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -148,11 +211,11 @@ public class Settings extends SecondaryWindow {
                             .collect(Collectors.toList());
                     return collect;
                 }).thenAccept(strings -> {
-                    Platform.runLater(() -> res.setItems( FXCollections.observableList(strings) ));
+                    Platform.runLater(() -> res.setItems(FXCollections.observableList(strings)));
                 });
                 break;
             }
-            case FONT_SIZE:{
+            case FONT_SIZE: {
                 for (int size = 10; size < 24; size += 2) {
                     res.getItems().add(size);
                 }
@@ -162,6 +225,7 @@ public class Settings extends SecondaryWindow {
 
         return res;
     }
+
     private HBox gethBox(Node titleControl, Node control) {
         HBox family = new HBox();
         family.setAlignment(Pos.CENTER_LEFT);
@@ -173,17 +237,24 @@ public class Settings extends SecondaryWindow {
         return family;
     }
 
-    private Node getTitle(String mes){
+    private Node getTitle(String mes) {
 
-        Label label = new Label(mes);
-        label.setPadding(0, 0, 0, 5);
         VBox res = new VBox();
         res.setPadding(new Insets(2));
-        setMargin(res, new Insets(2,2,5,2));
+        setMargin(res, new Insets(2, 2, 5, 2));
+        res.setBorder(
+                new BorderWrapper()
+                        .addBottomBorder(1)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .setColor(Color.GRAY)
+                        .commit()
+        );
+
+        controls.Label label = Label.getInstanse(ComboBoxesId.FONT_SIZE.id);
+        label.setPadding(0, 0, 0, 5);
+
         res.getChildren().add(label);
-        res.setStyle("-fx-border-color:gray;" +
-                "-fx-border-style:solid;" +
-                "-fx-border-width:0 0 1px 0;");
+
         return res;
     }
 

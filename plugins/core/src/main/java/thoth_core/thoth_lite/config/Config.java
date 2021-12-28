@@ -3,23 +3,12 @@ package thoth_core.thoth_lite.config;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import thoth_core.thoth_lite.ThothLite;
 
 import java.io.*;
+import java.util.logging.Level;
 
 public class Config {
-
-    /**
-     * Ключи для доступа к разделам конфигурации в формате json
-     */
-    private enum Keys {
-        DATABASE("database"),
-        DELIVERY("delivery"),
-        ;
-        private String key;
-        Keys(String key) {
-            this.key = key;
-        }
-    }
 
     private static Config config;
 
@@ -58,9 +47,18 @@ public class Config {
             exportConfig();
         }else{
             JSONObject parse = importConfig();
-            database = new Database( (JSONObject) parse.get(Keys.DATABASE.key) );
-            delivered = new Delivered( (JSONObject) parse.get(Keys.DELIVERY.key) );
+            database  = new Database ( (JSONObject) parse.get( Keys.Section.DATABASE.getKey() ) );
+            delivered = new Delivered( (JSONObject) parse.get( Keys.Section.DELIVERY.getKey() ) );
         }
+    }
+
+    public JSONObject getConfig(){
+        JSONObject config = new JSONObject();
+
+        config.put( Keys.Section.DATABASE.getKey(), database.exportJSON() );
+        config.put( Keys.Section.DELIVERY.getKey(), delivered.exportJSON() );
+
+        return config;
     }
 
     public void exportConfig(){
@@ -68,15 +66,10 @@ public class Config {
         if(!configFile.getParentFile().exists()){
             configFile.getParentFile().mkdir();
         }
-        JSONObject config = new JSONObject();
-
-        config.put( Keys.DATABASE.key, database.exportJSON() );
-        config.put( Keys.DELIVERY.key, delivered.exportJSON() );
-
         try (FileWriter writer = new FileWriter(configFile)){
-            writer.write(config.toJSONString());
+            writer.write( getConfig().toJSONString() );
         } catch (IOException e) {
-            e.printStackTrace();
+            ThothLite.LOG.log(Level.INFO, "Fail export thoth config");
         }
 
     }
@@ -104,34 +97,41 @@ public class Config {
         return delivered;
     }
 
+    public void setNewConfig(JSONObject data){
+        database .setNewConfig( (JSONObject) data.get(Keys.Section.DATABASE.getKey()) );
+        delivered.setNewConfig( (JSONObject) data.get(Keys.Section.DELIVERY.getKey()) );
+    }
+
     /**
      * Конфигурация работы базы данных
      */
     public class Database {
 
+        /* --- Ключи конфигурации --- */
+
         /**
          * Ключ доступа к флагу автоматического перечитывания базы
          */
-        private final String KEY_AUTOUPDATE = "autoupdate";
+        private final String KEY_AUTOUPDATE = Keys.Database.AUTOUPDATE.getKey();
         /**
          * Ключ доступа к флагу автоматического перечитывания таблицы после выполнения транзакции
          */
-        private final String KEY_UPDATE_AFTER_TRANS = "update_after_trans";
+        private final String KEY_UPDATE_AFTER_TRANS = Keys.Database.UPDATE_AFTER_TRANS.getKey();
         /**
          * Ключ доступа к значению задержки между автоматическим считыванием базы
          */
-        private final String KEY_DELAY_AUTOUPDATE = "delay_autoupdate";
+        private final String KEY_DELAY_AUTOUPDATE = Keys.Database.DELAY_AUTOUPDATE.getKey();
+
+        /* --- Параметры конфигурации --- */
 
         /**
          * Флаг автоматического считывания базы данных
          */
         private boolean isAutoupdate;
-
         /**
          * Флаг автоматического считывания после совершения транзакции
          */
         private boolean isUpdateAfterTrans;
-
         /**
          * Флаг автоматического периодического перечитывания БД
          */
@@ -144,9 +144,7 @@ public class Config {
         }
 
         public Database(JSONObject data) {
-            isAutoupdate = (boolean) data.get(KEY_AUTOUPDATE);
-            isUpdateAfterTrans = (boolean) data.get(KEY_UPDATE_AFTER_TRANS);
-            period = PeriodAutoupdateDatabase.valueOf((String) data.get(KEY_DELAY_AUTOUPDATE));
+            setNewConfig(data);
         }
 
         public JSONObject exportJSON(){
@@ -158,29 +156,22 @@ public class Config {
 
             return res;
         }
+        public void setNewConfig(JSONObject data){
+            isAutoupdate = (boolean) data.get(KEY_AUTOUPDATE);
+            isUpdateAfterTrans = (boolean) data.get(KEY_UPDATE_AFTER_TRANS);
+            period = PeriodAutoupdateDatabase.valueOf((String) data.get(KEY_DELAY_AUTOUPDATE));
+        }
+
+        /* --- Getter --- */
 
         public boolean isAutoupdate() {
             return isAutoupdate;
         }
-
-        public void setAutoupdate(boolean autoupdate) {
-            isAutoupdate = autoupdate;
-        }
-
         public boolean isUpdateAfterTrans() {
             return isUpdateAfterTrans;
         }
-
-        public void setUpdateAfterTrans(boolean updateAfterTrans) {
-            isUpdateAfterTrans = updateAfterTrans;
-        }
-
         public PeriodAutoupdateDatabase getPeriod() {
             return period;
-        }
-
-        public void setPeriod(PeriodAutoupdateDatabase period) {
-            this.period = period;
         }
     }
 
@@ -189,33 +180,50 @@ public class Config {
      * */
     public class Delivered{
 
-        private final String KEY_DAY_BEFORE_DELIVERY = "day_before_delivery";
+        /* --- Ключи --- */
 
+        private final String KEY_IS_CHECKDAY_BEFORE_DELIVERY = Keys.Delivery.IS_CHECKDAY_BEFORE_DELIVERY.getKey();
+        private final String KEY_DAY_BEFORE_DELIVERY = Keys.Delivery.DAY_BEFORE_DELIVERY.getKey();
+
+        /* --- Параметры конфигурации --- */
+
+        private boolean checkDayBeforeDelivery;
+        private final boolean checkDayBeforeDeliveryDefault = true;
         /**
          * За сколько дней перед доставкой система должна начать оповещять пользователя
          * */
         private DayBeforeDelivery dayBeforeDelivery;
-        private DayBeforeDelivery dayBeforeDeliveryDefault = DayBeforeDelivery.FIVE;
+        private final DayBeforeDelivery dayBeforeDeliveryDefault = DayBeforeDelivery.FIVE;
 
         public Delivered(){
+            checkDayBeforeDelivery = checkDayBeforeDeliveryDefault;
             dayBeforeDelivery = dayBeforeDeliveryDefault;
         }
         public Delivered(JSONObject data){
-            dayBeforeDelivery = DayBeforeDelivery.valueOf( (String) data.get(KEY_DAY_BEFORE_DELIVERY) );
+            setNewConfig(data);
         }
 
         public JSONObject exportJSON(){
             JSONObject res = new JSONObject();
 
+            res.put(KEY_IS_CHECKDAY_BEFORE_DELIVERY, checkDayBeforeDelivery);
             res.put(KEY_DAY_BEFORE_DELIVERY, dayBeforeDelivery.toString());
 
             return res;
         }
+        public void setNewConfig(JSONObject data){
+            checkDayBeforeDelivery = (boolean) data.get(KEY_IS_CHECKDAY_BEFORE_DELIVERY);
+            dayBeforeDelivery = DayBeforeDelivery.valueOf( (String) data.get(KEY_DAY_BEFORE_DELIVERY) );
+        }
+
+        /* --- Getter --- */
+
+        public boolean isCheckDayBeforeDelivery() {
+            return checkDayBeforeDelivery;
+        }
         public DayBeforeDelivery getDayBeforeDelivery() {
             return dayBeforeDelivery;
         }
-        public void setDayBeforeDelivery(DayBeforeDelivery dayBeforeDelivery) {
-            this.dayBeforeDelivery = dayBeforeDelivery;
-        }
+
     }
 }

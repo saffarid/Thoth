@@ -20,7 +20,7 @@ public class ScrollPane extends javafx.scene.control.ScrollPane {
         init();
     }
 
-    private void addStyle(){
+    private void addDefaultStyle(){
         setBackground(
                 new BackgroundWrapper()
                         .setColor(Color.TRANSPARENT)
@@ -34,7 +34,7 @@ public class ScrollPane extends javafx.scene.control.ScrollPane {
                 getClass().getResource(SSHEET_SPANE).toExternalForm()
         );
         getStyleClass().addAll(Styleclasses.BORDER, Styleclasses.DARK);
-        addStyle();
+        addDefaultStyle();
     }
 
 }

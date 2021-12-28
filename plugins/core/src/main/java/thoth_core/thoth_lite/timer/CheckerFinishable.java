@@ -106,7 +106,6 @@ public class CheckerFinishable
 
     private void notifySubscribers(Finishable finishable) {
         if (publisher.hasSubscribers()) {
-            ThothLite.LOG.log(Level.INFO, "Публикация finishable");
             publisher.submit(finishable);
         } else {
             buffer.add(finishable);

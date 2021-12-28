@@ -3,8 +3,6 @@ package layout.basepane;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import layout.BackgroundWrapper;
-import styleconstants.Stylesheets;
-import styleconstants.Styleclasses;
 
 public class StackPane extends javafx.scene.layout.StackPane {
 
@@ -22,10 +20,10 @@ public class StackPane extends javafx.scene.layout.StackPane {
     }
 
     private void init() {
-        addStyle();
+        addDefaultStyle();
     }
 
-    private void addStyle(){
+    private void addDefaultStyle(){
         setBackground(
                 new BackgroundWrapper()
                         .setColor(Color.TRANSPARENT)

@@ -1,5 +1,6 @@
 package thoth_core.thoth_lite;
 
+import org.json.simple.JSONObject;
 import thoth_core.thoth_lite.config.Config;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
 import thoth_core.thoth_lite.db_data.DBData;
@@ -75,10 +76,6 @@ public class ThothLite {
 
     }
 
-    public Config getConfig() {
-        return config;
-    }
-
     public void acceptPurchase(Purchasable purchasable) throws NotContainsException, SQLException {
 
         /*   Приём покупки включает в себя:
@@ -135,6 +132,13 @@ public class ThothLite {
     public void close(){
         config.exportConfig();
         LOG.log(Level.INFO, "Good bye, my friend. I will miss you.");
+    }
+
+    /**
+     * Функция возвращает конфигурацию системы в формате json.
+     * */
+    public JSONObject getConfig(){
+        return config.getConfig();
     }
 
     /**

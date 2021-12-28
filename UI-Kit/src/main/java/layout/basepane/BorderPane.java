@@ -1,18 +1,10 @@
 package layout.basepane;
 
 import javafx.scene.Node;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import layout.BackgroundWrapper;
-import styleconstants.Stylesheets;
-import styleconstants.Styleclasses;
 
 public class BorderPane extends javafx.scene.layout.BorderPane {
-
-    public static final String SCLASS_BPANE = "border-pane";
-    public static final String SSHEET_BPANE = "/style/layout/panes/basepanes/border_pane.css";
 
     public BorderPane() {
         super();
@@ -29,15 +21,15 @@ public class BorderPane extends javafx.scene.layout.BorderPane {
         init();
     }
 
-    private void init() {
-        addStyle();
-    }
-
-    private void addStyle(){
+    private void addDefaultStyle(){
         setBackground(
                 new BackgroundWrapper()
                         .setColor(Color.TRANSPARENT)
                         .commit()
         );
+    }
+
+    private void init() {
+        addDefaultStyle();
     }
 }
