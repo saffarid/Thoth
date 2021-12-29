@@ -16,7 +16,7 @@ public class SecondaryWindow
         this.stage = stage;
         this.title = new Title()
                 .addText(title)
-                .addClose(event -> stage.close());
+                .addClose(event -> close());
 
         this.title.setOnMousePressed(this::stagePress);
         this.title.setOnMouseDragged(this::stageDrag);
@@ -45,6 +45,6 @@ public class SecondaryWindow
 
     @Override
     public void close() {
-
+        this.stage.close();
     }
 }

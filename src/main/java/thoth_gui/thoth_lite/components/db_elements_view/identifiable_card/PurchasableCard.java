@@ -14,8 +14,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.*;
 import layout.basepane.VBox;
+import layout.basepane.HBox;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -83,6 +83,7 @@ public class PurchasableCard extends IdentifiableCard {
         HBox hBox = new HBox();
 
         VBox vBox = new VBox();
+        vBox.setSpacing(5);
         vBox.setAlignment(Pos.TOP_LEFT);
         trackNumber = getTextField(PropertiesPurchasableId.TRACK_NUMBER);
         store = getComboBox(PropertiesPurchasableId.TRACK_NUMBER);
@@ -120,7 +121,7 @@ public class PurchasableCard extends IdentifiableCard {
     }
 
     protected ComboBox getComboBox(PropertiesPurchasableId id) {
-        ComboBox res = new ComboBox<>();
+        ComboBox res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
         res.setId(id.id);
 
         try {
@@ -162,7 +163,7 @@ public class PurchasableCard extends IdentifiableCard {
     }
 
     private Label getLabel(PropertiesPurchasableId id) {
-        Label res = new Label(id.id);
+        Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(id.id);
         res.setMinWidth(120);
         res.setPrefWidth(120);
         res.setMaxWidth(120);
@@ -170,7 +171,7 @@ public class PurchasableCard extends IdentifiableCard {
     }
 
     private TextField getTextField(PropertiesPurchasableId id) {
-        TextField res = new TextField();
+        TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance();
         res.setId(id.id);
 
         switch (id) {

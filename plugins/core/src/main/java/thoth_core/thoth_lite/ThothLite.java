@@ -21,6 +21,7 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -315,6 +316,13 @@ public class ThothLite {
             throws SQLException, NotContainsException {
         Data table = dbData.getTable(tableName);
         database.remove(table.getName(), table.convertToMap(datas));
+    }
+
+    /**
+     * Функция передает новую конфигурацию для проверки и установки
+     * */
+    public void setNewConfig(HashMap<String, Object> config){
+        this.config.setNewConfig(config);
     }
 
     /**

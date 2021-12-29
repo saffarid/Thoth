@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import thoth_gui.thoth_styleconstants.svg.ArrowRight;
 
 public abstract class IdentifiableViewCell
         extends BorderPane {
@@ -19,7 +20,7 @@ public abstract class IdentifiableViewCell
     protected Label title;
     protected Label subtitle;
     protected Label property;
-    protected ImageView edit;
+    protected Node edit;
 
     protected AvaliableTables table;
 
@@ -38,10 +39,11 @@ public abstract class IdentifiableViewCell
         init();
 
         this.icon = getImageIcon(url, 40, 40);
-        this.title = new Label();
-        this.subtitle = new Label();
-        this.property = new Label();
-        this.edit = getImageIcon(thoth_gui.thoth_styleconstants.Image.ARROW_RIGHT, 40, 40);
+        this.title = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
+        this.subtitle = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
+        this.property = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
+//        this.edit = getImageIcon(thoth_gui.thoth_styleconstants.Image.ARROW_RIGHT, 40, 40);
+        this.edit = ArrowRight.getInstance(40, 40);
 
         setTextTitle(title);
         setTextSubtitle(subtitle);
@@ -151,9 +153,7 @@ public abstract class IdentifiableViewCell
     }
 
     protected TextField getTextField(String text){
-        TextField node = new TextField(text);
-
-
+        TextField node = thoth_gui.thoth_lite.components.controls.TextField.getInstance(text);
         return node;
     }
 

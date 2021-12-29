@@ -1,5 +1,6 @@
 package thoth_gui.thoth_lite.components.db_elements_view.list_cell;
 
+import styleconstants.imagesvg.Close;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
@@ -19,6 +20,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import thoth_gui.thoth_styleconstants.svg.Checkmark;
+import thoth_gui.thoth_styleconstants.svg.Edit;
+import thoth_gui.thoth_styleconstants.svg.Point;
+import thoth_gui.thoth_styleconstants.svg.Trash;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -48,14 +53,14 @@ public class ListedViewCell
     protected ListedViewCell(Listed listed) {
         super(thoth_gui.thoth_styleconstants.svg.List.getInstance(), listed.getValue(), "", "");
         this.listed = listed;
-        ImageView point = getImageIcon(Image.POINT, 7.5, 7.5);
+        Node point = Point.getInstance(7.5, 7.5);
 
-        value = new TextField( listed.getValue() );
+        value = new TextField(listed.getValue());
         valueLabel = new Label();
 
         valueLabel.textProperty().bind(value.textProperty());
 
-        setLeft(point);
+        setLeft( point );
         createContent();
         setRight(createPallete());
 
@@ -121,17 +126,17 @@ public class ListedViewCell
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
             pallete.getChildren().setAll(
-                    getButton(Image.EDIT, imgButtonWidth, imgButtonHeight, this::toEditMode)
+                    getButton( Edit.getInstance(imgButtonWidth, imgButtonHeight), this::toEditMode )
             );
 //            if(listed.getId().equals("-1")) {
-                remove = getButton(Image.TRASH, imgButtonWidth, imgButtonHeight, this::remove);
-                remove.setDisable(!hasRemoveItem());
-                pallete.getChildren().add( remove );
+            remove = getButton( Trash.getInstance(imgButtonWidth, imgButtonHeight), this::remove );
+            remove.setDisable(!hasRemoveItem());
+            pallete.getChildren().add(remove);
 //            }
         } else {
             pallete.getChildren().setAll(
-                    getButton(Image.CHECKMARK, imgButtonWidth, imgButtonHeight, event -> apply())
-                    , getButton(Image.CLOSE, imgButtonWidth, imgButtonHeight, event -> cancel())
+                    getButton(Checkmark.getInstance(imgButtonWidth, imgButtonHeight), event -> apply())
+                    , getButton(Close.getInstance(), event -> cancel())
             );
         }
 
@@ -139,13 +144,12 @@ public class ListedViewCell
     }
 
     protected Button getButton(
-            String url
-            , double width, double height
+            Node img
             , EventHandler<ActionEvent> event
     ) {
         Button node = thoth_gui.thoth_lite.components.controls.Button.getInstance(
-                thoth_gui.thoth_lite.components.controls.ImageView.getInstance(url, width, height),
-                event
+                img
+                , event
         );
         node.setPadding(new Insets(5));
         return node;
@@ -157,13 +161,13 @@ public class ListedViewCell
     }
 
     private void keyPress(KeyEvent keyEvent) {
-        switch(keyEvent.getCode()){
+        switch (keyEvent.getCode()) {
             case ENTER: {
-                if(modeIsEdit) apply();
+                if (modeIsEdit) apply();
                 break;
             }
-            case ESCAPE:{
-                if(modeIsEdit) cancel();
+            case ESCAPE: {
+                if (modeIsEdit) cancel();
                 break;
             }
         }
@@ -189,7 +193,7 @@ public class ListedViewCell
     }
 
     private void remove(ActionEvent event) {
-        if(!listed.getId().equals("-1")) {
+        if (!listed.getId().equals("-1")) {
 //            DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
 //            Optional<ButtonType> optional = instance.showAndWait();
 //            if(optional.isPresent()){
@@ -208,7 +212,7 @@ public class ListedViewCell
 //                    }
 //                }
 //            }
-        }else{
+        } else {
             removeItem.removeItem(listed);
         }
 
@@ -217,7 +221,7 @@ public class ListedViewCell
     @Override
     public void setRemoveItem(RemoveItem removeItem) {
         this.removeItem = removeItem;
-        if(remove != null) {
+        if (remove != null) {
             remove.setDisable(!hasRemoveItem());
         }
     }

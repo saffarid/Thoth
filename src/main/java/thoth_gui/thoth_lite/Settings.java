@@ -20,6 +20,10 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import layout.basepane.HBox;
 import layout.basepane.VBox;
+import thoth_gui.Apply;
+import thoth_gui.Cancel;
+import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.controls.ButtonBar;
 import window.SecondaryWindow;
 
 import thoth_gui.thoth_lite.components.controls.Label;
@@ -32,7 +36,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class Settings extends SecondaryWindow {
+public class Settings
+        extends SecondaryWindow
+        implements Apply
+        , Cancel {
 
     enum DefaultSize {
         HEIGHT(500),
@@ -66,6 +73,7 @@ public class Settings extends SecondaryWindow {
         DELIVERY("delivery"),
         ;
         private String title;
+
         SectorTitles(String title) {
             this.title = title;
         }
@@ -86,28 +94,32 @@ public class Settings extends SecondaryWindow {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        setCenter(fillCenter());
+        setCenter( fillCenter() );
+
+        javafx.scene.control.ButtonBar instance = ButtonBar.getInstance(
+                event -> apply()
+                , event -> cancel()
+        );
+        setMargin(instance, new Insets(2));
+        setBottom(
+                instance
+        );
     }
 
-    private Node fillCenter() {
-        VBox res = new VBox();
-        res.setPadding(new Insets(2));
-        res.setSpacing(2);
-        res.setFillWidth(true);
+    @Override
+    public void apply() {
 
-        res.getChildren().addAll(
-                fontConfig()
-                , databaseConfig()
-                , deliveryConfig()
-        );
+    }
 
-        return res;
+    @Override
+    public void cancel() {
+        close();
     }
 
     private Node databaseConfig() {
         VBox res = new VBox();
         res.setAlignment(Pos.TOP_LEFT);
-        res.setPadding( new Insets(0, 0, 0, 5) );
+        res.setPadding(new Insets(0, 0, 0, 5));
         res.setSpacing(5);
 
         res.getChildren().addAll(
@@ -137,7 +149,7 @@ public class Settings extends SecondaryWindow {
     private Node deliveryConfig() {
         VBox res = new VBox();
         res.setAlignment(Pos.TOP_LEFT);
-        res.setPadding( new Insets(0, 0, 0, 5) );
+        res.setPadding(new Insets(0, 0, 0, 5));
         res.setSpacing(5);
 
         res.getChildren().addAll(
@@ -145,10 +157,25 @@ public class Settings extends SecondaryWindow {
                 , gethBox(
                         Label.getInstanse("delivery system state")
                         , new Toggle(
-                                (Boolean) ( (HashMap<String, Object>) jsonConfig.get(Keys.Section.DELIVERY.getKey()) ).get(Keys.Delivery.IS_CHECKDAY_BEFORE_DELIVERY.getKey())
+                                (Boolean) ((HashMap<String, Object>) jsonConfig.get(Keys.Section.DELIVERY.getKey())).get(Keys.Delivery.IS_CHECKDAY_BEFORE_DELIVERY.getKey())
                         )
                 )
 
+        );
+
+        return res;
+    }
+
+    private Node fillCenter() {
+        VBox res = new VBox();
+        res.setPadding(new Insets(2));
+        res.setSpacing(2);
+        res.setFillWidth(true);
+
+        res.getChildren().addAll(
+                fontConfig()
+                , databaseConfig()
+                , deliveryConfig()
         );
 
         return res;

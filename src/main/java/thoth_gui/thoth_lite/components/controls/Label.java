@@ -7,6 +7,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 
 public class Label {
+
     private static void bindFont(controls.Label label) {
         try {
             label.fontProperty().bind(Config.getInstance().getFont().fontProperty());

@@ -1,5 +1,6 @@
 package thoth_gui.thoth_lite.components.db_elements_view.list_cell;
 
+import styleconstants.imagesvg.Close;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
@@ -23,6 +24,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import thoth_gui.thoth_styleconstants.svg.Checkmark;
+import thoth_gui.thoth_styleconstants.svg.Edit;
+import thoth_gui.thoth_styleconstants.svg.Point;
+import thoth_gui.thoth_styleconstants.svg.Trash;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -60,13 +65,13 @@ public class FinanceViewCell
         ImageView point = getImageIcon(Image.POINT, 7.5, 7.5);
 
         currency = getTextField(this.finance.getCurrency());
-        currencyLabel = new Label();
+        currencyLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
         currencyLabel.textProperty().bind(currency.textProperty());
         course = getTextField(String.valueOf(this.finance.getCourse()));
-        courseLabel = new Label();
+        courseLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
         courseLabel.textProperty().bind(course.textProperty());
 
-        setLeft(point);
+        setLeft( Point.getInstance(7.5, 7.5) );
         createContent();
         setRight(createPallete());
 
@@ -148,17 +153,17 @@ public class FinanceViewCell
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
             pallete.getChildren().setAll(
-                    getButton(Image.EDIT, imgButtonWidth, imgButtonHeight, this::toEditMode)
+                    getButton( Edit.getInstance(imgButtonWidth, imgButtonHeight), this::toEditMode )
             );
 //            if(finance.getId().equals("-1")) {
-                remove = getButton(Image.TRASH, imgButtonWidth, imgButtonHeight, this::remove);
-                remove.setDisable(!hasRemoveItem());
+                remove = getButton( Trash.getInstance(imgButtonWidth, imgButtonHeight), this::remove );
+                remove.setDisable( !hasRemoveItem() );
                 pallete.getChildren().add( remove );
 //            }
         } else {
             pallete.getChildren().setAll(
-                    getButton(Image.CHECKMARK, imgButtonWidth, imgButtonHeight, event -> apply())
-                    , getButton(Image.CLOSE, imgButtonWidth, imgButtonHeight, event -> cancel())
+                    getButton(Checkmark.getInstance(imgButtonWidth, imgButtonHeight), event -> apply())
+                    , getButton(Close.getInstance(), event -> cancel())
             );
         }
 
@@ -166,13 +171,12 @@ public class FinanceViewCell
     }
 
     protected Button getButton(
-            String url
-            , double width, double height
+            Node img
             , EventHandler<ActionEvent> event
     ) {
         Button node = thoth_gui.thoth_lite.components.controls.Button.getInstance(
-                thoth_gui.thoth_lite.components.controls.ImageView.getInstance(url, width, height),
-                event
+                img
+                , event
         );
         node.setPadding(new Insets(5));
         return node;

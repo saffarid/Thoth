@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.ThothLite;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 public class Config {
@@ -97,7 +98,7 @@ public class Config {
         return delivered;
     }
 
-    public void setNewConfig(JSONObject data){
+    public void setNewConfig(HashMap<String, Object> data){
         database .setNewConfig( (JSONObject) data.get(Keys.Section.DATABASE.getKey()) );
         delivered.setNewConfig( (JSONObject) data.get(Keys.Section.DELIVERY.getKey()) );
     }

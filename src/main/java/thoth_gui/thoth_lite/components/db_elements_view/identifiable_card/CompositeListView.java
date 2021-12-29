@@ -1,5 +1,9 @@
 package thoth_gui.thoth_lite.components.db_elements_view.identifiable_card;
 
+import javafx.scene.layout.*;
+import layout.basepane.BorderPane;
+import layout.basepane.HBox;
+import layout.basepane.VBox;
 import thoth_core.thoth_lite.db_data.db_data_element.implement.Currency;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
@@ -25,7 +29,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+
+import thoth_gui.thoth_styleconstants.svg.Plus;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -59,10 +64,6 @@ public class CompositeListView
             this.id = id;
         }
     }
-
-    private final static String SORT_BY_ID = "sort_by_id";
-    private final static String SORT_BY_COUNT = "sort_by_count";
-    private final static String SORT_BY_COUNT_TYPE = "sort_by_count_type";
 
     private boolean identifiableIsNew;
 
@@ -103,7 +104,7 @@ public class CompositeListView
         ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
         TextField count = getTextField(COUNT);
         ComboBox<Listed> countTypeComboBox = getCountTypeComboBox();
-        Button addButton = getAddButton();
+        Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance( Plus.getInstance() );
         TextField price = getTextField(PRICE);
         ComboBox<Currency> currencyComboBox = getCurrencyComboBox();
 
@@ -207,23 +208,20 @@ public class CompositeListView
             currencyComboBox.setValue(currencyComboBox.getItems().get(0));
         });
 
-        HBox wrapStoragable = new HBox();
-        wrapStoragable.setSpacing(5);
+        HBox wrapStoragable = getHBox();
         wrapStoragable.getChildren().addAll(
                 getLabel(STORAGABLE)
                 , storagableComboBox
         );
 
-        HBox wrapCount = new HBox();
-        wrapCount.setSpacing(5);
+        HBox wrapCount = getHBox();
         wrapCount.getChildren().addAll(
                 getLabel(COUNT_TYPE)
                 , count
                 , countTypeComboBox
         );
 
-        HBox wrapPrice = new HBox();
-        wrapPrice.setSpacing(5);
+        HBox wrapPrice = getHBox();
         wrapPrice.getChildren().addAll(
                 getLabel(PRICE)
                 , price
@@ -349,23 +347,12 @@ public class CompositeListView
         return res;
     }
 
-    private Button getAddButton() {
-        Button res = new Button(
-                new ImageView(
-                        new Image(
-                                getClass().getResource(thoth_gui.thoth_styleconstants.Image.PLUS).toExternalForm(), 28, 28, true, true
-                        )
-                )
-        );
-        return res;
-    }
-
     public List<Storing> getComposite() {
         return items.getValue();
     }
 
     private ComboBox<Listed> getCountTypeComboBox() {
-        ComboBox<Listed> res = new ComboBox<>();
+        ComboBox<Listed> res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
 
         try {
             res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
@@ -391,12 +378,12 @@ public class CompositeListView
     }
 
     private Label getLabel(String text) {
-        Label res = new Label(text);
+        Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(text);
         return res;
     }
 
     private ComboBox<Currency> getCurrencyComboBox() {
-        ComboBox<Currency> res = new ComboBox<>();
+        ComboBox<Currency> res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
 
         try {
             res.setItems(FXCollections.observableList((List<Currency>) ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES)));
@@ -421,8 +408,17 @@ public class CompositeListView
         return res;
     }
 
+    private HBox getHBox(){
+        HBox hBox = new HBox();
+
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.setSpacing(5);
+
+        return hBox;
+    }
+
     private ComboBox<SORT_BY> getSortComboBox() {
-        ComboBox<SORT_BY> res = new ComboBox<>();
+        ComboBox<SORT_BY> res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
 
         for (SORT_BY sort : SORT_BY.values()) {
             res.getItems().add(sort);
@@ -473,7 +469,7 @@ public class CompositeListView
 
     private ComboBox<Storagable> getStoragableComboBox() {
 
-        ComboBox<Storagable> res = new ComboBox<>();
+        ComboBox<Storagable> res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
 
         try {
             res.setItems(FXCollections.observableList((List<Storagable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORAGABLE)));
@@ -504,7 +500,7 @@ public class CompositeListView
             String id
             , String text
     ) {
-        TextField res = new TextField();
+        TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance();
         res.setId(id);
 
         if (text != null){

@@ -13,9 +13,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.BorderPane;
+import thoth_gui.thoth_lite.components.controls.ButtonBar;
 import window.Closeable;
 
 import java.sql.SQLException;
@@ -104,21 +104,16 @@ public abstract class IdentifiableCard
         parentClose.close();
     }
 
-    private ButtonBar createButtonBar(){
-        ButtonBar buttonBar = new ButtonBar();
-        buttonBar.setPadding(new Insets(2));
-        apply = getButton(ButtonText.APPLY, event -> apply());
-        cancel = getButton(ButtonText.CANCEL, event -> cancel());
-        buttonBar.getButtons().addAll(
+    private javafx.scene.control.ButtonBar createButtonBar(){
+        apply  = getButton( ButtonText.APPLY , event -> apply()  );
+        cancel = getButton( ButtonText.CANCEL, event -> cancel() );
+
+        javafx.scene.control.ButtonBar buttonBar = ButtonBar.getInstance(
                 apply
                 , cancel
         );
 
-        buttonBar.setStyle("" +
-                "-fx-border-width: 1px 0 0 0;" +
-                "-fx-border-color:grey;" +
-                "-fx-border-style:solid;" +
-                "");
+        setMargin(buttonBar, new Insets(2));
 
         return buttonBar;
     }

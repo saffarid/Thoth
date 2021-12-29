@@ -5,6 +5,7 @@ module uikit {
     exports controls;
     exports window;
     exports styleconstants;
+    exports styleconstants.imagesvg;
     exports layout;
 
 

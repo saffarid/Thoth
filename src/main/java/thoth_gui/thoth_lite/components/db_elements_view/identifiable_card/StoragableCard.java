@@ -45,11 +45,9 @@ public class StoragableCard
         ADRESS("adress"),
         NOTE("note");
         private String id;
-
         PropetiesStoragableId(String id) {
             this.id = id;
         }
-
     }
 
     protected StoragableCard(
@@ -122,7 +120,7 @@ public class StoragableCard
     }
 
     protected ComboBox getComboBox(PropetiesStoragableId id) {
-        ComboBox res = new ComboBox<>();
+        ComboBox res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
         res.setId(id.id);
 
         res.setCellFactory(listedListView -> new ComboBoxListedCell());
@@ -182,7 +180,7 @@ public class StoragableCard
     }
 
     private Label getLabel(String text) {
-        Label res = new Label(text);
+        Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(text);
         res.setMinWidth(120);
         res.setPrefWidth(120);
         res.setMaxWidth(120);
@@ -190,7 +188,7 @@ public class StoragableCard
     }
 
     private TextField getTextField(PropetiesStoragableId id) {
-        TextField res = new TextField();
+        TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance();
         res.setId(id.id);
 
         switch (id) {
