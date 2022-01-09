@@ -2,7 +2,7 @@ package thoth_gui.thoth_lite.components.db_elements_view.identifiable_card;
 
 import thoth_core.thoth_lite.db_data.db_data_element.implement.Currency;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
@@ -152,12 +152,12 @@ public abstract class IdentifiableCard
 
     protected abstract void updateIdentifiable();
 
-    protected class ComboBoxListedCell extends ListCell<Listed> {
+    protected class ComboBoxListedCell extends ListCell<Typable> {
         @Override
-        protected void updateItem(Listed listed, boolean b) {
-            if(listed != null){
-                super.updateItem(listed, b);
-                setText(listed.getValue());
+        protected void updateItem(Typable typable, boolean b) {
+            if(typable != null){
+                super.updateItem(typable, b);
+                setText(typable.getValue());
             }
         }
     }

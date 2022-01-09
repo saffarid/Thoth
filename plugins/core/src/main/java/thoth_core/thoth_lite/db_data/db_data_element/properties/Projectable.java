@@ -9,6 +9,8 @@ public interface Projectable
         , Composite
         , Identifiable
         , Startable
+        , Finishable
 {
-
+    void setType(Typable type);
+    Typable getType();
 }

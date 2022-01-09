@@ -17,22 +17,29 @@ public class DBLiteStructure extends DataBaseSQL {
 
     public DBLiteStructure() {
         super();
+        tables.add(new Info());
         //Таблицы типа GUIDE
         tables.add(new CountTypes());
-        tables.add(new ProductTypes());
+        tables.add(new ExpensesTypes());
+        tables.add(new IncomesTypes());
         tables.add(new OrderStatus());
+        tables.add(new ProductTypes());
+        tables.add(new ProjectTypes());
         tables.add(new Partners());
-        tables.add(new IncomeTypes());
         tables.add(new Storage());
-        //Таблица типа SYSTEM_GUIDE
+        //Таблица типа SYSTEM_TABLE
         tables.add(new Currency());
         //Таблица типа TABLE
-        tables.add(new Products());
-        tables.add(new NotUsed());
-        tables.add(new Purchases());
-        tables.add(new Orders());
-        tables.add(new ProjectsList());
+        tables.add(new Expenses());
         tables.add(new Incomes());
+        tables.add(new NotUsed());
+        tables.add(new Products());
+        tables.add(new PurchaseDesc());
+//        tables.add(new Orders());
+//        tables.add(new ProjectsDesc());
+        //Таблицы типа COMPOSITE
+//        tables.add(new ProjectsComposition());
+        tables.add(new PurchaseComposite());
     }
 
     private TableColumn getCustomColumn(String name, DataTypes type, boolean isUnique, boolean isNotNull) {
@@ -55,6 +62,10 @@ public class DBLiteStructure extends DataBaseSQL {
         return column;
     }
 
+    private TableColumn getForeignColumnByName(String tableName, String article) {
+        return getTable(tableName).getColumnByName(article);
+    }
+
     private TableColumn getPrimaryKeyCustom(String name, DataTypes type) {
         TableColumn column = TableColumn.getInstance(ColumnTypes.PRIMARYKEY_CUSTOM);
         try {
@@ -66,7 +77,10 @@ public class DBLiteStructure extends DataBaseSQL {
         return column;
     }
 
-    class Info extends Table{
+    /**
+     * Таблица системной информации
+     */
+    class Info extends Table {
         public Info() {
             super();
             name = StructureDescription.Info.TABLE_NAME;
@@ -88,6 +102,8 @@ public class DBLiteStructure extends DataBaseSQL {
         }
     }
 
+    /* --- Таблицы со списочными данными --- */
+
     /**
      * Таблица едениц измерения
      */
@@ -102,6 +118,55 @@ public class DBLiteStructure extends DataBaseSQL {
             );
             addColumn(getCustomColumn(
                     StructureDescription.CountTypes.COUNT_TYPE, DataTypes.NOTE, true, true
+            ));
+        }
+    }
+
+    /**
+     * Таблица типов расходов
+     */
+    class ExpensesTypes extends Table {
+        public ExpensesTypes() {
+            name = StructureDescription.ExpensesTypes.TABLE_NAME;
+            type = StructureDescription.TableTypes.TABLE.getType();
+
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getCustomColumn(
+                    StructureDescription.ExpensesTypes.EXPENSES_TYPE, DataTypes.TEXT, true, true
+            ));
+        }
+    }
+
+    /**
+     * Таблица категорий доходов
+     */
+    class IncomesTypes extends Table {
+        public IncomesTypes() {
+            super();
+            name = StructureDescription.IncomesTypes.TABLE_NAME;
+            type = StructureDescription.TableTypes.GUIDE.getType();
+
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getCustomColumn(
+                    StructureDescription.IncomesTypes.INCOMES_TYPE, DataTypes.NOTE, true, true
+            ));
+        }
+    }
+
+    /**
+     * Таблица статусов заказа
+     */
+    class OrderStatus extends Table {
+        public OrderStatus() {
+            super();
+            name = StructureDescription.OrderStatus.TABLE_NAME;
+            type = StructureDescription.TableTypes.GUIDE.getType();
+
+            addColumn(
+                    TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT)
+            );
+            addColumn(getCustomColumn(
+                    StructureDescription.OrderStatus.ORDER_STATUS, DataTypes.NOTE, true, true
             ));
         }
     }
@@ -125,19 +190,159 @@ public class DBLiteStructure extends DataBaseSQL {
     }
 
     /**
-     * Таблица статусов заказа
+     * Таблица типов проектов
      */
-    class OrderStatus extends Table {
-        public OrderStatus() {
+    class ProjectTypes extends Table {
+        public ProjectTypes() {
             super();
-            name = StructureDescription.OrderStatus.TABLE_NAME;
+            name = StructureDescription.ProjectTypes.TABLE_NAME;
             type = StructureDescription.TableTypes.GUIDE.getType();
 
-            addColumn(
-                    TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT)
-            );
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
             addColumn(getCustomColumn(
-                    StructureDescription.OrderStatus.ORDER_STATUS, DataTypes.NOTE, true, true
+                    StructureDescription.ProjectTypes.TABLE_NAME, DataTypes.NOTE, true, true
+            ));
+        }
+    }
+
+    /* --- Простые таблицы --- */
+
+    /**
+     * Таблица список валют
+     */
+    class Currency extends Table {
+        public Currency() {
+            super();
+            name = StructureDescription.Currency.TABLE_NAME;
+            type = StructureDescription.TableTypes.SYSTEM_TABLE.getType();
+
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getCustomColumn(
+                    StructureDescription.Currency.CURRENCY, DataTypes.NOTE, true, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Currency.COURSE, DataTypes.DOUBLE, false, true
+            ));
+        }
+    }
+
+    /**
+     * Таблица учета расходов
+     */
+    class Expenses extends Table {
+        public Expenses() {
+            super();
+            name = StructureDescription.Expenses.TABLE_NAME;
+            type = StructureDescription.TableTypes.TABLE.getType();
+
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getCustomColumn(
+                    StructureDescription.Expenses.EXPENSES_TYPE_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.ExpensesTypes.TABLE_NAME, StructureDescription.ExpensesTypes.EXPENSES_TYPE)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Expenses.VALUE, DataTypes.DOUBLE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Expenses.DATE, DataTypes.TEXT, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Expenses.CURRENCY_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.Currency.TABLE_NAME, StructureDescription.Currency.CURRENCY)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Expenses.COURSE, DataTypes.DOUBLE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Expenses.COMMENT, DataTypes.TEXT, false, false
+            ));
+        }
+    }
+
+    /**
+     * Таблица доходов
+     */
+    class Incomes extends Table {
+        public Incomes() {
+            super();
+            name = StructureDescription.Incomes.TABLE_NAME;
+            type = StructureDescription.TableTypes.TABLE.getType();
+
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getCustomColumn(
+                    StructureDescription.Incomes.INCOMES_TYPE_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.IncomesTypes.TABLE_NAME, StructureDescription.IncomesTypes.INCOMES_TYPE)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Incomes.VALUE, DataTypes.DOUBLE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Incomes.DATE, DataTypes.TEXT, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Incomes.CURRENCY_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.Currency.TABLE_NAME, StructureDescription.Currency.CURRENCY)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Incomes.COURSE, DataTypes.DOUBLE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Incomes.COMMENT, DataTypes.TEXT, false, false
+            ));
+        }
+    }
+
+    /**
+     * Таблица для хранения неиспользуемых продуктов
+     */
+    class NotUsed extends Table {
+        public NotUsed() {
+            super();
+            name = StructureDescription.NotUsed.TABLE_NAME;
+            type = StructureDescription.TableTypes.TABLE.getType();
+
+            addColumn(getPrimaryKeyCustom(
+                    StructureDescription.NotUsed.PRODUCT_ID, DataTypes.INT
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.NotUsed.CAUSE, DataTypes.TEXT, false, false
+            ));
+        }
+    }
+
+    /**
+     * Таблица заказов от клиентов
+     */
+    class Orders extends Table {
+        public Orders() {
+            super();
+            name = StructureDescription.Orders.TABLE_NAME;
+            type = StructureDescription.TableTypes.TABLE.getType();
+
+            addColumn(getPrimaryKeyCustom(
+                    StructureDescription.Orders.ID, DataTypes.TEXT
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Orders.CUSTOMER_ID, DataTypes.INT, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Orders.PROJECT_ID, DataTypes.INT, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Orders.IS_MONTHLY, DataTypes.BOOL, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Orders.DATE_START, DataTypes.NOTE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Orders.DATE_FINISH, DataTypes.NOTE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Orders.STATUS_ID, DataTypes.INT, false, true
+                    , getTable(StructureDescription.OrderStatus.TABLE_NAME).getColumnByName(StructureDescription.OrderStatus.ORDER_STATUS)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.Orders.AUTOFINISH, DataTypes.BOOL, false, true
             ));
         }
     }
@@ -162,59 +367,6 @@ public class DBLiteStructure extends DataBaseSQL {
             ));
             addColumn(getCustomColumn(
                     StructureDescription.Partners.WEB, DataTypes.NOTE, false, false
-            ));
-        }
-    }
-
-    /**
-     * Таблица категорий доходов
-     */
-    class IncomeTypes extends Table {
-        public IncomeTypes() {
-            super();
-            name = StructureDescription.IncomeTypes.TABLE_NAME;
-            type = StructureDescription.TableTypes.GUIDE.getType();
-
-            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
-            addColumn(getCustomColumn(
-                    StructureDescription.IncomeTypes.INCOME_TYPE, DataTypes.NOTE, true, true
-            ));
-        }
-    }
-
-    /**
-     * Таблица список валют
-     */
-    class Currency extends Table {
-        public Currency() {
-            super();
-            name = StructureDescription.Currency.TABLE_NAME;
-            type = StructureDescription.TableTypes.GUIDE.getType();
-
-            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
-            addColumn(getCustomColumn(
-                    StructureDescription.Currency.CURRENCY, DataTypes.NOTE, true, true
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.Currency.COURSE, DataTypes.DOUBLE, false, true
-            ));
-        }
-    }
-
-    /**
-     * Таблица для хранения неиспользуемых продуктов
-     */
-    class NotUsed extends Table {
-        public NotUsed() {
-            super();
-            name = StructureDescription.NotUsed.TABLE_NAME;
-            type = StructureDescription.TableTypes.TABLE.getType();
-
-            addColumn(getPrimaryKeyCustom(
-                    StructureDescription.NotUsed.PRODUCT_ID, DataTypes.INT
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.NotUsed.CAUSE, DataTypes.TEXT, false, false
             ));
         }
     }
@@ -290,6 +442,69 @@ public class DBLiteStructure extends DataBaseSQL {
     }
 
     /**
+     * Таблица-описание покупок
+     */
+    class PurchaseDesc extends Table {
+        public PurchaseDesc() {
+            super();
+            name = StructureDescription.PurchaseDesc.TABLE_NAME;
+            type = StructureDescription.TableTypes.DESC.getType();
+
+            addColumn(getPrimaryKeyCustom(
+                    StructureDescription.PurchaseDesc.PURCHASE_ID, DataTypes.TEXT
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseDesc.STORE_ID, DataTypes.INT, false, true,
+                    getTable(StructureDescription.Partners.TABLE_NAME).getColumnByName(StructureDescription.Partners.ID)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseDesc.DELIVERY_DATE, DataTypes.TEXT, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseDesc.IS_DELIVERED, DataTypes.BOOL, false, true
+            ));
+        }
+    }
+
+    /**
+     * Таблица-состав покупок
+     */
+    class PurchaseComposite extends Table {
+        public PurchaseComposite() {
+            super();
+            name = StructureDescription.PurchaseComposition.TABLE_NAME;
+            type = StructureDescription.TableTypes.COMPOSITE.getType();
+
+            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseComposition.PURCHASE_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.PurchaseDesc.TABLE_NAME, StructureDescription.PurchaseDesc.PURCHASE_ID)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseComposition.PRODUCT_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.Products.TABLE_NAME, StructureDescription.Products.ARTICLE)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseComposition.COUNT, DataTypes.DOUBLE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseComposition.COUNT_TYPE_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.CountTypes.TABLE_NAME, StructureDescription.CountTypes.COUNT_TYPE)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseComposition.PRICE, DataTypes.DOUBLE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseComposition.CURRENCY_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.Currency.TABLE_NAME, StructureDescription.Currency.CURRENCY)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.PurchaseComposition.COURSE, DataTypes.DOUBLE, false, true
+            ));
+        }
+    }
+
+    /**
      * Таблица для хранения покупок
      */
     class Purchases extends Table {
@@ -335,75 +550,51 @@ public class DBLiteStructure extends DataBaseSQL {
     }
 
     /**
-     * Таблица заказов от клиентов
-     */
-    class Orders extends Table {
-        public Orders() {
-            super();
-            name = StructureDescription.Orders.TABLE_NAME;
-            type = StructureDescription.TableTypes.TABLE.getType();
-
-            addColumn(getPrimaryKeyCustom(
-                    StructureDescription.Orders.ID, DataTypes.TEXT
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.Orders.CUSTOMER_ID, DataTypes.INT, false, true
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.Orders.PROJECT_ID, DataTypes.INT, false, true
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.Orders.IS_MONTHLY, DataTypes.BOOL, false, true
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.Orders.DATE_START, DataTypes.NOTE, false, true
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.Orders.DATE_FINISH, DataTypes.NOTE, false, true
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.Orders.STATUS_ID, DataTypes.INT, false, true
-                    , getTable(StructureDescription.OrderStatus.TABLE_NAME).getColumnByName(StructureDescription.OrderStatus.ORDER_STATUS)
-            ));
-            addColumn(getCustomColumn(
-                    StructureDescription.Orders.AUTOFINISH, DataTypes.BOOL, false, true
-            ));
-        }
-    }
-
-    /**
      * Таблица списка проектов
      */
-    class ProjectsList extends Table {
-        public ProjectsList() {
+    class ProjectsDesc extends Table {
+        public ProjectsDesc() {
             super();
-            name = StructureDescription.ProjectsList.TABLE_NAME;
-            type = StructureDescription.TableTypes.TABLE.getType();
+            name = StructureDescription.ProjectsDesc.TABLE_NAME;
+            type = StructureDescription.TableTypes.DESC.getType();
 
-            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
+            addColumn(getPrimaryKeyCustom(
+                    StructureDescription.ProjectsDesc.ID, DataTypes.TEXT
+            ));
 
             addColumn(getCustomColumn(
-                    StructureDescription.ProjectsList.NAME, DataTypes.NOTE, false, true
+                    StructureDescription.ProjectsDesc.NAME, DataTypes.NOTE, false, true
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.ProjectsList.DATE, DataTypes.NOTE, false, true
+                    StructureDescription.ProjectsDesc.TYPE_ID, DataTypes.INT, false, true,
+                    getTable(StructureDescription.ProjectTypes.TABLE_NAME).getColumnByName(StructureDescription.ProjectTypes.PROJECT_TYPE)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.ProjectsDesc.DATE, DataTypes.NOTE, false, true
             ));
         }
     }
 
     /**
-     * Таблица доходов
+     * Таблица состава проектов
      */
-    class Incomes extends Table {
-        public Incomes() {
+    class ProjectsComposition extends Table {
+        public ProjectsComposition() {
             super();
-            name = StructureDescription.Incomes.TABLE_NAME;
-            type = StructureDescription.TableTypes.TABLE.getType();
+            name = StructureDescription.ProjectsComposition.TABLE_NAME;
+            type = StructureDescription.TableTypes.COMPOSITE.getType();
 
             addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
-
             addColumn(getCustomColumn(
-                    StructureDescription.Incomes.ORDER_ID, DataTypes.INT, false, true
+                    StructureDescription.ProjectsComposition.PRODUCT_ID, DataTypes.TEXT, false, true,
+                    getTable(StructureDescription.Products.TABLE_NAME).getColumnByName(StructureDescription.Products.ARTICLE)
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.ProjectsComposition.COUNT, DataTypes.DOUBLE, false, true
+            ));
+            addColumn(getCustomColumn(
+                    StructureDescription.ProjectsComposition.COUNT_TYPE_ID, DataTypes.INT, false, true,
+                    getTable(StructureDescription.CountTypes.TABLE_NAME).getColumnByName(StructureDescription.CountTypes.COUNT_TYPE)
             ));
         }
     }

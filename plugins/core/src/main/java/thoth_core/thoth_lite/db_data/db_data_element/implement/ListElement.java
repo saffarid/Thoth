@@ -1,9 +1,9 @@
 package thoth_core.thoth_lite.db_data.db_data_element.implement;
 
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 
 public class ListElement
-        implements Listed {
+        implements Typable {
 
     private String id;
     private String value;

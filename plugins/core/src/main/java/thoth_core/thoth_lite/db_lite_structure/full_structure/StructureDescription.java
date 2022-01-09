@@ -4,7 +4,18 @@ public class StructureDescription {
 
     public enum TableTypes {
         TABLE("table"),
+        /**
+         * Таблица-описание
+         * */
+        DESC("desc"),
+        /**
+         * Таблица-состав
+         * */
+        COMPOSITE("composite"),
         PROJECT_TABLE("project_table"),
+        /**
+         * Таблица-список
+         * */
         GUIDE("guide"),
         CONSTANTS("constants"),
         SYSTEM_TABLE("system_table"),
@@ -29,6 +40,8 @@ public class StructureDescription {
         public static final String VERSION = "version";
     }
 
+    /* --- Таблицы со списочными данными --- */
+
     /**
      * Таблица едениц измерения
      */
@@ -39,12 +52,21 @@ public class StructureDescription {
     }
 
     /**
-     * Таблица типов продуктов
-     */
-    public static class ProductTypes {
-        public static final String TABLE_NAME = "product_types";
+     * Таблица типов расходов
+     * */
+    public static class ExpensesTypes {
+        public static final String TABLE_NAME = "expenses_types";
         public static final String ID = "id";
-        public static final String PRODUCT_TYPES = "product_types";
+        public static final String EXPENSES_TYPE = "expenses_type";
+    }
+
+    /**
+     * Таблица категорий доходов
+     */
+    public static class IncomesTypes {
+        public static final String TABLE_NAME = "income_types";
+        public static final String ID = "id";
+        public static final String INCOMES_TYPE = "income_type";
     }
 
     /**
@@ -57,24 +79,36 @@ public class StructureDescription {
     }
 
     /**
-     * Таблица партнеров
+     * Таблица типов продуктов
      */
-    public static class Partners {
-        public static final String TABLE_NAME = "partners";
+    public static class ProductTypes {
+        public static final String TABLE_NAME = "product_types";
         public static final String ID = "id";
-        public static final String NAME = "name";
-        public static final String PHONE = "phone";
-        public static final String WEB = "web";
+        public static final String PRODUCT_TYPES = "product_types";
     }
 
     /**
-     * Таблица категорий доходов
-     */
-    public static class IncomeTypes {
-        public static final String TABLE_NAME = "income_types";
+     * Таблица типов проектов
+     * */
+    public static class ProjectTypes{
+        public static final String TABLE_NAME = "project_types";
         public static final String ID = "id";
-        public static final String INCOME_TYPE = "income_type";
+        public static final String PROJECT_TYPE = "project_type";
     }
+
+    /**
+     * Таблица для хранения списка мест хранения продуктов
+     */
+    public static class Storage {
+        public static final String TABLE_NAME = "storage";
+        public static final String ID = "id";
+        public static final String ADRESS = "adress";
+//        public static final String COUNT = "count";
+//        public static final String COUNT_TYPE_ID = "count_type_id";
+//        public static final String PRODUCT_ID = "product_id";
+    }
+
+    /* --- Простые таблицы --- */
 
     /**
      * Таблица список валют
@@ -87,6 +121,34 @@ public class StructureDescription {
     }
 
     /**
+     * Таблица учета расходов
+     * */
+    public static class Expenses {
+        public static final String TABLE_NAME = "expenses";
+        public static final String ID = "id";
+        public static final String EXPENSES_TYPE_ID = "expenses_type_id";
+        public static final String VALUE = "value";
+        public static final String DATE = "date";
+        public static final String CURRENCY_ID = "currency_id";
+        public static final String COURSE = "course";
+        public static final String COMMENT = "comment";
+    }
+
+    /**
+     * Таблица доходов
+     */
+    public static class Incomes {
+        public static final String TABLE_NAME = "incomes";
+        public static final String ID = "id";
+        public static final String INCOMES_TYPE_ID = "incomes_type_id";
+        public static final String VALUE = "value";
+        public static final String DATE = "date";
+        public static final String CURRENCY_ID = "currency_id";
+        public static final String COURSE = "course";
+        public static final String COMMENT = "comment";
+    }
+
+    /**
      * Таблица для хранения неиспользуемых продуктов
      */
     public static class NotUsed {
@@ -96,6 +158,32 @@ public class StructureDescription {
 //        public static final String NAME = "name";
         public static final String CAUSE = "cause";
         public static final String PRODUCT_ID = "product_id";
+    }
+
+    /**
+     * Таблица заказов от клиентов
+     */
+    public static class Orders {
+        public static final String TABLE_NAME = "orders";
+        public static final String ID = "order_id";
+        public static final String CUSTOMER_ID = "customer_id";
+        public static final String PROJECT_ID = "project_id";
+        public static final String IS_MONTHLY = "is_monthly";
+        public static final String DATE_START = "date_start";
+        public static final String DATE_FINISH = "date_finish";
+        public static final String STATUS_ID = "status_id";
+        public static final String AUTOFINISH = "autofinish";
+    }
+
+    /**
+     * Таблица партнеров
+     */
+    public static class Partners {
+        public static final String TABLE_NAME = "partners";
+        public static final String ID = "id";
+        public static final String NAME = "name";
+        public static final String PHONE = "phone";
+        public static final String WEB = "web";
     }
 
     /**
@@ -115,16 +203,31 @@ public class StructureDescription {
         public static final String NOTE = "note";
     }
 
+    /* --- Составные таблицы --- */
+
     /**
-     * Таблица для хранения списка мест хранения продуктов
-     */
-    public static class Storage {
-        public static final String TABLE_NAME = "storage";
+     * Таблица-описание покупок
+     * */
+    public static class PurchaseDesc {
+        public static final String TABLE_NAME = "purchase_desc";
+        public static final String PURCHASE_ID = "purchase_id";
+        public static final String STORE_ID = "store_id";
+        public static final String DELIVERY_DATE = "delivery_date";
+        public static final String IS_DELIVERED = "is_delivered";
+    }
+    /**
+     * Таблица-состав покупок
+     * */
+    public static class PurchaseComposition {
+        public static final String TABLE_NAME = "purchase_composition";
         public static final String ID = "id";
-        public static final String ADRESS = "adress";
-//        public static final String COUNT = "count";
-//        public static final String COUNT_TYPE_ID = "count_type_id";
-//        public static final String PRODUCT_ID = "product_id";
+        public static final String PURCHASE_ID = "purchase_id";
+        public static final String PRODUCT_ID = "product_id";
+        public static final String COUNT = "count";
+        public static final String COUNT_TYPE_ID = "count_type_id";
+        public static final String PRICE = "price";
+        public static final String CURRENCY_ID = "currency_id";
+        public static final String COURSE = "course";
     }
 
     /**
@@ -145,37 +248,25 @@ public class StructureDescription {
     }
 
     /**
-     * Таблица заказов от клиентов
-     */
-    public static class Orders {
-        public static final String TABLE_NAME = "orders";
-        public static final String ID = "order_id";
-        public static final String CUSTOMER_ID = "customer_id";
-        public static final String PROJECT_ID = "project_id";
-        public static final String IS_MONTHLY = "is_monthly";
-        public static final String DATE_START = "date_start";
-        public static final String DATE_FINISH = "date_finish";
-        public static final String STATUS_ID = "status_id";
-        public static final String AUTOFINISH = "autofinish";
-    }
-
-    /**
      * Таблица списка проектов
      */
-    public static class ProjectsList {
-        public static final String TABLE_NAME = "projects_list";
+    public static class ProjectsDesc {
+        public static final String TABLE_NAME = "projects_desc";
         public static final String ID = "id";
         public static final String NAME = "name";
+        public static final String TYPE_ID = "type_id";
         public static final String DATE = "date";
     }
-
     /**
-     * Таблица доходов
-     */
-    public static class Incomes {
-        public static final String TABLE_NAME = "incomes";
+     * Таблица состава проектов
+     * */
+    public static class ProjectsComposition {
+        public static final String TABLE_NAME = "project_composition";
         public static final String ID = "id";
-        public static final String ORDER_ID = "order_id";
+        public static final String PRODUCT_ID = "product_id";
+        public static final String COUNT = "count";
+        public static final String COUNT_TYPE_ID = "count_type_id";
+        public static final String COURSE = "course";
     }
 
 }

@@ -6,7 +6,7 @@ import layout.basepane.HBox;
 import layout.basepane.VBox;
 import thoth_core.thoth_lite.db_data.db_data_element.implement.Currency;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
@@ -103,7 +103,7 @@ public class CompositeListView
 
         ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
         TextField count = getTextField(COUNT);
-        ComboBox<Listed> countTypeComboBox = getCountTypeComboBox();
+        ComboBox<Typable> countTypeComboBox = getCountTypeComboBox();
         Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance( Plus.getInstance() );
         TextField price = getTextField(PRICE);
         ComboBox<Currency> currencyComboBox = getCurrencyComboBox();
@@ -113,7 +113,7 @@ public class CompositeListView
                 private String id;
                 private Storagable product;
                 private Double count;
-                private Listed countType;
+                private Typable countType;
                 private Double price;
                 private Finance currency;
 
@@ -128,7 +128,7 @@ public class CompositeListView
                 }
 
                 @Override
-                public Listed getCountType() {
+                public Typable getCountType() {
                     return countType;
                 }
 
@@ -148,7 +148,7 @@ public class CompositeListView
                 }
 
                 @Override
-                public void setCountType(Listed countType) {
+                public void setCountType(Typable countType) {
                     this.countType = countType;
                 }
 
@@ -351,11 +351,11 @@ public class CompositeListView
         return items.getValue();
     }
 
-    private ComboBox<Listed> getCountTypeComboBox() {
-        ComboBox<Listed> res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
+    private ComboBox<Typable> getCountTypeComboBox() {
+        ComboBox<Typable> res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
 
         try {
-            res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
+            res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
             res.setValue(res.getItems().get(0));
         } catch (NotContainsException e) {
             e.printStackTrace();
@@ -564,14 +564,14 @@ public class CompositeListView
     }
 
     private class ListedCell
-            extends ListCell<Listed> {
+            extends ListCell<Typable> {
 
         @Override
-        protected void updateItem(Listed listed, boolean b) {
-            if (listed != null) {
-                super.updateItem(listed, b);
+        protected void updateItem(Typable typable, boolean b) {
+            if (typable != null) {
+                super.updateItem(typable, b);
 
-                setText(listed.getValue());
+                setText(typable.getValue());
             }
         }
     }

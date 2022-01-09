@@ -1,5 +1,6 @@
 package thoth_core.thoth_lite.db_data.db_data_element.implement;
 
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Projectable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
 
@@ -90,4 +91,41 @@ public class Project
         createdDate = LocalDate.parse(startDate);
     }
 
+
+
+
+    @Override
+    public LocalDate finishDate() {
+        return null;
+    }
+
+    @Override
+    public void setFinishDate(LocalDate finishDate) {
+
+    }
+
+    @Override
+    public void finish() {
+
+    }
+
+    @Override
+    public String message() {
+        return null;
+    }
+
+    @Override
+    public boolean isFinish() {
+        return false;
+    }
+
+    @Override
+    public void setType(Typable type) {
+
+    }
+
+    @Override
+    public Typable getType() {
+        return null;
+    }
 }

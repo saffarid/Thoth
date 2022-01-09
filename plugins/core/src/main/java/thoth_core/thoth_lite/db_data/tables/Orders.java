@@ -3,6 +3,7 @@ package thoth_core.thoth_lite.db_data.tables;
 import database.Column.TableColumn;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Orderable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
+import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.text.ParseException;
@@ -22,8 +23,9 @@ public class Orders
     }
 
     @Override
-    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list) {
-        List<HashMap<String, Object>> res = new LinkedList<>();
+    public HashMap< String, List< HashMap<String, Object> > > convertToMap(List<? extends Identifiable> list) {
+        HashMap< String, List< HashMap<String, Object> > > res = new HashMap<>();
+        List<HashMap<String, Object>> datas = new LinkedList<>();
         for (Identifiable identifiable : list) {
             HashMap<String, Object> map = new HashMap<>();
             Orderable orderable = (Orderable) identifiable;
@@ -34,13 +36,14 @@ public class Orders
             map.put(STATUS_ID, orderable.getStatus().getValue() );
             map.put(AUTOFINISH, 0);
             map.put(IS_MONTHLY, 0);
-            res.add(map);
+            datas.add(map);
         }
+        res.put(TABLE_NAME, datas);
         return res;
     }
 
     @Override
-    public void readTable(List<HashMap<String, Object>> data) throws ParseException {
+    public void readTable(StructureDescription.TableTypes tableType, List<HashMap<String, Object>> data) throws ParseException {
         datas.clear();
         for (HashMap<String, Object> row : data) {
 //            try {
@@ -65,12 +68,12 @@ public class Orders
     }
 
     @Override
-    public void readTable(ResultSet resultSet) {
+    public void readTable(StructureDescription.TableTypes tableType, ResultSet resultSet) {
 
     }
 
     @Override
-    public void readTableWithTableColumn(List<HashMap<TableColumn, Object>> data) {
+    public void readTableWithTableColumn(StructureDescription.TableTypes tableType, List<HashMap<TableColumn, Object>> data) {
 
     }
 }

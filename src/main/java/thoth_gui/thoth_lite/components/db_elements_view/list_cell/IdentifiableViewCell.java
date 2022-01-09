@@ -100,8 +100,8 @@ public abstract class IdentifiableViewCell
             return new PurchasableViewCell((Purchasable) identifiable);
         }else if(identifiable instanceof Storing){
             return new StoringViewCell((Storing) identifiable);
-        }else if(identifiable instanceof Listed){
-            return new ListedViewCell((Listed) identifiable);
+        }else if(identifiable instanceof Typable){
+            return new ListedViewCell((Typable) identifiable);
         }else if(identifiable instanceof Finance){
             return new FinanceViewCell((Finance) identifiable);
         }

@@ -1,6 +1,6 @@
 package thoth_core.thoth_lite.db_data.db_data_element.properties.parts;
 
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 
 /**
  * Реализация интерфейса делает объект исчисляемым
@@ -20,11 +20,11 @@ public interface Countable {
     /**
      * @return единицы измерения
      * */
-    Listed getCountType();
+    Typable getCountType();
 
     /**
      * @param countType новая единица измерения
      * */
-    void setCountType(Listed countType);
+    void setCountType(Typable countType);
 
 }

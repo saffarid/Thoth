@@ -1,6 +1,6 @@
 package thoth_core.thoth_lite.db_data.db_data_element.implement;
 
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
 
 public class Product
@@ -8,10 +8,10 @@ public class Product
 
     private String article;
     private String name;
-    private Listed type;
+    private Typable type;
     private Double count;
-    private Listed countType;
-    private Listed adress;
+    private Typable countType;
+    private Typable adress;
     private String note;
 
     public Product() {
@@ -21,7 +21,7 @@ public class Product
         this.note = "";
     }
 
-    public Product(String article, String name, Listed type, Double count, Listed countType, Listed adress) {
+    public Product(String article, String name, Typable type, Double count, Typable countType, Typable adress) {
         this.article = article;
         this.name = name;
         this.type = type;
@@ -30,7 +30,7 @@ public class Product
         this.adress = adress;
     }
 
-    public Product(String article, String name, Listed type, Double count, Listed countType, Listed adress , String note) {
+    public Product(String article, String name, Typable type, Double count, Typable countType, Typable adress , String note) {
         this.article = article;
         this.name = name;
         this.type = type;
@@ -60,7 +60,7 @@ public class Product
     }
 
     @Override
-    public Listed getType() {
+    public Typable getType() {
         return type;
     }
 
@@ -75,7 +75,7 @@ public class Product
     }
 
     @Override
-    public void setType(Listed type) {
+    public void setType(Typable type) {
 
     }
 
@@ -100,22 +100,22 @@ public class Product
     }
 
     @Override
-    public Listed getCountType() {
+    public Typable getCountType() {
         return countType;
     }
 
     @Override
-    public void setCountType(Listed countType) {
+    public void setCountType(Typable countType) {
         this.countType = countType;
     }
 
     @Override
-    public void setAdress(Listed adress) {
+    public void setAdress(Typable adress) {
         this.adress = adress;
     }
 
     @Override
-    public Listed getAdress() {
+    public Typable getAdress() {
         return adress;
     }
 

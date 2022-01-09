@@ -164,7 +164,9 @@ public class DataBaseLite {
      */
     private void readTable(Table table, List<HashMap<String, Object>> data) {
         try {
-            DBData.getInstance().getTableReadable(table.getName()).readTable(data);
+            StringBuilder name = new StringBuilder(table.getName());
+            String substring = name.substring(0, name.indexOf("_"));
+            DBData.getInstance().getTableReadable(substring).readTable( StructureDescription.TableTypes.valueOf(table.getType()), data );
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (NotContainsException e) {

@@ -2,8 +2,9 @@ package thoth_core.thoth_lite.db_data.tables;
 
 import database.Column.TableColumn;
 import thoth_core.thoth_lite.db_data.db_data_element.implement.ListElement;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
+import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.List;
 import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.OrderStatus.*;
 
 public class OrderStatus
-        extends Data<Listed> {
+        extends Data<Typable> {
 
     public OrderStatus() {
         super();
@@ -21,19 +22,21 @@ public class OrderStatus
     }
 
     @Override
-    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list) {
-        List<HashMap<String, Object>> res = new LinkedList<>();
+    public HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list) {
+        HashMap<String, List<HashMap<String, Object>>> res = new HashMap<>();
+        List<HashMap<String, Object>> datas = new LinkedList<>();
         for (Identifiable identifiable : list) {
             HashMap<String, Object> map = new HashMap<>();
-            Listed listed = (Listed) identifiable;
-            map.put(ORDER_STATUS, listed.getValue());
-            res.add(map);
+            Typable typable = (Typable) identifiable;
+            map.put(ORDER_STATUS, typable.getValue());
+            datas.add(map);
         }
+        res.put(TABLE_NAME, datas);
         return res;
     }
 
     @Override
-    public void readTable(List<HashMap<String, Object>> data) {
+    public void readTable(StructureDescription.TableTypes tableType, List<HashMap<String, Object>> data) {
         datas.clear();
         for (HashMap<String, Object> row : data) {
             datas.add(
@@ -47,12 +50,12 @@ public class OrderStatus
     }
 
     @Override
-    public void readTable(ResultSet resultSet) {
+    public void readTable(StructureDescription.TableTypes tableType, ResultSet resultSet) {
 
     }
 
     @Override
-    public void readTableWithTableColumn(List<HashMap<TableColumn, Object>> data) {
+    public void readTableWithTableColumn(StructureDescription.TableTypes tableType, List<HashMap<TableColumn, Object>> data) {
 
     }
 }

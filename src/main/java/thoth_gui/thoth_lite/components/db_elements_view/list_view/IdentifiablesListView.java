@@ -207,7 +207,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                     return new FinanceListView((List<Finance>) dataFromTable);
                 }
                 default:
-                    return new ListedListView( (List<Listed>) dataFromTable, type);
+                    return new ListedListView( (List<Typable>) dataFromTable, type);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

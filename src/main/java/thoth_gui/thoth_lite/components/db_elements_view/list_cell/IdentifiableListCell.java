@@ -2,7 +2,7 @@ package thoth_gui.thoth_lite.components.db_elements_view.list_cell;
 
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
@@ -49,7 +49,7 @@ public class IdentifiableListCell<T extends Identifiable>
 
         switch (mouseEvent.getButton()) {
             case PRIMARY: {
-                if (!(identifiable instanceof Listed) &&
+                if (!(identifiable instanceof Typable) &&
                         !(identifiable instanceof Finance) &&
                         (identifiable != null)) {
                     open();
@@ -57,7 +57,7 @@ public class IdentifiableListCell<T extends Identifiable>
                 break;
             }
             case SECONDARY:{
-                if (!(identifiable instanceof Listed) &&
+                if (!(identifiable instanceof Typable) &&
                         !(identifiable instanceof Finance) &&
                         (identifiable != null)) {
                     setContextMenu(createContextMenu());

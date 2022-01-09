@@ -2,7 +2,7 @@ package thoth_gui.thoth_lite.components.db_elements_view.list_view;
 
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.thoth_lite.components.db_elements_view.list_cell.IdentifiableListCell;
 import thoth_gui.thoth_lite.components.db_elements_view.list_cell.RemoveItemFromList;
@@ -162,7 +162,7 @@ public class FinanceListView
             for (Node cell : identifiableElementList.getChildrenUnmodifiable()) {
                 VirtualFlow cell1 = (VirtualFlow) cell;
                 for (int i = 0; i < cell1.getCellCount(); i++) {
-                    IdentifiableListCell<Listed> cell2 = (IdentifiableListCell<Listed>) cell1.getCell(i);
+                    IdentifiableListCell<Typable> cell2 = (IdentifiableListCell<Typable>) cell1.getCell(i);
                     RemoveItemFromList view1 = (RemoveItemFromList) cell2.getView();
                     if (!view1.hasRemoveItem()) {
                         view1.setRemoveItem(financeListView::removeItem);

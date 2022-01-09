@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import thoth_core.thoth_lite.config.Config;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
 import thoth_core.thoth_lite.db_data.DBData;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Composite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finishable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
@@ -168,7 +167,7 @@ public class ThothLite {
                 return StructureDescription.Currency.TABLE_NAME;
             }
             case INCOMES_TYPES:{
-                return StructureDescription.IncomeTypes.TABLE_NAME;
+                return StructureDescription.IncomesTypes.TABLE_NAME;
             }
             case ORDERABLE:{
                 return StructureDescription.Orders.TABLE_NAME;
@@ -180,7 +179,7 @@ public class ThothLite {
                 return StructureDescription.Partners.TABLE_NAME;
             }
             case PROJECTABLE:{
-                return StructureDescription.ProjectsList.TABLE_NAME;
+                return StructureDescription.ProjectsDesc.TABLE_NAME;
             }
             case PRODUCT_TYPES:{
                 return StructureDescription.ProductTypes.TABLE_NAME;
@@ -217,30 +216,30 @@ public class ThothLite {
     private void insertToTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
 
-        Data table = dbData.getTable(tableName);
-
-        for (Identifiable data : datas) {
-            //Если объект обладает свойствои составного проверяем его состав на наличие записей в БД
-            if (data instanceof Composite) {
-                Composite composite = (Composite) data;
-
-                Data products = dbData.getTable(StructureDescription.Products.TABLE_NAME);
-                List<Storagable> datasProducts = new LinkedList<>();
-
-                for (Storing storing : composite.getComposition()) {
-                    Storagable storagable = storing.getStoragable();
-                    if (!products.contains(storagable)) {
-                        datasProducts.add(storagable);
-                    }
-                }
-
-                if (!datasProducts.isEmpty()) {
-                    database.insert(products.getName(), products.convertToMap(datasProducts));
-                }
-            }
-        }
-
-        database.insert(table.getName(), table.convertToMap(datas));
+//        Data table = dbData.getTable(tableName);
+//
+//        for (Identifiable data : datas) {
+//            Если объект обладает свойствои составного проверяем его состав на наличие записей в БД
+//            if (data instanceof Composite) {
+//                Composite composite = (Composite) data;
+//
+//                Data products = dbData.getTable(StructureDescription.Products.TABLE_NAME);
+//                List<Storagable> datasProducts = new LinkedList<>();
+//
+//                for (Storing storing : composite.getComposition()) {
+//                    Storagable storagable = storing.getStoragable();
+//                    if (!products.contains(storagable)) {
+//                        datasProducts.add(storagable);
+//                    }
+//                }
+//
+//                if (!datasProducts.isEmpty()) {
+//                    database.insert(products.getName(), (List<HashMap<String, Object>>) products.convertToMap(datasProducts).get(StructureDescription.Products.TABLE_NAME));
+//                }
+//            }
+//        }
+//
+//        database.insert(table.getName(), table.convertToMap(datas));
     }
 
     /**
@@ -253,12 +252,12 @@ public class ThothLite {
     public void purchaseComplete(String purchaseId)
             throws NotContainsException, SQLException {
 
-        Data purchasesTable = dbData.getTable(StructureDescription.Purchases.TABLE_NAME);
-
-        List<Purchasable> purchasableList = new LinkedList<>();
-        purchasableList.add( (Purchasable) purchasesTable.getById(purchaseId) );
-
-        database.update( purchasesTable.getName(), purchasesTable.convertToMap(purchasableList) );
+//        Data purchasesTable = dbData.getTable(StructureDescription.Purchases.TABLE_NAME);
+//
+//        List<Purchasable> purchasableList = new LinkedList<>();
+//        purchasableList.add( (Purchasable) purchasesTable.getById(purchaseId) );
+//
+//        database.update( purchasesTable.getName(), purchasesTable.convertToMap(purchasableList) );
 
         /*
         * if (продукт НЕ ХРАНИТСЯ в считанной БД и в SQLite){
@@ -314,8 +313,8 @@ public class ThothLite {
      */
     private void removeFromTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
-        Data table = dbData.getTable(tableName);
-        database.remove(table.getName(), table.convertToMap(datas));
+//        Data table = dbData.getTable(tableName);
+//        database.remove(table.getName(), table.convertToMap(datas));
     }
 
     /**
@@ -351,8 +350,8 @@ public class ThothLite {
      */
     private void updateInTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
-        Data table = dbData.getTable(tableName);
-        database.update(tableName, table.convertToMap(datas));
+//        Data table = dbData.getTable(tableName);
+//        database.update(tableName, table.convertToMap(datas));
     }
 
     class ReReadDatabase

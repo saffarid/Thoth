@@ -24,20 +24,22 @@ public class NotUsed
     }
 
     @Override
-    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list) {
-        List<HashMap<String, Object>> res = new LinkedList<>();
+    public HashMap< String, List< HashMap<String, Object> > > convertToMap(List<? extends Identifiable> list) {
+        HashMap< String, List< HashMap<String, Object> > > res = new HashMap<>();
+        List<HashMap<String, Object>> datas = new LinkedList<>();
         for (Identifiable identifiable : list) {
             HashMap<String, Object> map = new HashMap<>();
             NotUse notUse = (NotUse) identifiable;
             map.put(PRODUCT_ID, notUse.getProduct().getId());
             map.put(CAUSE, notUse.getCause());
-            res.add(map);
+            datas.add(map);
         }
+        res.put(TABLE_NAME, datas);
         return res;
     }
 
     @Override
-    public void readTable(List<HashMap<String, Object>> data) throws ParseException {
+    public void readTable(StructureDescription.TableTypes tableType, List<HashMap<String, Object>> data) throws ParseException {
         datas.clear();
         for (HashMap<String, Object> row : data) {
             try {
@@ -56,12 +58,12 @@ public class NotUsed
     }
 
     @Override
-    public void readTable(ResultSet resultSet) {
+    public void readTable(StructureDescription.TableTypes tableType, ResultSet resultSet) {
 
     }
 
     @Override
-    public void readTableWithTableColumn(List<HashMap<TableColumn, Object>> data) {
+    public void readTableWithTableColumn(StructureDescription.TableTypes tableType, List<HashMap<TableColumn, Object>> data) {
 
     }
 }

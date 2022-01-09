@@ -4,6 +4,7 @@ import database.Column.TableColumn;
 import thoth_core.thoth_lite.db_data.db_data_element.implement.Partner;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Partnership;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
+import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -23,8 +24,9 @@ public class Partners
     }
 
     @Override
-    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list){
-        List<HashMap<String, Object>> res = new LinkedList<>();
+    public HashMap< String, List< HashMap<String, Object> > > convertToMap(List<? extends Identifiable> list){
+        HashMap< String, List< HashMap<String, Object> > > res = new HashMap<>();
+        List<HashMap<String, Object>> datas = new LinkedList<>();
         for(Identifiable identifiable : list){
             HashMap<String, Object> map = new HashMap<>();
             Partnership partner = (Partnership) identifiable;
@@ -32,13 +34,14 @@ public class Partners
             map.put(NAME, partner.getName());
             map.put(PHONE, partner.getPhone());
             map.put(WEB, partner.getWeb());
-            res.add(map);
+            datas.add(map);
         }
+        res.put(TABLE_NAME, datas);
         return res;
     }
 
     @Override
-    public void readTable(List<HashMap<String, Object>> data) {
+    public void readTable(StructureDescription.TableTypes tableType, List<HashMap<String, Object>> data) {
         datas.clear();
         for(HashMap<String, Object> row : data){
             datas.add(new Partner(
@@ -52,12 +55,12 @@ public class Partners
     }
 
     @Override
-    public void readTable(ResultSet resultSet) {
+    public void readTable(StructureDescription.TableTypes tableType, ResultSet resultSet) {
 
     }
 
     @Override
-    public void readTableWithTableColumn(List<HashMap<TableColumn, Object>> data) {
+    public void readTableWithTableColumn(StructureDescription.TableTypes tableType, List<HashMap<TableColumn, Object>> data) {
 
     }
 }

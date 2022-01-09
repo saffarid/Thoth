@@ -1,13 +1,12 @@
 package thoth_gui.thoth_lite.components.db_elements_view.list_cell;
 
 import styleconstants.imagesvg.Close;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
 import thoth_gui.thoth_lite.components.db_elements_view.list_view.RemoveItem;
-import thoth_gui.thoth_styleconstants.Image;
 import controls.Button;
 import controls.Label;
 import controls.TextField;
@@ -16,7 +15,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -41,7 +39,7 @@ public class ListedViewCell
 
     private boolean modeIsEdit = false;
 
-    private Listed listed;
+    private Typable typable;
 
     private TextField value;
     private Label valueLabel;
@@ -50,12 +48,12 @@ public class ListedViewCell
 
     private Button remove;
 
-    protected ListedViewCell(Listed listed) {
-        super(thoth_gui.thoth_styleconstants.svg.List.getInstance(), listed.getValue(), "", "");
-        this.listed = listed;
+    protected ListedViewCell(Typable typable) {
+        super(thoth_gui.thoth_styleconstants.svg.List.getInstance(), typable.getValue(), "", "");
+        this.typable = typable;
         Node point = Point.getInstance(7.5, 7.5);
 
-        value = new TextField(listed.getValue());
+        value = new TextField(typable.getValue());
         valueLabel = new Label();
 
         valueLabel.textProperty().bind(value.textProperty());
@@ -73,11 +71,11 @@ public class ListedViewCell
 
     @Override
     public void apply() {
-        listed.setValue(value.getText());
-        List<Listed> list = new LinkedList<>();
-        list.add(listed);
+        typable.setValue(value.getText());
+        List<Typable> list = new LinkedList<>();
+        list.add(typable);
         try {
-            if (listed.getId().equals("-1")) {
+            if (typable.getId().equals("-1")) {
                 //Вставляем запись в таблицу БД
                 ThothLite.getInstance().insertToTable(table, list);
             } else {
@@ -96,7 +94,7 @@ public class ListedViewCell
 
     @Override
     public void cancel() {
-        value.setText(listed.getValue());
+        value.setText(typable.getValue());
         changeStatusView();
     }
 
@@ -193,7 +191,7 @@ public class ListedViewCell
     }
 
     private void remove(ActionEvent event) {
-        if (!listed.getId().equals("-1")) {
+        if (!typable.getId().equals("-1")) {
 //            DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
 //            Optional<ButtonType> optional = instance.showAndWait();
 //            if(optional.isPresent()){
@@ -213,7 +211,7 @@ public class ListedViewCell
 //                }
 //            }
         } else {
-            removeItem.removeItem(listed);
+            removeItem.removeItem(typable);
         }
 
     }

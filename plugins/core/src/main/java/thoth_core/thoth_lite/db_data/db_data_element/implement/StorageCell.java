@@ -1,7 +1,7 @@
 package thoth_core.thoth_lite.db_data.db_data_element.implement;
 
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
 
@@ -13,7 +13,7 @@ public class StorageCell
     private String id;
     private Storagable product;
     private Double count;
-    private Listed countType;
+    private Typable countType;
     private Double price;
     private Finance currency;
 
@@ -21,7 +21,7 @@ public class StorageCell
             String id
             , Storagable product
             , Double count
-            , Listed countType
+            , Typable countType
             , Double price
             , Finance currency
     ) {
@@ -44,7 +44,7 @@ public class StorageCell
     }
 
     @Override
-    public Listed getCountType() {
+    public Typable getCountType() {
         return countType;
     }
 
@@ -64,7 +64,7 @@ public class StorageCell
     }
 
     @Override
-    public void setCountType(Listed countType) {
+    public void setCountType(Typable countType) {
         this.countType = countType;
     }
 

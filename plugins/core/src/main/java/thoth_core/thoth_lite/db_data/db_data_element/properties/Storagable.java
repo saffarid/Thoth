@@ -1,9 +1,7 @@
 package thoth_core.thoth_lite.db_data.db_data_element.properties;
 
-import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.*;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Countable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Nameable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Typable;
 
 /**
  * Объект, который возможно хранить, использовать в личных проектах.
@@ -11,12 +9,12 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Typable;
 public interface Storagable
         extends Identifiable
         , Nameable
-        , Typable
+        , thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Typable
         , Countable
 {
 
-    void setAdress(Listed adress);
-    Listed getAdress();
+    void setAdress(Typable adress);
+    Typable getAdress();
 
     void setNote(String note);
     String getNote();

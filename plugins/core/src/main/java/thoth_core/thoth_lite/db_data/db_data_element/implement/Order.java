@@ -1,7 +1,6 @@
 package thoth_core.thoth_lite.db_data.db_data_element.implement;
 
-import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Orderable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Partnership;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Projectable;
@@ -18,7 +17,7 @@ public class Order
     private boolean isMonthly;
     private LocalDate startDate;
     private LocalDate finishDate;
-    private Listed status;
+    private Typable status;
     private boolean autofinish;
 
     public Order(String id
@@ -28,7 +27,7 @@ public class Order
             , boolean isMonthly
             , LocalDate startDate
             , LocalDate finishDate
-            , Listed status
+            , Typable status
             , boolean autofinish) {
         this.id = id;
         this.orderNumber = orderNumber;
@@ -117,12 +116,12 @@ public class Order
     }
 
     @Override
-    public Listed getStatus() {
+    public Typable getStatus() {
         return status;
     }
 
     @Override
-    public void setStatus(Listed status) {
+    public void setStatus(Typable status) {
         this.status = status;
     }
 

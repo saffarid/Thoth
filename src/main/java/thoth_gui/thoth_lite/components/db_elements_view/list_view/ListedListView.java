@@ -1,7 +1,7 @@
 package thoth_gui.thoth_lite.components.db_elements_view.list_view;
 
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.thoth_lite.components.db_elements_view.list_cell.IdentifiableListCell;
 import thoth_gui.thoth_lite.components.db_elements_view.list_cell.RemoveItemFromList;
@@ -19,7 +19,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ListedListView
-        extends IdentifiablesListView<Listed>
+        extends IdentifiablesListView<Typable>
         implements RemoveItem {
 
     private enum SORT_BY{
@@ -37,7 +37,7 @@ public class ListedListView
     private final ScheduleTask scheduleTask;
 
     protected ListedListView(
-            List<Listed> datas
+            List<Typable> datas
             , AvaliableTables table
     ) {
         super(datas, table);
@@ -46,7 +46,7 @@ public class ListedListView
         ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
         poolExecutor.schedule(scheduleTask, 300, TimeUnit.MILLISECONDS);
 
-        identifiableElementList.getItems().addListener((ListChangeListener<? super Listed>) change -> {
+        identifiableElementList.getItems().addListener((ListChangeListener<? super Typable>) change -> {
             poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
         });
     }
@@ -70,7 +70,7 @@ public class ListedListView
         sortedBox.setButtonCell(new SortedCell());
 
         sortedBox.valueProperty().addListener((observableValue, sort_by, t1) -> {
-            ObservableList<Listed> items = identifiableElementList.getItems();
+            ObservableList<Typable> items = identifiableElementList.getItems();
             switch (t1){
                 case SORT_BY_UP:{
                     items.sort((o1, o2) -> o1.getValue().compareTo(o2.getValue()));
@@ -100,7 +100,7 @@ public class ListedListView
 
     @Override
     protected void openCreateNewIdentifiable(ActionEvent event) {
-        Listed listedInstance = new Listed() {
+        Typable typableInstance = new Typable() {
 
             private String id = "-1";
             private String value = "default";
@@ -124,8 +124,8 @@ public class ListedListView
             public void setId(String id) {
             }
         };
-        ObservableList<Listed> items = identifiableElementList.getItems();
-        items.add(listedInstance);
+        ObservableList<Typable> items = identifiableElementList.getItems();
+        items.add(typableInstance);
     }
 
     private class ScheduleTask implements Runnable {
@@ -141,7 +141,7 @@ public class ListedListView
             for (Node cell : identifiableElementList.getChildrenUnmodifiable()) {
                 VirtualFlow cell1 = (VirtualFlow) cell;
                 for (int i = 0; i < cell1.getCellCount(); i++) {
-                    IdentifiableListCell<Listed> cell2 = (IdentifiableListCell<Listed>) cell1.getCell(i);
+                    IdentifiableListCell<Typable> cell2 = (IdentifiableListCell<Typable>) cell1.getCell(i);
                     RemoveItemFromList viewCell = (RemoveItemFromList) cell2.getView();
                     if(!viewCell.hasRemoveItem()) {
                         viewCell.setRemoveItem(listedListView::removeItem);

@@ -1,43 +1,41 @@
 package thoth_core.thoth_lite.db_data.tables;
 
 import database.Column.TableColumn;
+import thoth_core.thoth_lite.db_data.DBData;
 import thoth_core.thoth_lite.db_data.db_data_element.implement.FinancialOperation;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
-import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.FinancialAccounting;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription;
+import thoth_core.thoth_lite.exceptions.NotContainsException;
 
 import java.sql.ResultSet;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Expenses.COMMENT;
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Expenses.COURSE;
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Expenses.CURRENCY_ID;
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Expenses.DATE;
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Expenses.EXPENSES_TYPE_ID;
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Expenses.ID;
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Expenses.VALUE;
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Incomes.*;
+import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Expenses.*;
 
-public class Incomes
+public class Expenses
         extends Data<FinancialAccounting> {
 
-    public Incomes() {
+    public Expenses() {
         super();
         setName(TABLE_NAME);
     }
 
     @Override
-    public HashMap< String, List< HashMap<String, Object> > > convertToMap(List<? extends Identifiable> list) {
+    public HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list) {
         HashMap<String, List<HashMap<String, Object>>> res = new HashMap<>();
         List<HashMap<String, Object>> data = new LinkedList<>();
         for (FinancialAccounting financialAccounting : datas) {
             HashMap<String, Object> row = new HashMap<>();
 
-            row.put(INCOMES_TYPE_ID, financialAccounting.getCategory().getValue());
+            row.put(EXPENSES_TYPE_ID, financialAccounting.getCategory().getValue());
             row.put(VALUE, financialAccounting.getValue());
             row.put(DATE, financialAccounting.getDate().format(DateTimeFormatter.ISO_DATE));
             row.put(CURRENCY_ID, financialAccounting.getFinance().getCurrency());
@@ -51,7 +49,8 @@ public class Incomes
     }
 
     @Override
-    public void readTable(StructureDescription.TableTypes tableType, List<HashMap<String, Object>> data) {
+    public void readTable(StructureDescription.TableTypes tableType, List<HashMap<String, Object>> data)
+            throws ParseException {
         datas.clear();
 
         for (HashMap<String, Object> row : data) {
@@ -76,12 +75,15 @@ public class Incomes
     }
 
     @Override
-    public void readTable(StructureDescription.TableTypes tableType, ResultSet resultSet) {
+    public void readTable(StructureDescription.TableTypes tableType, ResultSet resultSet)
+            throws ParseException {
 
     }
 
     @Override
-    public void readTableWithTableColumn(StructureDescription.TableTypes tableType, List<HashMap<TableColumn, Object>> data) {
+    public void readTableWithTableColumn(StructureDescription.TableTypes tableType, List<HashMap<TableColumn, Object>> data)
+            throws ParseException {
 
     }
+
 }

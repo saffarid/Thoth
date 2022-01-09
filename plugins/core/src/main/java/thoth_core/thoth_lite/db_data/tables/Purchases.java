@@ -1,8 +1,7 @@
 package thoth_core.thoth_lite.db_data.tables;
 
 import database.Column.TableColumn;
-import thoth_core.thoth_lite.db_data.db_data_element.implement.*;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Purchasable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
@@ -33,35 +32,41 @@ public class Purchases
     }
 
     @Override
-    public List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list) {
-        List<HashMap<String, Object>> res = new LinkedList<>();
+    public HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list) {
+        HashMap<String, List<HashMap<String, Object>>> res = new HashMap<>();
+        List<HashMap<String, Object>> datasDesc = new LinkedList<>();
+        List<HashMap<String, Object>> datasComposition = new LinkedList<>();
 
-        for (Identifiable identifiable : list) {
+        for( Identifiable identifiable : list){
             Purchasable purchasable = (Purchasable) identifiable;
 
-            for (Storing storing : purchasable.getComposition()) {
-                HashMap<String, Object> map = new HashMap<>();
+            HashMap<String, Object> description = new HashMap<>();
 
-                map.put(ID, storing.getId());
-                map.put(ORDER_ID, purchasable.getId());
-                map.put(STORE_ID, purchasable.getPartner().getName());
-                map.put(PRODUCT_ID, storing.getStoragable().getId());
-                map.put(COUNT, storing.getCount());
-                map.put(COUNT_TYPE_ID, storing.getCountType().getValue());
-                map.put(PRICE, storing.getPrice());
-                map.put(CURRENCY_ID, storing.getCurrency().getCurrency());
-                map.put(DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
-                map.put(IS_DELIVERED, purchasable.isDelivered() );
-
-                res.add(map);
+            //Заполнение карты описания
+            description.put(StructureDescription.PurchaseDesc.PURCHASE_ID, purchasable.getId());
+            description.put(StructureDescription.PurchaseDesc.STORE_ID, purchasable.getPartner().getName());
+            description.put(StructureDescription.PurchaseDesc.DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
+            description.put(StructureDescription.PurchaseDesc.IS_DELIVERED, purchasable.isDelivered()?1:0);
+            datasDesc.add(description);
+            //Заполнение карты состава
+            for (Storing storing : purchasable.getComposition()){
+                HashMap<String, Object> composition = new HashMap<>();
+                composition.put(StructureDescription.PurchaseComposition.PURCHASE_ID, purchasable.getId());
+                composition.put(StructureDescription.PurchaseComposition.PRODUCT_ID, storing.getStoragable().getId());
+                composition.put(StructureDescription.PurchaseComposition.COUNT, storing.getCount());
+                composition.put(StructureDescription.PurchaseComposition.COUNT_TYPE_ID, storing.getCountType().getValue());
+                composition.put(StructureDescription.PurchaseComposition.PRICE, storing.getPrice());
+                composition.put(StructureDescription.PurchaseComposition.CURRENCY_ID, storing.getCurrency().getCurrency());
+                datasComposition.add(composition);
             }
         }
-
+        res.put(StructureDescription.PurchaseDesc.TABLE_NAME, datasDesc);
+        res.put(StructureDescription.PurchaseComposition.TABLE_NAME, datasComposition);
         return res;
     }
 
     @Override
-    public void readTable(List<HashMap<String, Object>> data) throws ParseException {
+    public void readTable(StructureDescription.TableTypes tableType, List<HashMap<String, Object>> data) throws ParseException {
         datas.clear();
         for (HashMap<String, Object> row : data) {
 
@@ -96,7 +101,7 @@ public class Purchases
                                     , String.valueOf(row.get(PRODUCT_ID))           //
                             ),
                             (Double) row.get(COUNT),                                //Кол-во
-                            (Listed) getFromTableById(                              //
+                            (Typable) getFromTableById(                              //
                                     StructureDescription.CountTypes.TABLE_NAME      //Единица измерения кол-ва
                                     , String.valueOf( row.get(COUNT_TYPE_ID) )      //
                             ),
@@ -117,12 +122,12 @@ public class Purchases
     }
 
     @Override
-    public void readTable(ResultSet resultSet) {
+    public void readTable(StructureDescription.TableTypes tableType, ResultSet resultSet) {
 
     }
 
     @Override
-    public void readTableWithTableColumn(List<HashMap<TableColumn, Object>> data) {
+    public void readTableWithTableColumn(StructureDescription.TableTypes tableType, List<HashMap<TableColumn, Object>> data) {
 
     }
 }

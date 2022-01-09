@@ -13,6 +13,6 @@ public interface Orderable
     void setOrderNumber(String orderNumber);
     Projectable getProjectable();
     void setProjectable(Projectable projectable);
-    Listed getStatus();
-    void setStatus(Listed status);
+    Typable getStatus();
+    void setStatus(Typable status);
 }

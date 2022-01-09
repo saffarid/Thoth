@@ -1,7 +1,7 @@
 package thoth_gui.thoth_lite.components.db_elements_view.identifiable_card;
 
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
@@ -126,12 +126,12 @@ public class StoragableCard
         res.setCellFactory(listedListView -> new ComboBoxListedCell());
         res.setButtonCell(new ComboBoxListedCell());
 
-        Listed value = null;
+        Typable value = null;
 
         try {
             switch (id) {
                 case PRODUCT_TYPE: {
-                    res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.PRODUCT_TYPES)));
+                    res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.PRODUCT_TYPES)));
 
                     value = ((Storagable) identifiable).getType();
                     if (value == null) {
@@ -142,7 +142,7 @@ public class StoragableCard
                     break;
                 }
                 case COUNT_TYPE: {
-                    res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
+                    res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
 
                     value = ((Storagable) identifiable).getCountType();
                     if (value == null) {
@@ -153,7 +153,7 @@ public class StoragableCard
                     break;
                 }
                 case ADRESS: {
-                    res.setItems(FXCollections.observableList((List<Listed>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORING)));
+                    res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORING)));
 
                     value = ((Storagable) identifiable).getAdress();
                     if (value == null) {
@@ -249,13 +249,13 @@ public class StoragableCard
             private String id = "";
             private String name = "";
             private Double count = 0.;
-            private Listed countType = null;
-            private Listed adress = null;
-            private Listed type = null;
+            private Typable countType = null;
+            private Typable adress = null;
+            private Typable type = null;
             private String note = "";
 
             @Override
-            public Listed getAdress() {
+            public Typable getAdress() {
                 return adress;
             }
 
@@ -275,7 +275,7 @@ public class StoragableCard
             }
 
             @Override
-            public Listed getCountType() {
+            public Typable getCountType() {
                 return countType;
             }
 
@@ -290,12 +290,12 @@ public class StoragableCard
             }
 
             @Override
-            public Listed getType() {
+            public Typable getType() {
                 return type;
             }
 
             @Override
-            public void setAdress(Listed adress) {
+            public void setAdress(Typable adress) {
                 this.adress = adress;
             }
 
@@ -305,7 +305,7 @@ public class StoragableCard
             }
 
             @Override
-            public void setCountType(Listed countType) {
+            public void setCountType(Typable countType) {
                 this.countType = countType;
             }
 
@@ -320,7 +320,7 @@ public class StoragableCard
             }
 
             @Override
-            public void setType(Listed type) {
+            public void setType(Typable type) {
                 this.type = type;
             }
 
@@ -332,10 +332,10 @@ public class StoragableCard
 
         ((Storagable) identifiable).setId(article.getText());
         ((Storagable) identifiable).setName(name.getText());
-        ((Storagable) identifiable).setType((Listed) type.getValue());
+        ((Storagable) identifiable).setType((Typable) type.getValue());
         ((Storagable) identifiable).setCount(Double.parseDouble(count.getText()));
-        ((Storagable) identifiable).setCountType((Listed) countType.getValue());
-        ((Storagable) identifiable).setAdress((Listed) adress.getValue());
+        ((Storagable) identifiable).setCountType((Typable) countType.getValue());
+        ((Storagable) identifiable).setAdress((Typable) adress.getValue());
         ((Storagable) identifiable).setNote(note.getText());
 
     }

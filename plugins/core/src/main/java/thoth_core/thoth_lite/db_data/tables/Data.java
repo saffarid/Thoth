@@ -39,7 +39,7 @@ public abstract class Data<T extends Identifiable>
                 .isPresent();
     }
 
-    public abstract List<HashMap<String, Object>> convertToMap(List<? extends Identifiable> list);
+    public abstract HashMap< String, List< HashMap<String, Object> > > convertToMap(List<? extends Identifiable> list);
 
     public T getById(String id) throws NotContainsException {
         Optional<T> element = datas.stream().filter(t -> t.getId().equals(id)).findFirst();

@@ -24,7 +24,7 @@ public class DBData {
         tables.add(new Partners());
         tables.add(new Products());
         tables.add(new ProductTypes());
-        tables.add(new ProjectList());
+        tables.add(new Projects());
         tables.add(new Purchases());
         tables.add(new Storage());
         tables.add(new NotUsed());

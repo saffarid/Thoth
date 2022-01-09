@@ -1,17 +1,15 @@
 package thoth_core.thoth_lite.db_data.db_data_element.properties.parts;
 
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Listed;
-
 public interface Typable {
 
     /**
      * @return тип объекта
      * */
-    Listed getType();
+    thoth_core.thoth_lite.db_data.db_data_element.properties.Typable getType();
 
     /**
      * @param type устанавливаемый тип
      * */
-    void setType(Listed type);
+    void setType(thoth_core.thoth_lite.db_data.db_data_element.properties.Typable type);
 
 }
