@@ -34,6 +34,7 @@ public class Partners
             map.put(NAME, partner.getName());
             map.put(PHONE, partner.getPhone());
             map.put(WEB, partner.getWeb());
+            map.put(COMMENT, partner.getComment());
             datas.add(map);
         }
         res.put(TABLE_NAME, datas);
@@ -46,9 +47,10 @@ public class Partners
         for(HashMap<String, Object> row : data){
             datas.add(new Partner(
                     String.valueOf(row.get(ID)),
-                    (String) row.get(NAME),
-                    (String) row.get(PHONE),
-                    (String) row.get(WEB)
+                    String.valueOf(row.get(NAME)),
+                    String.valueOf(row.get(PHONE)),
+                    String.valueOf(row.get(WEB)),
+                    String.valueOf(row.get(COMMENT))
             ));
         }
         publisher.submit(datas);

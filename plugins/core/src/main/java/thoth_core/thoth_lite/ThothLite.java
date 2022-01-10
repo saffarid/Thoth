@@ -79,15 +79,16 @@ public class ThothLite {
     public void acceptPurchase(Purchasable purchasable) throws NotContainsException, SQLException {
 
         /*   Приём покупки включает в себя:
-        *  1. Обновление записей в таблице покупок - установка флага isDelivered.
-        *  2. Обновление записей в таблице продуктов - обновление кол-ва продукта.
-        * */
+         *  1. Обновление записей в таблице покупок - установка флага isDelivered.
+         *  2. Обновление записей в таблице продуктов - обновление кол-ва продукта.
+         * */
         //Определим список продуктов и обновим их кол-во.
-        List<Storagable> listStoragable = new LinkedList<>();;
-        for(Storing storing : purchasable.getComposition()){
+        List<Storagable> listStoragable = new LinkedList<>();
+        ;
+        for (Storing storing : purchasable.getComposition()) {
             Storagable storagable = storing.getStoragable();
             /*--- При обновлении цены, необходимо проверять совпадение цены в БД с считанными данными. ---*/
-            storagable.setCount( storagable.getCount() + storing.getCount() );
+            storagable.setCount(storagable.getCount() + storing.getCount());
             listStoragable.add(storagable);
         }
 
@@ -105,8 +106,8 @@ public class ThothLite {
 
     /**
      * Отмена периодического перечитывания базы
-     * */
-    public void cancelAutoReReadDb(){
+     */
+    public void cancelAutoReReadDb() {
         LOG.log(Level.INFO, "Отменяем старую задачу");
         scheduledFutureReReadDb.cancel(false);
         LOG.log(Level.INFO, "Старая задача отменена");
@@ -114,10 +115,10 @@ public class ThothLite {
 
     /**
      * Изменение периода перечитывания базы
-     * */
-    public void changeDelayReReadDb(){
+     */
+    public void changeDelayReReadDb() {
         PeriodAutoupdateDatabase newDelay = config.getDatabase().getPeriod();
-        if(config.getDatabase().isAutoupdate()) {
+        if (config.getDatabase().isAutoupdate()) {
             cancelAutoReReadDb();
             if (newDelay != PeriodAutoupdateDatabase.NEVER) {
                 LOG.log(Level.INFO, "Запускаем новую задачу");
@@ -128,16 +129,16 @@ public class ThothLite {
 
     /**
      * Функция завершает выполнение всех процессов
-     * */
-    public void close(){
+     */
+    public void close() {
         config.exportConfig();
         LOG.log(Level.INFO, "Good bye, my friend. I will miss you.");
     }
 
     /**
      * Функция возвращает конфигурацию системы в формате json.
-     * */
-    public JSONObject getConfig(){
+     */
+    public JSONObject getConfig() {
         return config.getConfig();
     }
 
@@ -152,48 +153,49 @@ public class ThothLite {
 
     public static ThothLite getInstance()
             throws SQLException, NotContainsException, ClassNotFoundException {
-        if (thoth == null){
+        if (thoth == null) {
             thoth = new ThothLite();
         }
         return thoth;
     }
 
-    public String getTableName(AvaliableTables table){
-        switch (table){
-            case COUNT_TYPES:{
+    public String getTableName(AvaliableTables table) {
+        switch (table) {
+            case COUNT_TYPES: {
                 return StructureDescription.CountTypes.TABLE_NAME;
             }
-            case CURRENCIES:{
-                return StructureDescription.Currency.TABLE_NAME;
-            }
-            case INCOMES_TYPES:{
+            case INCOMES_TYPES: {
                 return StructureDescription.IncomesTypes.TABLE_NAME;
             }
-            case ORDERABLE:{
-                return StructureDescription.Orders.TABLE_NAME;
-            }
-            case ORDER_STATUS:{
+            case ORDER_STATUS: {
                 return StructureDescription.OrderStatus.TABLE_NAME;
             }
-            case PARTNERS:{
-                return StructureDescription.Partners.TABLE_NAME;
-            }
-            case PROJECTABLE:{
-                return StructureDescription.ProjectsDesc.TABLE_NAME;
-            }
-            case PRODUCT_TYPES:{
+            case PRODUCT_TYPES: {
                 return StructureDescription.ProductTypes.TABLE_NAME;
             }
-            case PURCHASABLE:{
+            case CURRENCIES: {
+                return StructureDescription.Currency.TABLE_NAME;
+            }
+            case ORDERABLE: {
+                return StructureDescription.Orders.TABLE_NAME;
+            }
+            case PARTNERS: {
+                return StructureDescription.Partners.TABLE_NAME;
+            }
+            case PROJECTABLE: {
+                return StructureDescription.ProjectsDesc.TABLE_NAME;
+            }
+            case PURCHASABLE: {
                 return StructureDescription.Purchases.TABLE_NAME;
             }
-            case STORAGABLE:{
+            case STORAGABLE: {
                 return StructureDescription.Products.TABLE_NAME;
             }
-            case STORING:{
+            case STORING: {
                 return StructureDescription.Storage.TABLE_NAME;
             }
-            default: return null;
+            default:
+                return null;
         }
     }
 
@@ -216,30 +218,36 @@ public class ThothLite {
     private void insertToTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
 
-//        Data table = dbData.getTable(tableName);
-//
-//        for (Identifiable data : datas) {
+        Data table = dbData.getTable(tableName);
+
+        for (Identifiable data : datas) {
 //            Если объект обладает свойствои составного проверяем его состав на наличие записей в БД
-//            if (data instanceof Composite) {
-//                Composite composite = (Composite) data;
-//
-//                Data products = dbData.getTable(StructureDescription.Products.TABLE_NAME);
-//                List<Storagable> datasProducts = new LinkedList<>();
-//
-//                for (Storing storing : composite.getComposition()) {
-//                    Storagable storagable = storing.getStoragable();
-//                    if (!products.contains(storagable)) {
-//                        datasProducts.add(storagable);
-//                    }
-//                }
-//
-//                if (!datasProducts.isEmpty()) {
-//                    database.insert(products.getName(), (List<HashMap<String, Object>>) products.convertToMap(datasProducts).get(StructureDescription.Products.TABLE_NAME));
-//                }
-//            }
-//        }
-//
-//        database.insert(table.getName(), table.convertToMap(datas));
+            if (data instanceof Composite) {
+                Composite composite = (Composite) data;
+
+                Data products = dbData.getTable(StructureDescription.Products.TABLE_NAME);
+                List<Storagable> datasProducts = new LinkedList<>();
+
+                for (Storing storing : composite.getComposition()) {
+                    Storagable storagable = storing.getStoragable();
+                    if (!products.contains(storagable)) {
+                        datasProducts.add(storagable);
+                    }
+                }
+
+                if (!datasProducts.isEmpty()) {
+                    HashMap<String, List<HashMap<String, Object>>> compositeData = products.convertToMap(datasProducts);
+                    for (String tableForInsert : compositeData.keySet()) {
+                        database.insert(tableForInsert, compositeData.get(tableForInsert));
+                    }
+                }
+            } /////
+        }
+
+        HashMap<String, List<HashMap<String, Object>>> data = table.convertToMap(datas);
+        for (String tableForInsert : data.keySet()) {
+            database.insert(tableForInsert, data.get(tableForInsert));
+        }
     }
 
     /**
@@ -252,20 +260,23 @@ public class ThothLite {
     public void purchaseComplete(String purchaseId)
             throws NotContainsException, SQLException {
 
-//        Data purchasesTable = dbData.getTable(StructureDescription.Purchases.TABLE_NAME);
-//
-//        List<Purchasable> purchasableList = new LinkedList<>();
-//        purchasableList.add( (Purchasable) purchasesTable.getById(purchaseId) );
-//
-//        database.update( purchasesTable.getName(), purchasesTable.convertToMap(purchasableList) );
+        Data purchasesTable = dbData.getTable(StructureDescription.Purchases.TABLE_NAME);
+
+        List<Purchasable> purchasableList = new LinkedList<>();
+        purchasableList.add((Purchasable) purchasesTable.getById(purchaseId));
+
+        HashMap<String, List<HashMap<String, Object>>> datas = purchasesTable.convertToMap(purchasableList);
+        for (String tableName : datas.keySet()) {
+            database.update(tableName, datas.get(tableName));
+        }
 
         /*
-        * if (продукт НЕ ХРАНИТСЯ в считанной БД и в SQLite){
-        *   Вставляем новые записи в БД
-        * }else{
-        *   Обновляем существующие записи
-        * }
-        * */
+         * if (продукт НЕ ХРАНИТСЯ в считанной БД и в SQLite){
+         *   Вставляем новые записи в БД
+         * }else{
+         *   Обновляем существующие записи
+         * }
+         * */
 
     }
 
@@ -278,9 +289,9 @@ public class ThothLite {
 
     /**
      * Функция для считывания БД
-     * */
+     */
     public void reReadDb() {
-        if(config.getDatabase().isAutoupdate()) {
+        if (config.getDatabase().isAutoupdate()) {
             if (config.getDatabase().isUpdateAfterTrans()) {
                 LOG.log(Level.INFO, "enter to reReadDb");
                 CompletableFuture.runAsync(reReader);
@@ -292,8 +303,8 @@ public class ThothLite {
     /**
      * Функция удаляет данные из таблицы.
      *
-     * @param table  таблица из которой удаляются записи.
-     * @param datas  удаляемые записи.
+     * @param table таблица из которой удаляются записи.
+     * @param datas удаляемые записи.
      */
     public void removeFromTable(AvaliableTables table, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException, ClassNotFoundException {
@@ -313,20 +324,22 @@ public class ThothLite {
      */
     private void removeFromTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
-//        Data table = dbData.getTable(tableName);
-//        database.remove(table.getName(), table.convertToMap(datas));
+        HashMap<String, List<HashMap<String, Object>>> data = dbData.getTable(tableName).convertToMap(datas);
+        for (String name : data.keySet()) {
+            database.remove(name, data.get(name));
+        }
     }
 
     /**
      * Функция передает новую конфигурацию для проверки и установки
-     * */
-    public void setNewConfig(HashMap<String, Object> config){
+     */
+    public void setNewConfig(HashMap<String, Object> config) {
         this.config.setNewConfig(config);
     }
 
     /**
      * Функция подписывает на изменения в таблице
-     * */
+     */
     public void subscribeOnTable(
             AvaliableTables table
             , Flow.Subscriber subscriber
@@ -337,7 +350,7 @@ public class ThothLite {
     public void updateInTable(AvaliableTables table, List<? extends Identifiable> datas)
             throws NotContainsException, SQLException {
         database.beginTransaction();
-        updateInTable(getTableName(table),datas);
+        updateInTable(getTableName(table), datas);
         database.commitTransaction();
     }
 
@@ -350,12 +363,14 @@ public class ThothLite {
      */
     private void updateInTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
-//        Data table = dbData.getTable(tableName);
-//        database.update(tableName, table.convertToMap(datas));
+        HashMap<String, List<HashMap<String, Object>>> data = dbData.getTable(tableName).convertToMap(datas);
+        for(String name : data.keySet()){
+            database.update(name, data.get(name));
+        }
     }
 
     class ReReadDatabase
-            implements Runnable{
+            implements Runnable {
         @Override
         public void run() {
             try {

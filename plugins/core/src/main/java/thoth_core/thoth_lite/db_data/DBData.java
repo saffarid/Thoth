@@ -1,11 +1,13 @@
 package thoth_core.thoth_lite.db_data;
 
+import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.db_data.tables.*;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 
 public class DBData {
 
@@ -16,18 +18,21 @@ public class DBData {
         tables = new LinkedList<>();
 
         tables.add(new CountTypes());
-        tables.add(new Currencies());
-        tables.add(new Incomes());
+        tables.add(new ExpensesTypes());
         tables.add(new IncomeTypes());
-        tables.add(new Orders());
         tables.add(new OrderStatus());
+        tables.add(new ProductTypes());
+        tables.add(new Storage());
+
+        tables.add(new Currencies());
+        tables.add(new Expenses());
+        tables.add(new Incomes());
+        tables.add(new NotUsed());
+        tables.add(new Orders());
         tables.add(new Partners());
         tables.add(new Products());
-        tables.add(new ProductTypes());
         tables.add(new Projects());
         tables.add(new Purchases());
-        tables.add(new Storage());
-        tables.add(new NotUsed());
     }
 
     public static DBData getInstance(){
@@ -41,7 +46,7 @@ public class DBData {
             String name
     ) throws NotContainsException {
         Optional<Data> res = tables.stream()
-                .filter(data -> data.getName().equals(name))
+                .filter(data ->  name.startsWith(data.getName()))
                 .findFirst();
         if(!res.isPresent()) throw new NotContainsException();
         return res.get();

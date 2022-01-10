@@ -15,8 +15,7 @@ import java.util.concurrent.SubmissionPublisher;
 public abstract class Data<T extends Identifiable>
         implements Nameable
         , TableReadable
-        , Flow.Publisher
-{
+        , Flow.Publisher {
 
     protected String name;
     protected List<T> datas;
@@ -31,6 +30,8 @@ public abstract class Data<T extends Identifiable>
         if (!contains(data)) datas.add(data);
     }
 
+
+
     public boolean contains(T data) {
         return datas
                 .stream()
@@ -39,11 +40,11 @@ public abstract class Data<T extends Identifiable>
                 .isPresent();
     }
 
-    public abstract HashMap< String, List< HashMap<String, Object> > > convertToMap(List<? extends Identifiable> list);
+    public abstract HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list);
 
     public T getById(String id) throws NotContainsException {
         Optional<T> element = datas.stream().filter(t -> t.getId().equals(id)).findFirst();
-        if(!element.isPresent()) throw new NotContainsException();
+        if (!element.isPresent()) throw new NotContainsException();
         return element.get();
     }
 
@@ -63,14 +64,14 @@ public abstract class Data<T extends Identifiable>
         if (contains(data)) datas.remove(data);
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
     public void subscribe(Flow.Subscriber subscriber) {
         System.out.println(publisher.getSubscribers().size());
-        if(!publisher.isSubscribed(subscriber)) {
+        if (!publisher.isSubscribed(subscriber)) {
             publisher.subscribe(subscriber);
         }
     }

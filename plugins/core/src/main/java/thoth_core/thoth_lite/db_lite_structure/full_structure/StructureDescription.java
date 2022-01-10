@@ -3,24 +3,24 @@ package thoth_core.thoth_lite.db_lite_structure.full_structure;
 public class StructureDescription {
 
     public enum TableTypes {
-        TABLE("table"),
+        TABLE("TABLE"),
         /**
          * Таблица-описание
          * */
-        DESC("desc"),
+        DESC("DESC"),
         /**
          * Таблица-состав
          * */
-        COMPOSITE("composite"),
-        PROJECT_TABLE("project_table"),
+        COMPOSITE("COMPOSITE"),
+        PROJECT_TABLE("PROJECT_TABLE"),
         /**
          * Таблица-список
          * */
-        GUIDE("guide"),
-        CONSTANTS("constants"),
-        SYSTEM_TABLE("system_table"),
-        SYSTEM_GUIDE("system_guide"),
-        SYSTEM_CONSTANTS("system_constants");
+        GUIDE("GUIDE"),
+        CONSTANTS("CONSTANTS"),
+        SYSTEM_TABLE("SYSTEM_TABLE"),
+        SYSTEM_GUIDE("SYSTEM_GUIDE"),
+        SYSTEM_CONSTANTS("SYSTEM_CONSTANTS");
         private String type;
         TableTypes(String type) {
             this.type = type;
@@ -184,6 +184,7 @@ public class StructureDescription {
         public static final String NAME = "name";
         public static final String PHONE = "phone";
         public static final String WEB = "web";
+        public static final String COMMENT = "comment";
     }
 
     /**
@@ -208,8 +209,8 @@ public class StructureDescription {
     /**
      * Таблица-описание покупок
      * */
-    public static class PurchaseDesc {
-        public static final String TABLE_NAME = "purchase_desc";
+    public static class PurchasesDesc {
+        public static final String TABLE_NAME = "purchases_desc";
         public static final String PURCHASE_ID = "purchase_id";
         public static final String STORE_ID = "store_id";
         public static final String DELIVERY_DATE = "delivery_date";
@@ -218,8 +219,8 @@ public class StructureDescription {
     /**
      * Таблица-состав покупок
      * */
-    public static class PurchaseComposition {
-        public static final String TABLE_NAME = "purchase_composition";
+    public static class PurchasesComposition {
+        public static final String TABLE_NAME = "purchases_composition";
         public static final String ID = "id";
         public static final String PURCHASE_ID = "purchase_id";
         public static final String PRODUCT_ID = "product_id";

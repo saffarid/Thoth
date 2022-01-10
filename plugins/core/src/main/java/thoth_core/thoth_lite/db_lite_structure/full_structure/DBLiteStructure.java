@@ -34,12 +34,12 @@ public class DBLiteStructure extends DataBaseSQL {
         tables.add(new Incomes());
         tables.add(new NotUsed());
         tables.add(new Products());
-        tables.add(new PurchaseDesc());
+        tables.add(new PurchasesDesc());
 //        tables.add(new Orders());
 //        tables.add(new ProjectsDesc());
         //Таблицы типа COMPOSITE
 //        tables.add(new ProjectsComposition());
-        tables.add(new PurchaseComposite());
+        tables.add(new PurchasesComposite());
     }
 
     private TableColumn getCustomColumn(String name, DataTypes type, boolean isUnique, boolean isNotNull) {
@@ -444,24 +444,24 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица-описание покупок
      */
-    class PurchaseDesc extends Table {
-        public PurchaseDesc() {
+    class PurchasesDesc extends Table {
+        public PurchasesDesc() {
             super();
-            name = StructureDescription.PurchaseDesc.TABLE_NAME;
+            name = StructureDescription.PurchasesDesc.TABLE_NAME;
             type = StructureDescription.TableTypes.DESC.getType();
 
             addColumn(getPrimaryKeyCustom(
-                    StructureDescription.PurchaseDesc.PURCHASE_ID, DataTypes.TEXT
+                    StructureDescription.PurchasesDesc.PURCHASE_ID, DataTypes.TEXT
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseDesc.STORE_ID, DataTypes.INT, false, true,
+                    StructureDescription.PurchasesDesc.STORE_ID, DataTypes.INT, false, true,
                     getTable(StructureDescription.Partners.TABLE_NAME).getColumnByName(StructureDescription.Partners.ID)
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseDesc.DELIVERY_DATE, DataTypes.TEXT, false, true
+                    StructureDescription.PurchasesDesc.DELIVERY_DATE, DataTypes.TEXT, false, true
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseDesc.IS_DELIVERED, DataTypes.BOOL, false, true
+                    StructureDescription.PurchasesDesc.IS_DELIVERED, DataTypes.BOOL, false, true
             ));
         }
     }
@@ -469,37 +469,37 @@ public class DBLiteStructure extends DataBaseSQL {
     /**
      * Таблица-состав покупок
      */
-    class PurchaseComposite extends Table {
-        public PurchaseComposite() {
+    class PurchasesComposite extends Table {
+        public PurchasesComposite() {
             super();
-            name = StructureDescription.PurchaseComposition.TABLE_NAME;
+            name = StructureDescription.PurchasesComposition.TABLE_NAME;
             type = StructureDescription.TableTypes.COMPOSITE.getType();
 
             addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseComposition.PURCHASE_ID, DataTypes.INT, false, true,
-                    getForeignColumnByName(StructureDescription.PurchaseDesc.TABLE_NAME, StructureDescription.PurchaseDesc.PURCHASE_ID)
+                    StructureDescription.PurchasesComposition.PURCHASE_ID, DataTypes.INT, false, true,
+                    getForeignColumnByName(StructureDescription.PurchasesDesc.TABLE_NAME, StructureDescription.PurchasesDesc.PURCHASE_ID)
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseComposition.PRODUCT_ID, DataTypes.INT, false, true,
+                    StructureDescription.PurchasesComposition.PRODUCT_ID, DataTypes.INT, false, true,
                     getForeignColumnByName(StructureDescription.Products.TABLE_NAME, StructureDescription.Products.ARTICLE)
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseComposition.COUNT, DataTypes.DOUBLE, false, true
+                    StructureDescription.PurchasesComposition.COUNT, DataTypes.DOUBLE, false, true
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseComposition.COUNT_TYPE_ID, DataTypes.INT, false, true,
+                    StructureDescription.PurchasesComposition.COUNT_TYPE_ID, DataTypes.INT, false, true,
                     getForeignColumnByName(StructureDescription.CountTypes.TABLE_NAME, StructureDescription.CountTypes.COUNT_TYPE)
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseComposition.PRICE, DataTypes.DOUBLE, false, true
+                    StructureDescription.PurchasesComposition.PRICE, DataTypes.DOUBLE, false, true
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseComposition.CURRENCY_ID, DataTypes.INT, false, true,
+                    StructureDescription.PurchasesComposition.CURRENCY_ID, DataTypes.INT, false, true,
                     getForeignColumnByName(StructureDescription.Currency.TABLE_NAME, StructureDescription.Currency.CURRENCY)
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchaseComposition.COURSE, DataTypes.DOUBLE, false, true
+                    StructureDescription.PurchasesComposition.COURSE, DataTypes.DOUBLE, false, true
             ));
         }
     }

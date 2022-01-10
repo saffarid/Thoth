@@ -12,6 +12,7 @@ import thoth_gui.config.Config;
 import thoth_gui.OpenSubwindow;
 import thoth_gui.thoth_lite.Settings;
 import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.main_window.workspace.Workspace;
 import thoth_gui.thoth_lite.subwindows.IdentifiableListWindow;
 import thoth_gui.thoth_lite.subwindows.ListedListWindow;
 import thoth_gui.thoth_lite.subwindows.Subwindow;
@@ -85,6 +86,8 @@ public class ThothLiteWindow
     private NavigationMenu menu;
 
     private StackPane workspace;
+
+    private Workspace works;
 
     private List<String> openSubwindows;
 
@@ -237,7 +240,7 @@ public class ThothLiteWindow
 //        ));
         menuButtons.add(getNavigationMenuButton(
                 STRING_KEY_PURCHASES, thoth_gui.thoth_styleconstants.svg.Purchase.getInstance(), event -> {
-                    openSubwindow(new IdentifiableListWindow(thoth.getTableName(AvaliableTables.PURCHASABLE), AvaliableTables.PURCHASABLE));
+                    works.setNewScene(new IdentifiableListWindow(thoth.getTableName(AvaliableTables.PURCHASABLE), AvaliableTables.PURCHASABLE));
                 }
         ));
 //        menuButtons.add(getMenuButton(
@@ -248,12 +251,12 @@ public class ThothLiteWindow
 //        ));
         menuButtons.add(getNavigationMenuButton(
                 STRING_KEY_TABLES_GUIDE, thoth_gui.thoth_styleconstants.svg.List.getInstance(), event -> {
-                    openSubwindow(new ListedListWindow(STRING_KEY_TABLES_GUIDE));
+                    works.setNewScene(new ListedListWindow(STRING_KEY_TABLES_GUIDE));
                 }
         ));
         menuButtons.add(getNavigationMenuButton(
                 "Продукты", thoth_gui.thoth_styleconstants.svg.Product.getInstance(), event -> {
-                    openSubwindow(new IdentifiableListWindow(thoth.getTableName(AvaliableTables.STORAGABLE), AvaliableTables.STORAGABLE));
+                    works.setNewScene(new IdentifiableListWindow(thoth.getTableName(AvaliableTables.STORAGABLE), AvaliableTables.STORAGABLE));
                 }
         ));
         menu = new NavigationMenu(menuButtons);
@@ -269,8 +272,11 @@ public class ThothLiteWindow
     }
 
     private void workspaceConfig() {
-        workspace = new StackPane();
-        setCenter(workspace);
+//        workspace = new StackPane();
+//        setCenter(workspace);
+
+        works = new Workspace(null);
+        setCenter(works);
     }
 
     private FinishableView getFinishableView(){

@@ -10,6 +10,7 @@ import database.WhereValues;
 import thoth_core.thoth_lite.db_data.DBData;
 import thoth_core.thoth_lite.db_lite_structure.full_structure.DBLiteStructure;
 import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription;
+import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.TableTypes;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 
 import java.io.File;
@@ -107,7 +108,7 @@ public class DataBaseLite {
         return structure.getTables();
     }
 
-    public List<Table> getTablesByType(StructureDescription.TableTypes type) {
+    public List<Table> getTablesByType(TableTypes type) {
         return structure.getTables().stream()
                 .filter(table -> table.getType().equals(type))
                 .collect(Collectors.toList());
@@ -129,7 +130,11 @@ public class DataBaseLite {
      */
     public void readDataBase()
             throws SQLException, ClassNotFoundException {
-        for (Table table : structure.getTables()) {
+        List<Table> collect = structure.getTables()
+                .stream()
+                .filter(table -> !table.getType().equals(TableTypes.SYSTEM_TABLE.getType()))
+                .collect(Collectors.toList());
+        for (Table table : collect) {
             readTable(
                     table,
                     dbManager.getDataTable(dbFile, table, false)
@@ -164,9 +169,10 @@ public class DataBaseLite {
      */
     private void readTable(Table table, List<HashMap<String, Object>> data) {
         try {
-            StringBuilder name = new StringBuilder(table.getName());
-            String substring = name.substring(0, name.indexOf("_"));
-            DBData.getInstance().getTableReadable(substring).readTable( StructureDescription.TableTypes.valueOf(table.getType()), data );
+            TableTypes tableType = TableTypes.valueOf(table.getType());
+            DBData.getInstance()
+                    .getTableReadable(table.getName())
+                    .readTable(tableType, data);
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (NotContainsException e) {

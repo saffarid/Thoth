@@ -14,6 +14,7 @@ public class ComboBox {
 
     public static controls.ComboBox getInstance(){
         controls.ComboBox comboBox = new controls.ComboBox();
+        comboBox.setPlaceholder(Label.getInstanse("no_elements"));
         bindFont(comboBox);
         return comboBox;
     }

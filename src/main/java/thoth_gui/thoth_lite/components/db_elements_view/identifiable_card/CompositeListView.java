@@ -356,7 +356,9 @@ public class CompositeListView
 
         try {
             res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
-            res.setValue(res.getItems().get(0));
+            if(!res.getItems().isEmpty()){
+                res.setValue(res.getItems().get(0));
+            }
         } catch (NotContainsException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -387,7 +389,9 @@ public class CompositeListView
 
         try {
             res.setItems(FXCollections.observableList((List<Currency>) ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES)));
-            res.setValue(res.getItems().get(0));
+            if (!res.getItems().isEmpty()) {
+                res.setValue(res.getItems().get(0));
+            }
         } catch (NotContainsException e) {
             e.printStackTrace();
         } catch (SQLException e) {
