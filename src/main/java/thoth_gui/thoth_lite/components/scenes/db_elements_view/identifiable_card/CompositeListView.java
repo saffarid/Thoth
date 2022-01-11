@@ -12,9 +12,8 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_gui.OpenSubwindow;
-import thoth_gui.thoth_lite.subwindows.IdentifiableCardWindow;
 import thoth_gui.thoth_lite.main_window.ThothLiteWindow;
+import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_styleconstants.Stylesheets;
 import controls.Button;
 import controls.ComboBox;
@@ -637,7 +636,7 @@ public class CompositeListView
         private void cellClick(MouseEvent mouseEvent) {
             switch (mouseEvent.getButton()) {
                 case PRIMARY: {
-                    ((OpenSubwindow) ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableCardWindow("Карточка", AvaliableTables.STORAGABLE, storing.getStoragable()));
+                    Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(AvaliableTables.STORAGABLE, storing.getStoragable()));
                 }
             }
         }

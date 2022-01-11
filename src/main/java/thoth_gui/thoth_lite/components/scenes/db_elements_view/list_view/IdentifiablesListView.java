@@ -4,10 +4,10 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_gui.OpenSubwindow;
+import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell.IdentifiableListCell;
-import thoth_gui.thoth_lite.subwindows.IdentifiableCardWindow;
 import thoth_gui.thoth_lite.main_window.ThothLiteWindow;
+import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_styleconstants.Stylesheets;
 import controls.Button;
 import controls.ComboBox;
@@ -250,8 +250,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     protected void openCreateNewIdentifiable(ActionEvent event){
-//        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, getIdentifiableInstance()) );
-        ( (OpenSubwindow) ThothLiteWindow.getInstance() ).openSubwindow( new IdentifiableCardWindow("Карточка", table, null) );
+        Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null));
     }
 
 }

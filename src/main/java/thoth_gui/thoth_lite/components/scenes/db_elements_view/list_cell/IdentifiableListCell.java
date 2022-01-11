@@ -6,11 +6,10 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_gui.OpenSubwindow;
+import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.dialog_windows.DialogWindow;
 import thoth_gui.thoth_lite.dialog_windows.DialogWindowType;
-import thoth_gui.thoth_lite.subwindows.IdentifiableCardWindow;
-import thoth_gui.thoth_lite.main_window.ThothLiteWindow;
+import thoth_gui.thoth_lite.main_window.Workspace;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
@@ -89,7 +88,7 @@ public class IdentifiableListCell<T extends Identifiable>
     }
 
     private void open(){
-        ((OpenSubwindow) ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableCardWindow("Карточка", table, identifiable));
+        Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, identifiable));
     }
 
     private void removeIdentifiable(){

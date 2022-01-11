@@ -4,8 +4,7 @@ import layout.basepane.BorderPane;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_gui.OpenSubwindow;
-import thoth_gui.thoth_lite.main_window.ThothLiteWindow;
+import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -15,7 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import layout.basepane.VBox;
-import thoth_gui.thoth_lite.subwindows.IdentifiableListWindow;
+import thoth_gui.thoth_lite.main_window.Workspace;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -25,9 +24,7 @@ import java.util.List;
  * Окно отображения таблиц с константами
  */
 public class ListedList
-        extends BorderPane
-
-{
+        extends BorderPane {
     private static final String STYLESHEET_PATH = "/style/identifiable-list.css";
 
     private List<AvaliableTables> datas;
@@ -98,15 +95,7 @@ public class ListedList
             switch (event.getButton()) {
                 case PRIMARY: {
 //                    if (table != AvaliableTables.CURRENCIES) {
-                        try {
-                            ((OpenSubwindow) ThothLiteWindow.getInstance()).openSubwindow(new IdentifiableListWindow((ThothLite.getInstance().getTableName(table)), table));
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        } catch (NotContainsException e) {
-                            e.printStackTrace();
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                    Workspace.getInstance().setNewScene(IdentifiablesListView.getInstance(table));
 //                    } else {
 //
 //                    }

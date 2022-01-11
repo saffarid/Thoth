@@ -7,9 +7,7 @@ import layout.basepane.HBox;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_gui.CloseSubwindow;
 import thoth_gui.config.Config;
-import thoth_gui.OpenSubwindow;
 import thoth_gui.thoth_lite.Settings;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.scenes.Home;
@@ -31,6 +29,8 @@ import layout.basepane.VBox;
 import layout.custompane.NavigationMenu;
 import org.json.simple.parser.ParseException;
 import thoth_gui.thoth_styleconstants.svg.Refresh;
+import thoth_gui.thoth_styleconstants.svg.TradingDown;
+import thoth_gui.thoth_styleconstants.svg.TradingUp;
 import window.PrimaryWindow;
 import window.StageResizer;
 
@@ -139,8 +139,7 @@ public class ThothLiteWindow
         );
 
         vBox.getChildren().addAll(
-                getPallete()
-                , navigationMenuConfig()
+                navigationMenuConfig()
                 , finishableViewPurchase
         );
 
@@ -161,6 +160,9 @@ public class ThothLiteWindow
         MenuButton menuButton = new MenuButton(mes);
         if (node != null) {
             menuButton.setGraphic( node );
+            menuButton.setMaxHeight(25);
+            menuButton.setPrefHeight(25);
+            menuButton.setMinHeight(25);
         }
         menuButton.setOnAction(event);
         return menuButton;
@@ -214,31 +216,28 @@ public class ThothLiteWindow
 
     private Node navigationMenuConfig() {
         List<MenuButton> menuButtons = new LinkedList<>();
-//        menuButtons.add(getMenuButton(
-//                STRING_KEY_INCOME_EXPENSES, ThothGUI.thoth_styleconstants.Image.ANALYZE, event -> {}
-//        ));
-//        menuButtons.add(getMenuButton(
-//                STRING_KEY_ORDERS, ThothGUI.thoth_styleconstants.Image.ORDER, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.ORDERABLE), AvaliableTables.ORDERABLE) );}
-//        ));
+        menuButtons.add(getNavigationMenuButton(
+                Scenes.HOME.getSceneCode(), thoth_gui.thoth_styleconstants.svg.Home.getInstance(20,20), event -> works.setNewScene(Home.getInstance())
+        ));
+        menuButtons.add(getNavigationMenuButton(
+                Scenes.EXPENSES.getSceneCode(), TradingDown.getInstance(20, 20), event -> {}
+        ));
+        menuButtons.add(getNavigationMenuButton(
+                Scenes.INCOMES.getSceneCode(), TradingUp.getInstance(20, 20), event -> {}
+        ));
         menuButtons.add(getNavigationMenuButton(
                 Scenes.PURCHASES.getSceneCode(), thoth_gui.thoth_styleconstants.svg.Purchase.getInstance(), event -> {
                     works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE));
                 }
         ));
-//        menuButtons.add(getMenuButton(
-//                STRING_KEY_PROJECTS, ThothGUI.thoth_styleconstants.Image.PROJECT, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.PROJECTABLE), AvaliableTables.PROJECTABLE) );}
-//        ));
-//        menuButtons.add(getMenuButton(
-//                STRING_KEY_STORAGE, ThothGUI.thoth_styleconstants.Image.STORAGE_CELL, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.STORING), AvaliableTables.STORING) );}
-//        ));
-        menuButtons.add(getNavigationMenuButton(
-                Scenes.SYSTEM.getSceneCode(), thoth_gui.thoth_styleconstants.svg.List.getInstance(), event -> {
-                    works.setNewScene(new ListedList());
-                }
-        ));
         menuButtons.add(getNavigationMenuButton(
                 Scenes.STORAGABLE.getSceneCode(), thoth_gui.thoth_styleconstants.svg.Product.getInstance(), event -> {
                     works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE));
+                }
+        ));
+        menuButtons.add(getNavigationMenuButton(
+                Scenes.SYSTEM.getSceneCode(), thoth_gui.thoth_styleconstants.svg.List.getInstance(), event -> {
+                    works.setNewScene(new ListedList());
                 }
         ));
         menu = new NavigationMenu(menuButtons);
@@ -254,10 +253,7 @@ public class ThothLiteWindow
     }
 
     private void workspaceConfig() {
-//        workspace = new StackPane();
-//        setCenter(workspace);
-
-        works = new Workspace();
+        works = Workspace.getInstance();
         setCenter(works);
         works.setNewScene(Home.getInstance());
     }

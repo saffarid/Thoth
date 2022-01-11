@@ -17,6 +17,8 @@ import java.util.logging.Level;
 public class Workspace
         extends BorderPane {
 
+    private static Workspace workspace;
+
     /**
      * Стек предыдущих сцен
      */
@@ -34,7 +36,7 @@ public class Workspace
     private controls.Button back;
     private controls.Button next;
 
-    public Workspace() {
+    private Workspace() {
         super();
         setTop(getTitle());
 
@@ -55,6 +57,13 @@ public class Workspace
         );
 
         return hBox;
+    }
+
+    public static Workspace getInstance(){
+        if(workspace == null){
+            workspace = new Workspace();
+        }
+        return workspace;
     }
 
     /**
