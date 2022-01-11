@@ -12,12 +12,11 @@ import thoth_gui.config.Config;
 import thoth_gui.OpenSubwindow;
 import thoth_gui.thoth_lite.Settings;
 import thoth_gui.thoth_lite.components.controls.Button;
-import thoth_gui.thoth_lite.main_window.workspace.Workspace;
-import thoth_gui.thoth_lite.subwindows.IdentifiableListWindow;
-import thoth_gui.thoth_lite.subwindows.ListedListWindow;
-import thoth_gui.thoth_lite.subwindows.Subwindow;
+import thoth_gui.thoth_lite.components.scenes.Home;
+import thoth_gui.thoth_lite.components.scenes.Scenes;
+import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
+import thoth_gui.thoth_lite.components.scenes.ListedList;
 import controls.MenuButton;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -28,7 +27,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.*;
-import layout.basepane.StackPane;
 import layout.basepane.VBox;
 import layout.custompane.NavigationMenu;
 import org.json.simple.parser.ParseException;
@@ -38,17 +36,12 @@ import window.StageResizer;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 public class ThothLiteWindow
         extends PrimaryWindow
-        implements
-        OpenSubwindow
-        , CloseSubwindow
 {
 
     private Config config;
@@ -70,12 +63,6 @@ public class ThothLiteWindow
         }
     }
 
-    private final String STRING_KEY_INCOME_EXPENSES = "Доходы/расходы";
-    private final String STRING_KEY_ORDERS = "Заказы";
-    private final String STRING_KEY_PURCHASES = "Покупки";
-    private final String STRING_KEY_PROJECTS = "Проекты";
-    private final String STRING_KEY_STORAGE = "Склад";
-    private final String STRING_KEY_TABLES_GUIDE = "Списочные таблицы";
 
     private static Logger LOG;
 
@@ -85,11 +72,7 @@ public class ThothLiteWindow
 
     private NavigationMenu menu;
 
-    private StackPane workspace;
-
     private Workspace works;
-
-    private List<String> openSubwindows;
 
     private ThothLite thoth;
 
@@ -119,7 +102,6 @@ public class ThothLiteWindow
         }
 
         mainStage = stage;
-        openSubwindows = new ArrayList<>();
 
         menuConfig();
         setLeft(createLeftNode());
@@ -239,8 +221,8 @@ public class ThothLiteWindow
 //                STRING_KEY_ORDERS, ThothGUI.thoth_styleconstants.Image.ORDER, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.ORDERABLE), AvaliableTables.ORDERABLE) );}
 //        ));
         menuButtons.add(getNavigationMenuButton(
-                STRING_KEY_PURCHASES, thoth_gui.thoth_styleconstants.svg.Purchase.getInstance(), event -> {
-                    works.setNewScene(new IdentifiableListWindow(thoth.getTableName(AvaliableTables.PURCHASABLE), AvaliableTables.PURCHASABLE));
+                Scenes.PURCHASES.getSceneCode(), thoth_gui.thoth_styleconstants.svg.Purchase.getInstance(), event -> {
+                    works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE));
                 }
         ));
 //        menuButtons.add(getMenuButton(
@@ -250,13 +232,13 @@ public class ThothLiteWindow
 //                STRING_KEY_STORAGE, ThothGUI.thoth_styleconstants.Image.STORAGE_CELL, event -> {openSubwindow( new IdentifiableListWindow( thoth.getTableName(AvaliableTables.STORING), AvaliableTables.STORING) );}
 //        ));
         menuButtons.add(getNavigationMenuButton(
-                STRING_KEY_TABLES_GUIDE, thoth_gui.thoth_styleconstants.svg.List.getInstance(), event -> {
-                    works.setNewScene(new ListedListWindow(STRING_KEY_TABLES_GUIDE));
+                Scenes.SYSTEM.getSceneCode(), thoth_gui.thoth_styleconstants.svg.List.getInstance(), event -> {
+                    works.setNewScene(new ListedList());
                 }
         ));
         menuButtons.add(getNavigationMenuButton(
-                "Продукты", thoth_gui.thoth_styleconstants.svg.Product.getInstance(), event -> {
-                    works.setNewScene(new IdentifiableListWindow(thoth.getTableName(AvaliableTables.STORAGABLE), AvaliableTables.STORAGABLE));
+                Scenes.STORAGABLE.getSceneCode(), thoth_gui.thoth_styleconstants.svg.Product.getInstance(), event -> {
+                    works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE));
                 }
         ));
         menu = new NavigationMenu(menuButtons);
@@ -275,8 +257,9 @@ public class ThothLiteWindow
 //        workspace = new StackPane();
 //        setCenter(workspace);
 
-        works = new Workspace(null);
+        works = new Workspace();
         setCenter(works);
+        works.setNewScene(Home.getInstance());
     }
 
     private FinishableView getFinishableView(){
@@ -293,28 +276,6 @@ public class ThothLiteWindow
         );
 
         return hBox;
-    }
-
-    @Override
-    public void openSubwindow(Subwindow subwindow) {
-        ObservableList<Node> children = workspace.getChildren();
-        Optional<Node> first = children.stream()
-                .filter(node -> node.getId().equals(subwindow.getId()))
-                .findFirst();
-
-        if (!first.isPresent()) {
-            workspace.getChildren().add(subwindow);
-            subwindow.setCloseSubwindow(this::closeSubwindow);
-        } else {
-            subwindow.toFront();
-        }
-    }
-
-    @Override
-    public void closeSubwindow(Subwindow subwindow) {
-        if (workspace.getChildren().contains(subwindow)) {
-            workspace.getChildren().remove(subwindow);
-        }
     }
 
 }

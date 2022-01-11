@@ -2,7 +2,7 @@ package thoth_gui.thoth_lite.subwindows;
 
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
-import thoth_gui.thoth_lite.components.db_elements_view.identifiable_card.IdentifiableCard;
+import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 
 /**
  * Subwindow для отображения карточки идентифицируемого объекта.
