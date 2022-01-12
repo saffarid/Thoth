@@ -2,14 +2,18 @@ package thoth_core.thoth_lite.db_lite_structure;
 
 public enum AvaliableTables {
     COUNT_TYPES,
-    CURRENCIES,
+    EXPENSES_TYPES,
     INCOMES_TYPES,
-    ORDERABLE,
     ORDER_STATUS,
-    PARTNERS,
-    PROJECTABLE,
     PRODUCT_TYPES,
-    PURCHASABLE,
+    STORING,
+
+    CURRENCIES,
+    EXPENSES,
+    INCOMES,
+    ORDERABLE,
+    PARTNERS,
     STORAGABLE,
-    STORING
+    PURCHASABLE,
+    PROJECTABLE
 }

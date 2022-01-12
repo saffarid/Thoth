@@ -18,10 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import thoth_gui.thoth_styleconstants.svg.Checkmark;
-import thoth_gui.thoth_styleconstants.svg.Edit;
-import thoth_gui.thoth_styleconstants.svg.Point;
-import thoth_gui.thoth_styleconstants.svg.Trash;
+import thoth_gui.thoth_styleconstants.svg.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -49,7 +46,7 @@ public class ListedViewCell
     private Button remove;
 
     protected ListedViewCell(Typable typable) {
-        super(thoth_gui.thoth_styleconstants.svg.List.getInstance(), typable.getValue(), "", "");
+        super(SvgWrapper.getInstance(Images.LIST, 20, 20), typable.getValue(), "", "");
         this.typable = typable;
         Node point = Point.getInstance(7.5, 7.5);
 
@@ -124,16 +121,16 @@ public class ListedViewCell
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
             pallete.getChildren().setAll(
-                    getButton( Edit.getInstance(imgButtonWidth, imgButtonHeight), this::toEditMode )
+                    getButton( SvgWrapper.getInstance(Images.EDIT, imgButtonWidth, imgButtonHeight), this::toEditMode )
             );
 //            if(listed.getId().equals("-1")) {
-            remove = getButton( Trash.getInstance(imgButtonWidth, imgButtonHeight), this::remove );
+            remove = getButton( SvgWrapper.getInstance(Images.TRASH, imgButtonWidth, imgButtonHeight), this::remove );
             remove.setDisable(!hasRemoveItem());
             pallete.getChildren().add(remove);
 //            }
         } else {
             pallete.getChildren().setAll(
-                    getButton(Checkmark.getInstance(imgButtonWidth, imgButtonHeight), event -> apply())
+                    getButton(SvgWrapper.getInstance(Images.CHECKMARK, imgButtonWidth, imgButtonHeight), event -> apply())
                     , getButton(Close.getInstance(), event -> cancel())
             );
         }

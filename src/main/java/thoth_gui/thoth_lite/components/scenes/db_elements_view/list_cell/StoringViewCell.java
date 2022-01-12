@@ -9,7 +9,7 @@ public class StoringViewCell extends IdentifiableViewCell {
 
     protected StoringViewCell(Storing storing) {
         super(
-                Image.STORAGE_CELL,
+                null,
                 storing.getId(),
                 String.format( templateStoragable, storing.getStoragable().getId(), storing.getStoragable().getName() ),
                 String.valueOf(storing.getCount())

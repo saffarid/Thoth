@@ -8,7 +8,7 @@ public class OrderableViewCell
 
     protected OrderableViewCell(Orderable order) {
         super(
-                Image.ORDER,
+                null,
                 order.getId(),
                 order.getProjectable().getName(),
                 order.getId()

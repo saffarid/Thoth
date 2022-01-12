@@ -1,44 +1,52 @@
 package thoth_gui.thoth_styleconstants.svg;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
 public class Product {
-    public static Node getInstance() {
-        Pane pane = new Pane();
+
+    public static Group getInstance() {
 
         SVGPath path1 = new SVGPath();
         SVGPath path2 = new SVGPath();
         SVGPath path3 = new SVGPath();
 
         path1.setContent(
-                "M10.54,9.214l7.051-2.958a1.342,1.342,0,0,0-.423-.315L11.2,3.149a1.549,1.549,0,0,0-1.326,0L3.913,5.941a1.342,1.342,0,0,0-.423.315Z"
+                "M16.559,14.063,3,8.36v12.7a2.778,2.778,0,0,0,1.644,2.5l11.817,5.572h.1Z"
         );
-        path1.setTranslateX(-0.598);
-        path1.setTranslateY(-0.515);
+        path1.setTranslateX(1.931);
+        path1.setTranslateY(5.38);
         path2.setContent(
-                "M9.835,11.235,3,8.36v6.4a1.4,1.4,0,0,0,.829,1.259l5.957,2.809h.05Z"
+                "M17.476,15.326,31.463,9.459a2.662,2.662,0,0,0-.838-.624L18.792,3.3a3.074,3.074,0,0,0-2.63,0L4.328,8.835a2.663,2.663,0,0,0-.838.624Z"
         );
-        path2.setTranslateX(-0.515);
-        path2.setTranslateY(-1.434);
+        path2.setTranslateX(2.246);
+        path2.setTranslateY(1.931);
         path3.setContent(
-                "M12.75,11.235v7.6h.041l5.965-2.809a1.4,1.4,0,0,0,.829-1.251V8.36Z"
+                "M12.75,14.063V29.135h.082l11.833-5.572a2.778,2.778,0,0,0,1.644-2.482V8.36Z"
         );
-        path3.setTranslateX(-2.187);
-        path3.setTranslateY(-1.434);
+        path3.setTranslateX(8.205);
+        path3.setTranslateY(5.38);
 
         path1.setFill(Color.WHITE);
         path2.setFill(Color.WHITE);
         path3.setFill(Color.WHITE);
 
-        Group group = new Group(path1, path2, path3);
-
-        pane.setPrefSize(20, 20);
-        pane.getChildren().add(group);
-
-        return pane;
+        return new Group(
+                TransparentBackground.getInstance()
+                , path1
+                , path2
+                , path3
+        );
     }
+    public static Group getInstance(
+            double width,
+            double height
+    ) {
+        Group instance = getInstance();
+        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
+        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
+        return instance;
+    }
+
 }

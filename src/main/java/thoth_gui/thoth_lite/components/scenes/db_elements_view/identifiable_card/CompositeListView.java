@@ -12,7 +12,6 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_gui.thoth_lite.main_window.ThothLiteWindow;
 import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_styleconstants.Stylesheets;
 import controls.Button;
@@ -29,7 +28,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
+import thoth_gui.thoth_styleconstants.svg.Images;
 import thoth_gui.thoth_styleconstants.svg.Plus;
+import thoth_gui.thoth_styleconstants.svg.SvgWrapper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -103,7 +104,7 @@ public class CompositeListView
         ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
         TextField count = getTextField(COUNT);
         ComboBox<Typable> countTypeComboBox = getCountTypeComboBox();
-        Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance( Plus.getInstance() );
+        Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance( SvgWrapper.getInstance(Images.PLUS, 20, 20) );
         TextField price = getTextField(PRICE);
         ComboBox<Currency> currencyComboBox = getCurrencyComboBox();
 

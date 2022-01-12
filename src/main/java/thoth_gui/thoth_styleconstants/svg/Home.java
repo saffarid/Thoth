@@ -9,13 +9,8 @@ import javafx.scene.shape.SVGPath;
 
 public class Home {
 
-    public static Node getInstance(){
+    public static Group getInstance(){
         Group group = new Group();
-
-        Rectangle rectangle1 = new Rectangle();
-        rectangle1.setWidth(DefaultSize.WIDTH.getSize());
-        rectangle1.setHeight(DefaultSize.HEIGHT.getSize());
-        rectangle1.setFill(Color.TRANSPARENT);
 
         Rectangle rectangle2 = new Rectangle();
         rectangle2.setWidth(6.667);
@@ -30,16 +25,19 @@ public class Home {
         path.setTranslateX(2);
         path.setTranslateY(1.336);
 
-        group.getChildren().addAll(rectangle1, rectangle2, path);
+        group.getChildren().addAll(
+                TransparentBackground.getInstance()
+                , rectangle2
+                , path
+        );
 
         return group;
     }
-
-    public static Node getInstance(
-            double width
-            , double height
-    ){
-        Node instance = getInstance();
+    public static Group getInstance(
+            double width,
+            double height
+    ) {
+        Group instance = getInstance();
         instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
         instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
         return instance;

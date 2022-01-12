@@ -24,10 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import thoth_gui.thoth_styleconstants.svg.Checkmark;
-import thoth_gui.thoth_styleconstants.svg.Edit;
-import thoth_gui.thoth_styleconstants.svg.Point;
-import thoth_gui.thoth_styleconstants.svg.Trash;
+import thoth_gui.thoth_styleconstants.svg.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -62,7 +59,7 @@ public class FinanceViewCell
         super();
         this.finance = finance;
 
-        ImageView point = getImageIcon(Image.POINT, 7.5, 7.5);
+        Node point = SvgWrapper.getInstance(Images.POINT, 7.5, 7.5);
 
         currency = getTextField(this.finance.getCurrency());
         currencyLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();

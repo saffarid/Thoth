@@ -1,14 +1,14 @@
 package thoth_gui.thoth_styleconstants.svg;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 
 public class TradingDown {
 
-    public static Node getInstance(){
+    public static Group getInstance(){
         Group group = new Group();
 
         Rectangle rectangle1 = new Rectangle();
@@ -26,12 +26,11 @@ public class TradingDown {
 
         return group;
     }
-
-    public static Node getInstance(
+    public static Group getInstance(
             double width
             , double height
     ){
-        Node instance = getInstance();
+        Group instance = getInstance();
         instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
         instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
         return instance;

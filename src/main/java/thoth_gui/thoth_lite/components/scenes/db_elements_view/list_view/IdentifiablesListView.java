@@ -27,6 +27,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import layout.basepane.HBox;
 import thoth_gui.thoth_styleconstants.Image;
+import thoth_gui.thoth_styleconstants.svg.Images;
+import thoth_gui.thoth_styleconstants.svg.SvgWrapper;
 import window.Closeable;
 
 import java.sql.SQLException;
@@ -158,20 +160,20 @@ public abstract class IdentifiablesListView<T extends Identifiable>
             , EventHandler<ActionEvent> event
     ){
         Button res;
-        String url;
+        Node img;
         switch (id){
             case IDENTIFIABLE_ADD:{
-                url = Image.PLUS;
+                img = SvgWrapper.getInstance(Images.PLUS, 20, 20);
                 break;
             }
-            default: url = null;
+            default: img = null;
         }
 
-        if(url == null) {
+        if(img == null) {
             res = thoth_gui.thoth_lite.components.controls.Button.getInstance(id.id, event);
         }else{
             res = thoth_gui.thoth_lite.components.controls.Button.getInstance(
-                    thoth_gui.thoth_lite.components.controls.ImageView.getInstance( url, 30, 30 ),
+                    img,
                     event
             );
         }

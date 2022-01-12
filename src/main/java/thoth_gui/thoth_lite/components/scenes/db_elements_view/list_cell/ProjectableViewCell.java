@@ -8,7 +8,7 @@ public class ProjectableViewCell
 
     protected ProjectableViewCell(Projectable project) {
         super(
-                Image.PROJECT,
+                null,
                 project.getName(),
                 project.getName(),  //Дата создания
                 project.getName()   //Тип проекта

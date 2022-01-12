@@ -1,25 +1,33 @@
 package thoth_gui.thoth_styleconstants.svg;
 
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
 public class Refresh {
 
-    public static Node getInstance(){
-        Pane pane = new Pane();
-
+    public static Group getInstance() {
         SVGPath path = new SVGPath();
         path.setContent(
-                "M17.615,11.807a.845.845,0,0,0-1.056.549,6.032,6.032,0,0,1-5.8,4.156A6,6,0,0,1,4.69,10.6a6,6,0,0,1,6.066-5.913A6.133,6.133,0,0,1,14.683,6.1l-1.833-.3a.847.847,0,1,0-.27,1.673l3.582.591h.144a.845.845,0,0,0,.287-.051.279.279,0,0,0,.084-.051.659.659,0,0,0,.169-.093l.076-.093c0-.042.076-.076.11-.127s0-.084.042-.118a1.132,1.132,0,0,0,.059-.152l.634-3.379a.86.86,0,0,0-1.69-.321L15.849,4.9A7.78,7.78,0,0,0,10.755,3,7.687,7.687,0,0,0,3,10.6a7.687,7.687,0,0,0,7.755,7.6,7.7,7.7,0,0,0,7.451-5.339.845.845,0,0,0-.591-1.056Z"
+                "M32.229,20.641a1.69,1.69,0,0,0-2.112,1.1A12.063,12.063,0,0,1,18.51,30.052,12,12,0,0,1,6.379,18.225,12,12,0,0,1,18.51,6.4,12.266,12.266,0,0,1,26.367,9.22L22.7,8.612a1.694,1.694,0,1,0-.541,3.345l7.164,1.183h.287a1.69,1.69,0,0,0,.574-.1.558.558,0,0,0,.169-.1,1.318,1.318,0,0,0,.338-.186l.152-.186c0-.084.152-.152.22-.253s0-.169.084-.237a2.264,2.264,0,0,0,.118-.3l1.267-6.758a1.72,1.72,0,0,0-3.379-.642L28.7,6.821a15.561,15.561,0,0,0-10.188-3.8A15.375,15.375,0,0,0,3,18.225,15.375,15.375,0,0,0,18.51,33.431a15.409,15.409,0,0,0,14.9-10.678,1.69,1.69,0,0,0-1.183-2.112Z"
         );
+        path.setTranslateX(2.069);
+        path.setTranslateY(2.069);
 
         path.setFill(Color.WHITE);
 
-        pane.setPrefSize(20, 20);
-        pane.getChildren().add(path);
-
-        return pane;
+        return new Group(
+                TransparentBackground.getInstance()
+                , path
+        );
+    }
+    public static Group getInstance(
+            double width,
+            double height
+    ) {
+        Group instance = getInstance();
+        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
+        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
+        return instance;
     }
 }

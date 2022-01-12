@@ -58,6 +58,12 @@ public class NavigationMenu
      * */
     private VBox content;
 
+    public NavigationMenu(MenuButton... menuButtons){
+        super();
+        init();
+        content.getChildren().addAll(menuButtons);
+    }
+
     public NavigationMenu( List<MenuButton> menuButtons ){
         super();
         init();

@@ -1,23 +1,20 @@
 package thoth_gui.thoth_styleconstants.svg;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 public class List {
-    public static Node getInstance(){
-        Pane pane = new Pane();
 
+    public static Group getInstance(){
         Circle circle1 = new Circle(3.5, 5,  1.5, Color.WHITE);
-        Circle circle2 = new Circle(3.5, 10, 1.5, Color.WHITE);
-        Circle circle3 = new Circle(3.5, 15, 1.5, Color.WHITE);
+        Circle circle2 = new Circle(3.5, 20, 1.5, Color.WHITE);
+        Circle circle3 = new Circle(3.5, 35, 1.5, Color.WHITE);
 
-        Line line1 = new Line(8, 5,  18, 5 );
-        Line line2 = new Line(8, 10, 18, 10);
-        Line line3 = new Line(8, 15, 18, 15);
+        Line line1 = new Line(8, 5,  38, 5 );
+        Line line2 = new Line(8, 20, 38, 20);
+        Line line3 = new Line(8, 35, 38, 35);
 
         line1.setFill(Color.WHITE);
         line2.setFill(Color.WHITE);
@@ -27,11 +24,25 @@ public class List {
         line2.setStroke(Color.WHITE);
         line3.setStroke(Color.WHITE);
 
-        Group group = new Group(circle1, circle2, circle3, line1, line2, line3);
+        Group group = new Group(
+                TransparentBackground.getInstance()
+                , circle1
+                , circle2
+                , circle3
+                , line1
+                , line2
+                , line3);
 
-        pane.setPrefSize(20, 20);
-        pane.getChildren().add(group);
-
-        return pane;
+        return group;
     }
+    public static Group getInstance(
+            double width,
+            double height
+    ) {
+        Group instance = getInstance();
+        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
+        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
+        return instance;
+    }
+
 }

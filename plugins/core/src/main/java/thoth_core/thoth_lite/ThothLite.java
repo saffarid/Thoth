@@ -164,6 +164,9 @@ public class ThothLite {
             case COUNT_TYPES: {
                 return StructureDescription.CountTypes.TABLE_NAME;
             }
+            case EXPENSES_TYPES:{
+                return StructureDescription.ExpensesTypes.TABLE_NAME;
+            }
             case INCOMES_TYPES: {
                 return StructureDescription.IncomesTypes.TABLE_NAME;
             }
@@ -173,8 +176,18 @@ public class ThothLite {
             case PRODUCT_TYPES: {
                 return StructureDescription.ProductTypes.TABLE_NAME;
             }
+            case STORING: {
+                return StructureDescription.Storage.TABLE_NAME;
+            }
+
             case CURRENCIES: {
                 return StructureDescription.Currency.TABLE_NAME;
+            }
+            case EXPENSES: {
+                return StructureDescription.Expenses.TABLE_NAME;
+            }
+            case INCOMES:{
+                return StructureDescription.Incomes.TABLE_NAME;
             }
             case ORDERABLE: {
                 return StructureDescription.Orders.TABLE_NAME;
@@ -182,17 +195,14 @@ public class ThothLite {
             case PARTNERS: {
                 return StructureDescription.Partners.TABLE_NAME;
             }
+            case STORAGABLE: {
+                return StructureDescription.Products.TABLE_NAME;
+            }
             case PROJECTABLE: {
                 return StructureDescription.ProjectsDesc.TABLE_NAME;
             }
             case PURCHASABLE: {
                 return StructureDescription.Purchases.TABLE_NAME;
-            }
-            case STORAGABLE: {
-                return StructureDescription.Products.TABLE_NAME;
-            }
-            case STORING: {
-                return StructureDescription.Storage.TABLE_NAME;
             }
             default:
                 return null;

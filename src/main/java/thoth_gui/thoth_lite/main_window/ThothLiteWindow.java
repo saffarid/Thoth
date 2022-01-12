@@ -10,6 +10,7 @@ import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.Settings;
 import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.scenes.ConfigDropdownList;
 import thoth_gui.thoth_lite.components.scenes.Home;
 import thoth_gui.thoth_lite.components.scenes.Scenes;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
@@ -28,9 +29,7 @@ import javafx.stage.*;
 import layout.basepane.VBox;
 import layout.custompane.NavigationMenu;
 import org.json.simple.parser.ParseException;
-import thoth_gui.thoth_styleconstants.svg.Refresh;
-import thoth_gui.thoth_styleconstants.svg.TradingDown;
-import thoth_gui.thoth_styleconstants.svg.TradingUp;
+import thoth_gui.thoth_styleconstants.svg.*;
 import window.PrimaryWindow;
 import window.StageResizer;
 
@@ -217,28 +216,28 @@ public class ThothLiteWindow
     private Node navigationMenuConfig() {
         List<MenuButton> menuButtons = new LinkedList<>();
         menuButtons.add(getNavigationMenuButton(
-                Scenes.HOME.getSceneCode(), thoth_gui.thoth_styleconstants.svg.Home.getInstance(20,20), event -> works.setNewScene(Home.getInstance())
+                Scenes.HOME.getSceneCode(), SvgWrapper.getInstance(Images.HOME, 20, 20),
+                event -> works.setNewScene(Home.getInstance())
         ));
         menuButtons.add(getNavigationMenuButton(
-                Scenes.EXPENSES.getSceneCode(), TradingDown.getInstance(20, 20), event -> {}
+                Scenes.EXPENSES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGDOWN, 20, 20),
+                event -> {}
         ));
         menuButtons.add(getNavigationMenuButton(
-                Scenes.INCOMES.getSceneCode(), TradingUp.getInstance(20, 20), event -> {}
+                Scenes.INCOMES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGUP, 20, 20),
+                event -> {}
         ));
         menuButtons.add(getNavigationMenuButton(
-                Scenes.PURCHASES.getSceneCode(), thoth_gui.thoth_styleconstants.svg.Purchase.getInstance(), event -> {
-                    works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE));
-                }
+                Scenes.PURCHASES.getSceneCode(), SvgWrapper.getInstance(Images.PURCHASE, 20, 20),
+                event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE))
         ));
         menuButtons.add(getNavigationMenuButton(
-                Scenes.STORAGABLE.getSceneCode(), thoth_gui.thoth_styleconstants.svg.Product.getInstance(), event -> {
-                    works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE));
-                }
+                Scenes.STORAGABLE.getSceneCode(), SvgWrapper.getInstance(Images.PRODUCT, 20, 20),
+                event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE))
         ));
         menuButtons.add(getNavigationMenuButton(
-                Scenes.SYSTEM.getSceneCode(), thoth_gui.thoth_styleconstants.svg.List.getInstance(), event -> {
-                    works.setNewScene(new ListedList());
-                }
+                Scenes.SYSTEM.getSceneCode(), SvgWrapper.getInstance(Images.LIST, 20, 20),
+                event -> works.setNewScene(ConfigDropdownList.getInstance())
         ));
         menu = new NavigationMenu(menuButtons);
         menu.setWidth(DEFAULT_SIZE.WIDTH_LEFT_BLOCK.getSize());

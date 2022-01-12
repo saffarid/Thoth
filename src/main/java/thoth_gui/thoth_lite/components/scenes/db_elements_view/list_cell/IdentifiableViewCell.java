@@ -10,6 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import thoth_gui.thoth_styleconstants.svg.ArrowRight;
+import thoth_gui.thoth_styleconstants.svg.Images;
+import thoth_gui.thoth_styleconstants.svg.SvgWrapper;
 
 public abstract class IdentifiableViewCell
         extends BorderPane {
@@ -30,32 +32,6 @@ public abstract class IdentifiableViewCell
     }
 
     protected IdentifiableViewCell(
-            String url,
-            String title,
-            String subtitle,
-            String property)
-    {
-        super();
-        init();
-
-        this.icon = getImageIcon(url, 40, 40);
-        this.title = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
-        this.subtitle = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
-        this.property = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
-//        this.edit = getImageIcon(thoth_gui.thoth_styleconstants.Image.ARROW_RIGHT, 40, 40);
-        this.edit = ArrowRight.getInstance(40, 40);
-
-        setTextTitle(title);
-        setTextSubtitle(subtitle);
-        setTextProperty(property);
-
-        setLeft(this.icon);
-        setCenter(getFillCenter());
-        setRight(this.edit);
-
-    }
-
-    protected IdentifiableViewCell(
             Node node,
             String title,
             String subtitle,
@@ -68,7 +44,7 @@ public abstract class IdentifiableViewCell
         this.title = new Label();
         this.subtitle = new Label();
         this.property = new Label();
-        this.edit = getImageIcon(thoth_gui.thoth_styleconstants.Image.ARROW_RIGHT, 40, 40);
+        this.edit = SvgWrapper.getInstance(Images.ARROW_RIGHT);
 
         setTextTitle(title);
         setTextSubtitle(subtitle);
@@ -141,15 +117,6 @@ public abstract class IdentifiableViewCell
         setPosInGridPane(this.property, 1, 1);
 
         return res;
-    }
-
-    protected ImageView getImageIcon(String url, double width, double height) {
-        return new ImageView(
-                new javafx.scene.image.Image(
-                        getClass().getResource(url).toExternalForm()
-                        , width, height, true, true
-                )
-        );
     }
 
     protected TextField getTextField(String text){

@@ -2,13 +2,19 @@ package thoth_gui.thoth_lite.main_window;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.control.skin.ComboBoxListViewSkin;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import main.Main;
 import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.controls.ComboBox;
 import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.scenes.Scenes;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.concurrent.Flow;
@@ -51,9 +57,14 @@ public class Workspace
         back = Button.getInstance("back", event -> stepToPreviousScene());
         next = Button.getInstance("next", event -> stepToNextScene());
 
+        controls.ComboBox test = ComboBox.getInstance(
+                FXCollections.observableList(Arrays.asList(Scenes.values()))
+        );
+
         hBox.getChildren().addAll(
                 back,
                 next
+                , test
         );
 
         return hBox;
