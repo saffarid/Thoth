@@ -6,6 +6,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import thoth_gui.thoth_styleconstants.color.ColorTheme;
+import thoth_gui.thoth_styleconstants.color.Dark;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +18,7 @@ public class Config {
 
     private enum KEYS {
         FONT("font"),
+        SCENE("scene"),
         WINDOW("window"),
         ;
         private String key;
@@ -43,6 +46,7 @@ public class Config {
     private File configFile;
 
     private Font font;
+    private Scene scene;
     private Window window;
 
     private Config() throws IOException, ParseException {
@@ -53,6 +57,7 @@ public class Config {
 
         if (!configFile.exists()) {
             font = new Font();
+            scene = new Scene();
             window = new Window();
 
             exportConfig();
@@ -60,6 +65,7 @@ public class Config {
             JSONObject parse = importConfig();
 
             font = new Font((JSONObject) parse.get(KEYS.FONT.getKey()));
+            scene = new Scene((JSONObject) parse.get(KEYS.SCENE.getKey()));
             window = new Window((JSONObject) parse.get(KEYS.WINDOW.getKey()));
         }
 
@@ -73,6 +79,7 @@ public class Config {
         JSONObject config = new JSONObject();
 
         config.put(KEYS.FONT.getKey(), font.exportJSON());
+        config.put(KEYS.SCENE.getKey(), scene.exportJSON());
         config.put(KEYS.WINDOW.getKey(), window.exportJSON());
 
         try (FileWriter writer = new FileWriter(configFile)) {
@@ -100,12 +107,12 @@ public class Config {
     public Font getFont() {
         return font;
     }
-
+    public Scene getScene() {return scene;}
     public Window getWindow() {
         return window;
     }
 
-    public class Font {
+    public class Font implements Configuration {
 
         private final String KEY_SIZE = "size";
         private final String KEY_FAMILY = "family";
@@ -118,11 +125,7 @@ public class Config {
         }
 
         public Font(JSONObject data) {
-            javafx.scene.text.Font f = new javafx.scene.text.Font(
-                    (String) data.get(KEY_FAMILY)
-                    , (double) data.get(KEY_SIZE)
-            );
-            font = new SimpleObjectProperty<>(f);
+            importJSON(data);
         }
 
         public JSONObject exportJSON() {
@@ -132,6 +135,15 @@ public class Config {
             res.put(KEY_FAMILY, font.getValue().getFamily());
 
             return res;
+        }
+
+        @Override
+        public void importJSON(JSONObject data) {
+            javafx.scene.text.Font f = new javafx.scene.text.Font(
+                    (String) data.get(KEY_FAMILY)
+                    , (double) data.get(KEY_SIZE)
+            );
+            font = new SimpleObjectProperty<>(f);
         }
 
         public SimpleObjectProperty<javafx.scene.text.Font> fontProperty() {
@@ -147,7 +159,40 @@ public class Config {
         }
     }
 
-    public class Window {
+    /**
+     * Класс конфигурация отображения сцен
+     * */
+    public class Scene implements Configuration{
+        private final String KEY_COLOR_THEME = "color_theme";
+
+        private final ColorTheme themeDefault = new Dark();
+
+        private ColorTheme theme;
+
+        public Scene() {
+            theme = themeDefault;
+        }
+
+        public Scene(JSONObject importJson){
+            importJSON(importJson);
+        }
+
+        @Override
+        public JSONObject exportJSON() {
+            return null;
+        }
+
+        @Override
+        public void importJSON(JSONObject importJson) {
+            theme = themeDefault;
+        }
+
+        public ColorTheme getTheme() {
+            return theme;
+        }
+    }
+
+    public class Window implements Configuration {
 
         private final String KEY_X_PRIMARY = "x_primary";
         private final String KEY_Y_PRIMARY = "y_primary";
@@ -199,16 +244,7 @@ public class Config {
         }
 
         public Window(JSONObject data) {
-            xPrimary      = new SimpleDoubleProperty( (double) data.get(KEY_X_PRIMARY) );
-            yPrimary      = new SimpleDoubleProperty( (double) data.get(KEY_Y_PRIMARY) );
-            widthPrimary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_PRIMARY) );
-            heightPrimary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_PRIMARY) );
-            isMax         = new SimpleBooleanProperty( (boolean) data.get(KEY_ISMAX) );
-
-            widthSecondary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_SECONDARY) );
-            heightSecondary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_SECONDARY) );
-            xSecondary      = new SimpleDoubleProperty( (double) data.get(KEY_X_SECONDARY) );
-            ySecondary      = new SimpleDoubleProperty( (double) data.get(KEY_Y_SECONDARY) );
+            importJSON(data);
         }
 
         public JSONObject exportJSON() {
@@ -226,6 +262,20 @@ public class Config {
             res.put(KEY_Y_SECONDARY, ySecondary.doubleValue());
 
             return res;
+        }
+
+        @Override
+        public void importJSON(JSONObject data) {
+            xPrimary      = new SimpleDoubleProperty( (double) data.get(KEY_X_PRIMARY) );
+            yPrimary      = new SimpleDoubleProperty( (double) data.get(KEY_Y_PRIMARY) );
+            widthPrimary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_PRIMARY) );
+            heightPrimary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_PRIMARY) );
+            isMax         = new SimpleBooleanProperty( (boolean) data.get(KEY_ISMAX) );
+
+            widthSecondary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_SECONDARY) );
+            heightSecondary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_SECONDARY) );
+            xSecondary      = new SimpleDoubleProperty( (double) data.get(KEY_X_SECONDARY) );
+            ySecondary      = new SimpleDoubleProperty( (double) data.get(KEY_Y_SECONDARY) );
         }
 
         /*

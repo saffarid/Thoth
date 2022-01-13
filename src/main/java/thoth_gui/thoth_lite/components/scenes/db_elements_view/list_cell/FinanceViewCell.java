@@ -1,6 +1,7 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
 import styleconstants.imagesvg.Close;
+import styleconstants.imagesvg.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
@@ -10,7 +11,6 @@ import thoth_gui.Cancel;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.RemoveItem;
 import thoth_gui.thoth_lite.dialog_windows.DialogWindow;
 import thoth_gui.thoth_lite.dialog_windows.DialogWindowType;
-import thoth_gui.thoth_styleconstants.Image;
 import controls.Button;
 import controls.Label;
 import controls.TextField;
@@ -20,7 +20,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -59,7 +58,7 @@ public class FinanceViewCell
         super();
         this.finance = finance;
 
-        Node point = SvgWrapper.getInstance(Images.POINT, 7.5, 7.5);
+        Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5);
 
         currency = getTextField(this.finance.getCurrency());
         currencyLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();

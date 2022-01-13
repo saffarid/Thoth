@@ -12,7 +12,7 @@ import javafx.scene.paint.Paint;
 public class BorderWrapper {
 
     private Color colorDefault = Color.valueOf("#707070");
-    private double borderWidthDefault = 0;
+    private final double borderWidthDefault = 0;
 
     private Border border;
 
@@ -30,6 +30,17 @@ public class BorderWrapper {
                         colorDefault, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(borderWidthDefault)
                 )
         );
+    }
+
+    /**
+     * Функция добавляет границу
+     * */
+    public BorderWrapper addBorder(double width){
+        topWidth = width;
+        rightWidth = width;
+        bottomWidth = width;
+        leftWidth = width;
+        return this;
     }
 
     /**

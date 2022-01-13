@@ -20,7 +20,6 @@ import layout.BackgroundWrapper;
 import layout.BorderWrapper;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
-import styleconstants.Images;
 import styleconstants.Stylesheets;
 import styleconstants.imagesvg.*;
 
@@ -38,6 +37,16 @@ public class Title
         }
         public String getStyleClass() {
             return styleClass;
+        }
+    }
+
+    private enum ButtonSize{
+        HEIGHT(25),
+        WIDTH(25)
+        ;
+        private double size;
+        ButtonSize(double size) {
+            this.size = size;
         }
     }
 
@@ -88,7 +97,7 @@ public class Title
     }
 
     public Title addClose(EventHandler<ActionEvent> event){
-        close = getButton(Close.getInstance());
+        close = getButton( SvgWrapper.getInstance(Images.CLOSE(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size) );
         close.setOnAction(event);
         close.getStyleClass().add(STYLE_CLASS.CLOSE.getStyleClass());
         controls.getChildren().add(close);
@@ -102,8 +111,7 @@ public class Title
     public Title addContextMenu(MenuItem... es){
         iconMenu = new Menu();
 
-//        iconMenu.setGraphic( getImageView(Images.THREE_POINT_H.getUrl()) );
-        iconMenu.setGraphic( ThreePointH.getInstance() );
+        iconMenu.setGraphic( SvgWrapper.getInstance(Images.THREEPOINTH(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size) );
 
         iconMenu.getItems().setAll(es);
         contextMenu.getMenus().add(iconMenu);
@@ -115,7 +123,7 @@ public class Title
     }
 
     public Title addIconify(EventHandler<ActionEvent> event){
-        iconify = getButton(Iconfy.getInstance());
+        iconify = getButton( SvgWrapper.getInstance(Images.ICONIFY(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size) );
         iconify.setOnAction(event);
         controls.getChildren().add(iconify);
         return this;
@@ -135,17 +143,19 @@ public class Title
             EventHandler<ActionEvent> event
             , ReadOnlyBooleanProperty isMinify
     ){
-        minify = getButton(Maximize.getInstance());
-        minify.setOnAction(event);
+        Node maximizeSvg = SvgWrapper.getInstance(Images.MAXIMIZE(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size);
+        Node minifySvg = SvgWrapper.getInstance(Images.MINIFY(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size);
+        this.minify = getButton(maximizeSvg);
+        this.minify.setOnAction(event);
         controls.getChildren().add(minify);
         this.isMinify = new SimpleBooleanProperty(true);
         this.isMinify.bind(isMinify);
 
         this.isMinify.addListener((observableValue, aBoolean, t1) -> {
             if(t1){
-                minify.setGraphic(Minify.getInstance());
+                this.minify.setGraphic(minifySvg);
             }else{
-                minify.setGraphic(Maximize.getInstance());
+                this.minify.setGraphic(maximizeSvg);
             }
         });
 

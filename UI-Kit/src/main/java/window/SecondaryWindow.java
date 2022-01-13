@@ -7,7 +7,7 @@ import log.Logger;
 
 import java.util.logging.Level;
 
-public class SecondaryWindow
+public abstract class SecondaryWindow
         extends Window{
 
 

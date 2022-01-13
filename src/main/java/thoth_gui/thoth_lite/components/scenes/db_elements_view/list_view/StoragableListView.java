@@ -26,14 +26,13 @@ public class StoragableListView extends IdentifiablesListView<Storagable> {
         }
     }
 
-
     public StoragableListView(List<Storagable> datas) {
         super(datas, AvaliableTables.STORAGABLE);
     }
 
     @Override
-    protected Node createSortedPane() {
-        HBox sortedPane = (HBox) super.createSortedPane();
+    protected Node getSortPane() {
+        HBox sortedPane = (HBox) super.getSortPane();
 
         ComboBox<SORT_BY> sortedBox = (ComboBox<SORT_BY>) sortedPane.getChildren()
                 .stream()

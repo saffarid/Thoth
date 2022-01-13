@@ -2,7 +2,10 @@ package window;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import layout.BorderWrapper;
 import layout.custompane.Title;
 import styleconstants.Styleclasses;
 import styleconstants.Stylesheets;
@@ -20,13 +23,9 @@ public abstract class Window
     public Window() {
         super();
         isMinify = new SimpleBooleanProperty(true);
-        getStyleClass().addAll(
-                Styleclasses.WINDOW
-        );
-        getStylesheets().add(
-                Window.class.getResource(Stylesheets.WINDOW).toExternalForm()
-        );
     }
+
+    protected abstract void initStyle();
 
     public Title getTitle() {
         return title;

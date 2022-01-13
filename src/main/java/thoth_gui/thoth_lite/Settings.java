@@ -2,8 +2,10 @@ package thoth_gui.thoth_lite;
 
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
+import layout.BackgroundWrapper;
 import layout.BorderWrapper;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.config.Keys;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
@@ -22,6 +24,7 @@ import layout.basepane.HBox;
 import layout.basepane.VBox;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
+import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
 import window.SecondaryWindow;
@@ -29,6 +32,7 @@ import window.SecondaryWindow;
 import thoth_gui.thoth_lite.components.controls.Label;
 
 import java.awt.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,6 +44,8 @@ public class Settings
         extends SecondaryWindow
         implements Apply
         , Cancel {
+
+
 
     enum DefaultSize {
         HEIGHT(500),
@@ -100,6 +106,7 @@ public class Settings
                 event -> apply()
                 , event -> cancel()
         );
+        initStyle();
         setMargin(instance, new Insets(2));
         setBottom(
                 instance
@@ -277,12 +284,34 @@ public class Settings
                         .commit()
         );
 
-        controls.Label label = Label.getInstanse(ComboBoxesId.FONT_SIZE.id);
+        controls.Label label = Label.getInstanse(mes);
         label.setPadding(0, 0, 0, 5);
 
         res.getChildren().add(label);
 
         return res;
+    }
+
+    @Override
+    protected void initStyle() {
+        try {
+            setBackground(
+                    new BackgroundWrapper()
+                            .setColor(Config.getInstance().getScene().getTheme().PRIMARY())
+                            .commit()
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        setBorder(
+                new BorderWrapper()
+                        .addBorder(3)
+                        .setColor(Color.GREY)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .commit()
+        );
     }
 
 }

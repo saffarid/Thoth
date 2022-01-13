@@ -24,13 +24,10 @@ import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import thoth_gui.thoth_styleconstants.svg.Images;
-import thoth_gui.thoth_styleconstants.svg.Plus;
-import thoth_gui.thoth_styleconstants.svg.SvgWrapper;
+import styleconstants.imagesvg.SvgWrapper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -104,7 +101,7 @@ public class CompositeListView
         ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
         TextField count = getTextField(COUNT);
         ComboBox<Typable> countTypeComboBox = getCountTypeComboBox();
-        Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance( SvgWrapper.getInstance(Images.PLUS, 20, 20) );
+        Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance( SvgWrapper.getInstance(Images.PLUS(), 20, 20) );
         TextField price = getTextField(PRICE);
         ComboBox<Currency> currencyComboBox = getCurrencyComboBox();
 
@@ -643,13 +640,7 @@ public class CompositeListView
         }
 
         private Button createRemoveButton() {
-            Button res = new Button(
-                    new ImageView(
-                            new Image(
-                                    getClass().getResource(thoth_gui.thoth_styleconstants.Image.TRASH).toExternalForm(), 19, 19, true, true
-                            )
-                    )
-            );
+            Button res = new Button( SvgWrapper.getInstance(Images.TRASH(), 19, 19) );
 
             res.setDisable(!identifiableIsNew);
 
@@ -664,11 +655,7 @@ public class CompositeListView
             VBox vBox = new VBox();
 
             vBox.getChildren().add(
-                    new ImageView(
-                            new Image(
-                                    getClass().getResource(thoth_gui.thoth_styleconstants.Image.POINT).toExternalForm(), 9, 9, true, true
-                            )
-                    )
+                    SvgWrapper.getInstance(Images.POINT(), 9, 9)
             );
 
             vBox.setPadding(new Insets(0, 0, 0, 5));

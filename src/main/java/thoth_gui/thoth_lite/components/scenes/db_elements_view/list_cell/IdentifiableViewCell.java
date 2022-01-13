@@ -1,22 +1,21 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
+import controls.Label;
+import javafx.scene.paint.Color;
+import layout.BackgroundWrapper;
+import layout.BorderWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import controls.TextField;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import thoth_gui.thoth_styleconstants.svg.ArrowRight;
 import thoth_gui.thoth_styleconstants.svg.Images;
-import thoth_gui.thoth_styleconstants.svg.SvgWrapper;
+import styleconstants.imagesvg.SvgWrapper;
 
 public abstract class IdentifiableViewCell
         extends BorderPane {
-
-    private final static String STYLE_CLASS_CELL_CONTENT = "identifiable-cell-content";
 
     protected Node icon;
     protected Label title;
@@ -41,10 +40,10 @@ public abstract class IdentifiableViewCell
         init();
 
         this.icon = node;
-        this.title = new Label();
-        this.subtitle = new Label();
-        this.property = new Label();
-        this.edit = SvgWrapper.getInstance(Images.ARROW_RIGHT);
+        this.title    = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
+        this.subtitle = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
+        this.property = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
+        this.edit = SvgWrapper.getInstance(Images.ARROW_RIGHT());
 
         setTextTitle(title);
         setTextSubtitle(subtitle);
@@ -56,9 +55,30 @@ public abstract class IdentifiableViewCell
 
     }
 
+    /**
+     * Общая инициализация для всех исполнений
+     * */
     private void init() {
-        getStyleClass().add(STYLE_CLASS_CELL_CONTENT);
+        initStyle();
+    }
+
+    /**
+     * Инициализация стиля
+     * */
+    private void initStyle(){
         setMargin(this, new Insets(0));
+        setBackground(
+                new BackgroundWrapper()
+                        .setColor(Color.TRANSPARENT)
+//                        .setRadius(3)
+                        .commit()
+        );
+        setBorder(
+                new BorderWrapper()
+                        .setColor(Color.GREY)
+                        .addBorder(1)
+                        .commit()
+        );
     }
 
     public void setTable(AvaliableTables table){

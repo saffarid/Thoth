@@ -52,8 +52,8 @@ public class ListedListView
     }
 
     @Override
-    protected Node createSortedPane() {
-        HBox sortedPane = (HBox) super.createSortedPane();
+    protected Node getSortPane() {
+        HBox sortedPane = (HBox) super.getSortPane();
 
         ComboBox<SORT_BY> sortedBox = (ComboBox<SORT_BY>) sortedPane.getChildren()
                 .stream()

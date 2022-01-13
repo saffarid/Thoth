@@ -1,17 +1,16 @@
-package thoth_gui.thoth_styleconstants.svg;
+package styleconstants.imagesvg;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
 import layout.basepane.BorderPane;
 
 public class SvgWrapper{
 
-    public static Node getInstance(Images node){
+    public static Node getInstance(Node node){
         return getInstance(node, DefaultSize.WIDTH.getSize(), DefaultSize.HEIGHT.getSize());
     }
 
     public static Node getInstance(
-            Images node,
+            Node node,
             double width, double height
     ){
         BorderPane res = new BorderPane();
@@ -20,11 +19,10 @@ public class SvgWrapper{
         res.setPrefSize(width, height);
         res.setMaxSize(width, height);
 
-        Group instance = node.getSvg();
-        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
-        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
+        node.setScaleX(DefaultSize.WIDTH.getScaleX(width));
+        node.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
 
-        res.setCenter(instance);
+        res.setCenter(node);
 
         return res;
     }

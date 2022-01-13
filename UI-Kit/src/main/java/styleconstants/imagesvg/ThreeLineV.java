@@ -11,33 +11,29 @@ import javafx.scene.shape.SVGPath;
 import javax.swing.*;
 
 public class ThreeLineV {
-    public static Node getInstance() {
-
-
-        Line line1 = new Line(2.5, 5,  17.5, 5);
-        Line line2 = new Line(2.5, 10, 17.5, 10);
-        Line line3 = new Line(2.5, 15, 17.5, 15);
+    public static Group getInstance() {
+        Line line1 = new Line(7.5, 10,  32.5, 10);
+        Line line2 = new Line(7.5, 20, 32.5, 20);
+        Line line3 = new Line(7.5, 30, 32.5, 30);
 
         line1.setFill(Color.WHITE);
         line2.setFill(Color.WHITE);
         line3.setFill(Color.WHITE);
 
-        line1.setStrokeWidth(1);
-        line2.setStrokeWidth(1);
-        line3.setStrokeWidth(1);
+        line1.setStrokeWidth(3);
+        line2.setStrokeWidth(3);
+        line3.setStrokeWidth(3);
 
         line1.setStroke(Color.WHITE);
         line2.setStroke(Color.WHITE);
         line3.setStroke(Color.WHITE);
 
-        Group group = new Group(line1, line2, line3);
-        group.setAutoSizeChildren(true);
-
-        Pane pane = new Pane();
-        pane.getChildren().add(group);
-        pane.setPrefSize(20, 20);
-
-        return pane;
+        return new Group(
+                TransparentBackground.getInstance()
+                , line1
+                , line2
+                , line3
+        );
 
     }
 }

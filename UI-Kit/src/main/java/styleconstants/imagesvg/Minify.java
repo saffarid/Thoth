@@ -10,7 +10,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 
 public class Minify {
-    public static Node getInstance() {
+    public static Group getInstance() {
 
         SVGPath svgPath = new SVGPath();
         svgPath.setContent(
@@ -42,14 +42,10 @@ public class Minify {
         rectangle.setStroke(Color.WHITE);
         rectangle.setStrokeWidth(1);
 
-        Group group = new Group(svgPath, rectangle);
-
-
-        Pane pane = new Pane();
-        pane.getChildren().add(group);
-        pane.setPrefSize(25, 25);
-
-        return pane;
+        return new Group(
+                TransparentBackground.getInstance()
+                , svgPath
+                , rectangle);
 
     }
 }

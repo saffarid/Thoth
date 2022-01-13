@@ -1,23 +1,21 @@
 package thoth_gui.thoth_lite.main_window;
 
 import javafx.geometry.Insets;
+import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
+import layout.BackgroundWrapper;
 import layout.BorderWrapper;
-import layout.basepane.HBox;
+import styleconstants.imagesvg.SvgWrapper;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.Settings;
-import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.scenes.ConfigDropdownList;
 import thoth_gui.thoth_lite.components.scenes.Home;
 import thoth_gui.thoth_lite.components.scenes.Scenes;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
-import thoth_gui.thoth_lite.components.scenes.ListedList;
 import controls.MenuButton;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
@@ -62,7 +60,6 @@ public class ThothLiteWindow
         }
     }
 
-
     private static Logger LOG;
 
     private static ThothLiteWindow window;
@@ -105,8 +102,7 @@ public class ThothLiteWindow
         menuConfig();
         setLeft(createLeftNode());
         workspaceConfig();
-        styleConfig();
-
+        initStyle();
     }
 
     public static ThothLiteWindow getInstance() {
@@ -151,20 +147,20 @@ public class ThothLiteWindow
         mainStage.close();
     }
 
-    private MenuButton getNavigationMenuButton(
-            String mes
-            , Node node
-            , EventHandler<ActionEvent> event
-    ) {
-        MenuButton menuButton = new MenuButton(mes);
-        if (node != null) {
-            menuButton.setGraphic( node );
-            menuButton.setMaxHeight(25);
-            menuButton.setPrefHeight(25);
-            menuButton.setMinHeight(25);
-        }
-        menuButton.setOnAction(event);
-        return menuButton;
+    @Override
+    protected void initStyle() {
+        setBackground(
+                new BackgroundWrapper()
+                        .setColor(config.getScene().getTheme().PRIMARY())
+                        .commit()
+        );
+        setBorder(
+                new BorderWrapper()
+                        .addBorder(3)
+                        .setColor(Color.GREY)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .commit()
+        );
     }
 
     private void menuConfig() {
@@ -215,40 +211,34 @@ public class ThothLiteWindow
 
     private Node navigationMenuConfig() {
         List<MenuButton> menuButtons = new LinkedList<>();
-        menuButtons.add(getNavigationMenuButton(
-                Scenes.HOME.getSceneCode(), SvgWrapper.getInstance(Images.HOME, 20, 20),
+        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+                Scenes.HOME.getSceneCode(), SvgWrapper.getInstance(Images.HOME(), 20, 20),
                 event -> works.setNewScene(Home.getInstance())
         ));
-        menuButtons.add(getNavigationMenuButton(
-                Scenes.EXPENSES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGDOWN, 20, 20),
+        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+                Scenes.EXPENSES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGDOWN(), 20, 20),
                 event -> {}
         ));
-        menuButtons.add(getNavigationMenuButton(
-                Scenes.INCOMES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGUP, 20, 20),
+        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+                Scenes.INCOMES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGUP(), 20, 20),
                 event -> {}
         ));
-        menuButtons.add(getNavigationMenuButton(
-                Scenes.PURCHASES.getSceneCode(), SvgWrapper.getInstance(Images.PURCHASE, 20, 20),
+        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+                Scenes.PURCHASES.getSceneCode(), SvgWrapper.getInstance(Images.PURCHASE(), 20, 20),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE))
         ));
-        menuButtons.add(getNavigationMenuButton(
-                Scenes.STORAGABLE.getSceneCode(), SvgWrapper.getInstance(Images.PRODUCT, 20, 20),
+        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+                Scenes.STORAGABLE.getSceneCode(), SvgWrapper.getInstance(Images.PRODUCT(), 20, 20),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE))
         ));
-        menuButtons.add(getNavigationMenuButton(
-                Scenes.SYSTEM.getSceneCode(), SvgWrapper.getInstance(Images.LIST, 20, 20),
+        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+                Scenes.SYSTEM.getSceneCode(), SvgWrapper.getInstance(Images.LIST(), 20, 20),
                 event -> works.setNewScene(ConfigDropdownList.getInstance())
         ));
         menu = new NavigationMenu(menuButtons);
         menu.setWidth(DEFAULT_SIZE.WIDTH_LEFT_BLOCK.getSize());
 
         return menu;
-    }
-
-    private void styleConfig() {
-        getStylesheets().addAll(
-                getClass().getResource("/style/list.css").toExternalForm()
-        );
     }
 
     private void workspaceConfig() {
@@ -261,16 +251,6 @@ public class ThothLiteWindow
         FinishableView res = new FinishableView();
 
         return res;
-    }
-
-    private Node getPallete(){
-        HBox hBox = new HBox();
-
-        hBox.getChildren().addAll(
-                Button.getInstance(Refresh.getInstance(), event -> thoth.reReadDb())
-        );
-
-        return hBox;
     }
 
 }

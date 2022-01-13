@@ -1,7 +1,8 @@
-package thoth_gui.thoth_styleconstants.svg;
+package styleconstants.imagesvg;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import styleconstants.imagesvg.DefaultSize;
 
 public class TransparentBackground {
 

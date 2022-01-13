@@ -12,7 +12,6 @@ public class MenuButton extends Button {
     private final String STYLE_CLASS_MENU_BUTTON = "menu-button";
 
     private String text;
-
     private SimpleBooleanProperty isMini;
 
     public MenuButton() {

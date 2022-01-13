@@ -6,7 +6,7 @@ import layout.custompane.Title;
 
 import java.awt.*;
 
-public class PrimaryWindow
+public abstract class PrimaryWindow
         extends Window{
 
     public PrimaryWindow(Stage stage) {
@@ -23,7 +23,6 @@ public class PrimaryWindow
 
         stage.maximizedProperty().addListener((observableValue, aBoolean, t1) -> {
             if(isMinify.getValue()){
-
                 stage.setWidth(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth());
                 stage.setHeight(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight());
             }else{

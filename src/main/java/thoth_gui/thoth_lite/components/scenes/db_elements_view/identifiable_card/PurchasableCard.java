@@ -79,6 +79,7 @@ public class PurchasableCard extends IdentifiableCard {
 
     @Override
     protected Node createContent() {
+        super.createContent();
 
         HBox hBox = new HBox();
 
@@ -117,7 +118,9 @@ public class PurchasableCard extends IdentifiableCard {
                 compositeListView
         );
 
-        return res;
+        contentNode.setCenter(res);
+
+        return contentNode;
     }
 
     protected ComboBox getComboBox(PropertiesPurchasableId id) {

@@ -59,6 +59,8 @@ public class StoragableCard
 
     @Override
     protected Node createContent() {
+        super.createContent();
+
         VBox vBox = new VBox();
 
         article = getTextField(PropetiesStoragableId.ARTICLE);
@@ -98,7 +100,9 @@ public class StoragableCard
                 , createRow(getLabel(PropetiesStoragableId.NOTE.id), note)
         );
 
-        return vBox;
+        contentNode.setCenter(vBox);
+
+        return contentNode;
     }
 
     private Node createRow(

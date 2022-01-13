@@ -1,10 +1,10 @@
 package thoth_gui.thoth_styleconstants.svg;
 
 import javafx.scene.Group;
-import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import styleconstants.imagesvg.DefaultSize;
 
 public class TradingDown {
 

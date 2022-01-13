@@ -6,9 +6,6 @@ import layout.BackgroundWrapper;
 
 public class HBox extends javafx.scene.layout.HBox {
 
-    public static final String SCLASS_HBOX = "hbox";
-    public static final String SSHEET_HBOX = "/style/layout/panes/basepanes/hbox.css";
-
     public HBox() {
         super();
         init();

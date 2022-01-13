@@ -1,6 +1,7 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
 import styleconstants.imagesvg.Close;
+import styleconstants.imagesvg.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
@@ -30,6 +31,7 @@ public class ListedViewCell
         extends IdentifiableViewCell
         implements Apply, Cancel, RemoveItemFromList {
 
+    private final Node point = SvgWrapper.getInstance(Images.POINT(), 9, 9);
     private HBox pallete;
 
     private LocalDateTime prevClick;
@@ -46,24 +48,23 @@ public class ListedViewCell
     private Button remove;
 
     protected ListedViewCell(Typable typable) {
-        super(SvgWrapper.getInstance(Images.LIST, 20, 20), typable.getValue(), "", "");
-        this.typable = typable;
-        Node point = Point.getInstance(7.5, 7.5);
+        super();
 
-        value = new TextField(typable.getValue());
-        valueLabel = new Label();
+        this.typable = typable;
+
+        value = thoth_gui.thoth_lite.components.controls.TextField.getInstance(typable.getValue());
+        valueLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
 
         valueLabel.textProperty().bind(value.textProperty());
 
-        setLeft( point );
+        setLeft(point);
         createContent();
         setRight(createPallete());
 
         setOnMouseClicked(this::mouseClick);
         setOnKeyPressed(this::keyPress);
 
-        setPadding(new Insets(5, 2, 5, 2));
-        setAlignment(point, Pos.CENTER);
+        initStyle();
     }
 
     @Override
@@ -121,17 +122,17 @@ public class ListedViewCell
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
             pallete.getChildren().setAll(
-                    getButton( SvgWrapper.getInstance(Images.EDIT, imgButtonWidth, imgButtonHeight), this::toEditMode )
+                    getButton( SvgWrapper.getInstance(Images.EDIT(), imgButtonWidth, imgButtonHeight), this::toEditMode )
             );
 //            if(listed.getId().equals("-1")) {
-            remove = getButton( SvgWrapper.getInstance(Images.TRASH, imgButtonWidth, imgButtonHeight), this::remove );
+            remove = getButton( SvgWrapper.getInstance(Images.TRASH(), imgButtonWidth, imgButtonHeight), this::remove );
             remove.setDisable(!hasRemoveItem());
             pallete.getChildren().add(remove);
 //            }
         } else {
             pallete.getChildren().setAll(
-                    getButton(SvgWrapper.getInstance(Images.CHECKMARK, imgButtonWidth, imgButtonHeight), event -> apply())
-                    , getButton(Close.getInstance(), event -> cancel())
+                    getButton(SvgWrapper.getInstance(Images.CHECKMARK(), imgButtonWidth, imgButtonHeight), event -> apply())
+                    , getButton(SvgWrapper.getInstance(Images.CLOSE(), imgButtonWidth, imgButtonHeight), event -> cancel())
             );
         }
 
@@ -148,6 +149,11 @@ public class ListedViewCell
         );
         node.setPadding(new Insets(5));
         return node;
+    }
+
+    private void initStyle() {
+        setPadding(new Insets(5, 2, 5, 2));
+        setAlignment(point, Pos.CENTER);
     }
 
     @Override

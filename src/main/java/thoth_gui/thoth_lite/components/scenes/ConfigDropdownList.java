@@ -1,22 +1,29 @@
 package thoth_gui.thoth_lite.components.scenes;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import layout.basepane.BorderPane;
 import layout.custompane.NavigationMenu;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
+import window.Closeable;
 
 public class ConfigDropdownList
-        extends BorderPane {
+        implements ThothScene
+{
 
     private static ConfigDropdownList instance;
 
+    private SimpleObjectProperty<Node> tools;
+    private SimpleObjectProperty<Node> content;
+
+    private BorderPane contentNode;
+
     private ConfigDropdownList() {
-        super();
-        setLeft(getNavigationMenu());
+        tools = new SimpleObjectProperty<>(new Pane());
+        content = new SimpleObjectProperty<>(createContent());
     }
 
     public static ConfigDropdownList getInstance() {
@@ -26,10 +33,20 @@ public class ConfigDropdownList
         return instance;
     }
 
+    private BorderPane createContent(){
+        contentNode = new BorderPane();
+        contentNode.setLeft(getNavigationMenu());
+        return contentNode;
+    }
+
     private controls.MenuButton getMenuButton(AvaliableTables table) {
         return MenuButton.getInstance(
                 table.name()
-                , event -> setCenter(IdentifiablesListView.getInstance(table))
+                , event -> {
+                    IdentifiablesListView instance = IdentifiablesListView.getInstance(table);
+                    contentNode.setCenter((Node) instance.getContentProperty().getValue());
+                    tools.setValue((Node) instance.getToolsProperty().getValue());
+                }
         );
     }
 
@@ -43,5 +60,24 @@ public class ConfigDropdownList
                 , getMenuButton(AvaliableTables.STORING)
         );
         return menu;
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public SimpleObjectProperty<Node> getToolsProperty() {
+        return tools;
+    }
+
+    @Override
+    public SimpleObjectProperty<Node> getContentProperty() {
+        return content;
+    }
+
+    @Override
+    public void setCloseable(Closeable closeable) {
     }
 }

@@ -1,5 +1,8 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.layout.Pane;
+import layout.basepane.BorderPane;
 import thoth_core.thoth_lite.db_data.db_data_element.implement.Currency;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
@@ -14,8 +17,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.BorderPane;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
+import thoth_gui.thoth_lite.components.scenes.ThothScene;
 import window.Closeable;
 
 import java.sql.SQLException;
@@ -26,8 +29,10 @@ import java.util.logging.Logger;
 
 
 public abstract class IdentifiableCard
-        extends BorderPane
-        implements Apply, Cancel {
+        implements Apply
+        , Cancel
+        , ThothScene
+{
 
     protected static final Logger LOG;
 
@@ -49,7 +54,13 @@ public abstract class IdentifiableCard
     protected Identifiable identifiable;
     protected AvaliableTables table;
 
-    private Closeable parentClose;
+    private Closeable closeable;
+
+    private SimpleObjectProperty<Node> tools;
+    private SimpleObjectProperty<Node> content;
+
+    protected BorderPane contentNode;
+    protected BorderPane toolsNode;
 
     static {
         LOG = Logger.getLogger(IdentifiableCard.class.getName());
@@ -59,7 +70,7 @@ public abstract class IdentifiableCard
             Identifiable identifiable
             , AvaliableTables table
     ) {
-        super();
+
         if(identifiable != null) {
             this.identifiable = identifiable;
             identifiableIsNew = false;
@@ -69,10 +80,8 @@ public abstract class IdentifiableCard
         }
         this.table = table;
 
-        setPadding(new Insets(2));
-
-        setBottom(createButtonBar());
-        setCenter(createContent());
+        content = new SimpleObjectProperty<>(createContent());
+        tools = new SimpleObjectProperty<>(new Pane());
     }
 
     @Override
@@ -88,7 +97,7 @@ public abstract class IdentifiableCard
                 }else{
                     ThothLite.getInstance().updateInTable(table, list);
                 }
-                parentClose.close();
+                closeable.close();
             } catch (NotContainsException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
@@ -101,24 +110,29 @@ public abstract class IdentifiableCard
 
     @Override
     public void cancel() {
-        parentClose.close();
+        closeable.close();
     }
 
     private javafx.scene.control.ButtonBar createButtonBar(){
         apply  = getButton( ButtonText.APPLY , event -> apply()  );
         cancel = getButton( ButtonText.CANCEL, event -> cancel() );
 
-        javafx.scene.control.ButtonBar buttonBar = ButtonBar.getInstance(
+        return ButtonBar.getInstance(
                 apply
                 , cancel
         );
-
-        setMargin(buttonBar, new Insets(2));
-
-        return buttonBar;
     }
 
-    protected abstract Node createContent();
+//    protected abstract Node createContent();
+    protected Node createContent(){
+        contentNode = new BorderPane();
+
+        javafx.scene.control.ButtonBar buttonBar = createButtonBar();
+        contentNode.setBottom(buttonBar);
+        contentNode.setMargin(buttonBar, new Insets(2));
+
+        return contentNode;
+    };
 
     protected abstract Identifiable identifiableInstance();
 
@@ -146,10 +160,6 @@ public abstract class IdentifiableCard
         return null;
     }
 
-    public void setParentClose(Closeable parentClose) {
-        this.parentClose = parentClose;
-    }
-
     protected abstract void updateIdentifiable();
 
     protected class ComboBoxListedCell extends ListCell<Typable> {
@@ -172,4 +182,23 @@ public abstract class IdentifiableCard
         }
     }
 
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public SimpleObjectProperty<Node> getToolsProperty() {
+        return tools;
+    }
+
+    @Override
+    public SimpleObjectProperty<Node> getContentProperty() {
+        return content;
+    }
+
+    @Override
+    public void setCloseable(Closeable closeable) {
+        this.closeable = closeable;
+    }
 }

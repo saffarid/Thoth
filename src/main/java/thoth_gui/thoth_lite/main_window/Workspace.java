@@ -1,24 +1,17 @@
 package thoth_gui.thoth_lite.main_window;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.control.skin.ComboBoxListViewSkin;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.scenes.ThothScene;
+
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
-import main.Main;
-import thoth_gui.thoth_lite.components.controls.Button;
-import thoth_gui.thoth_lite.components.controls.ComboBox;
-import thoth_gui.thoth_lite.components.controls.Label;
-import thoth_gui.thoth_lite.components.scenes.Scenes;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import javafx.scene.Node;
+import javafx.beans.property.SimpleObjectProperty;
+
 import java.util.Stack;
-import java.util.concurrent.Flow;
-import java.util.logging.Level;
 
 public class Workspace
         extends BorderPane {
@@ -28,46 +21,47 @@ public class Workspace
     /**
      * Стек предыдущих сцен
      */
-    private Stack<Node> previousScene;
+    private Stack<ThothScene> previousScene;
 
     /**
      * Стек следующих сцен
      */
-    private Stack<Node> nextScene;
+    private Stack<ThothScene> nextScene;
 
     /**
      * Текущая сцена
      */
-    private Node currentScene;
+    private ThothScene currentScene;
     private controls.Button back;
     private controls.Button next;
+    private BorderPane toolsPanel;
 
     private Workspace() {
         super();
-        setTop(getTitle());
+        setTop(getToolsPanel());
 
         previousScene = new Stack();
         nextScene = new Stack();
 
     }
 
-    private Node getTitle() {
-        HBox hBox = new HBox();
-
+    private Node getToolsPanel() {
+        this.toolsPanel = new BorderPane();
+        this.toolsPanel.setPadding(new Insets(2));
+        HBox toolsPanel = new HBox();
+        toolsPanel.setSpacing(2);
         back = Button.getInstance("back", event -> stepToPreviousScene());
         next = Button.getInstance("next", event -> stepToNextScene());
 
-        controls.ComboBox test = ComboBox.getInstance(
-                FXCollections.observableList(Arrays.asList(Scenes.values()))
-        );
-
-        hBox.getChildren().addAll(
+        toolsPanel.getChildren().addAll(
                 back,
                 next
-                , test
         );
+        toolsPanel.setAlignment(Pos.CENTER_LEFT);
 
-        return hBox;
+        this.toolsPanel.setLeft(toolsPanel);
+
+        return this.toolsPanel;
     }
 
     public static Workspace getInstance(){
@@ -78,17 +72,52 @@ public class Workspace
     }
 
     /**
-     * Функция устанавливает новую сцену для рабочего поля
-     */
-    public void setNewScene(Node newScene) {
+     * Функция удаляет текущую сцену и устанавливает предыдущую
+     * */
+    public void closeScene(){
+        if (!previousScene.empty()){
+            toolsPanel.centerProperty().unbind();
+            this.currentScene = previousScene.pop();
+            setscene();
+        }
+    }
+
+    private void setscene() {
+        SimpleObjectProperty<Node> value = this.currentScene.getToolsProperty();
+        if (value != null) {
+            toolsPanel.centerProperty().bind(value);
+        }
+        setCenter(this.currentScene.getContentProperty().getValue());
+        this.currentScene.setCloseable( () -> closeScene() );
+    }
+
+    /**
+     * Функция устанавливает новую сцену для рабочего поля без сохранения в стек текущей сцены.
+     * */
+    public void setNewSceneWithoutSave(ThothScene newScene){
         if (this.currentScene != null) {
             previousScene.push(this.currentScene);
+            toolsPanel.centerProperty().unbind();
         }
         this.currentScene = newScene;
-        setCenter(this.currentScene);
+        setscene();
+        back.setDisable(previousScene.empty());
+        next.setDisable(nextScene.empty());
+    }
+
+    /**
+     * Функция устанавливает новую сцену для рабочего поля
+     */
+    public void setNewScene(ThothScene newScene) {
+        if (this.currentScene != null) {
+            previousScene.push(this.currentScene);
+            toolsPanel.centerProperty().unbind();
+        }
+        this.currentScene = newScene;
+        setscene();
         back.setDisable(previousScene.empty());
         nextScene.clear();
-        next.setDisable(true);
+        next.setDisable(nextScene.empty());
     }
 
     /**
@@ -97,8 +126,10 @@ public class Workspace
     public void stepToNextScene() {
         if (!nextScene.empty()) {
             previousScene.push(currentScene);
+
+            toolsPanel.centerProperty().unbind();
             currentScene = nextScene.pop();
-            setCenter(currentScene);
+            setscene();
             back.setDisable(previousScene.empty());
             next.setDisable(nextScene.empty());
         }
@@ -110,8 +141,10 @@ public class Workspace
     public void stepToPreviousScene() {
         if (!previousScene.empty()) {
             nextScene.push(currentScene);
+
+            toolsPanel.centerProperty().unbind();
             currentScene = previousScene.pop();
-            setCenter(currentScene);
+            setscene();
             back.setDisable(previousScene.empty());
             next.setDisable(nextScene.empty());
         }

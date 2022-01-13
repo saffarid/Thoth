@@ -1,5 +1,6 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
+import javafx.scene.paint.Color;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
@@ -41,7 +42,6 @@ public class IdentifiableListCell<T extends Identifiable>
         setPadding(new Insets(1, 0, 1, 0));
         this.table = table;
         setOnMouseClicked(this::cellClick);
-
     }
 
     private void cellClick(MouseEvent mouseEvent) {

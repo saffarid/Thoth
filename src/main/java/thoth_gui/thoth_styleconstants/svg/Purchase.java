@@ -4,6 +4,8 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
+import styleconstants.imagesvg.DefaultSize;
+import styleconstants.imagesvg.TransparentBackground;
 
 public class Purchase {
 

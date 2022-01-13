@@ -1,4 +1,4 @@
-package thoth_gui.thoth_styleconstants.svg;
+package styleconstants.imagesvg;
 
 public enum DefaultSize {
     HEIGHT(40),
