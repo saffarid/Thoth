@@ -2,15 +2,8 @@ package window;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import layout.BorderWrapper;
 import layout.custompane.Title;
-import styleconstants.Styleclasses;
-import styleconstants.Stylesheets;
-
-import java.net.URL;
 
 public abstract class Window
         extends BorderPane

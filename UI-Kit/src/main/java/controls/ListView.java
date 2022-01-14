@@ -1,10 +1,8 @@
 package controls;
 
 import javafx.collections.ObservableList;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
-import layout.BackgroundWrapper;
+import tools.BackgroundWrapper;
 
 public class ListView<T>
         extends javafx.scene.control.ListView<T> {

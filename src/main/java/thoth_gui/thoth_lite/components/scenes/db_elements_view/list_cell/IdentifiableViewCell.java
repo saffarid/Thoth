@@ -1,9 +1,10 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
 import controls.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import layout.BackgroundWrapper;
-import layout.BorderWrapper;
+import tools.BackgroundWrapper;
+import tools.BorderWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import controls.TextField;
@@ -12,7 +13,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import thoth_gui.thoth_styleconstants.svg.Images;
-import styleconstants.imagesvg.SvgWrapper;
+import tools.SvgWrapper;
 
 public abstract class IdentifiableViewCell
         extends BorderPane {
@@ -53,6 +54,7 @@ public abstract class IdentifiableViewCell
         setCenter(getFillCenter());
         setRight(this.edit);
 
+
     }
 
     /**
@@ -70,7 +72,6 @@ public abstract class IdentifiableViewCell
         setBackground(
                 new BackgroundWrapper()
                         .setColor(Color.TRANSPARENT)
-//                        .setRadius(3)
                         .commit()
         );
         setBorder(
@@ -79,6 +80,21 @@ public abstract class IdentifiableViewCell
                         .addBorder(1)
                         .commit()
         );
+        hoverProperty().addListener((observableValue, aBoolean, t1) -> {
+            if(t1){
+                setBackground(
+                        new BackgroundWrapper()
+                                .setColor(Color.GREY)
+                                .commit()
+                );
+            }else{
+                setBackground(
+                        new BackgroundWrapper()
+                                .setColor(Color.TRANSPARENT)
+                                .commit()
+                );
+            }
+        });
     }
 
     public void setTable(AvaliableTables table){
@@ -155,5 +171,7 @@ public abstract class IdentifiableViewCell
     public void setTextProperty(String text) {
         this.property.setText(text);
     }
+
+
 
 }

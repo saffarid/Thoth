@@ -5,7 +5,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
-import layout.BorderWrapper;
+import tools.BorderWrapper;
 
 public class ButtonBar {
 

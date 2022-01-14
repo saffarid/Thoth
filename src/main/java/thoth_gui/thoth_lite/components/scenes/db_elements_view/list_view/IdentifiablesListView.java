@@ -1,9 +1,13 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view;
 
-import controls.ListView;
+import controls.*;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
-import layout.BackgroundWrapper;
+import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
+import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
+import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
+import tools.BackgroundWrapper;
 import layout.basepane.BorderPane;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
@@ -13,9 +17,6 @@ import thoth_gui.thoth_lite.components.scenes.ThothScene;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell.IdentifiableListCell;
 import thoth_gui.thoth_lite.main_window.Workspace;
-import controls.Button;
-import controls.ComboBox;
-import controls.Label;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
@@ -29,7 +30,7 @@ import javafx.scene.Node;
 
 import layout.basepane.HBox;
 import thoth_gui.thoth_styleconstants.svg.Images;
-import styleconstants.imagesvg.SvgWrapper;
+import tools.SvgWrapper;
 import window.Closeable;
 
 import java.sql.SQLException;
@@ -39,10 +40,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
-
+    extends ThothSceneImpl
         implements
         Flow.Subscriber<List<T>>
-        , ThothScene
 {
 
     private IdentifiableListCell identifiableListCell;
@@ -70,12 +70,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     protected SimpleListProperty<T> datas;
 
-    private SimpleObjectProperty<Node> tools;
-    private SimpleObjectProperty<Node> content;
-
-    private BorderPane contentNode;
-    protected BorderPane toolsNode;
-    protected HBox sortedNode;
+    protected SortPane sortPane;
     protected ListView<T> identifiableElementList;
 
     static {
@@ -130,28 +125,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return toolsNode;
     }
 
-    protected Node getSortPane(){
-        sortedNode = new HBox();
-        sortedNode.setBackground(
-                new BackgroundWrapper()
-                        .setColor(Color.RED)
-                        .commit()
-        );
-//        sortedNode.setPadding(new Insets(2, 2, 2, 5));
-        sortedNode.setSpacing(2);
-        sortedNode.setAlignment(Pos.CENTER_LEFT);
-
-        Label sortLabel = new Label("Сортировка:");
-        ComboBox sortBox = new ComboBox<>();
-        sortBox.setId(Ids.SORTED_BOX.id);
-
-        sortedNode.getChildren().addAll(
-                sortLabel
-                , sortBox
-        );
-
-        return sortedNode;
-    }
+    protected abstract SortPane getSortPane();
 
     protected ListView<T> createListView(){
         identifiableElementList = new ListView<>();
@@ -167,6 +141,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         identifiableElementList.setPlaceholder(haventItemsLabel);
         return identifiableElementList;
     }
+
+    protected abstract void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1);
 
     private Button getButton(
             Ids id
@@ -269,17 +245,19 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     @Override
-    public SimpleObjectProperty<Node> getContentProperty() {
-        return content;
-    }
-
-    @Override
-    public SimpleObjectProperty<Node> getToolsProperty() {
-        return tools;
-    }
-
-    @Override
     public void setCloseable(Closeable closeable) {
 
+    }
+
+    protected class SortedCell
+            extends ListCell<SortBy> {
+        @Override
+        protected void updateItem(SortBy sort_by, boolean b) {
+            if (sort_by != null) {
+                super.updateItem(sort_by, b);
+                String sortName = sort_by.getSortName();
+                setText(sortName);
+            }
+        }
     }
 }

@@ -2,8 +2,8 @@ package thoth_gui.thoth_lite;
 
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
-import layout.BackgroundWrapper;
-import layout.BorderWrapper;
+import tools.BackgroundWrapper;
+import tools.BorderWrapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.config.Keys;
@@ -25,7 +25,6 @@ import layout.basepane.VBox;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
 import thoth_gui.config.Config;
-import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
 import window.SecondaryWindow;
 

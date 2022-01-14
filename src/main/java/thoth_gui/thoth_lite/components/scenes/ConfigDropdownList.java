@@ -11,15 +11,11 @@ import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.Identif
 import window.Closeable;
 
 public class ConfigDropdownList
+    extends ThothSceneImpl
         implements ThothScene
 {
 
     private static ConfigDropdownList instance;
-
-    private SimpleObjectProperty<Node> tools;
-    private SimpleObjectProperty<Node> content;
-
-    private BorderPane contentNode;
 
     private ConfigDropdownList() {
         tools = new SimpleObjectProperty<>(new Pane());
@@ -65,16 +61,6 @@ public class ConfigDropdownList
     @Override
     public void close() {
 
-    }
-
-    @Override
-    public SimpleObjectProperty<Node> getToolsProperty() {
-        return tools;
-    }
-
-    @Override
-    public SimpleObjectProperty<Node> getContentProperty() {
-        return content;
     }
 
     @Override

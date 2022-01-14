@@ -27,7 +27,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
 import thoth_gui.thoth_styleconstants.svg.Images;
-import styleconstants.imagesvg.SvgWrapper;
+import tools.SvgWrapper;
 
 import java.sql.SQLException;
 import java.util.List;

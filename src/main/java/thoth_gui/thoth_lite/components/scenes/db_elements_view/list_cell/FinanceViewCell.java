@@ -1,7 +1,7 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
 import styleconstants.imagesvg.Close;
-import styleconstants.imagesvg.SvgWrapper;
+import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;

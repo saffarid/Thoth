@@ -3,9 +3,10 @@ package thoth_gui.thoth_lite.main_window;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
-import layout.BackgroundWrapper;
-import layout.BorderWrapper;
-import styleconstants.imagesvg.SvgWrapper;
+import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
+import tools.BackgroundWrapper;
+import tools.BorderWrapper;
+import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
@@ -217,11 +218,11 @@ public class ThothLiteWindow
         ));
         menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
                 Scenes.EXPENSES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGDOWN(), 20, 20),
-                event -> {}
+                event -> works.setNewScene(new FinancialOperations())
         ));
         menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
                 Scenes.INCOMES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGUP(), 20, 20),
-                event -> {}
+                event -> works.setNewScene(new FinancialOperations())
         ));
         menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
                 Scenes.PURCHASES.getSceneCode(), SvgWrapper.getInstance(Images.PURCHASE(), 20, 20),

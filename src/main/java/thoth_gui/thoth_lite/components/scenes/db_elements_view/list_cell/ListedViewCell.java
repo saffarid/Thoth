@@ -1,7 +1,6 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
-import styleconstants.imagesvg.Close;
-import styleconstants.imagesvg.SvgWrapper;
+import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;

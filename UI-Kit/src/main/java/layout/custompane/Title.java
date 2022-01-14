@@ -16,12 +16,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
-import layout.BackgroundWrapper;
-import layout.BorderWrapper;
+import tools.BackgroundWrapper;
+import tools.BorderWrapper;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import styleconstants.Stylesheets;
 import styleconstants.imagesvg.*;
+import tools.SvgWrapper;
 
 public class Title
         extends BorderPane {
@@ -41,8 +42,10 @@ public class Title
     }
 
     private enum ButtonSize{
-        HEIGHT(25),
-        WIDTH(25)
+        HEIGHT(20),
+        WIDTH(20),
+        VIEWBOX_HEIGHT(25),
+        VIEWBOX_WIDTH(25)
         ;
         private double size;
         ButtonSize(double size) {
@@ -97,7 +100,7 @@ public class Title
     }
 
     public Title addClose(EventHandler<ActionEvent> event){
-        close = getButton( SvgWrapper.getInstance(Images.CLOSE(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size) );
+        close = getButton( SvgWrapper.getInstance(Images.CLOSE(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size, ButtonSize.VIEWBOX_WIDTH.size, ButtonSize.VIEWBOX_HEIGHT.size) );
         close.setOnAction(event);
         close.getStyleClass().add(STYLE_CLASS.CLOSE.getStyleClass());
         controls.getChildren().add(close);
@@ -123,7 +126,7 @@ public class Title
     }
 
     public Title addIconify(EventHandler<ActionEvent> event){
-        iconify = getButton( SvgWrapper.getInstance(Images.ICONIFY(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size) );
+        iconify = getButton( SvgWrapper.getInstance(Images.ICONIFY(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size, ButtonSize.VIEWBOX_WIDTH.size, ButtonSize.VIEWBOX_HEIGHT.size) );
         iconify.setOnAction(event);
         controls.getChildren().add(iconify);
         return this;
@@ -143,8 +146,8 @@ public class Title
             EventHandler<ActionEvent> event
             , ReadOnlyBooleanProperty isMinify
     ){
-        Node maximizeSvg = SvgWrapper.getInstance(Images.MAXIMIZE(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size);
-        Node minifySvg = SvgWrapper.getInstance(Images.MINIFY(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size);
+        Node maximizeSvg = SvgWrapper.getInstance(Images.MAXIMIZE(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size, ButtonSize.VIEWBOX_WIDTH.size, ButtonSize.VIEWBOX_HEIGHT.size);
+        Node minifySvg = SvgWrapper.getInstance(Images.MINIFY(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size, ButtonSize.VIEWBOX_WIDTH.size, ButtonSize.VIEWBOX_HEIGHT.size);
         this.minify = getButton(maximizeSvg);
         this.minify.setOnAction(event);
         controls.getChildren().add(minify);

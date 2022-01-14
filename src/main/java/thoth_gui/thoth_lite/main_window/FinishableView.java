@@ -8,7 +8,7 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
-import layout.BorderWrapper;
+import tools.BorderWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finishable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import javafx.application.Platform;

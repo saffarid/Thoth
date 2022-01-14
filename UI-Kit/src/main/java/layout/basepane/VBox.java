@@ -2,7 +2,7 @@ package layout.basepane;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import layout.BackgroundWrapper;
+import tools.BackgroundWrapper;
 
 public class VBox extends javafx.scene.layout.VBox {
 

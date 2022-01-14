@@ -6,7 +6,7 @@ module uikit {
     exports window;
     exports styleconstants;
     exports styleconstants.imagesvg;
-    exports layout;
+    exports tools;
 
 
     requires javafx.base;
