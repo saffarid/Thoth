@@ -4,13 +4,7 @@ import javafx.beans.value.ObservableValue;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Purchasable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import layout.basepane.HBox;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
-import thoth_gui.thoth_lite.components.controls.sort_pane.SortCell;
-import thoth_gui.thoth_lite.components.controls.sort_pane.SortCellImpl;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 
 import java.util.List;
@@ -42,7 +36,7 @@ public class PurchasableListView extends IdentifiablesListView<Purchasable> {
     protected SortPane getSortPane() {
         sortPane = SortPane.getInstance()
                 .setSortItems(SORT_BY.values())
-                .setCell(new SortedCell())
+                .setCell()
                 .setSortMethod(this::sort)
                 .setValue(SORT_BY.ID_UP)
         ;

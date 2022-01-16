@@ -1,12 +1,9 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.ListCell;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortCell;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
@@ -40,7 +37,7 @@ public class StoragableListView extends IdentifiablesListView<Storagable> {
     protected SortPane getSortPane() {
         sortPane = SortPane.getInstance()
                 .setSortItems(SORT_BY.values())
-                .setCell(new SortedCell())
+                .setCell()
                 .setSortMethod(this::sort)
                 .setValue(SORT_BY.ID_UP)
         ;
@@ -78,7 +75,5 @@ public class StoragableListView extends IdentifiablesListView<Storagable> {
             }
         }
     }
-
-
 
 }

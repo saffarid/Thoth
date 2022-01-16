@@ -1,8 +1,10 @@
 package controls;
 
-import javafx.scene.control.TreeCell;
-
 public class ListCell<T> extends javafx.scene.control.ListCell<T> {
+
+    public ListCell() {
+        super();
+    }
 
     @Override
     protected void updateItem(T t, boolean b) {

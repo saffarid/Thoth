@@ -248,16 +248,4 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     public void setCloseable(Closeable closeable) {
 
     }
-
-    protected class SortedCell
-            extends ListCell<SortBy> {
-        @Override
-        protected void updateItem(SortBy sort_by, boolean b) {
-            if (sort_by != null) {
-                super.updateItem(sort_by, b);
-                String sortName = sort_by.getSortName();
-                setText(sortName);
-            }
-        }
-    }
 }

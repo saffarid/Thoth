@@ -5,8 +5,6 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
-import thoth_gui.thoth_lite.components.controls.sort_pane.SortCell;
-import thoth_gui.thoth_lite.components.controls.sort_pane.SortCellImpl;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell.IdentifiableListCell;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell.RemoveItemFromList;
@@ -14,10 +12,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.skin.VirtualFlow;
-import layout.basepane.HBox;
 
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -62,7 +57,7 @@ public class ListedListView
     protected SortPane getSortPane() {
         sortPane = SortPane.getInstance()
                 .setSortItems(SORT_BY.values())
-                .setCell(new SortCellImpl())
+                .setCell()
                 .setSortMethod(this::sort)
                 .setValue(SORT_BY.SORT_BY_UP)
         ;
