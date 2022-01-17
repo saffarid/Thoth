@@ -2,6 +2,7 @@ package thoth_gui.thoth_lite.components.scenes;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -27,9 +28,9 @@ import window.Closeable;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FinancialOperations
         extends ThothSceneImpl {
@@ -65,9 +66,9 @@ public class FinancialOperations
     /**
      * Таблица с данными
      */
-    private TableView<HashMap<Typable, FinancialAccounting>> tableView;
+    private TableView<HashMap<String, Object>> tableView;
 
-    private TableColumn<HashMap<Typable, FinancialAccounting>, Typable> categoryColumn;
+    private TableColumn<HashMap<String, Object>, String> categoryColumn;
 
     private List<Typable> categories;
 
@@ -102,11 +103,9 @@ public class FinancialOperations
     }
 
     private void listDataChange(ListChangeListener.Change<? extends FinancialAccounting> change) {
-//        tableView.getItems().clear();
-        fillTable();
     }
 
-    private Node createToolsNode(){
+    private Node createToolsNode() {
         toolsNode = new BorderPane();
         toolsNode.setLeft(getSortPane());
         toolsNode.setRight(
@@ -122,12 +121,69 @@ public class FinancialOperations
                 .setSortItems(SORT_BY.values())
                 .setCell()
                 .setSortMethod(this::sort)
-                .setValue(SORT_BY.MONTH)
+                .setValue(SORT_BY.QUARTER)
         ;
         return sortPane;
     }
 
     private void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1) {
+        SORT_BY sort_by = (SORT_BY) sortBy1;
+        HashMap<Typable, HashMap<String, Double>> data = new HashMap<>();
+        Set<String> keySet = new LinkedHashSet<>();
+        keySet.add("category");
+        List<FinancialAccounting> d = initialData.getValue();
+        switch (sort_by) {
+            case QUARTER: {
+
+                LocalDate now = LocalDate.now();
+                LocalDate minusMonths = now.minusMonths(2);
+                LocalDate startDate = LocalDate.of(minusMonths.getYear(), minusMonths.getMonth(), 1);
+
+                for (int i = 0; i < 3; i++){
+                    LocalDate date = now.minusMonths(i);
+                    keySet.add(
+                            LocalDate.of(date.getYear(), date.getMonth(), 1).format(DateTimeFormatter.ISO_DATE)
+                    );
+                }
+
+                d = d.stream()
+                        .filter(finOp -> finOp.getDate().isAfter(startDate))
+                        .collect(Collectors.toList());
+                break;
+            }
+        }
+
+
+        for (FinancialAccounting finOp : d) {
+            if(!data.containsKey(finOp.getCategory())){
+                data.put(finOp.getCategory(), new HashMap<>());
+            }
+
+            HashMap<String, Double> row = data.get(finOp.getCategory());
+
+            LocalDate finOpDate = finOp.getDate();
+            String key = LocalDate.of(finOpDate.getYear(), finOpDate.getMonth(), 1).format(DateTimeFormatter.ISO_DATE);
+
+            if(row.containsKey(key)){
+                row.put(key, row.get(key) + finOp.getValue());
+            }else{
+                row.put(key, finOp.getValue());
+            }
+        }
+
+        List<HashMap<String, Object>> res = new LinkedList<>();
+        for(Typable type : data.keySet()){
+            HashMap<String, Object> row = new HashMap<>();
+            row.put("category", type.getValue());
+
+            HashMap<String, Double> stringDoubleHashMap = data.get(type);
+            for(String k : stringDoubleHashMap.keySet()){
+                row.put(k, stringDoubleHashMap.get(k));
+            }
+            res.add(row);
+        }
+
+        fillTable(res, keySet);
 
     }
 
@@ -147,12 +203,25 @@ public class FinancialOperations
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        tableView.getColumns().add(categoryColumn);
         contentNode = new BorderPane(tableView);
         return contentNode;
     }
 
-    private void fillTable(){
+    private void fillTable(List<HashMap<String, Object>> formData, Set<String> keys) {
+
+        tableView.setItems(FXCollections.observableList(formData));
+        for(String key : keys){
+            TableColumn<HashMap<String, Object>, String> column = new TableColumn(key);
+            column.setId(key);
+            column.setCellValueFactory(data -> {
+                Object obj = data.getValue().get(key);
+                if (obj == null){
+                    return new SimpleStringProperty(String.valueOf(0));
+                }
+                return new SimpleStringProperty(String.valueOf(obj));
+            });
+            tableView.getColumns().add(column);
+        }
 
     }
 
