@@ -31,17 +31,17 @@ import java.util.logging.Logger;
 public abstract class IdentifiableCard
         implements Apply
         , Cancel
-        , ThothScene
-{
+        , ThothScene {
 
     protected static final Logger LOG;
 
     private EventHandler<ActionEvent> closeEvent;
 
-    private enum ButtonText{
+    private enum ButtonText {
         APPLY("apply"),
         CANCEL("cancel");
         private String text;
+
         ButtonText(String text) {
             this.text = text;
         }
@@ -71,10 +71,10 @@ public abstract class IdentifiableCard
             , AvaliableTables table
     ) {
 
-        if(identifiable != null) {
+        if (identifiable != null) {
             this.identifiable = identifiable;
             identifiableIsNew = false;
-        }else{
+        } else {
             this.identifiable = identifiableInstance();
             identifiableIsNew = true;
         }
@@ -87,14 +87,14 @@ public abstract class IdentifiableCard
     @Override
     public void apply() {
         LOG.log(Level.INFO, identifiable.toString());
-        if(identifiable != null){
+        if (identifiable != null) {
             updateIdentifiable();
             List<Identifiable> list = new LinkedList<>();
             list.add(identifiable);
             try {
                 if (identifiableIsNew) {
                     ThothLite.getInstance().insertToTable(table, list);
-                }else{
+                } else {
                     ThothLite.getInstance().updateInTable(table, list);
                 }
                 closeable.close();
@@ -113,9 +113,9 @@ public abstract class IdentifiableCard
         closeable.close();
     }
 
-    private javafx.scene.control.ButtonBar createButtonBar(){
-        apply  = getButton( ButtonText.APPLY , event -> apply()  );
-        cancel = getButton( ButtonText.CANCEL, event -> cancel() );
+    private javafx.scene.control.ButtonBar createButtonBar() {
+        apply = getButton(ButtonText.APPLY, event -> apply());
+        cancel = getButton(ButtonText.CANCEL, event -> cancel());
 
         return ButtonBar.getInstance(
                 apply
@@ -123,8 +123,8 @@ public abstract class IdentifiableCard
         );
     }
 
-//    protected abstract Node createContent();
-    protected Node createContent(){
+    //    protected abstract Node createContent();
+    protected Node createContent() {
         contentNode = new BorderPane();
 
         javafx.scene.control.ButtonBar buttonBar = createButtonBar();
@@ -132,14 +132,16 @@ public abstract class IdentifiableCard
         contentNode.setMargin(buttonBar, new Insets(2));
 
         return contentNode;
-    };
+    }
+
+    ;
 
     protected abstract Identifiable identifiableInstance();
 
     private Button getButton(
             ButtonText text
             , EventHandler<ActionEvent> event
-    ){
+    ) {
         Button res = thoth_gui.thoth_lite.components.controls.Button.getInstance(text.text, event);
         res.setId(text.text);
         return res;
@@ -148,13 +150,17 @@ public abstract class IdentifiableCard
     public static IdentifiableCard getInstance(
             AvaliableTables table
             , Identifiable identifiable
-    ){
-        switch (table){
-            case STORAGABLE:{
+    ) {
+        switch (table) {
+            case STORAGABLE: {
                 return new StoragableCard(identifiable, table);
             }
-            case PURCHASABLE:{
+            case PURCHASABLE: {
                 return new PurchasableCard(identifiable, table);
+            }
+            case EXPENSES:
+            case INCOMES: {
+                return new FinOperationCard(table);
             }
         }
         return null;
@@ -165,17 +171,17 @@ public abstract class IdentifiableCard
     protected class ComboBoxListedCell extends ListCell<Typable> {
         @Override
         protected void updateItem(Typable typable, boolean b) {
-            if(typable != null){
+            if (typable != null) {
                 super.updateItem(typable, b);
                 setText(typable.getValue());
             }
         }
     }
 
-    protected class ComboBoxCurrencyCell extends ListCell<Currency>{
+    protected class ComboBoxCurrencyCell extends ListCell<Currency> {
         @Override
         protected void updateItem(Currency currency, boolean b) {
-            if(currency != null){
+            if (currency != null) {
                 super.updateItem(currency, b);
                 setText(currency.getCurrency());
             }

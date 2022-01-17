@@ -12,7 +12,6 @@ import window.Closeable;
 
 public class ConfigDropdownList
     extends ThothSceneImpl
-        implements ThothScene
 {
 
     private static ConfigDropdownList instance;

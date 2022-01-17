@@ -58,13 +58,13 @@ public class Incomes
             try {
                 datas.add(
                         new FinancialOperation(
-                                (String) row.get(ID),
+                                String.valueOf(row.get(ID)),
                                 (Typable) getFromTableById(StructureDescription.ExpensesTypes.TABLE_NAME, String.valueOf(row.get(EXPENSES_TYPE_ID))),
                                 (Double) row.get(VALUE),
                                 LocalDate.parse((String) row.get(DATE)),
-                                (Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(CURRENCY_ID))),
+                                (row.get(CURRENCY_ID) == null)?(null):((Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(CURRENCY_ID)))),
                                 (Double) row.get(COURSE),
-                                (String) row.get(COMMENT)
+                                String.valueOf(row.get(COMMENT))
                         )
                 );
             } catch (NotContainsException e) {

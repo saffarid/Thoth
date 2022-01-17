@@ -41,8 +41,7 @@ import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
     extends ThothSceneImpl
-        implements
-        Flow.Subscriber<List<T>>
+        implements Flow.Subscriber<List<T>>
 {
 
     private IdentifiableListCell identifiableListCell;

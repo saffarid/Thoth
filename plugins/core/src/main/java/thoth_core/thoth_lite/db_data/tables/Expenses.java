@@ -32,13 +32,15 @@ public class Expenses
     public HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list) {
         HashMap<String, List<HashMap<String, Object>>> res = new HashMap<>();
         List<HashMap<String, Object>> data = new LinkedList<>();
-        for (FinancialAccounting financialAccounting : datas) {
+        for (Identifiable identifiable : list) {
             HashMap<String, Object> row = new HashMap<>();
+
+            FinancialAccounting financialAccounting = (FinancialAccounting) identifiable;
 
             row.put(EXPENSES_TYPE_ID, financialAccounting.getCategory().getValue());
             row.put(VALUE, financialAccounting.getValue());
             row.put(DATE, financialAccounting.getDate().format(DateTimeFormatter.ISO_DATE));
-            row.put(CURRENCY_ID, financialAccounting.getFinance().getCurrency());
+            row.put(CURRENCY_ID, ( financialAccounting.getFinance() == null)?(null):(financialAccounting.getFinance().getCurrency()) );
             row.put(COURSE, financialAccounting.getCourse());
             row.put(COMMENT, financialAccounting.getComment());
 
@@ -57,13 +59,13 @@ public class Expenses
             try {
                 datas.add(
                         new FinancialOperation(
-                                (String) row.get(ID),
+                                String.valueOf(row.get(ID)),
                                 (Typable) getFromTableById(StructureDescription.ExpensesTypes.TABLE_NAME, String.valueOf(row.get(EXPENSES_TYPE_ID))),
                                 (Double) row.get(VALUE),
                                 LocalDate.parse((String) row.get(DATE)),
-                                (Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(CURRENCY_ID))),
+                                (row.get(CURRENCY_ID) == null)?(null):((Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(CURRENCY_ID)))),
                                 (Double) row.get(COURSE),
-                                (String) row.get(COMMENT)
+                                String.valueOf(row.get(COMMENT))
                         )
                 );
             } catch (NotContainsException e) {

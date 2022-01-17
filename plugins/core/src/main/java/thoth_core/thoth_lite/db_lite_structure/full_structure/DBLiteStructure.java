@@ -247,7 +247,7 @@ public class DBLiteStructure extends DataBaseSQL {
                     StructureDescription.Expenses.DATE, DataTypes.TEXT, false, true
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.Expenses.CURRENCY_ID, DataTypes.INT, false, true,
+                    StructureDescription.Expenses.CURRENCY_ID, DataTypes.INT, false, false,
                     getForeignColumnByName(StructureDescription.Currency.TABLE_NAME, StructureDescription.Currency.CURRENCY)
             ));
             addColumn(getCustomColumn(

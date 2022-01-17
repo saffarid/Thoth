@@ -238,11 +238,6 @@ public class StoragableCard
 
             }
         });
-
-//        res.setMinWidth(120);
-//        res.setPrefWidth(120);
-//        res.setMaxWidth(120);
-
         return res;
     }
 

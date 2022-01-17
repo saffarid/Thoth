@@ -3,6 +3,7 @@ package thoth_gui.thoth_lite.components.scenes;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import layout.basepane.BorderPane;
+import window.Closeable;
 
 public abstract class ThothSceneImpl
     implements ThothScene

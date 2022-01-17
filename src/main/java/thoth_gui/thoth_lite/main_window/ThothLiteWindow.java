@@ -218,11 +218,11 @@ public class ThothLiteWindow
         ));
         menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
                 Scenes.EXPENSES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGDOWN(), 20, 20),
-                event -> works.setNewScene(new FinancialOperations())
+                event -> works.setNewScene(new FinancialOperations(AvaliableTables.EXPENSES))
         ));
         menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
                 Scenes.INCOMES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGUP(), 20, 20),
-                event -> works.setNewScene(new FinancialOperations())
+                event -> works.setNewScene(new FinancialOperations(AvaliableTables.INCOMES))
         ));
         menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
                 Scenes.PURCHASES.getSceneCode(), SvgWrapper.getInstance(Images.PURCHASE(), 20, 20),
