@@ -194,7 +194,7 @@ public class FinancialOperations
     private void init() {
         data = new SimpleListProperty<>();
         initialData = new SimpleListProperty<>();
-
+        initStyle();
     }
 
     private void initialDataChange() {
@@ -278,6 +278,10 @@ public class FinancialOperations
 
         this.data.setValue(FXCollections.observableList(res));
 
+    }
+
+    private void initStyle(){
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     @Override
