@@ -20,6 +20,7 @@ import window.Closeable;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Month;
 
 public class FinOperationCard
         extends IdentifiableCard
@@ -179,7 +180,7 @@ public class FinOperationCard
     protected void updateIdentifiable() {
         ((FinancialAccounting) identifiable).setCategory(category.getValue());
         ((FinancialAccounting) identifiable).setValue(Double.parseDouble(value.getText()));
-        ((FinancialAccounting) identifiable).setDate(LocalDate.now());
+        ((FinancialAccounting) identifiable).setDate(LocalDate.of(2021, Month.NOVEMBER, 20));
         ((FinancialAccounting) identifiable).setFinance(null);
         ((FinancialAccounting) identifiable).setCourse(1.);
         ((FinancialAccounting) identifiable).setComment("");

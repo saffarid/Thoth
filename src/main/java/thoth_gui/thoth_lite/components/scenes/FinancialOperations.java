@@ -1,15 +1,17 @@
 package thoth_gui.thoth_lite.components.scenes;
 
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleMapProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.util.Callback;
 import layout.basepane.BorderPane;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.FinancialAccounting;
@@ -17,6 +19,7 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
@@ -26,14 +29,16 @@ import tools.SvgWrapper;
 import window.Closeable;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.Flow;
 import java.util.stream.Collectors;
 
 public class FinancialOperations
-        extends ThothSceneImpl {
+        extends ThothSceneImpl
+        implements Flow.Subscriber<List<FinancialAccounting>> {
 
     private enum SORT_BY implements SortBy {
         MONTH("last_month"),
@@ -53,6 +58,18 @@ public class FinancialOperations
         }
     }
 
+    private enum Columns {
+        CATEGORY,
+        TOTAL
+    }
+
+    private final String columnNamePattern = "%1s.%2d";
+
+    /**
+     * Объект подписки на обновления
+     */
+    private Flow.Subscription subscription;
+
     /**
      * Отображаемая таблица
      */
@@ -66,27 +83,48 @@ public class FinancialOperations
     /**
      * Таблица с данными
      */
-    private TableView<HashMap<String, Object>> tableView;
-
-    private TableColumn<HashMap<String, Object>, String> categoryColumn;
-
-    private List<Typable> categories;
+    private TableView<HashMap<String, Object>> tableView = new TableView<>();
 
     /**
      * Исходные данные для отображения в таблице
      */
     private SimpleListProperty<FinancialAccounting> initialData;
 
+    /**
+     * Подготовленные данные для отображения в таблице
+     */
+    private SimpleListProperty<HashMap<String, Object>> data;
+
+    /**
+     * Ключи доступа к текущим столбцам
+     */
+    private Set<LocalDate> columnKeys;
+
     public FinancialOperations(AvaliableTables table) {
         this.table = table;
 
         // Запрос типов финансовых операций
+//        try {
+//            if (table == AvaliableTables.EXPENSES) {
+//                categories = (List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.EXPENSES_TYPES);
+//            } else {
+//                categories = (List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.INCOMES_TYPES);
+//            }
+//        } catch (NotContainsException e) {
+//            e.printStackTrace();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+        init();
+
+        initialData.addListener((ListChangeListener<? super FinancialAccounting>) change -> initialDataChange());
         try {
-            if (table == AvaliableTables.EXPENSES) {
-                categories = (List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.EXPENSES_TYPES);
-            } else {
-                categories = (List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.INCOMES_TYPES);
-            }
+            initialData.setValue(
+                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
+            );
         } catch (NotContainsException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -95,14 +133,42 @@ public class FinancialOperations
             e.printStackTrace();
         }
 
-        initialData = new SimpleListProperty<>();
-        initialData.addListener(this::listDataChange);
+        data.addListener(this::showData);
 
-        content = new SimpleObjectProperty<>(createContent());
+
         tools = new SimpleObjectProperty<>(createToolsNode());
+        content = new SimpleObjectProperty<>(createContent());
+
     }
 
-    private void listDataChange(ListChangeListener.Change<? extends FinancialAccounting> change) {
+    @Override
+    public void close() {
+    }
+
+    private Node createContent() {
+//        tableView = new TableView();
+
+        contentNode = new BorderPane(tableView);
+        return contentNode;
+    }
+
+    private TableColumn<HashMap<String, Object>, String> getTableColumn(String title, String key) {
+        TableColumn<HashMap<String, Object>, String> column = new TableColumn<>();
+        column.setGraphic(Label.getInstanse(title));
+
+        column.setCellValueFactory(data -> {
+            Object value = data.getValue().get(key);
+
+            if(value instanceof Double){
+                if (value == null){
+                    return new SimpleStringProperty(String.valueOf(0));
+                }
+            }
+
+            return new SimpleStringProperty(String.valueOf(value));
+        });
+
+        return column;
     }
 
     private Node createToolsNode() {
@@ -120,42 +186,63 @@ public class FinancialOperations
         sortPane = SortPane.getInstance()
                 .setSortItems(SORT_BY.values())
                 .setCell()
-                .setSortMethod(this::sort)
-                .setValue(SORT_BY.QUARTER)
-        ;
+                .setSortMethod((observableValue, sortBy, t1) -> initialDataChange())
+                .setValue(SORT_BY.QUARTER);
         return sortPane;
     }
 
-    private void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1) {
-        SORT_BY sort_by = (SORT_BY) sortBy1;
+    private void init() {
+        data = new SimpleListProperty<>();
+        initialData = new SimpleListProperty<>();
+
+    }
+
+    private void initialDataChange() {
+
         HashMap<Typable, HashMap<String, Double>> data = new HashMap<>();
-        Set<String> keySet = new LinkedHashSet<>();
-        keySet.add("category");
+
+        columnKeys = new HashSet<>();
+
         List<FinancialAccounting> d = initialData.getValue();
-        switch (sort_by) {
-            case QUARTER: {
-
-                LocalDate now = LocalDate.now();
-                LocalDate minusMonths = now.minusMonths(2);
-                LocalDate startDate = LocalDate.of(minusMonths.getYear(), minusMonths.getMonth(), 1);
-
-                for (int i = 0; i < 3; i++){
-                    LocalDate date = now.minusMonths(i);
-                    keySet.add(
-                            LocalDate.of(date.getYear(), date.getMonth(), 1).format(DateTimeFormatter.ISO_DATE)
-                    );
+        LocalDate now = LocalDate.now();
+        LocalDate startDate;
+        //Определяем начало расчетного периода
+        if (sortPane != null) {
+            switch ((SORT_BY) sortPane.getValue()) {
+                case MONTH:
+                default: {
+                    startDate = LocalDate.of(now.getYear(), now.getMonth(), 1).minusDays(1);
+                    break;
                 }
-
-                d = d.stream()
-                        .filter(finOp -> finOp.getDate().isAfter(startDate))
-                        .collect(Collectors.toList());
-                break;
+                case QUARTER: {
+                    LocalDate minusMonths = now.minusMonths(2);
+                    startDate = LocalDate.of(minusMonths.getYear(), minusMonths.getMonth(), 1).minusDays(1);
+                    break;
+                }
+                case HALFYEAR: {
+                    LocalDate minusMonths = now.minusMonths(5);
+                    startDate = LocalDate.of(minusMonths.getYear(), minusMonths.getMonth(), 1).minusDays(1);
+                    break;
+                }
+                case YEAR: {
+                    LocalDate minusMonths = now.minusMonths(11);
+                    startDate = LocalDate.of(minusMonths.getYear(), minusMonths.getMonth(), 1).minusDays(1);
+                    break;
+                }
+                case ALL: {
+                    startDate = LocalDate.of(2000, 1, 1).minusDays(1);
+                    break;
+                }
             }
+        } else {
+            startDate = LocalDate.of(now.getYear(), now.getMonth(), 1).minusDays(1);
         }
-
+        d = d.stream()
+                .filter(finOp -> finOp.getDate().isAfter(startDate))
+                .collect(Collectors.toList());
 
         for (FinancialAccounting finOp : d) {
-            if(!data.containsKey(finOp.getCategory())){
+            if (!data.containsKey(finOp.getCategory())) {
                 data.put(finOp.getCategory(), new HashMap<>());
             }
 
@@ -163,75 +250,93 @@ public class FinancialOperations
 
             LocalDate finOpDate = finOp.getDate();
             String key = LocalDate.of(finOpDate.getYear(), finOpDate.getMonth(), 1).format(DateTimeFormatter.ISO_DATE);
+            if (sortPane != null && (SORT_BY) sortPane.getValue() == SORT_BY.ALL) {
+                key = LocalDate.of(finOpDate.getYear(), 1, 1).format(DateTimeFormatter.ISO_DATE);
+            }
 
-            if(row.containsKey(key)){
+            columnKeys.add(LocalDate.parse(key));
+
+            if (row.containsKey(key)) {
                 row.put(key, row.get(key) + finOp.getValue());
-            }else{
+            } else {
                 row.put(key, finOp.getValue());
             }
         }
 
         List<HashMap<String, Object>> res = new LinkedList<>();
-        for(Typable type : data.keySet()){
+        for (Typable type : data.keySet()) {
             HashMap<String, Object> row = new HashMap<>();
-            row.put("category", type.getValue());
-
+            row.put(Columns.CATEGORY.name(), type.getValue());
+            row.put(Columns.TOTAL.name(), 0.);
             HashMap<String, Double> stringDoubleHashMap = data.get(type);
-            for(String k : stringDoubleHashMap.keySet()){
+            for (String k : stringDoubleHashMap.keySet()) {
                 row.put(k, stringDoubleHashMap.get(k));
+                row.put(Columns.TOTAL.name(), ((Double) row.get(Columns.TOTAL.name())) + stringDoubleHashMap.get(k));
             }
             res.add(row);
         }
 
-        fillTable(res, keySet);
-
-    }
-
-    private Node createContent() {
-        tableView = new TableView();
-        categoryColumn = new TableColumn<>("categoty");
-
-        try {
-            initialData.setValue(
-                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
-            );
-
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        contentNode = new BorderPane(tableView);
-        return contentNode;
-    }
-
-    private void fillTable(List<HashMap<String, Object>> formData, Set<String> keys) {
-
-        tableView.setItems(FXCollections.observableList(formData));
-        for(String key : keys){
-            TableColumn<HashMap<String, Object>, String> column = new TableColumn(key);
-            column.setId(key);
-            column.setCellValueFactory(data -> {
-                Object obj = data.getValue().get(key);
-                if (obj == null){
-                    return new SimpleStringProperty(String.valueOf(0));
-                }
-                return new SimpleStringProperty(String.valueOf(obj));
-            });
-            tableView.getColumns().add(column);
-        }
-
-    }
-
-    @Override
-    public void close() {
+        this.data.setValue(FXCollections.observableList(res));
 
     }
 
     @Override
     public void setCloseable(Closeable closeable) {
+
+    }
+
+    private void showData(ListChangeListener.Change<? extends HashMap<String, Object>> change) {
+        tableView.getColumns().clear();
+        tableView.setItems(data);
+        //Формируем колонку с категориями
+        TableColumn<HashMap<String, Object>, String> category = getTableColumn(Columns.CATEGORY.name(), Columns.CATEGORY.name());
+        tableView.getColumns().add(category);
+        //Формируем колонки по датам
+        for (LocalDate date : columnKeys.stream()
+                .sorted(LocalDate::compareTo)
+                .collect(Collectors.toList())) {
+//            getTableColumn(
+//                    String.format(this.columnNamePattern, date.getMonth().name(), date.getYear())
+//                    , date.format(DateTimeFormatter.ISO_DATE));
+            if (sortPane != null && sortPane.getValue() == SORT_BY.ALL) {
+                tableView.getColumns().add(getTableColumn(
+                        String.valueOf(date.getYear())
+                        , date.format(DateTimeFormatter.ISO_DATE)));
+            } else {
+                tableView.getColumns().add(getTableColumn(
+                        String.format(this.columnNamePattern, date.getMonth().name(), date.getYear())
+                        , date.format(DateTimeFormatter.ISO_DATE)));
+            }
+        }
+
+        //формируем итоговый столбец если стобцов по датам больше 1
+        if (columnKeys.size() > 1) {
+            TableColumn<HashMap<String, Object>, String> total = getTableColumn(Columns.TOTAL.name(), Columns.TOTAL.name());
+            tableView.getColumns().add(total);
+        }
+    }
+
+    /* --- Работа с подпиской --- */
+
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+        this.subscription = subscription;
+        this.subscription.request(1);
+    }
+
+    @Override
+    public void onNext(List<FinancialAccounting> item) {
+        initialData.setValue(FXCollections.observableList(item));
+        this.subscription.request(1);
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onComplete() {
 
     }
 }

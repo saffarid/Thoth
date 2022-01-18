@@ -43,6 +43,10 @@ public abstract class SortPane
         return this;
     }
 
+    public SortBy getValue(){
+        return (SortBy) box.getValue();
+    }
+
     public abstract SortPane setSortMethod(ChangeListener<SortBy> sortMethod);
 
 }
