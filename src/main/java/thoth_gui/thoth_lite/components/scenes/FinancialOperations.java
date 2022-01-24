@@ -8,37 +8,55 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.paint.Color;
+import javafx.util.Callback;
 import layout.basepane.BorderPane;
+import main.Main;
+import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.FinancialAccounting;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
-import thoth_gui.thoth_lite.components.controls.table_view.TableView;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.main_window.Workspace;
+import thoth_gui.thoth_styleconstants.color.ColorTheme;
+import thoth_gui.thoth_styleconstants.color.Dark;
 import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.BackgroundWrapper;
+import tools.BorderWrapper;
 import tools.SvgWrapper;
 import window.Closeable;
 
+import javax.print.attribute.standard.PresentationDirection;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class FinancialOperations
         extends ThothSceneImpl
         implements Flow.Subscriber<List<FinancialAccounting>> {
+
+    private ColorTheme theme;
 
     private enum SORT_BY implements SortBy {
         MONTH("last_month"),
@@ -117,29 +135,11 @@ public class FinancialOperations
 //        } catch (ClassNotFoundException e) {
 //            e.printStackTrace();
 //        }
-        tableView = new TableView<>();
+
+        init();
+
         tools = new SimpleObjectProperty<>(createToolsNode());
         content = new SimpleObjectProperty<>(createContent());
-
-        data = new SimpleListProperty<>();
-        initialData = new SimpleListProperty<>();
-
-        initialData.addListener((ListChangeListener<? super FinancialAccounting>) change -> initialDataChange());
-        data.addListener(this::showData);
-        try {
-            initialData.setValue(
-                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
-            );
-            ThothLite.getInstance().subscribeOnTable(this.table, this);
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        initStyle();
     }
 
     @Override
@@ -155,8 +155,24 @@ public class FinancialOperations
 
     private TableColumn<HashMap<String, Object>, String> getTableColumn(String title, String key) {
         TableColumn<HashMap<String, Object>, String> column = new TableColumn<>();
-        column.setGraphic(Label.getInstanse(title));
 
+        BorderPane titleNode = new BorderPane(Label.getInstanse(title));
+        titleNode.setBackground(
+                new BackgroundWrapper()
+                        .setColor(theme.PRIMARY())
+                        .commit()
+        );
+        titleNode.setBorder(
+                new BorderWrapper()
+                        .addBottomBorder(2)
+                        .setColor(theme.SECONDARY())
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .commit()
+        );
+
+        column.setGraphic(titleNode);
+
+        column.setCellFactory(data -> new FinCell());
         column.setCellValueFactory(data -> {
             Object value = data.getValue().get(key);
             if (value == null) {
@@ -170,7 +186,7 @@ public class FinancialOperations
 
     private Node createToolsNode() {
         toolsNode = new BorderPane();
-        toolsNode.setLeft(getSortPane());
+        toolsNode.setLeft(sortPane);
         toolsNode.setRight(
                 Button.getInstance(
                         SvgWrapper.getInstance(Images.PLUS(), 20, 20), event -> Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null))
@@ -179,14 +195,44 @@ public class FinancialOperations
         return toolsNode;
     }
 
-    private SortPane getSortPane() {
+    private void init() {
+        tableView = new TableView<>();
+
+        try {
+            theme = Config.getInstance().getScene().getTheme();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        data = new SimpleListProperty<>();
+        initialData = new SimpleListProperty<>();
+
         sortPane = SortPane.getInstance()
                 .setSortItems(SORT_BY.values())
                 .setCell()
                 .setValue(SORT_BY.QUARTER)
                 .setSortMethod((observableValue, sortBy, t1) -> initialDataChange())
         ;
-        return sortPane;
+
+        initialData.addListener((ListChangeListener<? super FinancialAccounting>) change -> initialDataChange());
+        data.addListener(this::showData);
+
+        try {
+            initialData.setValue(
+                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
+            );
+            ThothLite.getInstance().subscribeOnTable(table, this);
+        } catch (NotContainsException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        initStyle();
     }
 
     private void initialDataChange() {
@@ -273,7 +319,9 @@ public class FinancialOperations
     }
 
     private void initStyle() {
+        tableView.getChildrenUnmodifiable().addListener((ListChangeListener<? super Node>) change -> Main.LOG.log(Level.INFO, change.toString()));
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.setRowFactory(data -> new FinRow());
     }
 
     @Override
@@ -282,43 +330,40 @@ public class FinancialOperations
     }
 
     private void showData(ListChangeListener.Change<? extends HashMap<String, Object>> change) {
-        CompletableFuture.supplyAsync(() -> {
-                    List<TableColumn<HashMap<String, Object>, String>> res = new LinkedList<>();
-                    //Формируем колонку с категориями
-                    TableColumn<HashMap<String, Object>, String> category = getTableColumn(Columns.CATEGORY.name(), Columns.CATEGORY.name());
-                    res.add(category);
-                    //Формируем колонки по датам
-                    for (LocalDate date : columnKeys.stream()
-                            .sorted(LocalDate::compareTo)
-                            .collect(Collectors.toList())) {
+        Platform.runLater(() -> {
+            tableView.getColumns().clear();
+//            tableView.getItems().clear();
+            tableView.setItems(data);
+            tableView.refresh();
+            //Формируем колонку с категориями
+            TableColumn<HashMap<String, Object>, String> category = getTableColumn(Columns.CATEGORY.name(), Columns.CATEGORY.name());
+            tableView.getColumns().add(category);
+            //Формируем колонки по датам
+            for (LocalDate date : columnKeys.stream()
+                    .sorted(LocalDate::compareTo)
+                    .collect(Collectors.toList())) {
 //            getTableColumn(
 //                    String.format(this.columnNamePattern, date.getMonth().name(), date.getYear())
 //                    , date.format(DateTimeFormatter.ISO_DATE));
-                        if (sortPane != null && sortPane.getValue() == SORT_BY.ALL) {
-                            res.add(getTableColumn(
-                                    String.valueOf(date.getYear())
-                                    , date.format(DateTimeFormatter.ISO_DATE)));
-                        } else {
-                            res.add(getTableColumn(
-                                    String.format(this.columnNamePattern, date.getMonth().name(), date.getYear())
-                                    , date.format(DateTimeFormatter.ISO_DATE)));
-                        }
-                    }
+                if (sortPane != null && sortPane.getValue() == SORT_BY.ALL) {
+                    tableView.getColumns().add(getTableColumn(
+                            String.valueOf(date.getYear())
+                            , date.format(DateTimeFormatter.ISO_DATE)));
+                } else {
+                    tableView.getColumns().add(getTableColumn(
+                            String.format(this.columnNamePattern, date.getMonth().name(), date.getYear())
+                            , date.format(DateTimeFormatter.ISO_DATE)));
+                }
+            }
 
-                    //формируем итоговый столбец если стобцов по датам больше 1
-                    if (columnKeys.size() > 1) {
-                        TableColumn<HashMap<String, Object>, String> total = getTableColumn(Columns.TOTAL.name(), Columns.TOTAL.name());
-                        res.add(total);
-                    }
-                    return res;
-                })
-                .thenAccept(res -> {
-                    Platform.runLater(() -> {
-                        tableView.getColumns().clear();
-                        tableView.setItems(data);
-                        tableView.getColumns().addAll(FXCollections.observableList(res));
-                    });
-                });
+            //формируем итоговый столбец если стобцов по датам больше 1
+            if (columnKeys.size() > 1) {
+                TableColumn<HashMap<String, Object>, String> total = getTableColumn(Columns.TOTAL.name(), Columns.TOTAL.name());
+                tableView.getColumns().add(total);
+            }
+
+            System.out.println("hello");
+        });
     }
 
     /* --- Работа с подпиской --- */
@@ -343,5 +388,72 @@ public class FinancialOperations
     @Override
     public void onComplete() {
 
+    }
+
+    private class FinRow
+            extends TableRow<HashMap<String, Object>>{
+        public FinRow() {
+            super();
+            initStyle();
+        }
+
+        private void initStyle(){
+            setBackground(
+                    new BackgroundWrapper()
+                            .setColor(theme.PRIMARY())
+                            .commit()
+            );
+            setBorder(
+                    new BorderWrapper()
+                            .addBottomBorder(1)
+                            .setColor(theme.PRIMARY())
+                            .setStyle(BorderStrokeStyle.SOLID)
+                            .commit()
+            );
+        }
+
+        @Override
+        protected void updateItem(HashMap<String, Object> data, boolean b) {
+            if(data != null) {
+                super.updateItem(data, b);
+                hoverProperty().addListener((observableValue, aBoolean, t1) -> {
+                    if(t1){
+                        setBorder(
+                                new BorderWrapper()
+                                        .addBottomBorder(1)
+                                        .setColor(theme.SECONDARY())
+                                        .setStyle(BorderStrokeStyle.SOLID)
+                                        .commit()
+                        );
+                    }else {
+                        setBorder(
+                                new BorderWrapper()
+                                        .addBottomBorder(1)
+                                        .setColor(theme.PRIMARY())
+                                        .setStyle(BorderStrokeStyle.SOLID)
+                                        .commit()
+                        );
+                    }
+                });
+            }
+        }
+    }
+
+    private class FinCell
+            extends TableCell<HashMap<String, Object>, String> {
+
+        @Override
+        protected void updateItem(String s, boolean b) {
+            if (s != null) {
+                super.updateItem(s, b);
+                BorderPane node = new BorderPane(Label.getInstanse(s));
+                node.setBackground(
+                        new BackgroundWrapper()
+                                .setColor(theme.PRIMARY())
+                                .commit()
+                );
+                setGraphic(node);
+            }
+        }
     }
 }
