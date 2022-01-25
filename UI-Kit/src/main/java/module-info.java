@@ -3,6 +3,7 @@ module uikit {
     exports layout.basepane;
     exports layout.custompane;
     exports controls;
+    exports controls.table_view;
     exports window;
     exports styleconstants;
     exports styleconstants.imagesvg;

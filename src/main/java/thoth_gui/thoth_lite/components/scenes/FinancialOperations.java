@@ -1,5 +1,6 @@
 package thoth_gui.thoth_lite.components.scenes;
 
+import controls.table_view.TableView;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
@@ -12,7 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
@@ -154,25 +155,25 @@ public class FinancialOperations
     }
 
     private TableColumn<HashMap<String, Object>, String> getTableColumn(String title, String key) {
-        TableColumn<HashMap<String, Object>, String> column = new TableColumn<>();
+        TableColumn<HashMap<String, Object>, String> column = new TableColumn<>(title);
 
-        BorderPane titleNode = new BorderPane(Label.getInstanse(title));
-        titleNode.setBackground(
-                new BackgroundWrapper()
-                        .setColor(theme.PRIMARY())
-                        .commit()
-        );
-        titleNode.setBorder(
-                new BorderWrapper()
-                        .addBottomBorder(2)
-                        .setColor(theme.SECONDARY())
-                        .setStyle(BorderStrokeStyle.SOLID)
-                        .commit()
-        );
+//        BorderPane titleNode = new BorderPane(Label.getInstanse(title));
+//        titleNode.setBackground(
+//                new BackgroundWrapper()
+//                        .setColor(theme.PRIMARY())
+//                        .commit()
+//        );
+//        titleNode.setBorder(
+//                new BorderWrapper()
+//                        .addBottomBorder(2)
+//                        .setColor(theme.SECONDARY())
+//                        .setStyle(BorderStrokeStyle.SOLID)
+//                        .commit()
+//        );
 
-        column.setGraphic(titleNode);
+//        column.setGraphic(titleNode);
 
-        column.setCellFactory(data -> new FinCell());
+//        column.setCellFactory(data -> new FinCell());
         column.setCellValueFactory(data -> {
             Object value = data.getValue().get(key);
             if (value == null) {
@@ -196,7 +197,7 @@ public class FinancialOperations
     }
 
     private void init() {
-        tableView = new TableView<>();
+        tableView = thoth_gui.thoth_lite.components.controls.table_view.TableView.getInstance();
 
         try {
             theme = Config.getInstance().getScene().getTheme();
@@ -321,7 +322,7 @@ public class FinancialOperations
     private void initStyle() {
         tableView.getChildrenUnmodifiable().addListener((ListChangeListener<? super Node>) change -> Main.LOG.log(Level.INFO, change.toString()));
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tableView.setRowFactory(data -> new FinRow());
+//        tableView.setRowFactory(data -> new FinRow());
     }
 
     @Override
@@ -398,18 +399,18 @@ public class FinancialOperations
         }
 
         private void initStyle(){
-            setBackground(
-                    new BackgroundWrapper()
-                            .setColor(theme.PRIMARY())
-                            .commit()
-            );
-            setBorder(
-                    new BorderWrapper()
-                            .addBottomBorder(1)
-                            .setColor(theme.PRIMARY())
-                            .setStyle(BorderStrokeStyle.SOLID)
-                            .commit()
-            );
+//            setBackground(
+//                    new BackgroundWrapper()
+//                            .setColor(theme.PRIMARY())
+//                            .commit()
+//            );
+//            setBorder(
+//                    new BorderWrapper()
+//                            .addBottomBorder(1)
+//                            .setColor(theme.PRIMARY())
+//                            .setStyle(BorderStrokeStyle.SOLID)
+//                            .commit()
+//            );
         }
 
         @Override
@@ -447,11 +448,11 @@ public class FinancialOperations
             if (s != null) {
                 super.updateItem(s, b);
                 BorderPane node = new BorderPane(Label.getInstanse(s));
-                node.setBackground(
-                        new BackgroundWrapper()
-                                .setColor(theme.PRIMARY())
-                                .commit()
-                );
+//                node.setBackground(
+//                        new BackgroundWrapper()
+//                                .setColor(theme.PRIMARY())
+//                                .commit()
+//                );
                 setGraphic(node);
             }
         }
