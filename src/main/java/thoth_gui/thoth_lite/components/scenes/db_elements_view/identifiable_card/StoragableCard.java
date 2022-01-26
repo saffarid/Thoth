@@ -36,7 +36,7 @@ public class StoragableCard
     private ComboBox countType;
     private TextArea note;
 
-    private enum PropetiesStoragableId {
+    private enum ControlsId {
         ARTICLE("article"),
         NAME("name"),
         PRODUCT_TYPE("product-type"),
@@ -45,7 +45,7 @@ public class StoragableCard
         ADRESS("adress"),
         NOTE("note");
         private String id;
-        PropetiesStoragableId(String id) {
+        ControlsId(String id) {
             this.id = id;
         }
     }
@@ -63,12 +63,12 @@ public class StoragableCard
 
         VBox vBox = new VBox();
 
-        article = getTextField(PropetiesStoragableId.ARTICLE);
-        name = getTextField(PropetiesStoragableId.NAME);
-        type = getComboBox(PropetiesStoragableId.PRODUCT_TYPE);
-        this.count = getTextField(PropetiesStoragableId.COUNT);
-        countType = getComboBox(PropetiesStoragableId.COUNT_TYPE);
-        adress = getComboBox(PropetiesStoragableId.ADRESS);
+        article = getTextField(ControlsId.ARTICLE);
+        name = getTextField(ControlsId.NAME);
+        type = getComboBox(ControlsId.PRODUCT_TYPE);
+        this.count = getTextField(ControlsId.COUNT);
+        countType = getComboBox(ControlsId.COUNT_TYPE);
+        adress = getComboBox(ControlsId.ADRESS);
         note = new TextArea();
 
 
@@ -92,12 +92,12 @@ public class StoragableCard
         );
 
         vBox.getChildren().addAll(
-                createRow(getLabel(PropetiesStoragableId.ARTICLE.id), article)
-                , createRow(getLabel(PropetiesStoragableId.NAME.id), name)
-                , createRow(getLabel(PropetiesStoragableId.PRODUCT_TYPE.id), type)
-                , createRow(getLabel(PropetiesStoragableId.COUNT.id), count)
-                , createRow(getLabel(PropetiesStoragableId.ADRESS.id), adress)
-                , createRow(getLabel(PropetiesStoragableId.NOTE.id), note)
+                createRow(getLabel(ControlsId.ARTICLE.id), article)
+                , createRow(getLabel(ControlsId.NAME.id), name)
+                , createRow(getLabel(ControlsId.PRODUCT_TYPE.id), type)
+                , createRow(getLabel(ControlsId.COUNT.id), count)
+                , createRow(getLabel(ControlsId.ADRESS.id), adress)
+                , createRow(getLabel(ControlsId.NOTE.id), note)
         );
 
         contentNode.setCenter(vBox);
@@ -123,7 +123,7 @@ public class StoragableCard
         return res;
     }
 
-    protected ComboBox getComboBox(PropetiesStoragableId id) {
+    protected ComboBox getComboBox(ControlsId id) {
         ComboBox res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
         res.setId(id.id);
 
@@ -191,7 +191,7 @@ public class StoragableCard
         return res;
     }
 
-    private TextField getTextField(PropetiesStoragableId id) {
+    private TextField getTextField(ControlsId id) {
         TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance();
         res.setId(id.id);
 

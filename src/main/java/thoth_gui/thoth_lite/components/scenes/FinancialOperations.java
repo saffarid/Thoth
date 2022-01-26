@@ -320,7 +320,6 @@ public class FinancialOperations
     }
 
     private void initStyle() {
-        tableView.getChildrenUnmodifiable().addListener((ListChangeListener<? super Node>) change -> Main.LOG.log(Level.INFO, change.toString()));
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 //        tableView.setRowFactory(data -> new FinRow());
     }
@@ -343,9 +342,6 @@ public class FinancialOperations
             for (LocalDate date : columnKeys.stream()
                     .sorted(LocalDate::compareTo)
                     .collect(Collectors.toList())) {
-//            getTableColumn(
-//                    String.format(this.columnNamePattern, date.getMonth().name(), date.getYear())
-//                    , date.format(DateTimeFormatter.ISO_DATE));
                 if (sortPane != null && sortPane.getValue() == SORT_BY.ALL) {
                     tableView.getColumns().add(getTableColumn(
                             String.valueOf(date.getYear())
@@ -362,8 +358,6 @@ public class FinancialOperations
                 TableColumn<HashMap<String, Object>, String> total = getTableColumn(Columns.TOTAL.name(), Columns.TOTAL.name());
                 tableView.getColumns().add(total);
             }
-
-            System.out.println("hello");
         });
     }
 

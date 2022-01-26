@@ -3,7 +3,10 @@ package controls.table_view;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.skin.NestedTableColumnHeader;
+import javafx.scene.control.skin.TableColumnHeader;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.Region;
@@ -26,7 +29,9 @@ public class TableView<S>
         NESTED_COLUMN_HEADER("nested-column-header"),
         FILLER("filler"),
         SHOW_HIDE_COLUMNS_BUTTON("show-hide-columns-button"),
-        COLUMN_DRAG_HEADER("column-drag-header");
+        COLUMN_DRAG_HEADER("column-drag-header"),
+        COLUMN_HEADER("column_header")
+        ;
         private String clazz;
 
         Styleclass(String clazz) {
@@ -38,8 +43,11 @@ public class TableView<S>
     private Region columnOverlay;
     private StackPane placeholder;
     private StackPane columnHeaderBackground;
+    private Region filler;
     private StackPane showHideColumnsButton;
     private StackPane columnDragHeader;
+    private NestedTableColumnHeader nestedTableColumnHeader;
+    private TableColumnHeader columnHeader;
 
     public TableView() {
         super();
@@ -69,6 +77,15 @@ public class TableView<S>
                                 showHideColumnsButton = (StackPane) node1;
                             } else if (node1.getStyleClass().contains(Styleclass.COLUMN_DRAG_HEADER.clazz)) {
                                 columnDragHeader = (StackPane) node1;
+                            } else if (node1.getStyleClass().contains(Styleclass.FILLER.clazz)) {
+                                filler = (Region) node1;
+                            } else if (node1.getStyleClass().contains(Styleclass.NESTED_COLUMN_HEADER.clazz)) {
+                                nestedTableColumnHeader = (NestedTableColumnHeader) node1;
+                                for(TableColumnHeader header : nestedTableColumnHeader.getColumnHeaders()){
+                                    if(header.getStyleClass().contains(Styleclass.COLUMN_HEADER.clazz)){
+                                        columnHeader = header;
+                                    }
+                                }
                             }
                         }
                     }
@@ -76,38 +93,6 @@ public class TableView<S>
                 }
             }).thenAccept(unused -> {
                 Platform.runLater(() -> {
-                    columnResizeLine.setBackground(
-                            new BackgroundWrapper()
-                                    .setColor(Color.RED)
-                                    .commit()
-                    );
-                    columnOverlay.setBackground(
-                            new BackgroundWrapper()
-                                    .setColor(Color.BLUE)
-                                    .commit()
-                    );
-                    columnHeaderBackground.setBackground(
-                            new BackgroundWrapper()
-                                    .setColor(Color.GREEN)
-                                    .commit()
-                    );
-                    columnHeaderBackground.setBorder(
-                            new BorderWrapper()
-                                    .addRightBorder(1)
-                                    .setColor(Color.GREEN)
-                                    .setStyle(BorderStrokeStyle.SOLID)
-                                    .commit()
-                    );
-//                    showHideColumnsButton.setBackground(
-//                            new BackgroundWrapper()
-//                                    .setColor(Color.BISQUE)
-//                                    .commit()
-//                    );
-//                    columnDragHeader.setBackground(
-//                            new BackgroundWrapper()
-//                                    .setColor(Color.DARKGRAY)
-//                                    .commit()
-//                    );
                 });
             });
         });
@@ -115,5 +100,10 @@ public class TableView<S>
     }
 
     private void initStyle() {
+        setBackground(
+                new BackgroundWrapper()
+                        .setColor(Color.TRANSPARENT)
+                        .commit()
+        );
     }
 }
