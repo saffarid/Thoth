@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.DatePicker;
 import layout.basepane.BorderPane;
 import layout.basepane.VBox;
 import thoth_core.thoth_lite.ThothLite;
@@ -15,12 +16,11 @@ import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
-import thoth_gui.thoth_lite.components.controls.TextField;
 
-import javax.sound.sampled.Control;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Currency;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,10 +55,11 @@ public class FinOperationCard
     /**
      * Дата совершения финансовой операции
      * */
+    private DatePicker dateFinOp;
     /**
      * Валюта покупки
      * */
-    private controls.ComboBox<Typable> currency;
+    private controls.ComboBox<Currency> currency;
     /**
      * Курс валюты
      * */
@@ -70,16 +71,13 @@ public class FinOperationCard
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
-        this.table = table;
-        categoryInit(table);
-
     }
 
-    private void categoryInit(AvaliableTables table) {
+    private AvaliableTables categoryTable() {
         if (table == AvaliableTables.EXPENSES) {
-            tableCategory = AvaliableTables.EXPENSES_TYPES;
+            return AvaliableTables.EXPENSES_TYPES;
         } else {
-            tableCategory = AvaliableTables.INCOMES_TYPES;
+            return AvaliableTables.INCOMES_TYPES;
         }
     }
 
@@ -89,9 +87,11 @@ public class FinOperationCard
         VBox vBox = new VBox();
             category = getComboBox(ControlsId.FIN_OP_TYPE);
             value = getTextField(ControlsId.VALUE);
+            dateFinOp = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance();
             vBox.getChildren().addAll(
                     createRow(getLabel(ControlsId.FIN_OP_TYPE.id), category),
-                    createRow(getLabel(ControlsId.VALUE.id), value)
+                    createRow(getLabel(ControlsId.VALUE.id), value),
+                    createRow(getLabel(ControlsId.DATE.id), dateFinOp)
             );
 
         contentNode.setCenter(vBox);
@@ -130,7 +130,7 @@ public class FinOperationCard
                 try {
                     instance.setCellFactory(listedListView -> new ComboBoxListedCell());
                     instance.setButtonCell(new ComboBoxListedCell());
-                    instance.setItems( FXCollections.observableList(ThothLite.getInstance().getDataFromTable(tableCategory)) );
+                    instance.setItems( FXCollections.observableList(ThothLite.getInstance().getDataFromTable(categoryTable())) );
                 } catch (NotContainsException e) {
                     e.printStackTrace();
                 } catch (SQLException e) {

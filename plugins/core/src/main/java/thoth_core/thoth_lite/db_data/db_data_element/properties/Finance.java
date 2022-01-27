@@ -1,10 +1,11 @@
 package thoth_core.thoth_lite.db_data.db_data_element.properties;
 
-public interface Finance 
+import java.util.Currency;
+
+public interface Finance
     extends Identifiable
 {
-    String getCurrency();
-    void setCurrency(String currency);
+    Currency getCurrency();
     Double getCourse();
     void setCourse(Double course);
 }

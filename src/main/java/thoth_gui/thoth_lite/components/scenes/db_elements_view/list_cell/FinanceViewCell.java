@@ -82,7 +82,6 @@ public class FinanceViewCell
 
     @Override
     public void apply() {
-        finance.setCurrency(currency.getText());
         finance.setCourse(Double.parseDouble(course.getText()));
         List<Finance> list = new LinkedList<>();
         list.add(finance);

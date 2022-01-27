@@ -16,7 +16,9 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.skin.VirtualFlow;
 
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -94,7 +96,7 @@ public class FinanceListView
     protected void openCreateNewIdentifiable(ActionEvent event) {
         Finance financeInstance = new Finance() {
             private String id = "-1";
-            private String currency = "new Currency";
+            private Currency currency = Currency.getInstance(Locale.getDefault());
             private Double course = 1d;
 
             @Override
@@ -103,24 +105,15 @@ public class FinanceListView
             }
 
             @Override
-            public void setId(String id) {
-            }
-
+            public void setId(String id) { }
             @Override
-            public String getCurrency() {
+            public Currency getCurrency() {
                 return currency;
             }
-
-            @Override
-            public void setCurrency(String currency) {
-                this.currency = currency;
-            }
-
             @Override
             public Double getCourse() {
                 return course;
             }
-
             @Override
             public void setCourse(Double course) {
                 this.course = course;
