@@ -1,6 +1,8 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view;
 
 import javafx.beans.value.ObservableValue;
+import javafx.scene.paint.Color;
+import layout.basepane.BorderPane;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
@@ -15,6 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.skin.VirtualFlow;
+import tools.BackgroundWrapper;
 
 import java.util.Currency;
 import java.util.List;
@@ -25,7 +28,7 @@ import java.util.logging.Level;
 
 public class FinanceListView
         extends IdentifiablesListView<Finance>
-        implements RemoveItem {
+{
 
     private enum SORT_BY implements SortBy{
         SORT_BY_CURRENCY_UP("sort_by_currency_up"),
@@ -43,18 +46,8 @@ public class FinanceListView
         }
     }
 
-    private final ScheduleTask scheduleTask;
-
     protected FinanceListView(List<Finance> datas) {
         super(datas, AvaliableTables.CURRENCIES);
-
-        scheduleTask = new ScheduleTask(this);
-        ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
-        poolExecutor.schedule(scheduleTask, 300, TimeUnit.MILLISECONDS);
-
-        identifiableElementList.getItems().addListener((ListChangeListener<? super Finance>) change -> {
-            poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
-        });
     }
 
     @Override
@@ -69,16 +62,25 @@ public class FinanceListView
     }
 
     @Override
+    protected Node getToolsPanel() {
+        toolsNode = new BorderPane();
+
+        toolsNode.setLeft(getSortPane());
+
+        return toolsNode;
+    }
+
+    @Override
     protected void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1) {
         ObservableList<Finance> items = identifiableElementList.getItems();
         SORT_BY t1 = (SORT_BY) sortBy1;
         switch (t1){
             case SORT_BY_CURRENCY_UP:{
-                items.sort((o1, o2) -> o1.getCurrency().compareTo(o2.getCurrency()));
+                items.sort((o1, o2) -> o1.getCurrency().getCurrencyCode().compareTo(o2.getCurrency().getCurrencyCode()));
                 break;
             }
             case SORT_BY_CURRENCY_DOWN:{
-                items.sort((o1, o2) -> o2.getCurrency().compareTo(o1.getCurrency()));
+                items.sort((o1, o2) -> o2.getCurrency().getCurrencyCode().compareTo(o1.getCurrency().getCurrencyCode()));
                 break;
             }
             case SORT_BY_COURSE_UP:{
@@ -93,69 +95,6 @@ public class FinanceListView
     }
 
     @Override
-    protected void openCreateNewIdentifiable(ActionEvent event) {
-        Finance financeInstance = new Finance() {
-            private String id = "-1";
-            private Currency currency = Currency.getInstance(Locale.getDefault());
-            private Double course = 1d;
-
-            @Override
-            public String getId() {
-                return id;
-            }
-
-            @Override
-            public void setId(String id) { }
-            @Override
-            public Currency getCurrency() {
-                return currency;
-            }
-            @Override
-            public Double getCourse() {
-                return course;
-            }
-            @Override
-            public void setCourse(Double course) {
-                this.course = course;
-            }
-        };
-        identifiableElementList.getItems().add(financeInstance);
-    }
-
-    @Override
-    public void removeItem(Identifiable identifiable) {
-        if (identifiableElementList.getItems().contains(identifiable)) {
-            LOG.log(Level.INFO, "I have element");
-            identifiableElementList.setCellFactory(null);
-            identifiableElementList.getItems().remove(identifiable);
-//            identifiableElementList.refresh();
-            identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
-        } else {
-            LOG.log(Level.INFO, "No element");
-        }
-    }
-
-    private class ScheduleTask implements Runnable {
-
-        private FinanceListView financeListView;
-
-        public ScheduleTask(FinanceListView financeListView) {
-            this.financeListView = financeListView;
-        }
-
-        @Override
-        public void run() {
-            for (Node cell : identifiableElementList.getChildrenUnmodifiable()) {
-                VirtualFlow cell1 = (VirtualFlow) cell;
-                for (int i = 0; i < cell1.getCellCount(); i++) {
-                    IdentifiableListCell<Typable> cell2 = (IdentifiableListCell<Typable>) cell1.getCell(i);
-                    RemoveItemFromList view1 = (RemoveItemFromList) cell2.getView();
-                    if (!view1.hasRemoveItem()) {
-                        view1.setRemoveItem(financeListView::removeItem);
-                    }
-                }
-            }
-        }
-    }
+    protected void openCreateNewIdentifiable(ActionEvent event) {}
 
 }

@@ -31,7 +31,6 @@ public class Currencies
         for (Identifiable identifiable : list) {
             HashMap<String, Object> map = new HashMap<>();
             Finance currency = (Finance) identifiable;
-            map.put(ID, currency.getId());
             map.put(CURRENCY, currency.getCurrency());
             map.put(COURSE, currency.getCourse());
             datas.add(map);
@@ -47,7 +46,6 @@ public class Currencies
         datas.clear();
         for (HashMap<String, Object> row : data) {
             datas.add(new Currency(
-                    String.valueOf(row.get(ID)),
                     (String) row.get(CURRENCY),
                     (Double) row.get(COURSE)
             ));

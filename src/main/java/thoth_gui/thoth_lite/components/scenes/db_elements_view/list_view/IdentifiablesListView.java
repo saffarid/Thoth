@@ -84,7 +84,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         this.table = table;
         this.datas = new SimpleListProperty<T>(  );
         content = new SimpleObjectProperty<>(createListView());
-        tools = new SimpleObjectProperty<>(getToolsPanel());
 
         this.datas.addListener((ListChangeListener<? super T>) change -> {
             //Для обновления отображения списка создаём задачу и выполняем её в потоке JavaFX
@@ -94,8 +93,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
             });
         });
-
         this.datas.setValue(FXCollections.observableList(datas));
+        tools = new SimpleObjectProperty<>(getToolsPanel());
 
         try {
             ThothLite.getInstance().subscribeOnTable(this.table, this);
@@ -129,7 +128,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected ListView<T> createListView(){
         identifiableElementList = new ListView<>();
         identifiableElementList.setPadding(new Insets(2));
-//        identifiableElementList.itemsProperty().bind( datas );
 
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
 

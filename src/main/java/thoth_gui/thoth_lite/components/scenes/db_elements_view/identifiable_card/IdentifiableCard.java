@@ -183,7 +183,7 @@ public abstract class IdentifiableCard
         protected void updateItem(Currency currency, boolean b) {
             if (currency != null) {
                 super.updateItem(currency, b);
-                setText(currency.getCurrency());
+                setText(currency.getCurrency().getCurrencyCode());
             }
         }
     }

@@ -559,7 +559,7 @@ public class CompositeListView
         protected void updateItem(Currency currency, boolean b) {
             if (currency != null) {
                 super.updateItem(currency, b);
-                setText(currency.getCurrency());
+                setText(currency.getCurrency().getCurrencyCode());
             }
         }
     }
@@ -699,7 +699,7 @@ public class CompositeListView
                     , 3, 0
             );
             res.add(
-                    new Label(storing.getCurrency().getCurrency())
+                    new Label(storing.getCurrency().getCurrency().getCurrencyCode())
                     , 4, 0
             );
             res.add(

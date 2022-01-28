@@ -41,24 +41,27 @@ public class Main extends Application{
         this.stage.initStyle(StageStyle.UNDECORATED);
         this.stage.show();
         CompletableFuture.runAsync(() -> {
+            LOG.log(Level.INFO, "Read config.");
+            try {
+                config = Config.getInstance();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
+        CompletableFuture.runAsync(() -> {
             try {
                 LOG.log(Level.INFO, "Init Thoth.");
                 ThothLite.getInstance();
-                LOG.log(Level.INFO, "Read config.");
-                config = Config.getInstance();
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (NotContainsException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
             }
         }).thenAccept(unused -> {
-
             Platform.runLater(() -> {
 
                 LOG.log(Level.INFO, "start");
@@ -90,9 +93,7 @@ public class Main extends Application{
                 new StageResizer(stage);
 
             });
-
         });
-
 
     }
 

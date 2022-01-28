@@ -1,11 +1,14 @@
 package thoth_core.thoth_lite.db_lite_structure.full_structure;
 
 import database.Column.*;
+import database.ContentValues;
 import database.DataBaseSQL;
 import database.Exceptions.NotSupportedOperation;
 import database.Table;
 
+import java.util.Currency;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class DBLiteStructure extends DataBaseSQL {
 
@@ -214,15 +217,28 @@ public class DBLiteStructure extends DataBaseSQL {
         public Currency() {
             super();
             name = StructureDescription.Currency.TABLE_NAME;
-            type = StructureDescription.TableTypes.SYSTEM_TABLE.getType();
+            type = StructureDescription.TableTypes.TABLE.getType();
 
-            addColumn(TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT));
-            addColumn(getCustomColumn(
-                    StructureDescription.Currency.CURRENCY, DataTypes.NOTE, true, true
-            ));
-            addColumn(getCustomColumn(
+            TableColumn currencyCodeColumn = getPrimaryKeyCustom(
+                    StructureDescription.Currency.CURRENCY, DataTypes.NOTE
+            );
+            TableColumn courseColumn = getCustomColumn(
                     StructureDescription.Currency.COURSE, DataTypes.DOUBLE, false, true
-            ));
+            );
+            addColumn(currencyCodeColumn);
+            addColumn(courseColumn);
+
+            for(java.util.Currency currency : java.util.Currency.getAvailableCurrencies()
+                    .stream()
+                    .collect(Collectors.toList())
+                    .stream()
+                    .sorted((o1, o2) -> o1.getCurrencyCode().compareTo(o2.getCurrencyCode()))
+                    .collect(Collectors.toList())){
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(currencyCodeColumn, currency.getCurrencyCode());
+                contentValues.put(courseColumn, 1.0);
+                this.contentValues.add(contentValues);
+            }
         }
     }
 

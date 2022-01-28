@@ -48,6 +48,7 @@ public class ConfigDropdownList
     private Node getNavigationMenu() {
         NavigationMenu menu = new NavigationMenu(
                   getMenuButton(AvaliableTables.COUNT_TYPES)
+                , getMenuButton(AvaliableTables.CURRENCIES)
                 , getMenuButton(AvaliableTables.EXPENSES_TYPES)
                 , getMenuButton(AvaliableTables.INCOMES_TYPES)
                 , getMenuButton(AvaliableTables.ORDER_STATUS)

@@ -62,6 +62,15 @@ public class DataBaseLite {
         LOG.log(Level.INFO, "Добавляю таблицы в БД");
         for (Table table : structure.getTables()) {
             dbManager.createTable(table, this.dbFile);
+
+            if(!table.getContentValues().isEmpty()){
+                for(ContentValues values : table.getContentValues())
+                dbManager.insert(
+                        table,
+                        values,
+                        dbFile
+                );
+            }
         }
         LOG.log(Level.INFO, "Создание структуры успешно пройдено");
     }

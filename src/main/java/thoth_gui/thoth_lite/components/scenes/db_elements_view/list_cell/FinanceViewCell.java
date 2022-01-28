@@ -1,5 +1,6 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
+import javafx.scene.control.Tooltip;
 import styleconstants.imagesvg.Close;
 import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
@@ -34,7 +35,9 @@ import java.util.Optional;
 
 public class FinanceViewCell
         extends IdentifiableViewCell
-        implements Apply, Cancel, RemoveItemFromList {
+        implements Apply, Cancel {
+
+    private final String templateCurrency = "%1s-%2s";
 
     private Finance finance;
 
@@ -48,11 +51,7 @@ public class FinanceViewCell
     private Label courseLabel;
     private Label currencyLabel;
     private TextField course;
-    private TextField currency;
 
-    private RemoveItem removeItem;
-
-    private Button remove;
 
     protected FinanceViewCell(Finance finance) {
         super();
@@ -60,14 +59,21 @@ public class FinanceViewCell
 
         Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5);
 
-        currency = getTextField(this.finance.getCurrency());
-        currencyLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
-        currencyLabel.textProperty().bind(currency.textProperty());
-        course = getTextField(String.valueOf(this.finance.getCourse()));
+        currencyLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse(
+                String.format(
+                        templateCurrency
+                        , this.finance.getCurrency().getCurrencyCode()
+                        , this.finance.getCurrency().getDisplayName())
+        );
+        currencyLabel.setTooltip(new Tooltip(currencyLabel.getText()));
+
+        course = getTextField(
+                String.valueOf(this.finance.getCourse())
+        );
         courseLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
         courseLabel.textProperty().bind(course.textProperty());
 
-        setLeft( Point.getInstance(7.5, 7.5) );
+        setLeft( point );
         createContent();
         setRight(createPallete());
 
@@ -86,13 +92,7 @@ public class FinanceViewCell
         List<Finance> list = new LinkedList<>();
         list.add(finance);
         try {
-            if (finance.getId().equals("-1")) {
-                //Вставляем запись в таблицу БД
-                ThothLite.getInstance().insertToTable(AvaliableTables.CURRENCIES, list);
-            } else {
-                //Обновляем запись
-                ThothLite.getInstance().updateInTable(table, list);
-            }
+            ThothLite.getInstance().updateInTable(table, list);
             changeStatusView();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,7 +105,6 @@ public class FinanceViewCell
 
     @Override
     public void cancel() {
-        currency.setText(finance.getCurrency());
         course.setText(String.valueOf(finance.getCourse()));
         changeStatusView();
     }
@@ -120,14 +119,14 @@ public class FinanceViewCell
         if (content == null) {
             content = new HBox();
             content.setPadding(new Insets(2, 5, 2, 15));
-            content.setSpacing(10);
+            content.setSpacing(5);
             content.setAlignment(Pos.CENTER_LEFT);
             setCenter(content);
             setAlignment(content, Pos.CENTER);
         }
         if (modeIsEdit) {
             content.getChildren().setAll(
-                    currency, course
+                    currencyLabel, course
             );
         } else {
             content.getChildren().setAll(
@@ -148,17 +147,14 @@ public class FinanceViewCell
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
             pallete.getChildren().setAll(
-                    getButton( Edit.getInstance(imgButtonWidth, imgButtonHeight), this::toEditMode )
+                    getButton( SvgWrapper.getInstance(Images.EDIT(), imgButtonWidth, imgButtonHeight), this::toEditMode )
             );
 //            if(finance.getId().equals("-1")) {
-                remove = getButton( Trash.getInstance(imgButtonWidth, imgButtonHeight), this::remove );
-                remove.setDisable( !hasRemoveItem() );
-                pallete.getChildren().add( remove );
 //            }
         } else {
             pallete.getChildren().setAll(
-                    getButton(Checkmark.getInstance(imgButtonWidth, imgButtonHeight), event -> apply())
-                    , getButton(Close.getInstance(), event -> cancel())
+                    getButton(SvgWrapper.getInstance(Images.CHECKMARK(), imgButtonWidth, imgButtonHeight), event -> apply())
+                    , getButton(SvgWrapper.getInstance(Images.CLOSE(), imgButtonWidth, imgButtonHeight), event -> cancel())
             );
         }
 
@@ -175,11 +171,6 @@ public class FinanceViewCell
         );
         node.setPadding(new Insets(5));
         return node;
-    }
-
-    @Override
-    public boolean hasRemoveItem() {
-        return removeItem != null;
     }
 
     private void keyPress(KeyEvent keyEvent) {
@@ -213,36 +204,4 @@ public class FinanceViewCell
         changeStatusView();
     }
 
-    private void remove(ActionEvent event) {
-        List<Finance> list = new LinkedList<>();
-        list.add(finance);
-        if (!finance.getId().equals("-1")) {
-            try {
-                DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
-                Optional<ButtonType> optional = instance.showAndWait();
-                if (optional.isPresent()) {
-                    if (optional.get() == ButtonType.YES) {
-                        ThothLite.getInstance().removeFromTable(AvaliableTables.CURRENCIES, list);
-                        removeItem.removeItem(finance);
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (NotContainsException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            removeItem.removeItem(finance);
-        }
-    }
-
-    @Override
-    public void setRemoveItem(RemoveItem removeItem) {
-        this.removeItem = removeItem;
-        if(remove != null) {
-            remove.setDisable(!hasRemoveItem());
-        }
-    }
 }

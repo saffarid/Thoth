@@ -96,8 +96,6 @@ public class NavigationMenu
         getStylesheets().add(NavigationMenu.class.getResource("/style/layout/panes/custom/navigation_menu.css").toExternalForm());
         getStyleClass().addAll(STYLE_CLASS_NAV_MENU, Styleclasses.DARK);
         content.getStyleClass().add(STYLE_CLASS_CONTENT);
-
-        setWidth(MAX_SIZE);
     }
 
     public void setWidth(double width){
