@@ -22,5 +22,6 @@ public class ComboBox<T> extends javafx.scene.control.ComboBox<T> {
                 getClass().getResource(STYLESHEET_COMBO_BOX).toExternalForm()
                 , getClass().getResource(STYLESHEET_LIST_VIEW).toExternalForm()
         );
+
     }
 }

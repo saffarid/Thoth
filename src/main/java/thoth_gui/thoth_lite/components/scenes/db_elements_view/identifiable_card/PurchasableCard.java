@@ -124,7 +124,7 @@ public class PurchasableCard extends IdentifiableCard {
     }
 
     protected ComboBox getComboBox(PropertiesPurchasableId id) {
-        ComboBox res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
+        ComboBox res = thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox.getInstance();
         res.setId(id.id);
 
         try {

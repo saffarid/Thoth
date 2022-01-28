@@ -1,8 +1,9 @@
-package thoth_gui.thoth_lite.components.controls;
+package thoth_gui.thoth_lite.components.controls.combo_boxes;
 
 import javafx.collections.ObservableList;
 import org.json.simple.parser.ParseException;
 import thoth_gui.config.Config;
+import thoth_gui.thoth_lite.components.controls.Label;
 
 import java.io.IOException;
 

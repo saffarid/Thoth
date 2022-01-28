@@ -10,7 +10,7 @@ public abstract class SortPane
         extends HBox {
 
     protected final String labelText = "sort";
-    protected ComboBox box = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
+    protected ComboBox box = thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox.getInstance();
 
     public static SortPane getInstance() {
         return new SortedPane();

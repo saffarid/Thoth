@@ -6,6 +6,7 @@ public class Images {
 
     public static Group ARROW_LEFT(){return null;}
     public static Group CLOSE(){return Close.getInstance();}
+    public static Group EMPTY(){return Empty.getInstance();}
     public static Group ICONIFY(){return Iconify.getInstance();}
     public static Group MAXIMIZE(){return Maximize.getInstance();}
     public static Group MINIFY(){return Minify.getInstance();}

@@ -1,6 +1,8 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
+import javafx.geometry.HPos;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.*;
 import styleconstants.imagesvg.Close;
 import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
@@ -23,7 +25,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import thoth_gui.thoth_styleconstants.svg.*;
 
 import java.sql.SQLException;
@@ -42,7 +43,7 @@ public class FinanceViewCell
     private Finance finance;
 
     private HBox pallete;
-    private HBox content;
+    private GridPane content;
 
     private LocalDateTime prevClick;
 
@@ -73,7 +74,7 @@ public class FinanceViewCell
         courseLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
         courseLabel.textProperty().bind(course.textProperty());
 
-        setLeft( point );
+        setLeft(point);
         createContent();
         setRight(createPallete());
 
@@ -117,21 +118,41 @@ public class FinanceViewCell
 
     private void createContent() {
         if (content == null) {
-            content = new HBox();
+            content = new GridPane();
             content.setPadding(new Insets(2, 5, 2, 15));
-            content.setSpacing(5);
-            content.setAlignment(Pos.CENTER_LEFT);
+            content.setHgap(5);
             setCenter(content);
-            setAlignment(content, Pos.CENTER);
+
+            content.getRowConstraints().add(new RowConstraints());
+            ColumnConstraints currency = new ColumnConstraints();
+            ColumnConstraints course = new ColumnConstraints();
+
+            currency.setFillWidth(true);
+            course.setFillWidth(true);
+
+            currency.setPercentWidth(60);
+            course.setPercentWidth(40);
+
+            currency.setHgrow(Priority.ALWAYS);
+            course.setHgrow(Priority.ALWAYS);
+
+            currency.setHalignment(HPos.RIGHT);
+            course.setHalignment(HPos.LEFT);
+
+            content.getColumnConstraints().addAll(
+                    currency
+                    , course
+            );
+            content.add(currencyLabel, 0, 0);
+            content.add(this.course, 1, 0);
+            content.add(courseLabel, 1, 0);
         }
         if (modeIsEdit) {
-            content.getChildren().setAll(
-                    currencyLabel, course
-            );
+            course.setOpacity(1);
+            courseLabel.setOpacity(0);
         } else {
-            content.getChildren().setAll(
-                    currencyLabel, courseLabel
-            );
+            course.setOpacity(0);
+            courseLabel.setOpacity(1);
         }
     }
 
@@ -147,10 +168,9 @@ public class FinanceViewCell
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
             pallete.getChildren().setAll(
-                    getButton( SvgWrapper.getInstance(Images.EDIT(), imgButtonWidth, imgButtonHeight), this::toEditMode )
+                    getButton(SvgWrapper.getInstance(Images.EMPTY(), imgButtonWidth, imgButtonHeight), event -> {})
+                    , getButton(SvgWrapper.getInstance(Images.EDIT(), imgButtonWidth, imgButtonHeight), this::toEditMode)
             );
-//            if(finance.getId().equals("-1")) {
-//            }
         } else {
             pallete.getChildren().setAll(
                     getButton(SvgWrapper.getInstance(Images.CHECKMARK(), imgButtonWidth, imgButtonHeight), event -> apply())
@@ -174,13 +194,13 @@ public class FinanceViewCell
     }
 
     private void keyPress(KeyEvent keyEvent) {
-        switch(keyEvent.getCode()){
+        switch (keyEvent.getCode()) {
             case ENTER: {
-                if(modeIsEdit) apply();
+                if (modeIsEdit) apply();
                 break;
             }
-            case ESCAPE:{
-                if(modeIsEdit) cancel();
+            case ESCAPE: {
+                if (modeIsEdit) cancel();
                 break;
             }
         }

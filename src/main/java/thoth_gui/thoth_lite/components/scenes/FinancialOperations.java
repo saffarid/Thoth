@@ -119,6 +119,8 @@ public class FinancialOperations
      */
     private Set<LocalDate> columnKeys;
 
+    /* ---  --- */
+
     public FinancialOperations(AvaliableTables table) {
         this.table = table;
 
@@ -198,7 +200,7 @@ public class FinancialOperations
 
     private void init() {
         tableView = thoth_gui.thoth_lite.components.controls.table_view.TableView.getInstance();
-
+        tableView.setPlaceholder(Label.getInstanse("no_elements"));
         try {
             theme = Config.getInstance().getScene().getTheme();
         } catch (IOException e) {
@@ -331,32 +333,35 @@ public class FinancialOperations
 
     private void showData(ListChangeListener.Change<? extends HashMap<String, Object>> change) {
         Platform.runLater(() -> {
-            tableView.getColumns().clear();
-//            tableView.getItems().clear();
-            tableView.setItems(data);
-            tableView.refresh();
-            //Формируем колонку с категориями
-            TableColumn<HashMap<String, Object>, String> category = getTableColumn(Columns.CATEGORY.name(), Columns.CATEGORY.name());
-            tableView.getColumns().add(category);
-            //Формируем колонки по датам
-            for (LocalDate date : columnKeys.stream()
-                    .sorted(LocalDate::compareTo)
-                    .collect(Collectors.toList())) {
-                if (sortPane != null && sortPane.getValue() == SORT_BY.ALL) {
-                    tableView.getColumns().add(getTableColumn(
-                            String.valueOf(date.getYear())
-                            , date.format(DateTimeFormatter.ISO_DATE)));
-                } else {
-                    tableView.getColumns().add(getTableColumn(
-                            String.format(this.columnNamePattern, date.getMonth().name(), date.getYear())
-                            , date.format(DateTimeFormatter.ISO_DATE)));
-                }
-            }
+            if(!data.isEmpty()){
 
-            //формируем итоговый столбец если стобцов по датам больше 1
-            if (columnKeys.size() > 1) {
-                TableColumn<HashMap<String, Object>, String> total = getTableColumn(Columns.TOTAL.name(), Columns.TOTAL.name());
-                tableView.getColumns().add(total);
+                tableView.getColumns().clear();
+                tableView.setItems(data);
+                tableView.refresh();
+                //Формируем колонку с категориями
+                TableColumn<HashMap<String, Object>, String> category = getTableColumn(Columns.CATEGORY.name(), Columns.CATEGORY.name());
+                tableView.getColumns().add(category);
+                //Формируем колонки по датам
+                for (LocalDate date : columnKeys.stream()
+                        .sorted(LocalDate::compareTo)
+                        .collect(Collectors.toList())) {
+                    if (sortPane != null && sortPane.getValue() == SORT_BY.ALL) {
+                        tableView.getColumns().add(getTableColumn(
+                                String.valueOf(date.getYear())
+                                , date.format(DateTimeFormatter.ISO_DATE)));
+                    } else {
+                        tableView.getColumns().add(getTableColumn(
+                                String.format(this.columnNamePattern, date.getMonth().name(), date.getYear())
+                                , date.format(DateTimeFormatter.ISO_DATE)));
+                    }
+                }
+
+                //формируем итоговый столбец если стобцов по датам больше 1
+                if (columnKeys.size() > 1) {
+                    TableColumn<HashMap<String, Object>, String> total = getTableColumn(Columns.TOTAL.name(), Columns.TOTAL.name());
+                    tableView.getColumns().add(total);
+                }
+
             }
         });
     }

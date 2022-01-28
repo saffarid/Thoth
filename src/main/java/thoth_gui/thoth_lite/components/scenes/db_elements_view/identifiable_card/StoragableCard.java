@@ -19,6 +19,7 @@ import javafx.scene.Node;
 
 import layout.basepane.HBox;
 import layout.basepane.VBox;
+import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -63,13 +64,13 @@ public class StoragableCard
 
         VBox vBox = new VBox();
 
-        article = getTextField(ControlsId.ARTICLE);
-        name = getTextField(ControlsId.NAME);
-        type = getComboBox(ControlsId.PRODUCT_TYPE);
+        this.article = getTextField(ControlsId.ARTICLE);
+        this.name = getTextField(ControlsId.NAME);
+        this.type = TypableComboBox.getInstance(AvaliableTables.PRODUCT_TYPES, ((Storagable) identifiable).getType());
         this.count = getTextField(ControlsId.COUNT);
-        countType = getComboBox(ControlsId.COUNT_TYPE);
-        adress = getComboBox(ControlsId.ADRESS);
-        note = new TextArea();
+        this.countType = TypableComboBox.getInstance(AvaliableTables.COUNT_TYPES, ((Storagable) identifiable).getCountType());
+        this.adress = TypableComboBox.getInstance(AvaliableTables.STORING, ((Storagable) identifiable).getAdress());
+        this.note = new TextArea();
 
 
         note.setText(((Storagable) identifiable).getNote());
@@ -119,66 +120,6 @@ public class StoragableCard
                 titleNode
                 , enterNode
         );
-
-        return res;
-    }
-
-    protected ComboBox getComboBox(ControlsId id) {
-        ComboBox res = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
-        res.setId(id.id);
-
-        res.setCellFactory(listedListView -> new ComboBoxListedCell());
-        res.setButtonCell(new ComboBoxListedCell());
-
-        Typable value = null;
-
-        try {
-            switch (id) {
-                case PRODUCT_TYPE: {
-                    res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.PRODUCT_TYPES)));
-
-                    value = ((Storagable) identifiable).getType();
-                    if (value == null) {
-                        res.setValue(res.getItems().get(0));
-                    } else {
-                        res.setValue(value);
-                    }
-                    break;
-                }
-                case COUNT_TYPE: {
-                    res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.COUNT_TYPES)));
-
-                    value = ((Storagable) identifiable).getCountType();
-                    if (value == null) {
-                        res.setValue(res.getItems().get(0));
-                    } else {
-                        res.setValue(value);
-                    }
-                    break;
-                }
-                case ADRESS: {
-                    res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORING)));
-
-                    value = ((Storagable) identifiable).getAdress();
-                    if (value == null) {
-                        res.setValue(res.getItems().get(0));
-                    } else {
-                        res.setValue(value);
-                    }
-                    break;
-                }
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-//        res.setMinWidth(120);
-//        res.setPrefWidth(120);
-//        res.setMaxWidth(120);
 
         return res;
     }

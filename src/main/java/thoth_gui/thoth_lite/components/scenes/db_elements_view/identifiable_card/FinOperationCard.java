@@ -2,12 +2,16 @@ package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_car
 
 import controls.ComboBox;
 import controls.Label;
+import controls.TextArea;
+import controls.TextField;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import layout.basepane.BorderPane;
+import layout.basepane.HBox;
 import layout.basepane.VBox;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
@@ -16,11 +20,12 @@ import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
+import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
+import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.Currency;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,15 +33,15 @@ public class FinOperationCard
         extends IdentifiableCard
         implements Apply, Cancel {
 
-    private enum ControlsId{
+    private enum ControlsId {
         FIN_OP_TYPE("fin-op-type"),
         VALUE("value"),
         DATE("date"),
         CURRENCY("currency"),
         COURSE("course"),
-        COMMENT("comment")
-        ;
+        COMMENT("comment");
         private String id;
+
         ControlsId(String id) {
             this.id = id;
         }
@@ -46,28 +51,32 @@ public class FinOperationCard
 
     /**
      * Категория финансовой операции
-     * */
+     */
     private controls.ComboBox<Typable> category;
     /**
      * Сумма финансовой операции
-     * */
+     */
     private controls.TextField value;
     /**
      * Дата совершения финансовой операции
-     * */
+     */
     private DatePicker dateFinOp;
     /**
      * Валюта покупки
-     * */
-    private controls.ComboBox<Currency> currency;
+     */
+    private controls.ComboBox<Finance> financeComboBox;
     /**
      * Курс валюты
+     */
+    private TextField course;
+    /**
+     * Подтягивание курса валюты из объекта финансов
      * */
-    private Double course;
+    private CheckBox courseFromFinance;
     /**
      * Комментарий к операции
-     * */
-    private String comment;
+     */
+    private TextArea comment;
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
@@ -81,18 +90,38 @@ public class FinOperationCard
         }
     }
 
+    private void changeCourse(){
+        if(courseFromFinance.isSelected()){
+            course.setText( String.valueOf(financeComboBox.getValue().getCourse()) );
+        }
+    }
+
     protected Node createContent() {
         contentNode = new BorderPane();
 
         VBox vBox = new VBox();
-            category = getComboBox(ControlsId.FIN_OP_TYPE);
-            value = getTextField(ControlsId.VALUE);
-            dateFinOp = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance();
-            vBox.getChildren().addAll(
-                    createRow(getLabel(ControlsId.FIN_OP_TYPE.id), category),
-                    createRow(getLabel(ControlsId.VALUE.id), value),
-                    createRow(getLabel(ControlsId.DATE.id), dateFinOp)
-            );
+        vBox.setFillWidth(true);
+
+        category = TypableComboBox.getInstance(categoryTable(), null);
+        value = getTextField(ControlsId.VALUE);
+        dateFinOp = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance();
+        financeComboBox = FinanceComboBox.getInstance();
+        course = getTextField(ControlsId.COURSE);
+        courseFromFinance = new CheckBox("use course from finance");
+        comment = new TextArea();
+
+        courseFromFinance.setIndeterminate(false);
+        course.disableProperty().bind(courseFromFinance.selectedProperty());
+        financeComboBox.valueProperty().addListener((observableValue, finance, t1) -> changeCourse());
+        courseFromFinance.selectedProperty().addListener((observableValue, aBoolean, t1) -> changeCourse());
+
+        vBox.getChildren().addAll(
+                createRow(getLabel(ControlsId.FIN_OP_TYPE.id), category),
+                createRow(getLabel(ControlsId.VALUE.id), value, financeComboBox),
+                createRow(getLabel(ControlsId.DATE.id), dateFinOp),
+                createRow(getLabel(ControlsId.COURSE.id), course, courseFromFinance),
+                createRow(getLabel(ControlsId.COMMENT.id), comment)
+        );
 
         contentNode.setCenter(vBox);
         contentNode.setBottom(
@@ -104,7 +133,7 @@ public class FinOperationCard
 
     private Node createRow(
             Node titleNode
-            , Node enterNode
+            , Node... enterNodes
     ) {
         VBox res = new VBox();
 
@@ -112,25 +141,36 @@ public class FinOperationCard
         res.setFillWidth(true);
         res.setPadding(new Insets(2));
 
-        res.getChildren().addAll(
-                titleNode
-                , enterNode
-        );
+        if (enterNodes.length > 1) {
+            HBox hBox = new HBox(enterNodes);
+            hBox.setSpacing(5);
+
+            res.getChildren().addAll(
+                    titleNode
+                    , hBox
+            );
+        }else{
+            res.getChildren().addAll(
+                    titleNode
+                    , Arrays.stream(enterNodes).findFirst().get()
+            );
+        }
+
 
         return res;
     }
 
-    private ComboBox getComboBox(ControlsId id){
-        ComboBox instance = thoth_gui.thoth_lite.components.controls.ComboBox.getInstance();
+    private ComboBox getComboBox(ControlsId id) {
+        ComboBox instance = thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox.getInstance();
 
         instance.setId(id.id);
 
-        switch (id){
-            case FIN_OP_TYPE:{
+        switch (id) {
+            case FIN_OP_TYPE: {
                 try {
                     instance.setCellFactory(listedListView -> new ComboBoxListedCell());
                     instance.setButtonCell(new ComboBoxListedCell());
-                    instance.setItems( FXCollections.observableList(ThothLite.getInstance().getDataFromTable(categoryTable())) );
+                    instance.setItems(FXCollections.observableList(ThothLite.getInstance().getDataFromTable(categoryTable())));
                 } catch (NotContainsException e) {
                     e.printStackTrace();
                 } catch (SQLException e) {
@@ -158,7 +198,7 @@ public class FinOperationCard
 
         res.textProperty().addListener((observableValue, s, t1) -> {
             switch (id) {
-                case VALUE: {
+                case VALUE: case COURSE: {
                     if (!t1.equals("")) {
                         Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
                         Matcher matcher = pattern.matcher(t1);
@@ -175,7 +215,7 @@ public class FinOperationCard
             if (t1 == false) {
 
                 switch (id) {
-                    case VALUE: {
+                    case VALUE: case COURSE: {
                         if (res.getText().equals("")) {
                             res.setText(String.valueOf(0.0));
                         }
@@ -295,12 +335,11 @@ public class FinOperationCard
     protected void updateIdentifiable() {
         ((FinancialAccounting) identifiable).setCategory(category.getValue());
         ((FinancialAccounting) identifiable).setValue(Double.parseDouble(value.getText()));
-        ((FinancialAccounting) identifiable).setDate(LocalDate.of(2021, Month.NOVEMBER, 20));
-        ((FinancialAccounting) identifiable).setFinance(null);
-        ((FinancialAccounting) identifiable).setCourse(1.);
-        ((FinancialAccounting) identifiable).setComment("");
+        ((FinancialAccounting) identifiable).setDate(dateFinOp.getValue());
+        ((FinancialAccounting) identifiable).setFinance(financeComboBox.getValue());
+        ((FinancialAccounting) identifiable).setCourse(Double.parseDouble(course.getText()));
+        ((FinancialAccounting) identifiable).setComment(comment.getText());
     }
-
 
 
 }

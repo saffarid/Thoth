@@ -40,7 +40,7 @@ public class Incomes
             row.put(INCOMES_TYPE_ID, financialAccounting.getCategory().getValue());
             row.put(VALUE, financialAccounting.getValue());
             row.put(DATE, financialAccounting.getDate().format(DateTimeFormatter.ISO_DATE));
-            row.put(CURRENCY_ID, financialAccounting.getFinance().getCurrency());
+            row.put(CURRENCY_ID, financialAccounting.getFinance().getCurrency().getCurrencyCode());
             row.put(COURSE, financialAccounting.getCourse());
             row.put(COMMENT, financialAccounting.getComment());
 

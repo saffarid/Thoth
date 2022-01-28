@@ -116,7 +116,7 @@ public class StructureDescription {
     public static class Currency {
         public static final String TABLE_NAME = "currency";
 //        public static final String ID = "id";
-        public static final String CURRENCY = "currency";
+        public static final String CURRENCY = "currency_code";
         public static final String COURSE = "course";
     }
 
