@@ -36,7 +36,7 @@ public class FinishableView
     public FinishableView() {
         super();
 
-        list = new ListView();
+        list = thoth_gui.thoth_lite.components.controls.ListView.getInstance();
         list.setBorder(
                 new BorderWrapper()
                         .addTopBorder(1)

@@ -1,29 +1,26 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
-import controls.ComboBox;
 import controls.Label;
 import controls.TextArea;
 import controls.TextField;
-import javafx.collections.FXCollections;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
-import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import layout.basepane.VBox;
-import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
-import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
-import thoth_gui.thoth_lite.components.controls.ButtonBar;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
+import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -58,6 +55,10 @@ public class FinOperationCard
      */
     private controls.TextField value;
     /**
+     * Сумма финансовой операции
+     */
+    private DoubleProperty valueProperty;
+    /**
      * Дата совершения финансовой операции
      */
     private DatePicker dateFinOp;
@@ -70,8 +71,12 @@ public class FinOperationCard
      */
     private TextField course;
     /**
+     * Курс валюты
+     */
+    private DoubleProperty courseProperty;
+    /**
      * Подтягивание курса валюты из объекта финансов
-     * */
+     */
     private CheckBox courseFromFinance;
     /**
      * Комментарий к операции
@@ -80,6 +85,7 @@ public class FinOperationCard
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
+
     }
 
     private AvaliableTables categoryTable() {
@@ -90,30 +96,44 @@ public class FinOperationCard
         }
     }
 
-    private void changeCourse(){
-        if(courseFromFinance.isSelected()){
-            course.setText( String.valueOf(financeComboBox.getValue().getCourse()) );
+    private void changeCourse() {
+        if (courseFromFinance.isSelected()) {
+            course.setText(String.valueOf(financeComboBox.getValue().getCourse()));
         }
     }
 
     protected Node createContent() {
-        contentNode = new BorderPane();
+        super.createContent();
 
         VBox vBox = new VBox();
         vBox.setFillWidth(true);
 
+        valueProperty = new SimpleDoubleProperty();
+        courseProperty = new SimpleDoubleProperty();
+
         category = TypableComboBox.getInstance(categoryTable(), null);
-        value = getTextField(ControlsId.VALUE);
+        value = getTextField(ControlsId.VALUE, String.valueOf(0.0));
         dateFinOp = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance();
         financeComboBox = FinanceComboBox.getInstance();
-        course = getTextField(ControlsId.COURSE);
-        courseFromFinance = new CheckBox("use course from finance");
+        course = getTextField(ControlsId.COURSE, String.valueOf(0.0));
+        courseFromFinance = thoth_gui.thoth_lite.components.controls.CheckBox.getInstance("use course from finance");
         comment = new TextArea();
 
         courseFromFinance.setIndeterminate(false);
         course.disableProperty().bind(courseFromFinance.selectedProperty());
         financeComboBox.valueProperty().addListener((observableValue, finance, t1) -> changeCourse());
         courseFromFinance.selectedProperty().addListener((observableValue, aBoolean, t1) -> changeCourse());
+
+        Bindings.bindBidirectional(value.textProperty(), valueProperty, new StringDoubleConverter());
+
+        Bindings.bindBidirectional(course.textProperty(), courseProperty, new StringDoubleConverter());
+
+        apply.disableProperty().bind(
+                category.valueProperty().isNull()
+                        .or(valueProperty.lessThan(StringDoubleConverter.priceMin))
+                        .or(financeComboBox.valueProperty().isNull())
+                        .or(courseProperty.lessThan(StringDoubleConverter.courseMin))
+        );
 
         vBox.getChildren().addAll(
                 createRow(getLabel(ControlsId.FIN_OP_TYPE.id), category),
@@ -124,9 +144,6 @@ public class FinOperationCard
         );
 
         contentNode.setCenter(vBox);
-        contentNode.setBottom(
-                ButtonBar.getInstance(event -> apply(), event -> cancel())
-        );
 
         return contentNode;
     }
@@ -149,7 +166,7 @@ public class FinOperationCard
                     titleNode
                     , hBox
             );
-        }else{
+        } else {
             res.getChildren().addAll(
                     titleNode
                     , Arrays.stream(enterNodes).findFirst().get()
@@ -160,30 +177,6 @@ public class FinOperationCard
         return res;
     }
 
-    private ComboBox getComboBox(ControlsId id) {
-        ComboBox instance = thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox.getInstance();
-
-        instance.setId(id.id);
-
-        switch (id) {
-            case FIN_OP_TYPE: {
-                try {
-                    instance.setCellFactory(listedListView -> new ComboBoxListedCell());
-                    instance.setButtonCell(new ComboBoxListedCell());
-                    instance.setItems(FXCollections.observableList(ThothLite.getInstance().getDataFromTable(categoryTable())));
-                } catch (NotContainsException e) {
-                    e.printStackTrace();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return instance;
-    }
-
     private Label getLabel(String text) {
         Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(text);
         res.setMinWidth(120);
@@ -192,36 +185,43 @@ public class FinOperationCard
         return res;
     }
 
-    private controls.TextField getTextField(ControlsId id) {
-        controls.TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance();
+    private controls.TextField getTextField(ControlsId id, String defaultText) {
+        controls.TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance(defaultText);
         res.setId(id.id);
 
         res.textProperty().addListener((observableValue, s, t1) -> {
-            switch (id) {
-                case VALUE: case COURSE: {
-                    if (!t1.equals("")) {
-                        Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
-                        Matcher matcher = pattern.matcher(t1);
-
-                        if (!matcher.matches()) {
-                            res.setText(s);
-                        }
+            if (!t1.equals("")) {
+                Pattern pattern = null;
+                switch (id) {
+                    case VALUE: {
+                        pattern = Pattern.compile(StringDoubleConverter.priceRegEx);
+                        break;
                     }
+                    case COURSE: {
+                        pattern = Pattern.compile(StringDoubleConverter.courseRegEx);
+                        break;
+                    }
+                    default: pattern = null;
+                }
+
+                Matcher matcher = pattern.matcher(t1);
+
+                if (!matcher.matches()) {
+                    res.setText(s);
                 }
             }
         });
 
         res.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1 == false) {
-
                 switch (id) {
-                    case VALUE: case COURSE: {
+                    case VALUE:
+                    case COURSE: {
                         if (res.getText().equals("")) {
                             res.setText(String.valueOf(0.0));
                         }
                     }
                 }
-
             }
         });
         return res;

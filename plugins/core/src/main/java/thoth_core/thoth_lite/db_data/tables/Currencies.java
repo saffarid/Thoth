@@ -31,7 +31,7 @@ public class Currencies
         for (Identifiable identifiable : list) {
             HashMap<String, Object> map = new HashMap<>();
             Finance currency = (Finance) identifiable;
-            map.put(CURRENCY, currency.getCurrency());
+            map.put(CURRENCY, currency.getCurrency().getCurrencyCode());
             map.put(COURSE, currency.getCourse());
             datas.add(map);
         }

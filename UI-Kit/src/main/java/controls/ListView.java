@@ -18,15 +18,6 @@ public class ListView<T>
     }
 
     private void init(){
-        getStylesheets().add(
-                getClass().getResource("/style/controls/list-view.css").toExternalForm()
-        );
-
-        setBackground(
-                new BackgroundWrapper()
-                        .setColor(Color.TRANSPARENT)
-                        .commit()
-        );
 
     }
 }

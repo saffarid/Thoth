@@ -1,11 +1,14 @@
 package thoth_gui.thoth_lite.components.controls;
 
+import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import thoth_gui.config.Config;
 import javafx.scene.Node;
 import org.json.simple.parser.ParseException;
+import thoth_gui.thoth_styleconstants.Stylesheets;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public class Label {
 
@@ -18,23 +21,33 @@ public class Label {
             e.printStackTrace();
         }
     }
+    private static void connectStyle(controls.Label node){
+        CompletableFuture
+                .supplyAsync(() -> Stylesheets.LABEL.getStylesheet())
+                .thenAccept(s -> {
+                    Platform.runLater(() -> node.getStylesheets().add(s));
+                });
+    }
 
     public static controls.Label getInstanse(){
         controls.Label label = new controls.Label();
         label.setTextFill(Color.WHITE);
         bindFont(label);
+        connectStyle(label);
         return label;
     }
     public static controls.Label getInstanse(String s){
         controls.Label label = new controls.Label(s);
         label.setTextFill(Color.WHITE);
         bindFont(label);
+        connectStyle(label);
         return label;
     }
     public static controls.Label getInstanse(String s, Node node){
         controls.Label label = new controls.Label(s, node);
         label.setTextFill(Color.WHITE);
         bindFont(label);
+        connectStyle(label);
         return label;
     }
 }

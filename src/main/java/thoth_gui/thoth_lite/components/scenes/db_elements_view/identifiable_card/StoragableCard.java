@@ -1,18 +1,18 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
-import thoth_core.thoth_lite.exceptions.NotContainsException;
-import thoth_core.thoth_lite.ThothLite;
 
 import controls.ComboBox;
 import controls.Label;
 import controls.TextArea;
 import controls.TextField;
 
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -20,9 +20,8 @@ import javafx.scene.Node;
 import layout.basepane.HBox;
 import layout.basepane.VBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
+import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
 
-import java.sql.SQLException;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +33,7 @@ public class StoragableCard
     private ComboBox type;
     private ComboBox adress;
     private TextField count;
+    private DoubleProperty countProperty;
     private ComboBox countType;
     private TextArea note;
 
@@ -64,6 +64,8 @@ public class StoragableCard
 
         VBox vBox = new VBox();
 
+        countProperty = new SimpleDoubleProperty();
+
         this.article = getTextField(ControlsId.ARTICLE);
         this.name = getTextField(ControlsId.NAME);
         this.type = TypableComboBox.getInstance(AvaliableTables.PRODUCT_TYPES, ((Storagable) identifiable).getType());
@@ -72,6 +74,7 @@ public class StoragableCard
         this.adress = TypableComboBox.getInstance(AvaliableTables.STORING, ((Storagable) identifiable).getAdress());
         this.note = new TextArea();
 
+        Bindings.bindBidirectional(this.count.textProperty(), countProperty, new StringDoubleConverter());
 
         note.setText(((Storagable) identifiable).getNote());
 
@@ -80,13 +83,13 @@ public class StoragableCard
                         .or(name.textProperty().isEqualTo(""))
                         .or(type.valueProperty().isNull())
                         .or(this.count.textProperty().isEqualTo(""))
+                        .or(countProperty.lessThan(StringDoubleConverter.countMin))
                         .or(countType.valueProperty().isNull())
                         .or(adress.valueProperty().isNull())
         );
 
         HBox count = new HBox();
         count.setSpacing(5);
-//        count.setPadding(new Insets(2));
         count.getChildren().addAll(
                 this.count
                 , countType
@@ -155,7 +158,7 @@ public class StoragableCard
             switch (id) {
                 case COUNT: {
                     if (!t1.equals("")) {
-                        Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
+                        Pattern pattern = Pattern.compile(StringDoubleConverter.countRegEx);
                         Matcher matcher = pattern.matcher(t1);
 
                         if (!matcher.matches()) {

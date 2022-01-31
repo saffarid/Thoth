@@ -123,7 +123,6 @@ public abstract class IdentifiableCard
         );
     }
 
-    //    protected abstract Node createContent();
     protected Node createContent() {
         contentNode = new BorderPane();
 
@@ -133,8 +132,6 @@ public abstract class IdentifiableCard
 
         return contentNode;
     }
-
-    ;
 
     protected abstract Identifiable identifiableInstance();
 
@@ -167,26 +164,6 @@ public abstract class IdentifiableCard
     }
 
     protected abstract void updateIdentifiable();
-
-    protected class ComboBoxListedCell extends ListCell<Typable> {
-        @Override
-        protected void updateItem(Typable typable, boolean b) {
-            if (typable != null) {
-                super.updateItem(typable, b);
-                setText(typable.getValue());
-            }
-        }
-    }
-
-    protected class ComboBoxCurrencyCell extends ListCell<Currency> {
-        @Override
-        protected void updateItem(Currency currency, boolean b) {
-            if (currency != null) {
-                super.updateItem(currency, b);
-                setText(currency.getCurrency().getCurrencyCode());
-            }
-        }
-    }
 
     @Override
     public void close() {

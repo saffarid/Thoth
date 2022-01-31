@@ -13,7 +13,6 @@ public class TextField extends javafx.scene.control.TextField {
     }
 
     private void init(){
-        getStylesheets().add(getClass().getResource("/style/controls/text_field.css").toExternalForm());
     }
 
 }

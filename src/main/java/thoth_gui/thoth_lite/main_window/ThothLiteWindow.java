@@ -1,9 +1,12 @@
 package thoth_gui.thoth_lite.main_window;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
+import main.Main;
 import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
+import thoth_gui.thoth_styleconstants.Stylesheets;
 import tools.BackgroundWrapper;
 import tools.BorderWrapper;
 import tools.SvgWrapper;
@@ -36,6 +39,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 public class ThothLiteWindow
@@ -150,6 +154,16 @@ public class ThothLiteWindow
 
     @Override
     protected void initStyle() {
+
+        CompletableFuture
+                .supplyAsync(() -> Stylesheets.COLORS.getStylesheet())
+                        .thenAccept(s -> {
+                            Platform.runLater(() -> {
+                                getStyleClass().add("dark");
+                                getStylesheets().add(s);
+                            });
+                        });
+
         setBackground(
                 new BackgroundWrapper()
                         .setColor(config.getScene().getTheme().PRIMARY())

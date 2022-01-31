@@ -126,7 +126,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected abstract SortPane getSortPane();
 
     protected ListView<T> createListView(){
-        identifiableElementList = new ListView<>();
+        identifiableElementList = thoth_gui.thoth_lite.components.controls.ListView.getInstance();
         identifiableElementList.setPadding(new Insets(2));
 
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));

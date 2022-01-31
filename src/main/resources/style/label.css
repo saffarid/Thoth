@@ -1,0 +1,7 @@
+.label{
+    -fx-text-fill:-text;
+}
+
+.label:disabled{
+    -fx-text-fill:-text_disable;
+}

@@ -7,6 +7,7 @@ import database.Exceptions.NotSupportedOperation;
 import database.Table;
 
 import java.util.Currency;
+import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -236,7 +237,11 @@ public class DBLiteStructure extends DataBaseSQL {
                     .collect(Collectors.toList())){
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(currencyCodeColumn, currency.getCurrencyCode());
-                contentValues.put(courseColumn, 1.0);
+                if (currency.getCurrencyCode().equals(java.util.Currency.getInstance(Locale.getDefault()).getCurrencyCode())){
+                    contentValues.put(courseColumn, 1.0);
+                }else{
+                    contentValues.put(courseColumn, 0.0);
+                }
                 this.contentValues.add(contentValues);
             }
         }

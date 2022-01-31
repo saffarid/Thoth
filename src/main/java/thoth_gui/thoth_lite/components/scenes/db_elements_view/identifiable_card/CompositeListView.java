@@ -91,7 +91,7 @@ public class CompositeListView
         setCenter(createContent());
         setBottom(createTotal());
 
-        getStylesheets().add(getClass().getResource(Stylesheets.IDENTIFIABLE_LIST).toExternalForm());
+        getStylesheets().add(Stylesheets.IDENTIFIABLE_LIST.getStylesheet());
     }
 
     private Node createNewStoringRow() {

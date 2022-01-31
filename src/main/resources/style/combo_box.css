@@ -1,0 +1,21 @@
+.combo-box{
+    -fx-background-color: -active;
+    -fx-background-radius:0;
+    -fx-border-radius: 0;
+    -fx-border-color: -active;
+    -fx-border-width:0 0 1px 0;
+    -fx-border-style: solid;
+    -fx-text-fill: -text;
+}
+
+.combo-box:hover{
+    -fx-border-color: -border;
+    -fx-text-fill:-text_hover;
+}
+
+.combo-box .list-view{
+    -fx-background-color:-primary;
+    -fx-border-color:-border;
+    -fx-border-style:solid;
+
+}

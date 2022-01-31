@@ -21,7 +21,6 @@ public class Label extends javafx.scene.control.Label {
     }
 
     private void init(){
-        getStylesheets().add(getClass().getResource("/style/controls/label.css").toExternalForm());
     }
 
     public Label setPadding(double padding){

@@ -1,0 +1,20 @@
+.check-box{
+    -fx-background-color:transparent;
+    -fx-text-fill: -text;
+}
+
+.check-box:hover{
+    -fx-text-fill: -text_hover;
+}
+
+.check-box:disabled{
+    -fx-text-fill: -text_disable;
+}
+
+.check-box .box{
+    -fx-background-color:transparent;
+    -fx-background-radius:0;
+    -fx-border-color: -border;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+}

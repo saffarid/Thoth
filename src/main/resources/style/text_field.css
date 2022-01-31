@@ -2,10 +2,10 @@
     -fx-background-color:transparent;
     -fx-background-insets:0;
     -fx-background-radius:0;
-    -fx-border-color:#FFC107;
+    -fx-border-color:-border;
     -fx-border-style:solid;
     -fx-border-width:0 0 2px 0;
-    -fx-text-fill:#F8F9FA;
+    -fx-text-fill:-text;
 }
 
 .text-area{
@@ -16,18 +16,17 @@
 }
 
 .text-area .scroll-pane, .text-area .scroll-pane .content{
-    -fx-background-color:#343A40;
+    -fx-background-color:-primary;
     -fx-background-insets:0;
     -fx-background-radius:0;
-
 }
 
 .text-area:hover, .text-field:hover{
-    -fx-border-color:#E0A800;
-    -fx-text-fill:#E2E6EA;
+    -fx-border-color:-border;
+    -fx-text-fill:-text_hover;
 }
 
 .text-area:disabled, .text-field:disabled{
-    -fx-border-color:#FFD75E;
-    -fx-text-fill:#FAFCFC;
+    -fx-border-color:-border;
+    -fx-text-fill:-text_disable;
 }

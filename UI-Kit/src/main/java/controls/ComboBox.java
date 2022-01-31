@@ -4,8 +4,6 @@ import javafx.collections.ObservableList;
 
 public class ComboBox<T> extends javafx.scene.control.ComboBox<T> {
 
-    private final static String STYLESHEET_COMBO_BOX = "/style/controls/combo-box.css";
-    private final static String STYLESHEET_LIST_VIEW = "/style/layout/panes/custom/list_view.css";
 
     public ComboBox() {
         super();
@@ -18,10 +16,5 @@ public class ComboBox<T> extends javafx.scene.control.ComboBox<T> {
     }
 
     private void init(){
-        getStylesheets().addAll(
-                getClass().getResource(STYLESHEET_COMBO_BOX).toExternalForm()
-                , getClass().getResource(STYLESHEET_LIST_VIEW).toExternalForm()
-        );
-
     }
 }

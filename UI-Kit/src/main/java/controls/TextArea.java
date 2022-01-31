@@ -13,6 +13,5 @@ public class TextArea extends javafx.scene.control.TextArea {
     }
 
     private void init(){
-        getStylesheets().add(getClass().getResource("/style/controls/text_field.css").toExternalForm());
     }
 }
