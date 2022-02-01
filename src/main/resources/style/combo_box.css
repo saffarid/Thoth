@@ -17,5 +17,20 @@
     -fx-background-color:-primary;
     -fx-border-color:-border;
     -fx-border-style:solid;
+}
 
+.combo-box .list-cell{
+    -fx-text-fill:-text;
+}
+
+.combo-box:hover .list-cell{
+    -fx-text-fill:-text_hover;
+}
+
+.combo-box .arrow-button .arrow{
+    -fx-background-color:-light;
+}
+
+.combo-box:hover .arrow-button .arrow{
+    -fx-background-color:-light_hover;
 }

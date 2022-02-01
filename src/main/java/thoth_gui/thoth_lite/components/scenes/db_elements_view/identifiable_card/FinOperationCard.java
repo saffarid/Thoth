@@ -117,7 +117,7 @@ public class FinOperationCard
         financeComboBox = FinanceComboBox.getInstance();
         course = getTextField(ControlsId.COURSE, String.valueOf(0.0));
         courseFromFinance = thoth_gui.thoth_lite.components.controls.CheckBox.getInstance("use course from finance");
-        comment = new TextArea();
+        comment = thoth_gui.thoth_lite.components.controls.TextArea.getInstance();
 
         courseFromFinance.setIndeterminate(false);
         course.disableProperty().bind(courseFromFinance.selectedProperty());
@@ -125,7 +125,6 @@ public class FinOperationCard
         courseFromFinance.selectedProperty().addListener((observableValue, aBoolean, t1) -> changeCourse());
 
         Bindings.bindBidirectional(value.textProperty(), valueProperty, new StringDoubleConverter());
-
         Bindings.bindBidirectional(course.textProperty(), courseProperty, new StringDoubleConverter());
 
         apply.disableProperty().bind(

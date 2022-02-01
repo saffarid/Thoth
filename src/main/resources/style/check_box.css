@@ -18,3 +18,7 @@
     -fx-border-width: 2px;
     -fx-border-style: solid;
 }
+
+.check-box:selected .box .mark{
+    -fx-background-color:white;
+}

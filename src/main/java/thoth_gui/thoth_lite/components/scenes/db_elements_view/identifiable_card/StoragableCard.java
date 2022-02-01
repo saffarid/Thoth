@@ -72,7 +72,7 @@ public class StoragableCard
         this.count = getTextField(ControlsId.COUNT);
         this.countType = TypableComboBox.getInstance(AvaliableTables.COUNT_TYPES, ((Storagable) identifiable).getCountType());
         this.adress = TypableComboBox.getInstance(AvaliableTables.STORING, ((Storagable) identifiable).getAdress());
-        this.note = new TextArea();
+        this.note = thoth_gui.thoth_lite.components.controls.TextArea.getInstance();
 
         Bindings.bindBidirectional(this.count.textProperty(), countProperty, new StringDoubleConverter());
 

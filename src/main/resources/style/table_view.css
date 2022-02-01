@@ -1,0 +1,65 @@
+.table-view{
+    -fx-background-color: transparent;
+    -fx-padding:2px;
+}
+
+.column-overlay{
+    -fx-background-color: -secondary;
+}
+
+.table-view .column-resize-line{
+    -fx-background-color:-secondary;
+}
+
+.table-view .placeholder{
+    -fx-background-color:transparent;
+}
+
+.table-view .column-header-background{
+    -fx-background-color:transparent;
+}
+
+.table-view .nested-column-header{
+    -fx-background-color:transparent;
+}
+
+.table-view .column-header-background .nested-column-header .column-header{
+    -fx-background-color:-primary;
+    -fx-border-color:-light;
+    -fx-border-width: 0 1px 1px 0;
+    -fx-border-style:solid;
+}
+
+.table-view .column-header-background .nested-column-header .column-header:last-visible{
+    -fx-background-color:-primary;
+    -fx-border-color:-light;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-style:solid;
+}
+
+.table-view .column-header-background{
+    -fx-background-color:transparent;
+}
+.table-view .column-header-background .column-drag-header{
+-fx-background-color:transparent;
+}
+
+.table-view .column-header-background .label{
+    -fx-text-fill:-text;
+}
+
+.table-view .table-column{
+-fx-background-color:transparent;
+}
+
+.table-view .cell{
+    -fx-alignment:center;
+    -fx-background-color:transparent;
+    -fx-background-insets:0;
+    -fx-padding:0;
+    -fx-text-fill:-text;
+}
+
+.table-view .cell:hover{
+    -fx-text-fill:-text_hover;
+}
