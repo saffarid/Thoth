@@ -152,7 +152,7 @@ public class PurchasableCard extends IdentifiableCard {
     }
 
     private DatePicker getDatePicker(){
-        DatePicker datePicker = new DatePicker(((Purchasable) identifiable).finishDate());
+        DatePicker datePicker = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance(((Purchasable) identifiable).finishDate());
 
         datePicker.setMinWidth(120);
         datePicker.setPrefWidth(120);
@@ -207,7 +207,7 @@ public class PurchasableCard extends IdentifiableCard {
 
             private String orderNumber;
             private Partnership store;
-            private LocalDate deliveryDate;
+            private LocalDate deliveryDate = LocalDate.now();
             private boolean isDelivered = false;
             private List<Storing> purchasedProducts = new LinkedList<>();
 
