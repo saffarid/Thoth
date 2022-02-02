@@ -114,12 +114,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         toolsNode.setLeft(getSortPane());
         toolsNode.setRight( new BorderPane(getButton(Ids.IDENTIFIABLE_ADD, this::openCreateNewIdentifiable )) );
 
-        toolsNode.setBackground(
-                new BackgroundWrapper()
-                        .setColor(Color.BISQUE)
-                        .commit()
-        );
-
         return toolsNode;
     }
 
@@ -149,7 +143,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         Node img;
         switch (id){
             case IDENTIFIABLE_ADD:{
-                img = SvgWrapper.getInstance(Images.PLUS(), 20, 20);
+                img = SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool);
                 break;
             }
             default: img = null;

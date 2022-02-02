@@ -11,11 +11,6 @@ public class SortedPane
 {
     protected SortedPane() {
         super();
-        setBackground(
-                new BackgroundWrapper()
-                        .setColor(Color.RED)
-                        .commit()
-        );
 
         setSpacing(2);
         setAlignment(Pos.CENTER_LEFT);

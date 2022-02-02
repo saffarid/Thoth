@@ -10,11 +10,19 @@ import layout.basepane.HBox;
 
 import javafx.scene.Node;
 import javafx.beans.property.SimpleObjectProperty;
+import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.BorderWrapper;
+import tools.SvgWrapper;
 
 import java.util.Stack;
 
 public class Workspace
         extends BorderPane {
+
+    public final static double svgWidthTools = 20;
+    public final static double svgHeightTools = 20;
+    public final static double svgViewBoxWidthTools = 30;
+    public final static double svgViewBoxHeightTools = 30;
 
     private static Workspace workspace;
 
@@ -50,8 +58,14 @@ public class Workspace
         this.toolsPanel.setPadding(new Insets(2));
         HBox toolsPanel = new HBox();
         toolsPanel.setSpacing(2);
-        back = Button.getInstance("back", event -> stepToPreviousScene());
-        next = Button.getInstance("next", event -> stepToNextScene());
+        toolsPanel.setPadding(new Insets(0, 5, 0, 0));
+        back = Button.getInstance(
+                SvgWrapper.getInstance(Images.ARROW_LEFT(), svgWidthTools, svgHeightTools, svgViewBoxWidthTools, svgViewBoxHeightTools)
+                , event -> stepToPreviousScene());
+        next = Button.getInstance(
+                SvgWrapper.getInstance(Images.ARROW_RIGHT(), svgWidthTools, svgHeightTools, svgViewBoxWidthTools, svgViewBoxHeightTools)
+                , event -> stepToNextScene()
+        );
 
         toolsPanel.getChildren().addAll(
                 back,

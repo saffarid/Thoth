@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 public class ContentValues extends HashMap<TableColumn, Object> {
 
-    private final String TEMPLATE_COMAND_INSERT = "(\n\t%2s\n) values (\n\t%3s)";
-    private final String TEMPLATE_COMAND_UPDATE = "`%1s`=%2s\n";
+    private final String TEMPLATE_COMAND_INSERT = "(\n\t%1$s\n) values (\n\t%2$s)";
+    private final String TEMPLATE_COMAND_UPDATE = "`%1$s`=%2$s\n";
 
     /**
      * Преобразование объекта в строку при создании таблицы в БД
@@ -20,8 +20,8 @@ public class ContentValues extends HashMap<TableColumn, Object> {
         StringBuilder colName = new StringBuilder("");
         StringBuilder colValue = new StringBuilder("");
 
-        String strColNameTemplate = "`%1s`";
-        String strColValTemplate = "\'%1s\'";
+        String strColNameTemplate = "`%1$s`";
+        String strColValTemplate = "\'%1$s\'";
 
         List<TableColumn> columns = new LinkedList<>(keySet());
         //Отфильтруем все значения по null
@@ -68,11 +68,11 @@ public class ContentValues extends HashMap<TableColumn, Object> {
             /*
              * Необходимо определить ID строки внешней таблицы, в contentValues содержится значения для пользователя
              * */
-            String subRequestTemplate = "(select `%1s` from `%2s` where %3s)";
+            String subRequestTemplate = "(select `%1$s` from `%2$s` where %3$s)";
             String whereTempalte =
                     (value instanceof String)
-                            ? ("`%1s` = \'%2s\'")
-                            : ("`%1s` = %2s");
+                            ? ("`%1$s` = \'%2$s\'")
+                            : ("`%1$s` = %2$s");
             StringBuilder whereBuilder = new StringBuilder("");
             if (foreignKey instanceof Autoincrement) {
                 //Обработка случая, когда внешний ключ ссылается на первичный автоинкрементируемый ключ внешней таблицы
@@ -92,7 +92,7 @@ public class ContentValues extends HashMap<TableColumn, Object> {
                 * Логика формирования блока colName1 = value or colName2 = value or colName3 = value.*/
                 for (TableColumn col : collect) {
                     whereBuilder.append(
-                            String.format(whereTempalte, col.getName(), value)
+                            String.format(whereTempalte, col.getName().trim(), value.toString().trim())
                     );
                     if (collect.indexOf(col) != collect.size() - 1) {
                         whereBuilder.append(" or ");
@@ -116,7 +116,7 @@ public class ContentValues extends HashMap<TableColumn, Object> {
                         subRequestTemplate,
                         tableParent.getPrimaryKeyColumn().getName(),   //1
                         tableParent.getName(),     //2
-                        String.format(whereTempalte, foreignKey.getName(), value)
+                        String.format(whereTempalte, foreignKey.getName().trim(), value.toString().trim())
                 );
 //                colValue.append("(" + subRequest + ")");
             }

@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -15,6 +16,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.util.Callback;
 import layout.basepane.BorderPane;
+import layout.basepane.HBox;
 import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
@@ -187,15 +189,25 @@ public class FinancialOperations
     private Node createToolsNode() {
         toolsNode = new BorderPane();
         toolsNode.setLeft(sortPane);
-        toolsNode.setCenter(
-                ButtonBar.getInstance(
-                        event -> contentNode.setCenter(finOpHistoryTable),
+        HBox hBox = new HBox();
+        hBox.setPadding(new Insets(0, 0, 0, 5));
+        hBox.getChildren().addAll(
+                Button.getInstance(
+                        SvgWrapper.getInstance(Images.HISTORY(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
+                        event -> contentNode.setCenter(finOpHistoryTable)
+                ),
+                Button.getInstance(
+                        SvgWrapper.getInstance(Images.STATISTIC(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
                         event -> contentNode.setCenter(finOpSumTable)
                 )
         );
+        toolsNode.setCenter(
+                hBox
+        );
         toolsNode.setRight(
                 Button.getInstance(
-                        SvgWrapper.getInstance(Images.PLUS(), 20, 20), event -> Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null))
+                        SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
+                        event -> Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null))
                 )
         );
         return toolsNode;

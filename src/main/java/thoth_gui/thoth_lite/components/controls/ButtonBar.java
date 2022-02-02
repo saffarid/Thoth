@@ -13,13 +13,6 @@ public class ButtonBar {
         javafx.scene.control.ButtonBar buttonBar = new javafx.scene.control.ButtonBar();
 
         buttonBar.setPadding(new Insets(2));
-        buttonBar.setBorder(
-                new BorderWrapper()
-                        .addTopBorder(1)
-                        .setColor(Color.GREY)
-                        .setStyle(BorderStrokeStyle.SOLID)
-                        .commit()
-        );
 
         return buttonBar;
     }
