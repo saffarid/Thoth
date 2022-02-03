@@ -2,6 +2,7 @@ package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_car
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
 import layout.basepane.VBox;
@@ -32,9 +33,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
 import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.BackgroundWrapper;
+import tools.BorderWrapper;
 import tools.SvgWrapper;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,6 +76,8 @@ public class CompositeListView
         }
     }
 
+    private final static double widthPallete = 200;
+
     private boolean identifiableIsNew;
 
     private SimpleListProperty<Storing> items;
@@ -88,21 +94,29 @@ public class CompositeListView
 //        setPadding(new Insets(2));
 
         setTop(createTitle());
-        setCenter(createContent());
-        setBottom(createTotal());
+        setLeft(createNewStoringRow());
+        setCenter(createList());
+//        setBottom(createTotal());
 
         getStylesheets().add(Stylesheets.IDENTIFIABLE_LIST.getStylesheet());
     }
 
     private Node createNewStoringRow() {
-        FlowPane newStoringNode = new FlowPane(Orientation.HORIZONTAL, 5, 5);
+        VBox newStoringNode = new VBox();
 
-        newStoringNode.setColumnHalignment(HPos.LEFT);
-        newStoringNode.setRowValignment(VPos.CENTER);
+        newStoringNode.setMinWidth(widthPallete);
+        newStoringNode.setPrefWidth(widthPallete);
+        newStoringNode.setMaxWidth(300);
 
-        newStoringNode.setAlignment(Pos.CENTER_LEFT);
+        newStoringNode.setFillWidth(true);
 
-        newStoringNode.setPadding(new Insets(2));
+        newStoringNode.setBorder(
+                new BorderWrapper()
+                        .addRightBorder(1)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .setColor(Color.GREY)
+                        .commit()
+        );
 
         if (!identifiableIsNew) {
             newStoringNode.setDisable(true);
@@ -110,10 +124,16 @@ public class CompositeListView
 
         ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
         TextField count = getTextField(COUNT);
-        ComboBox<Typable> countTypeComboBox = TypableComboBox.getInstance(AvaliableTables.COUNT_TYPES, null);
-        Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20));
+        Label countType = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
         TextField price = getTextField(PRICE);
         ComboBox<Finance> financeComboBox = FinanceComboBox.getInstance();
+        Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20));
+
+        storagableComboBox.valueProperty().addListener((observableValue, storagable, t1) -> {
+            if(storagable != null){
+                countType.setText(storagable.getCountType().getValue());
+            }
+        });
 
         addButton.setOnAction(actionEvent -> {
             Storing newStoring = new Storing() {
@@ -187,7 +207,7 @@ public class CompositeListView
 
             newStoring.setStorageable(storagableComboBox.getValue());
             newStoring.setCount(Double.parseDouble(count.getText()));
-            newStoring.setCountType(countTypeComboBox.getValue());
+            newStoring.setCountType(storagableComboBox.getValue().getCountType());
             newStoring.setPrice(Double.parseDouble(price.getText()));
             newStoring.setCurrency(financeComboBox.getValue());
 
@@ -210,35 +230,26 @@ public class CompositeListView
 
             storagableComboBox.setValue(null);
             count.setText("");
-            countTypeComboBox.setValue(countTypeComboBox.getItems().get(0));
+//            countType.setValue(countType.getItems().get(0));
             price.setText("");
             financeComboBox.setValue(financeComboBox.getItems().get(0));
         });
 
-        HBox wrapStoragable = getHBox();
-        wrapStoragable.getChildren().addAll(
-                getLabel(STORAGABLE)
-                , storagableComboBox
-        );
-
-        HBox wrapCount = getHBox();
-        wrapCount.getChildren().addAll(
-                getLabel(COUNT_TYPE)
-                , count
-                , countTypeComboBox
-        );
-
-        HBox wrapPrice = getHBox();
-        wrapPrice.getChildren().addAll(
-                getLabel(PRICE)
-                , price
-                , financeComboBox
-        );
-
         newStoringNode.getChildren().addAll(
-                wrapStoragable
-                , wrapCount
-                , wrapPrice
+                createRow(
+                        thoth_gui.thoth_lite.components.controls.Label.getInstanse(STORAGABLE)
+                        , storagableComboBox
+                )
+                , createRow(
+                        thoth_gui.thoth_lite.components.controls.Label.getInstanse(COUNT)
+                        , count
+                        , countType
+                )
+                , createRow(
+                        thoth_gui.thoth_lite.components.controls.Label.getInstanse(PRICE)
+                        , price
+                        , financeComboBox
+                )
                 , addButton
         );
 
@@ -248,10 +259,17 @@ public class CompositeListView
     private Node createList() {
         VBox res = new VBox();
         res.setFillWidth(true);
-
+        res.setSpacing(2);
         ListView<Storing> listView = new ListView<>();
 
         res.setPadding(new Insets(5, 0, 0, 2));
+        listView.setBorder(
+                new BorderWrapper()
+                        .addBorder(1)
+                        .setColor(Color.GREY)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .commit()
+        );
 
         listView.setCellFactory(storingListView -> new CompositeCell());
 
@@ -275,60 +293,48 @@ public class CompositeListView
             }
         });
 
-        res.getChildren().add(listView);
+        res.getChildren().addAll(
+                getSortComboBox()
+                , listView
+                , createTotal()
+        );
 
         return res;
     }
 
-    private Node createContent() {
+    private Node createRow(
+            Node titleNode
+            , Node... enterNodes
+    ) {
         VBox res = new VBox();
 
+        res.setAlignment(Pos.TOP_LEFT);
+        res.setFillWidth(true);
         res.setPadding(new Insets(2));
 
-        res.getChildren().addAll(
-                createPallete()
-                , createList()
-        );
+        if (enterNodes.length > 1) {
+            HBox hBox = new HBox(enterNodes);
+            hBox.setSpacing(5);
+
+            res.getChildren().addAll(
+                    titleNode
+                    , hBox
+            );
+        } else {
+            res.getChildren().addAll(
+                    titleNode
+                    , Arrays.stream(enterNodes).findFirst().get()
+            );
+        }
 
         return res;
-    }
-
-    private Node createPallete() {
-        VBox res = new VBox();
-        res.setSpacing(5);
-        res.setPadding(new Insets(2));
-        res.getChildren().addAll(
-                createNewStoringRow()
-                , createSortRow()
-        );
-
-        res.setStyle("" +
-                "-fx-border-width: 1px 0 1px 0;" +
-                "-fx-border-color:grey;" +
-                "-fx-border-style:solid;" +
-                "");
-
-        return res;
-    }
-
-    private HBox createSortRow() {
-        HBox hBox = new HBox();
-        hBox.setSpacing(5);
-        hBox.setPadding(new Insets(2));
-
-        hBox.getChildren().addAll(
-                getLabel(SORT)
-                , getSortComboBox()
-        );
-
-        return hBox;
     }
 
     private Node createTitle() {
         HBox res = new HBox();
 
         res.getChildren().addAll(
-                getLabel(BACKET)
+                thoth_gui.thoth_lite.components.controls.Label.getInstanse(BACKET)
         );
 
         res.setPadding(new Insets(2));
@@ -342,14 +348,8 @@ public class CompositeListView
         res.setPadding(new Insets(2, 0, 2, 0));
 
         res.getChildren().addAll(
-                getLabel("total")
+                thoth_gui.thoth_lite.components.controls.Label.getInstanse("total")
         );
-
-        res.setStyle("" +
-                "-fx-border-width: 1px 0 0 0;" +
-                "-fx-border-color:grey;" +
-                "-fx-border-style:solid;" +
-                "");
 
         return res;
     }
@@ -358,27 +358,12 @@ public class CompositeListView
         return items.getValue();
     }
 
-    private Label getLabel(String text) {
-        Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(text);
-        return res;
-    }
-
-    private HBox getHBox() {
-        HBox hBox = new HBox();
-
-        hBox.setAlignment(Pos.CENTER_LEFT);
-        hBox.setSpacing(5);
-
-        return hBox;
-    }
-
     private Node getSortComboBox() {
         SortPane res = SortPane.getInstance()
                 .setSortItems(SORT_BY.values())
                 .setSortMethod(this::sort)
                 .setCell()
-                .setValue(SORT_BY.ID_UP)
-                ;
+                .setValue(SORT_BY.ID_UP);
         return res;
     }
 
@@ -429,11 +414,6 @@ public class CompositeListView
         res.setCellFactory(storagableListView -> new StoragableCell());
         res.setButtonCell(new StoragableCell());
 
-        res.setId(STORAGABLE);
-
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
         return res;
     }
 
