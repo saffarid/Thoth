@@ -54,7 +54,7 @@ public class FinancialOperations
 
     private enum SORT_BY implements SortBy {
         MONTH("last_month"),
-//        CURRENT_MONTH("current_month"),
+        //        CURRENT_MONTH("current_month"),
         QUARTER("quarter"),
         HALFYEAR("halfyear"),
         YEAR("year"),
@@ -248,7 +248,7 @@ public class FinancialOperations
         initStyle();
     }
 
-    private void initHistoryTable(){
+    private void initHistoryTable() {
         finOpHistoryTable = thoth_gui.thoth_lite.components.controls.table_view.TableView.getInstance();
         finOpHistoryTable.setPlaceholder(Label.getInstanse("no_elements"));
 
@@ -257,13 +257,13 @@ public class FinancialOperations
         dateColumn.setCellValueFactory(finance -> {
             return new SimpleObjectProperty<LocalDate>(finance.getValue().getDate());
         });
-        dateColumn.setCellFactory(finance -> new TableCell<>(){
+        dateColumn.setCellFactory(finance -> new TableCell<>() {
             @Override
             protected void updateItem(LocalDate localDate, boolean b) {
-                if(localDate != null) {
+                if (localDate != null) {
                     super.updateItem(localDate, b);
 //                    setText( String.format("%1s.%2s.%3s", localDate.getDayOfMonth(), localDate.getMonth().name(), localDate.getYear()) );
-                    setText( localDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)) );
+                    setText(localDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
                 }
             }
         });
@@ -273,12 +273,12 @@ public class FinancialOperations
         catColumn.setCellValueFactory(finance -> {
             return new SimpleObjectProperty<Typable>(finance.getValue().getCategory());
         });
-        catColumn.setCellFactory(finance -> new TableCell<>(){
+        catColumn.setCellFactory(finance -> new TableCell<>() {
             @Override
             protected void updateItem(Typable typable, boolean b) {
-                if(typable != null) {
+                if (typable != null) {
                     super.updateItem(typable, b);
-                    setText( typable.getValue() );
+                    setText(typable.getValue());
                 }
             }
         });
@@ -288,12 +288,12 @@ public class FinancialOperations
         valueColumn.setCellValueFactory(finance -> {
             return new SimpleObjectProperty<Double>(finance.getValue().getValue());
         });
-        valueColumn.setCellFactory(finance -> new TableCell<>(){
+        valueColumn.setCellFactory(finance -> new TableCell<>() {
             @Override
             protected void updateItem(Double value, boolean b) {
-                if(value != null) {
+                if (value != null) {
                     super.updateItem(value, b);
-                    setText( value.toString() );
+                    setText(value.toString());
                 }
             }
         });
@@ -409,14 +409,13 @@ public class FinancialOperations
 
     private void showData(ListChangeListener.Change<? extends HashMap<String, Object>> change) {
         Platform.runLater(() -> {
-            finOpSumTable.getColumns().clear();
-            //Формируем колонку с категориями
-            TableColumn<HashMap<String, Object>, String> category = getTableColumn(Columns.CATEGORY.name(), Columns.CATEGORY.name());
-            finOpSumTable.getColumns().add(category);
-            if(!data.isEmpty()){
-
+            if (!data.isEmpty()) {
+                finOpSumTable.getColumns().clear();
                 finOpSumTable.setItems(data);
-
+                finOpSumTable.refresh();
+                //Формируем колонку с категориями
+                TableColumn<HashMap<String, Object>, String> category = getTableColumn(Columns.CATEGORY.name(), Columns.CATEGORY.name());
+                finOpSumTable.getColumns().add(category);
                 //Формируем колонки по датам
                 for (LocalDate date : columnKeys.stream()
                         .sorted(LocalDate::compareTo)
@@ -439,8 +438,6 @@ public class FinancialOperations
                 }
 
             }
-            finOpSumTable.refresh();
-
         });
     }
 

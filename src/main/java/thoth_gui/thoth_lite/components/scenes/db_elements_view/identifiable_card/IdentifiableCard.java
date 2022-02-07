@@ -2,6 +2,7 @@ package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_car
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
 import thoth_core.thoth_lite.db_data.db_data_element.implement.Currency;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
@@ -19,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
 import thoth_gui.thoth_lite.components.scenes.ThothScene;
+import tools.BackgroundWrapper;
 import window.Closeable;
 
 import java.sql.SQLException;

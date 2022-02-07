@@ -1,5 +1,11 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
+import layout.basepane.BorderPane;
+import layout.basepane.GridPane;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Partnership;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Purchasable;
@@ -16,6 +22,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import layout.basepane.VBox;
 import layout.basepane.HBox;
+import tools.BackgroundWrapper;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -81,44 +88,50 @@ public class PurchasableCard extends IdentifiableCard {
     protected Node createContent() {
         super.createContent();
 
-        HBox hBox = new HBox();
+        GridPane content = new GridPane();
 
-        VBox vBox = new VBox();
-        vBox.setSpacing(5);
-        vBox.setAlignment(Pos.TOP_LEFT);
+        content.setPadding(new Insets(2));
+        content.setHgap(5);
+        content.setVgap(5);
+
+        RowConstraints row1 = new RowConstraints();
+        row1.setVgrow(Priority.NEVER);
+        RowConstraints row2 = new RowConstraints();
+        row2.setVgrow(Priority.NEVER);
+        RowConstraints row3 = new RowConstraints();
+        row3.setVgrow(Priority.NEVER);
+        RowConstraints row4 = new RowConstraints();
+        row4.setVgrow(Priority.ALWAYS);
+        content.getRowConstraints().addAll(
+                row1
+                , row2
+                , row3
+                , row4
+        );
+
+
+        ColumnConstraints column1 = new ColumnConstraints();
+        column1.setHgrow(Priority.ALWAYS);
+        ColumnConstraints column2 = new ColumnConstraints();
+        column2.setHgrow(Priority.ALWAYS);
+        content.getColumnConstraints().addAll(
+                column1
+                , column2
+        );
+
         trackNumber = getTextField(PropertiesPurchasableId.TRACK_NUMBER);
         store = getComboBox(PropertiesPurchasableId.TRACK_NUMBER);
         datePicker = getDatePicker();
-        vBox.getChildren().addAll(
-                new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), trackNumber)
-                , new Twin(getLabel(PropertiesPurchasableId.STORE), store)
-                , new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), datePicker)
-        );
-        vBox.setMinWidth(250);
-//        vBox.setPadding(new Insets(2));
 
-        toggleDelivered = getToggle();
-        Twin twinDelivered = new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), toggleDelivered);
-        twinDelivered.setMinWidth(250);
-        twinDelivered.setPrefWidth(250);
+        content.add(new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), trackNumber), 0, 0);
+        content.add(new Twin(getLabel(PropertiesPurchasableId.STORE), store), 0, 1);
+        content.add(new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), datePicker), 0, 2);
 
-        hBox.setPadding(new Insets(2));
+        content.add(new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), new Toggle(((Purchasable)identifiable).isDelivered())), 1, 0);
 
-        hBox.getChildren().addAll(
-                vBox,
-                twinDelivered
-        );
+        content.add(new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew), 0, 3, 2, 1);
 
-        hBox.setAlignment(Pos.TOP_LEFT);
-
-        VBox res = new VBox();
-        compositeListView = new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew);
-        res.getChildren().addAll(
-                hBox,
-                compositeListView
-        );
-
-        contentNode.setCenter(res);
+        contentNode.setCenter(content);
 
         return contentNode;
     }
@@ -140,23 +153,18 @@ public class PurchasableCard extends IdentifiableCard {
         res.setCellFactory(listView -> new PartnerCell());
         res.setButtonCell(new PartnerCell());
 
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
-
         if(!identifiableIsNew){
             res.setDisable(true);
         }
+
+        res.setMinWidth(120);
+        res.setMaxWidth(500);
 
         return res;
     }
 
     private DatePicker getDatePicker(){
         DatePicker datePicker = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance(((Purchasable) identifiable).finishDate());
-
-        datePicker.setMinWidth(120);
-        datePicker.setPrefWidth(120);
-        datePicker.setMaxWidth(120);
 
         if(!identifiableIsNew){
             datePicker.setDisable(true);
@@ -167,9 +175,6 @@ public class PurchasableCard extends IdentifiableCard {
 
     private Label getLabel(PropertiesPurchasableId id) {
         Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(id.id);
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
         return res;
     }
 
@@ -187,16 +192,6 @@ public class PurchasableCard extends IdentifiableCard {
         if(!identifiableIsNew){
             res.setDisable(true);
         }
-
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
-
-        return res;
-    }
-
-    private Toggle getToggle(){
-        Toggle res = new Toggle(((Purchasable)identifiable).isDelivered());
 
         return res;
     }

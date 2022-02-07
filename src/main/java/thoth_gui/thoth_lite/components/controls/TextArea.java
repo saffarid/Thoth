@@ -33,7 +33,6 @@ public class TextArea {
         connectStyle(res);
         return res;
     }
-
     public static controls.TextArea getInstance(String s){
         controls.TextArea res = getInstance();
         res.setText(s);

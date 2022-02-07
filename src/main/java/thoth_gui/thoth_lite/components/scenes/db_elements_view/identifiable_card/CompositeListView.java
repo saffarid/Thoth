@@ -35,6 +35,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
 import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.BackgroundWrapper;
 import tools.BorderWrapper;
 import tools.SvgWrapper;
 
@@ -297,12 +298,12 @@ public class CompositeListView
     }
 
     private Node createList() {
-        VBox res = new VBox();
-        res.setFillWidth(true);
-        res.setSpacing(2);
+        BorderPane res = new BorderPane();
+
+        res.setPadding(new Insets(2));
+
         ListView<Storing> listView = new ListView<>();
 
-        res.setPadding(new Insets(2, 2, 2, 2));
         listView.setBorder(
                 new BorderWrapper()
                         .addBorder(1)
@@ -310,20 +311,13 @@ public class CompositeListView
                         .setStyle(BorderStrokeStyle.SOLID)
                         .commit()
         );
-
         listView.setCellFactory(storingListView -> new CompositeCell());
-
         items.addListener((observableValue, storings, t1) -> {
-
             listView.setCellFactory(null);
             listView.setCellFactory(storingListView -> new CompositeCell());
-
         });
-
         listView.itemsProperty().bind(items);
-
         listView.getSelectionModel().clearSelection();
-
         listView.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case ESCAPE: {
@@ -332,12 +326,11 @@ public class CompositeListView
                 }
             }
         });
+        listView.setPadding(new Insets(0, 0, 2, 0));
 
-        res.getChildren().addAll(
-                getSortComboBox()
-                , listView
-                , createTotal()
-        );
+        res.setTop(getSortComboBox());
+        res.setCenter(listView);
+        res.setBottom(createTotal());
 
         return res;
     }
@@ -404,6 +397,7 @@ public class CompositeListView
                 .setSortMethod(this::sort)
                 .setCell()
                 .setValue(SORT_BY.ID_UP);
+        res.setPadding(new Insets(2));
         return res;
     }
 

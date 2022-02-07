@@ -33,6 +33,8 @@ public class ComboBox {
         comboBox.setPlaceholder(Label.getInstanse("no_elements"));
         bindFont(comboBox);
         connectStyle(comboBox);
+        comboBox.setMaxWidth(120);
+        comboBox.setMaxWidth(500);
         return comboBox;
     }
     public static controls.ComboBox getInstance(ObservableList list){
