@@ -266,7 +266,6 @@ public class CompositeListView
 
     private Node createGrid() {
         GridPane content = new GridPane();
-        content.addOnlyRow();
 
         content.setBorder(
                 new BorderWrapper()
@@ -277,19 +276,10 @@ public class CompositeListView
                         .commit()
         );
 
-        ColumnConstraints addPane = new ColumnConstraints(
-                widthPallete, widthPallete, maxWidthPallete, Priority.ALWAYS, HPos.RIGHT, true
-        );
-        ColumnConstraints list = new ColumnConstraints(
-//                widthPallete, widthPallete, maxWidthPallete, Priority.SOMETIMES, HPos.RIGHT, true
-        );
-        list.setHgrow(Priority.ALWAYS);
-        list.setFillWidth(true);
-
-        content.getColumnConstraints().addAll(
-                addPane,
-                list
-        );
+        content
+                .addRow(Priority.ALWAYS)
+                .addColumn(widthPallete, widthPallete, maxWidthPallete, Priority.ALWAYS, HPos.RIGHT, true)
+                .addColumn(Priority.ALWAYS);
 
         content.add(createPalette(), 0, 0);
         content.add(createList(), 1, 0);

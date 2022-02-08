@@ -94,30 +94,14 @@ public class PurchasableCard extends IdentifiableCard {
         content.setHgap(5);
         content.setVgap(5);
 
-        RowConstraints row1 = new RowConstraints();
-        row1.setVgrow(Priority.NEVER);
-        RowConstraints row2 = new RowConstraints();
-        row2.setVgrow(Priority.NEVER);
-        RowConstraints row3 = new RowConstraints();
-        row3.setVgrow(Priority.NEVER);
-        RowConstraints row4 = new RowConstraints();
-        row4.setVgrow(Priority.ALWAYS);
-        content.getRowConstraints().addAll(
-                row1
-                , row2
-                , row3
-                , row4
-        );
-
-
-        ColumnConstraints column1 = new ColumnConstraints();
-        column1.setHgrow(Priority.ALWAYS);
-        ColumnConstraints column2 = new ColumnConstraints();
-        column2.setHgrow(Priority.ALWAYS);
-        content.getColumnConstraints().addAll(
-                column1
-                , column2
-        );
+        content
+                .addRow(Priority.NEVER)
+                .addRow(Priority.NEVER)
+                .addRow(Priority.NEVER)
+                .addRow(Priority.ALWAYS)
+                .addColumn(Priority.ALWAYS)
+                .addColumn(Priority.ALWAYS)
+        ;
 
         trackNumber = getTextField(PropertiesPurchasableId.TRACK_NUMBER);
         store = getComboBox(PropertiesPurchasableId.TRACK_NUMBER);
