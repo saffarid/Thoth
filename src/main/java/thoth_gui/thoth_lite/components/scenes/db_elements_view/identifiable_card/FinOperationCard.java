@@ -6,6 +6,7 @@ import controls.TextField;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,6 +18,7 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
@@ -85,7 +87,7 @@ public class FinOperationCard
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
-
+        tools = new SimpleObjectProperty<>(new ToolsPane("New Fin Op"));
     }
 
     private AvaliableTables categoryTable() {

@@ -1,5 +1,6 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
@@ -22,6 +23,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import layout.basepane.VBox;
 import layout.basepane.HBox;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import tools.BackgroundWrapper;
 
 import java.sql.SQLException;
@@ -60,6 +62,7 @@ public class PurchasableCard extends IdentifiableCard {
             , AvaliableTables table
     ) {
         super(identifiable, table);
+        tools = new SimpleObjectProperty<>(new ToolsPane("Purchase"));
     }
 
     @Override

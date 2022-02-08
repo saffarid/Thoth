@@ -11,15 +11,10 @@ import window.Closeable;
  * Главная сцена рабочей области
  * */
 public class Home
-        implements ThothScene
+        extends ThothSceneImpl
 {
 
     private static Home home;
-
-    private SimpleObjectProperty<Node> tools;
-    private SimpleObjectProperty<Node> content;
-
-    private BorderPane contentNode;
 
     private Home() {
         super();

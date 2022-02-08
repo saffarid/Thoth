@@ -3,6 +3,7 @@ package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_car
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
@@ -19,6 +20,7 @@ import javafx.scene.Node;
 
 import layout.basepane.HBox;
 import layout.basepane.VBox;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
 
@@ -56,6 +58,7 @@ public class StoragableCard
             , AvaliableTables table
     ) {
         super(identifiable, table);
+        tools = new SimpleObjectProperty<>(new ToolsPane("Storagable"));
     }
 
     @Override

@@ -4,6 +4,7 @@ import controls.*;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
@@ -108,11 +109,10 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     protected Node getToolsPanel(){
-
-        toolsNode = new BorderPane();
-
-        toolsNode.setLeft(getSortPane());
-        toolsNode.setRight( new BorderPane(getButton(Ids.IDENTIFIABLE_ADD, this::openCreateNewIdentifiable )) );
+        toolsNode = new ToolsPane(table.name())
+                .addSortPane(getSortPane())
+                .addNewButton( SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool), this::openCreateNewIdentifiable)
+                ;
 
         return toolsNode;
     }
@@ -135,33 +135,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     protected abstract void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1);
 
-    private Button getButton(
-            Ids id
-            , EventHandler<ActionEvent> event
-    ){
-        Button res;
-        Node img;
-        switch (id){
-            case IDENTIFIABLE_ADD:{
-                img = SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool);
-                break;
-            }
-            default: img = null;
-        }
-
-        if(img == null) {
-            res = thoth_gui.thoth_lite.components.controls.Button.getInstance(id.id, event);
-        }else{
-            res = thoth_gui.thoth_lite.components.controls.Button.getInstance(
-                    img,
-                    event
-            );
-        }
-
-        res.setId(id.id);
-
-        return res;
-    }
 
     public static IdentifiablesListView getInstance(
             AvaliableTables type

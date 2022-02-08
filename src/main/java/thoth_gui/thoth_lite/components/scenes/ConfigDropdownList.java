@@ -6,7 +6,9 @@ import javafx.scene.layout.Pane;
 import layout.basepane.BorderPane;
 import layout.custompane.NavigationMenu;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
+import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.MenuButton;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
 import window.Closeable;
 
@@ -17,7 +19,7 @@ public class ConfigDropdownList
     private static ConfigDropdownList instance;
 
     private ConfigDropdownList() {
-        tools = new SimpleObjectProperty<>(new Pane());
+        tools = new SimpleObjectProperty<>(createToolsPane());
         content = new SimpleObjectProperty<>(createContent());
     }
 
@@ -32,6 +34,12 @@ public class ConfigDropdownList
         contentNode = new BorderPane();
         contentNode.setLeft(getNavigationMenu());
         return contentNode;
+    }
+
+    private Node createToolsPane(){
+        toolsNode = new ToolsPane(Scenes.SYSTEM.getSceneCode());
+
+        return toolsNode;
     }
 
     private controls.MenuButton getMenuButton(AvaliableTables table) {
@@ -57,6 +65,8 @@ public class ConfigDropdownList
         );
         return menu;
     }
+
+
 
     @Override
     public void close() {

@@ -7,6 +7,8 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortCell;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
@@ -27,15 +29,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class FinanceListView
-        extends IdentifiablesListView<Finance>
-{
+        extends IdentifiablesListView<Finance> {
 
-    private enum SORT_BY implements SortBy{
+    private enum SORT_BY implements SortBy {
         SORT_BY_CURRENCY_UP("sort_by_currency_up"),
         SORT_BY_CURRENCY_DOWN("sort_by_currency_down"),
         SORT_BY_COURSE_UP("sort_by_course_up"),
         SORT_BY_COURSE_DOWN("sort_by_course_down");
         private String sortBy;
+
         SORT_BY(String sortBy) {
             this.sortBy = sortBy;
         }
@@ -63,9 +65,14 @@ public class FinanceListView
 
     @Override
     protected Node getToolsPanel() {
-        toolsNode = new BorderPane();
-
-        toolsNode.setLeft(getSortPane());
+        toolsNode = new ToolsPane(table.name())
+                .addSortPane(
+                        SortPane.getInstance()
+                                .setSortItems(SORT_BY.values())
+                                .setCell()
+                                .setSortMethod(this::sort)
+                                .setValue(SORT_BY.SORT_BY_CURRENCY_UP)
+                );
 
         return toolsNode;
     }
@@ -74,20 +81,20 @@ public class FinanceListView
     protected void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1) {
         ObservableList<Finance> items = identifiableElementList.getItems();
         SORT_BY t1 = (SORT_BY) sortBy1;
-        switch (t1){
-            case SORT_BY_CURRENCY_UP:{
+        switch (t1) {
+            case SORT_BY_CURRENCY_UP: {
                 items.sort((o1, o2) -> o1.getCurrency().getCurrencyCode().compareTo(o2.getCurrency().getCurrencyCode()));
                 break;
             }
-            case SORT_BY_CURRENCY_DOWN:{
+            case SORT_BY_CURRENCY_DOWN: {
                 items.sort((o1, o2) -> o2.getCurrency().getCurrencyCode().compareTo(o1.getCurrency().getCurrencyCode()));
                 break;
             }
-            case SORT_BY_COURSE_UP:{
+            case SORT_BY_COURSE_UP: {
                 items.sort((o1, o2) -> o1.getCourse().compareTo(o2.getCourse()));
                 break;
             }
-            case SORT_BY_COURSE_DOWN:{
+            case SORT_BY_COURSE_DOWN: {
                 items.sort((o1, o2) -> o2.getCourse().compareTo(o1.getCourse()));
                 break;
             }
@@ -95,6 +102,7 @@ public class FinanceListView
     }
 
     @Override
-    protected void openCreateNewIdentifiable(ActionEvent event) {}
+    protected void openCreateNewIdentifiable(ActionEvent event) {
+    }
 
 }

@@ -19,7 +19,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.scenes.ThothScene;
+import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
 import tools.BackgroundWrapper;
 import window.Closeable;
 
@@ -31,9 +33,9 @@ import java.util.logging.Logger;
 
 
 public abstract class IdentifiableCard
+    extends ThothSceneImpl
         implements Apply
-        , Cancel
-        , ThothScene {
+        , Cancel {
 
     protected static final Logger LOG;
 
@@ -58,12 +60,6 @@ public abstract class IdentifiableCard
 
     private Closeable closeable;
 
-    private SimpleObjectProperty<Node> tools;
-    private SimpleObjectProperty<Node> content;
-
-    protected BorderPane contentNode;
-    protected BorderPane toolsNode;
-
     static {
         LOG = Logger.getLogger(IdentifiableCard.class.getName());
     }
@@ -83,7 +79,7 @@ public abstract class IdentifiableCard
         this.table = table;
 
         content = new SimpleObjectProperty<>(createContent());
-        tools = new SimpleObjectProperty<>(new Pane());
+
     }
 
     @Override

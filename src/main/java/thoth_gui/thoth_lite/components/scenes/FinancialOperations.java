@@ -28,6 +28,7 @@ import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
 import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
@@ -123,21 +124,6 @@ public class FinancialOperations
     public FinancialOperations(AvaliableTables table) {
         this.table = table;
 
-        // Запрос типов финансовых операций
-//        try {
-//            if (table == AvaliableTables.EXPENSES) {
-//                categories = (List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.EXPENSES_TYPES);
-//            } else {
-//                categories = (List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.INCOMES_TYPES);
-//            }
-//        } catch (NotContainsException e) {
-//            e.printStackTrace();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
         init();
 
         tools = new SimpleObjectProperty<>(createToolsNode());
@@ -187,8 +173,7 @@ public class FinancialOperations
     }
 
     private Node createToolsNode() {
-        toolsNode = new BorderPane();
-        toolsNode.setLeft(sortPane);
+
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(0, 0, 0, 5));
         hBox.getChildren().addAll(
@@ -201,15 +186,14 @@ public class FinancialOperations
                         event -> contentNode.setCenter(finOpSumTable)
                 )
         );
-        toolsNode.setCenter(
-                hBox
-        );
-        toolsNode.setRight(
-                Button.getInstance(
-                        SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
-                        event -> Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null))
-                )
-        );
+
+        toolsNode = new ToolsPane(table.name())
+                .addSortPane(SORT_BY.values(), SORT_BY.QUARTER, (observableValue, sortBy, t1) -> initialDataChange())
+                .addNewButton(SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
+                        event -> Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null)))
+                .addAdditional(hBox)
+        ;
+
         return toolsNode;
     }
 

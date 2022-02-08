@@ -3,6 +3,7 @@ package thoth_gui.thoth_lite.components.scenes;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import layout.basepane.BorderPane;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.main_window.Workspace;
 import window.Closeable;
 
@@ -19,7 +20,7 @@ public abstract class ThothSceneImpl
     protected SimpleObjectProperty<Node> content;
 
     protected BorderPane contentNode;
-    protected BorderPane toolsNode;
+    protected ToolsPane toolsNode;
 
     @Override
     public SimpleObjectProperty<Node> getToolsProperty() {
