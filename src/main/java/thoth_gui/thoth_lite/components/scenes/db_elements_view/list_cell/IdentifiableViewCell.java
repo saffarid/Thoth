@@ -124,12 +124,12 @@ public abstract class IdentifiableViewCell
 
     private GridPane getFillCenter() {
         GridPane res = new GridPane();
-        res.setGridLinesVisible(true);
+
         res
                 .addColumn(Priority.ALWAYS, HPos.LEFT)
                 .addColumn(Priority.ALWAYS, HPos.RIGHT)
-                .addRow(Priority.NEVER)
-                .addRow(Priority.NEVER);
+                .addRow(Priority.ALWAYS)
+                .addRow(Priority.ALWAYS);
 
         res.add(this.title, 0, 0);
         res.add(this.subtitle, 0, 1);
@@ -138,11 +138,6 @@ public abstract class IdentifiableViewCell
         BorderPane.setAlignment(res, Pos.CENTER);
 
         return res;
-    }
-
-    protected TextField getTextField(String text) {
-        TextField node = thoth_gui.thoth_lite.components.controls.TextField.getInstance(text);
-        return node;
     }
 
     public void setTextTitle(String text) {

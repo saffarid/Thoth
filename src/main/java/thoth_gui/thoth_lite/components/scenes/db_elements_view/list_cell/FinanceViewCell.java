@@ -3,7 +3,9 @@ package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 import javafx.geometry.HPos;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
-import styleconstants.imagesvg.Close;
+import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_styleconstants.svg.Images;
 import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
@@ -11,28 +13,24 @@ import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
-import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.RemoveItem;
-import thoth_gui.thoth_lite.dialog_windows.DialogWindow;
-import thoth_gui.thoth_lite.dialog_windows.DialogWindowType;
-import controls.Button;
-import controls.Label;
+
+
 import controls.TextField;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonType;
+
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import thoth_gui.thoth_styleconstants.svg.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
+
 
 public class FinanceViewCell
         extends IdentifiableViewCell
@@ -49,8 +47,8 @@ public class FinanceViewCell
 
     private boolean modeIsEdit = false;
 
-    private Label courseLabel;
-    private Label currencyLabel;
+    private controls.Label courseLabel;
+    private controls.Label currencyLabel;
     private TextField course;
 
 
@@ -58,7 +56,7 @@ public class FinanceViewCell
         super();
         this.finance = finance;
 
-        Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5);
+        Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5, 12, 12);
 
         currencyLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse(
                 String.format(
@@ -68,10 +66,10 @@ public class FinanceViewCell
         );
         currencyLabel.setTooltip(new Tooltip(currencyLabel.getText()));
 
-        course = getTextField(
+        course = thoth_gui.thoth_lite.components.controls.TextField.getInstance(
                 String.valueOf(this.finance.getCourse())
         );
-        courseLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
+        courseLabel = Label.getInstanse();
         courseLabel.textProperty().bind(course.textProperty());
 
         setLeft(point);
@@ -83,7 +81,7 @@ public class FinanceViewCell
         setOnMouseClicked(this::mouseClick);
         setOnKeyPressed(this::keyPress);
 
-        setPadding(new Insets(5, 2, 5, 2));
+        setPadding(new Insets(2));
         setAlignment(point, Pos.CENTER);
     }
 
@@ -159,38 +157,36 @@ public class FinanceViewCell
     private Node createPallete() {
         if (pallete == null) {
             pallete = new HBox();
-
             pallete.setSpacing(5);
-            pallete.setPadding(new Insets(2));
             setAlignment(pallete, Pos.CENTER);
         }
         double imgButtonWidth = 17;
         double imgButtonHeight = 17;
         if (!modeIsEdit) {
             pallete.getChildren().setAll(
-                    getButton(SvgWrapper.getInstance(Images.EMPTY(), imgButtonWidth, imgButtonHeight), event -> {})
-                    , getButton(SvgWrapper.getInstance(Images.EDIT(), imgButtonWidth, imgButtonHeight), this::toEditMode)
+                    Button.getInstance(
+                            SvgWrapper.getInstance(Images.EMPTY(), imgButtonWidth, imgButtonHeight, 20, 20)
+                            , event -> { }
+                    )
+                    , Button.getInstance(
+                            SvgWrapper.getInstance(Images.EDIT(), imgButtonWidth, imgButtonHeight,  20, 20)
+                            , this::toEditMode
+                    )
             );
         } else {
             pallete.getChildren().setAll(
-                    getButton(SvgWrapper.getInstance(Images.CHECKMARK(), imgButtonWidth, imgButtonHeight), event -> apply())
-                    , getButton(SvgWrapper.getInstance(Images.CLOSE(), imgButtonWidth, imgButtonHeight), event -> cancel())
+                    Button.getInstance(
+                            SvgWrapper.getInstance(Images.CHECKMARK(), imgButtonWidth, imgButtonHeight,  20, 20)
+                            , event -> apply()
+                    )
+                    , Button.getInstance(
+                            SvgWrapper.getInstance(Images.CLOSE(), imgButtonWidth, imgButtonHeight,  20, 20)
+                            , event -> cancel()
+                    )
             );
         }
 
         return pallete;
-    }
-
-    protected Button getButton(
-            Node img
-            , EventHandler<ActionEvent> event
-    ) {
-        Button node = thoth_gui.thoth_lite.components.controls.Button.getInstance(
-                img
-                , event
-        );
-        node.setPadding(new Insets(5));
-        return node;
     }
 
     private void keyPress(KeyEvent keyEvent) {

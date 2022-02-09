@@ -5,6 +5,7 @@ import controls.Label;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import layout.basepane.GridPane;
@@ -33,8 +34,8 @@ public class ToolsPane
         super();
 
         setGridLinesVisible(true);
-        addRow(Priority.NEVER)
-                .addColumn(Priority.NEVER)
+        addRow(Priority.ALWAYS)
+                .addColumn(150., HPos.LEFT)
                 .addColumn(Priority.NEVER)
                 .addColumn(Priority.ALWAYS)
                 .addColumn(Priority.NEVER);

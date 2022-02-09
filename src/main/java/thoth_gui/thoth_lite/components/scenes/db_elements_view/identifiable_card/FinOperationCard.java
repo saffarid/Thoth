@@ -46,6 +46,8 @@ public class FinOperationCard
         }
     }
 
+    private final String title = "new_fin_op";
+
     private AvaliableTables tableCategory;
 
     /**
@@ -87,7 +89,7 @@ public class FinOperationCard
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
-        tools = new SimpleObjectProperty<>(new ToolsPane("New Fin Op"));
+        tools = new SimpleObjectProperty<>(new ToolsPane(title));
     }
 
     private AvaliableTables categoryTable() {

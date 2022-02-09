@@ -7,6 +7,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
 import layout.basepane.GridPane;
+import styleconstants.imagesvg.Images;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Partnership;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Purchasable;
@@ -25,6 +26,7 @@ import layout.basepane.VBox;
 import layout.basepane.HBox;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import tools.BackgroundWrapper;
+import tools.SvgWrapper;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -32,6 +34,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PurchasableCard extends IdentifiableCard {
+
+    private final String newPurchase = "new_purchase";
+    private final String purchase = "purchase";
 
     private TextField trackNumber;
     private ComboBox store;
@@ -62,7 +67,9 @@ public class PurchasableCard extends IdentifiableCard {
             , AvaliableTables table
     ) {
         super(identifiable, table);
-        tools = new SimpleObjectProperty<>(new ToolsPane("Purchase"));
+        tools = new SimpleObjectProperty<>(
+                new ToolsPane(identifiableIsNew?newPurchase:purchase)
+        );
     }
 
     @Override

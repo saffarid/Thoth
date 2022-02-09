@@ -42,6 +42,20 @@ public class GridPane
     }
 
     /**
+     * Функция добавляет колонку с заданной шириной колонки.
+     *
+     * @param width параметр расширения колонки.
+     * @param hPos     выравнивание по горизонтали
+     * @return объект текущей панели компоновки
+     */
+    public GridPane addColumn(Double width, HPos hPos) {
+        ColumnConstraints row = new ColumnConstraints(width);
+        row.setHalignment(hPos);
+        getColumnConstraints().add(row);
+        return this;
+    }
+
+    /**
      * Функция добавляет колонку с заданными параметрами.
      *
      * @param minWidth  минимальная ширина колонки
@@ -81,6 +95,20 @@ public class GridPane
     public GridPane addRow(Priority priority, VPos vPos) {
         RowConstraints row = new RowConstraints();
         row.setVgrow(priority);
+        row.setValignment(vPos);
+        getRowConstraints().add(row);
+        return this;
+    }
+
+    /**
+     * Функция добавляет строку с заданной высотой строки.
+     *
+     * @param height параметр расширения строки.
+     * @param vPos     выравнивание по вертикали
+     * @return объект текущей панели компоновки
+     */
+    public GridPane addRow(Double height, VPos vPos) {
+        RowConstraints row = new RowConstraints(height);
         row.setValignment(vPos);
         getRowConstraints().add(row);
         return this;

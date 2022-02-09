@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import styleconstants.imagesvg.Images;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
@@ -23,12 +24,16 @@ import layout.basepane.VBox;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
+import tools.SvgWrapper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StoragableCard
        extends IdentifiableCard {
+
+    private final String newStoragable = "new_storagable";
+    private final String storagable = "storagable";
 
     private TextField article;
     private TextField name;
@@ -58,7 +63,9 @@ public class StoragableCard
             , AvaliableTables table
     ) {
         super(identifiable, table);
-        tools = new SimpleObjectProperty<>(new ToolsPane("Storagable"));
+        tools = new SimpleObjectProperty<>(
+                new ToolsPane( identifiableIsNew ? newStoragable : storagable )
+        );
     }
 
     @Override
