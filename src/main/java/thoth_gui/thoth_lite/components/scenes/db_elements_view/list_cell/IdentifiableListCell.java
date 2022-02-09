@@ -40,7 +40,6 @@ public class IdentifiableListCell<T extends Identifiable>
         getStyleClass().addAll(
                 STYLE_CLASS_IDENTIFIABLE_CELL
         );
-        setPadding(new Insets(1, 0, 1, 0));
         this.table = table;
         setOnMouseClicked(this::cellClick);
     }

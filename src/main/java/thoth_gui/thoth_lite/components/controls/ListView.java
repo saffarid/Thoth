@@ -9,9 +9,13 @@ public class ListView {
 
     private static void connectStyle(controls.ListView node){
         CompletableFuture
-                .supplyAsync(() -> Stylesheets.LIST_VIEW.getStylesheet())
+                .supplyAsync(() -> new String[]{Stylesheets.LIST_VIEW.getStylesheet(), Stylesheets.SCROLL_BAR.getStylesheet()})
                 .thenAccept(s -> {
-                    Platform.runLater(() -> node.getStylesheets().add(s));
+                    Platform.runLater(() -> {
+                        for(String s1: s) {
+                            node.getStylesheets().add(s1);
+                        }
+                    });
                 });
     }
 

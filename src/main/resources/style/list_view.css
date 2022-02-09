@@ -2,18 +2,26 @@
     -fx-background-color:transparent;
 }
 
-.list-view .clipped-container{
+.list-view>.virtual-flow{
+
+}
+
+.list-view>.virtual-flow>.clipped-container{
     -fx-background-color:transparent;
 }
 
-.list-view .clipped-container .sheet{
+.list-view>.virtual-flow>.clipped-container>.sheet{
     -fx-background-color:transparent;
+    -fx-padding:2px;
+    -fx-border-width:2px;
+    -fx-border-color:red;
+    -fx-border-style:solid;
 }
 
-.list-view .clipped-container .sheet .cell{
+.list-view>.virtual-flow>.clipped-container>.sheet>.cell.indexed-cell.list-cell{
     -fx-background-color:transparent;
-    -fx-padding:0 5px 0 0;
     -fx-text-fill:white;
+    -fx-padding:1px 5px 1px 0;
 }
 
 .list-view .clipped-container .sheet .cell:hover{

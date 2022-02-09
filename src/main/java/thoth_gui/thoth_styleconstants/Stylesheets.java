@@ -9,6 +9,7 @@ public enum Stylesheets {
     IDENTIFIABLE_LIST("/style/identifiable-list.css"),
     LABEL("/style/label.css"),
     LIST_VIEW("/style/list_view.css"),
+    SCROLL_BAR("/style/scroll_bar.css"),
     TABLE_VIEW("/style/table_view.css"),
     TEXT_FIELD("/style/text_field.css")
     ;

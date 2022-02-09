@@ -70,7 +70,7 @@ public abstract class IdentifiableViewCell
      * Инициализация стиля
      */
     private void initStyle() {
-        setMargin(this, new Insets(0));
+//        setMargin(this, new Insets(0));
         setBackground(
                 new BackgroundWrapper()
                         .setColor(Color.TRANSPARENT)

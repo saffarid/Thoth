@@ -119,18 +119,17 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     protected abstract SortPane getSortPane();
 
-    protected ListView<T> createListView(){
+    protected Node createListView(){
         identifiableElementList = thoth_gui.thoth_lite.components.controls.ListView.getInstance();
-        identifiableElementList.setPadding(new Insets(2));
 
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
-
-        contentNode.setMargin(identifiableElementList, new Insets(5));
 
         Label haventItemsLabel = new Label("В списке нет элементов");
         haventItemsLabel.setAlignment(Pos.TOP_CENTER);
         identifiableElementList.setPlaceholder(haventItemsLabel);
-        return identifiableElementList;
+
+        contentNode = new BorderPane(identifiableElementList);
+        return contentNode;
     }
 
     protected abstract void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1);

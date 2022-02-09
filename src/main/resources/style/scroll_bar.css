@@ -1,0 +1,35 @@
+.scroll-bar{
+    -fx-background-color:-primary;
+}
+
+.scroll-bar>.decrement-button, .scroll-bar>.decrement-button>.decrement-arrow{
+    -fx-pref-height:0;
+}
+
+.scroll-bar>.track{
+    -fx-background-color:-primary;
+    -fx-background-insets:0;
+    -fx-padding:0;
+}
+
+.scroll-bar:hover>.track, .scroll-bar:pressed>.track{
+    -fx-background-color:-secondary;
+    -fx-opacity:0.6;
+}
+
+.scroll-bar>.thumb{
+    -fx-background-color:-light_disable;
+    -fx-opacity:0.5;
+    -fx-background-radius:0;
+    -fx-border-radius:0;
+    -fx-background-insets:0;
+    -fx-padding:0;
+}
+
+.scroll-bar>.increment-button, .scroll-bar>.increment-button>.increment-arrow{
+    -fx-pref-height:0;
+}
+
+.scroll-bar:vertical{
+    -fx-pref-width:10px;
+}
