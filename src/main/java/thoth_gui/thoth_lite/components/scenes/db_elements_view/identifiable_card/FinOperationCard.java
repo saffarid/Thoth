@@ -1,8 +1,5 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
-import controls.Label;
-import controls.TextArea;
-import controls.TextField;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -18,6 +15,9 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.TextArea;
+import thoth_gui.thoth_lite.components.controls.TextField;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
@@ -73,7 +73,7 @@ public class FinOperationCard
     /**
      * Курс валюты
      */
-    private TextField course;
+    private controls.TextField course;
     /**
      * Курс валюты
      */
@@ -85,7 +85,7 @@ public class FinOperationCard
     /**
      * Комментарий к операции
      */
-    private TextArea comment;
+    private controls.TextArea comment;
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
@@ -121,7 +121,7 @@ public class FinOperationCard
         financeComboBox = FinanceComboBox.getInstance();
         course = getTextField(ControlsId.COURSE, String.valueOf(0.0));
         courseFromFinance = thoth_gui.thoth_lite.components.controls.CheckBox.getInstance("use course from finance");
-        comment = thoth_gui.thoth_lite.components.controls.TextArea.getInstance();
+        comment = TextArea.getInstance();
 
         courseFromFinance.setIndeterminate(false);
         course.disableProperty().bind(courseFromFinance.selectedProperty());
@@ -176,12 +176,11 @@ public class FinOperationCard
             );
         }
 
-
         return res;
     }
 
-    private Label getLabel(String text) {
-        Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(text);
+    private controls.Label getLabel(String text) {
+        controls.Label res = Label.getInstanse(text);
         res.setMinWidth(120);
         res.setPrefWidth(120);
         res.setMaxWidth(120);
@@ -189,7 +188,7 @@ public class FinOperationCard
     }
 
     private controls.TextField getTextField(ControlsId id, String defaultText) {
-        controls.TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance(defaultText);
+        controls.TextField res = TextField.getInstance(defaultText);
         res.setId(id.id);
 
         res.textProperty().addListener((observableValue, s, t1) -> {

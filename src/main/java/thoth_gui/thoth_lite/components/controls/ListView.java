@@ -22,6 +22,7 @@ public class ListView {
     public static controls.ListView getInstance(){
         controls.ListView res = new controls.ListView();
         connectStyle(res);
+        res.setPlaceholder(Label.getInstanse("no_elements"));
         return res;
     }
 

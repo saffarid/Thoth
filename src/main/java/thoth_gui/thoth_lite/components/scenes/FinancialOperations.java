@@ -145,22 +145,9 @@ public class FinancialOperations
         TableColumn<HashMap<String, Object>, String> column = new TableColumn<>();
 
         BorderPane titleNode = new BorderPane(Label.getInstanse(title));
-//        titleNode.setBackground(
-//                new BackgroundWrapper()
-//                        .setColor(theme.PRIMARY())
-//                        .commit()
-//        );
-//        titleNode.setBorder(
-//                new BorderWrapper()
-//                        .addBottomBorder(2)
-//                        .setColor(theme.SECONDARY())
-//                        .setStyle(BorderStrokeStyle.SOLID)
-//                        .commit()
-//        );
 
         column.setGraphic(titleNode);
 
-//        column.setCellFactory(data -> new FinCell());
         column.setCellValueFactory(data -> {
             Object value = data.getValue().get(key);
             if (value == null) {

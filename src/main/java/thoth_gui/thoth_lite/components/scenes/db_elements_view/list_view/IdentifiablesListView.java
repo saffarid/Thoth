@@ -1,20 +1,20 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view;
 
-import controls.*;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.paint.Color;
+
+import thoth_gui.thoth_lite.components.controls.ListView;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
-import tools.BackgroundWrapper;
 import layout.basepane.BorderPane;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_gui.thoth_lite.components.scenes.ThothScene;
+
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell.IdentifiableListCell;
 import thoth_gui.thoth_lite.main_window.Workspace;
@@ -24,12 +24,9 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+
 import javafx.scene.Node;
 
-import layout.basepane.HBox;
 import thoth_gui.thoth_styleconstants.svg.Images;
 import tools.SvgWrapper;
 import window.Closeable;
@@ -71,7 +68,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected SimpleListProperty<T> datas;
 
     protected SortPane sortPane;
-    protected ListView<T> identifiableElementList;
+    protected controls.ListView<T> identifiableElementList;
 
     static {
         LOG = Logger.getLogger(IdentifiablesListView.class.getName());
@@ -120,13 +117,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     protected abstract SortPane getSortPane();
 
     protected Node createListView(){
-        identifiableElementList = thoth_gui.thoth_lite.components.controls.ListView.getInstance();
+        identifiableElementList = ListView.getInstance();
 
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
-
-        Label haventItemsLabel = new Label("В списке нет элементов");
-        haventItemsLabel.setAlignment(Pos.TOP_CENTER);
-        identifiableElementList.setPlaceholder(haventItemsLabel);
 
         contentNode = new BorderPane(identifiableElementList);
         return contentNode;

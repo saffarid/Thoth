@@ -1,18 +1,18 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
-import controls.Label;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
 import layout.basepane.GridPane;
+import thoth_gui.thoth_lite.components.controls.Label;
 import tools.BackgroundWrapper;
 import tools.BorderWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
-import controls.TextField;
+
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
+
 import javafx.scene.Node;
 import thoth_gui.thoth_styleconstants.svg.Images;
 import tools.SvgWrapper;
@@ -21,9 +21,9 @@ public abstract class IdentifiableViewCell
         extends BorderPane {
 
     protected Node icon;
-    protected Label title;
-    protected Label subtitle;
-    protected Label property;
+    protected controls.Label title;
+    protected controls.Label subtitle;
+    protected controls.Label property;
     protected Node edit;
 
     protected AvaliableTables table;
@@ -42,9 +42,9 @@ public abstract class IdentifiableViewCell
         init();
 
         this.icon = node;
-        this.title = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
-        this.subtitle = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
-        this.property = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
+        this.title = Label.getInstanse();
+        this.subtitle = Label.getInstanse();
+        this.property = Label.getInstanse();
         this.edit = SvgWrapper.getInstance(Images.ARROW_RIGHT());
 
         setTextTitle(title);

@@ -4,16 +4,11 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import styleconstants.imagesvg.Images;
+
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
-
-import controls.ComboBox;
-import controls.Label;
-import controls.TextArea;
-import controls.TextField;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,10 +16,12 @@ import javafx.scene.Node;
 
 import layout.basepane.HBox;
 import layout.basepane.VBox;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.TextArea;
+import thoth_gui.thoth_lite.components.controls.TextField;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
-import tools.SvgWrapper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,14 +32,14 @@ public class StoragableCard
     private final String newStoragable = "new_storagable";
     private final String storagable = "storagable";
 
-    private TextField article;
-    private TextField name;
-    private ComboBox type;
-    private ComboBox adress;
-    private TextField count;
+    private controls.TextField article;
+    private controls.TextField name;
+    private controls.ComboBox type;
+    private controls.ComboBox adress;
+    private controls.TextField count;
     private DoubleProperty countProperty;
-    private ComboBox countType;
-    private TextArea note;
+    private controls.ComboBox countType;
+    private controls.TextArea note;
 
     private enum ControlsId {
         ARTICLE("article"),
@@ -82,7 +79,7 @@ public class StoragableCard
         this.count = getTextField(ControlsId.COUNT);
         this.countType = TypableComboBox.getInstance(AvaliableTables.COUNT_TYPES, ((Storagable) identifiable).getCountType());
         this.adress = TypableComboBox.getInstance(AvaliableTables.STORING, ((Storagable) identifiable).getAdress());
-        this.note = thoth_gui.thoth_lite.components.controls.TextArea.getInstance();
+        this.note = TextArea.getInstance();
 
         Bindings.bindBidirectional(this.count.textProperty(), countProperty, new StringDoubleConverter());
 
@@ -106,12 +103,12 @@ public class StoragableCard
         );
 
         vBox.getChildren().addAll(
-                createRow(getLabel(ControlsId.ARTICLE.id), article)
-                , createRow(getLabel(ControlsId.NAME.id), name)
-                , createRow(getLabel(ControlsId.PRODUCT_TYPE.id), type)
-                , createRow(getLabel(ControlsId.COUNT.id), count)
-                , createRow(getLabel(ControlsId.ADRESS.id), adress)
-                , createRow(getLabel(ControlsId.NOTE.id), note)
+                createRow(Label.getInstanse(ControlsId.ARTICLE.id), article)
+                , createRow(Label.getInstanse(ControlsId.NAME.id), name)
+                , createRow(Label.getInstanse(ControlsId.PRODUCT_TYPE.id), type)
+                , createRow(Label.getInstanse(ControlsId.COUNT.id), count)
+                , createRow(Label.getInstanse(ControlsId.ADRESS.id), adress)
+                , createRow(Label.getInstanse(ControlsId.NOTE.id), note)
         );
 
         contentNode.setCenter(vBox);
@@ -137,16 +134,8 @@ public class StoragableCard
         return res;
     }
 
-    private Label getLabel(String text) {
-        Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(text);
-        res.setMinWidth(120);
-        res.setPrefWidth(120);
-        res.setMaxWidth(120);
-        return res;
-    }
-
-    private TextField getTextField(ControlsId id) {
-        TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance();
+    private controls.TextField getTextField(ControlsId id) {
+        controls.TextField res = TextField.getInstance();
         res.setId(id.id);
 
         switch (id) {

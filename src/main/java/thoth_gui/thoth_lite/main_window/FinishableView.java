@@ -1,7 +1,5 @@
 package thoth_gui.thoth_lite.main_window;
 
-import controls.Label;
-import controls.ListView;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -31,7 +29,7 @@ public class FinishableView
 
     private SimpleListProperty<Finishable> finishables;
 
-    private ListView<Finishable> list;
+    private controls.ListView<Finishable> list;
 
     public FinishableView() {
         super();
@@ -45,7 +43,6 @@ public class FinishableView
                         .commit()
         );
 
-        list.setPlaceholder(new Label(NO_ELEMENTS_LABEL));
         finishables = new SimpleListProperty<>();
         finishables.setValue(FXCollections.observableList(new LinkedList<>()));
 

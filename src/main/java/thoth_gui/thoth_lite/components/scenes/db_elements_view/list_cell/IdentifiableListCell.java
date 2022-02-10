@@ -28,8 +28,6 @@ import java.util.Optional;
 public class IdentifiableListCell<T extends Identifiable>
         extends ListCell<T> {
 
-    private final static String STYLE_CLASS_IDENTIFIABLE_CELL = "identifiable-cell";
-
     private T identifiable;
     private AvaliableTables table;
 
@@ -37,9 +35,6 @@ public class IdentifiableListCell<T extends Identifiable>
 
     public IdentifiableListCell(AvaliableTables table) {
         super();
-        getStyleClass().addAll(
-                STYLE_CLASS_IDENTIFIABLE_CELL
-        );
         this.table = table;
         setOnMouseClicked(this::cellClick);
     }

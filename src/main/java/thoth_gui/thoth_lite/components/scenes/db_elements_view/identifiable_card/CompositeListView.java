@@ -16,16 +16,17 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_gui.thoth_lite.components.controls.ButtonBar;
+
+import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.TextField;
+import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_styleconstants.Stylesheets;
-import controls.Button;
-import controls.ComboBox;
-import controls.Label;
-import controls.TextField;
+
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.*;
@@ -35,7 +36,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
 import thoth_gui.thoth_styleconstants.svg.Images;
-import tools.BackgroundWrapper;
+
 import tools.BorderWrapper;
 import tools.SvgWrapper;
 
@@ -121,12 +122,12 @@ public class CompositeListView
             palette.setDisable(true);
         }
 
-        ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
-        TextField count = getTextField(COUNT);
-        Label countType = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
-        TextField price = getTextField(PRICE);
-        ComboBox<Finance> financeComboBox = FinanceComboBox.getInstance();
-        Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30));
+        controls.ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
+        controls.TextField count = getTextField(COUNT);
+        controls.Label countType = Label.getInstanse();
+        controls.TextField price = getTextField(PRICE);
+        controls.ComboBox<Finance> financeComboBox = FinanceComboBox.getInstance();
+        controls.Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30));
 
         storagableComboBox.valueProperty().addListener((observableValue, storagable, t1) -> {
             if (t1 != null) {
@@ -421,9 +422,9 @@ public class CompositeListView
         }
     }
 
-    private ComboBox<Storagable> getStoragableComboBox() {
+    private controls.ComboBox<Storagable> getStoragableComboBox() {
 
-        ComboBox<Storagable> res = thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox.getInstance();
+        controls.ComboBox<Storagable> res = ComboBox.getInstance();
 
         try {
             res.setItems(FXCollections.observableList((List<Storagable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORAGABLE)));
@@ -441,15 +442,15 @@ public class CompositeListView
         return res;
     }
 
-    private TextField getTextField(String id) {
+    private controls.TextField getTextField(String id) {
         return getTextField(id, null);
     }
 
-    private TextField getTextField(
+    private controls.TextField getTextField(
             String id
             , String text
     ) {
-        TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance();
+        controls.TextField res = TextField.getInstance();
         res.setId(id);
 
         if (text != null) {
@@ -552,8 +553,8 @@ public class CompositeListView
             }
         }
 
-        private Button createRemoveButton() {
-            Button res = new Button(SvgWrapper.getInstance(Images.TRASH(), 19, 19));
+        private controls.Button createRemoveButton() {
+            controls.Button res = Button.getInstance(SvgWrapper.getInstance(Images.TRASH(), 19, 19));
 
             res.setDisable(!identifiableIsNew);
 
@@ -582,37 +583,33 @@ public class CompositeListView
 
             res.setPadding(new Insets(0, 10, 0, 10));
 
-            res.getRowConstraints().addAll(
-                    new RowConstraints(21)
-            );
-
-            res.getColumnConstraints().addAll(
-                    new ColumnConstraints(200, 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    , new ColumnConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.RIGHT, true)
-            );
+            res
+                    .addRow(Priority.NEVER)
+                            .addColumn(200, 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true);
 
             res.add(
-                    new Label(String.format(TEMPLATE_NAME, storing.getStoragable().getId(), storing.getStoragable().getName()))
+                    Label.getInstanse(String.format(TEMPLATE_NAME, storing.getStoragable().getId(), storing.getStoragable().getName()))
                     , 0, 0
             );
             res.add(
-                    new Label(String.format(TEMPLATE_COUNT, COUNT, storing.getCount()))
+                    Label.getInstanse(String.format(TEMPLATE_COUNT, COUNT, storing.getCount()))
                     , 1, 0
             );
             res.add(
-                    new Label(storing.getCountType().getValue())
+                    Label.getInstanse(storing.getCountType().getValue())
                     , 2, 0
             );
             res.add(
-                    new Label(String.format(TEMPLATE_COUNT, PRICE, storing.getPrice()))
+                    Label.getInstanse(String.format(TEMPLATE_COUNT, PRICE, storing.getPrice()))
                     , 3, 0
             );
             res.add(
-                    new Label(storing.getCurrency().getCurrency().getCurrencyCode())
+                    Label.getInstanse(storing.getCurrency().getCurrency().getCurrencyCode())
                     , 4, 0
             );
             res.add(

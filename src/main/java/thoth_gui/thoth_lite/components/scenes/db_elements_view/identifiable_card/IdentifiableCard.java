@@ -1,28 +1,26 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+
 import layout.basepane.BorderPane;
-import thoth_core.thoth_lite.db_data.db_data_element.implement.Currency;
+
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
+
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
-import controls.Button;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ListCell;
+
+import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
-import thoth_gui.thoth_lite.components.controls.ToolsPane;
-import thoth_gui.thoth_lite.components.scenes.ThothScene;
+
 import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
-import tools.BackgroundWrapper;
+
 import window.Closeable;
 
 import java.sql.SQLException;
@@ -51,8 +49,8 @@ public abstract class IdentifiableCard
         }
     }
 
-    protected Button apply;
-    protected Button cancel;
+    protected controls.Button apply;
+    protected controls.Button cancel;
 
     protected boolean identifiableIsNew;
     protected Identifiable identifiable;
@@ -112,8 +110,8 @@ public abstract class IdentifiableCard
     }
 
     private javafx.scene.control.ButtonBar createButtonBar() {
-        apply = getButton(ButtonText.APPLY, event -> apply());
-        cancel = getButton(ButtonText.CANCEL, event -> cancel());
+        apply = Button.getInstance(ButtonText.APPLY.text, event -> apply());
+        cancel = Button.getInstance(ButtonText.CANCEL.text, event -> cancel());
 
         return ButtonBar.getInstance(
                 apply
@@ -132,15 +130,6 @@ public abstract class IdentifiableCard
     }
 
     protected abstract Identifiable identifiableInstance();
-
-    private Button getButton(
-            ButtonText text
-            , EventHandler<ActionEvent> event
-    ) {
-        Button res = thoth_gui.thoth_lite.components.controls.Button.getInstance(text.text, event);
-        res.setId(text.text);
-        return res;
-    }
 
     public static IdentifiableCard getInstance(
             AvaliableTables table

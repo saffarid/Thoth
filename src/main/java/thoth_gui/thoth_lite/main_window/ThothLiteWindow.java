@@ -4,7 +4,8 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
-import main.Main;
+
+import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
 import thoth_gui.thoth_styleconstants.Stylesheets;
 import tools.BackgroundWrapper;
@@ -19,7 +20,7 @@ import thoth_gui.thoth_lite.components.scenes.ConfigDropdownList;
 import thoth_gui.thoth_lite.components.scenes.Home;
 import thoth_gui.thoth_lite.components.scenes.Scenes;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
-import controls.MenuButton;
+
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
@@ -104,10 +105,10 @@ public class ThothLiteWindow
 
         mainStage = stage;
 
+        initStyle();
         menuConfig();
         setLeft(createLeftNode());
         workspaceConfig();
-        initStyle();
     }
 
     public static ThothLiteWindow getInstance() {
@@ -225,28 +226,28 @@ public class ThothLiteWindow
     }
 
     private Node navigationMenuConfig() {
-        List<MenuButton> menuButtons = new LinkedList<>();
-        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+        List<controls.MenuButton> menuButtons = new LinkedList<>();
+        menuButtons.add(MenuButton.getInstance(
                 Scenes.HOME.getSceneCode(), SvgWrapper.getInstance(Images.HOME(), 20, 20),
                 event -> works.setNewScene(Home.getInstance())
         ));
-        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+        menuButtons.add(MenuButton.getInstance(
                 Scenes.EXPENSES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGDOWN(), 20, 20),
                 event -> works.setNewScene(new FinancialOperations(AvaliableTables.EXPENSES))
         ));
-        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+        menuButtons.add(MenuButton.getInstance(
                 Scenes.INCOMES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGUP(), 20, 20),
                 event -> works.setNewScene(new FinancialOperations(AvaliableTables.INCOMES))
         ));
-        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+        menuButtons.add(MenuButton.getInstance(
                 Scenes.PURCHASES.getSceneCode(), SvgWrapper.getInstance(Images.PURCHASE(), 20, 20),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE))
         ));
-        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+        menuButtons.add(MenuButton.getInstance(
                 Scenes.STORAGABLE.getSceneCode(), SvgWrapper.getInstance(Images.PRODUCT(), 20, 20),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE))
         ));
-        menuButtons.add(thoth_gui.thoth_lite.components.controls.MenuButton.getInstance(
+        menuButtons.add(MenuButton.getInstance(
                 Scenes.SYSTEM.getSceneCode(), SvgWrapper.getInstance(Images.LIST(), 20, 20),
                 event -> works.setNewScene(ConfigDropdownList.getInstance())
         ));

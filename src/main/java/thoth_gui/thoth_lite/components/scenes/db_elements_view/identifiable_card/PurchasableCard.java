@@ -1,13 +1,14 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
+
+import controls.Toggle;
+import controls.Twin;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.layout.ColumnConstraints;
+
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
-import layout.basepane.BorderPane;
+
 import layout.basepane.GridPane;
-import styleconstants.imagesvg.Images;
+
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Partnership;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Purchasable;
@@ -15,18 +16,19 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
-import controls.*;
+
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
-import layout.basepane.VBox;
-import layout.basepane.HBox;
+
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.TextField;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
-import tools.BackgroundWrapper;
-import tools.SvgWrapper;
+import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
+
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -38,8 +40,8 @@ public class PurchasableCard extends IdentifiableCard {
     private final String newPurchase = "new_purchase";
     private final String purchase = "purchase";
 
-    private TextField trackNumber;
-    private ComboBox store;
+    private controls.TextField trackNumber;
+    private controls.ComboBox store;
     private DatePicker datePicker;
     private CompositeListView compositeListView;
     private Toggle toggleDelivered;
@@ -117,11 +119,11 @@ public class PurchasableCard extends IdentifiableCard {
         store = getComboBox(PropertiesPurchasableId.TRACK_NUMBER);
         datePicker = getDatePicker();
 
-        content.add(new Twin(getLabel(PropertiesPurchasableId.TRACK_NUMBER), trackNumber), 0, 0);
-        content.add(new Twin(getLabel(PropertiesPurchasableId.STORE), store), 0, 1);
-        content.add(new Twin(getLabel(PropertiesPurchasableId.DELIVERY_DATE), datePicker), 0, 2);
+        content.add(new Twin(Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id), trackNumber), 0, 0);
+        content.add(new Twin(Label.getInstanse(PropertiesPurchasableId.STORE.id), store), 0, 1);
+        content.add(new Twin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id), datePicker), 0, 2);
 
-        content.add(new Twin(getLabel(PropertiesPurchasableId.IS_DELIVERED), new Toggle(((Purchasable)identifiable).isDelivered())), 1, 0);
+        content.add(new Twin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id), new Toggle(((Purchasable)identifiable).isDelivered())), 1, 0);
 
         content.add(new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew), 0, 3, 2, 1);
 
@@ -130,8 +132,8 @@ public class PurchasableCard extends IdentifiableCard {
         return contentNode;
     }
 
-    protected ComboBox getComboBox(PropertiesPurchasableId id) {
-        ComboBox res = thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox.getInstance();
+    protected controls.ComboBox getComboBox(PropertiesPurchasableId id) {
+        controls.ComboBox res = ComboBox.getInstance();
         res.setId(id.id);
 
         try {
@@ -167,13 +169,8 @@ public class PurchasableCard extends IdentifiableCard {
         return datePicker;
     }
 
-    private Label getLabel(PropertiesPurchasableId id) {
-        Label res = thoth_gui.thoth_lite.components.controls.Label.getInstanse(id.id);
-        return res;
-    }
-
-    private TextField getTextField(PropertiesPurchasableId id) {
-        TextField res = thoth_gui.thoth_lite.components.controls.TextField.getInstance();
+    private controls.TextField getTextField(PropertiesPurchasableId id) {
+        controls.TextField res = TextField.getInstance();
         res.setId(id.id);
 
         switch (id) {
