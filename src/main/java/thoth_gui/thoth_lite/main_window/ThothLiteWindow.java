@@ -157,13 +157,22 @@ public class ThothLiteWindow
     protected void initStyle() {
 
         CompletableFuture
-                .supplyAsync(() -> Stylesheets.COLORS.getStylesheet())
+                .supplyAsync(() -> {
+                    return new String[]{
+                            Stylesheets.COLORS.getStylesheet(),
+                            Stylesheets.LIST_VIEW.getStylesheet(),
+                            Stylesheets.SCROLL_BAR.getStylesheet(),
+                    };
+                })
                         .thenAccept(s -> {
-                            Platform.runLater(() -> {
-                                getStyleClass().add("dark");
-                                getStylesheets().add(s);
-                            });
-                        });
+                                    Platform.runLater(() -> {
+                                        getStyleClass().add("dark");
+                                        for (String s1 : s) {
+                                            getStylesheets().add(s1);
+                                        }
+                                    });
+                                });
+
 
         setBackground(
                 new BackgroundWrapper()

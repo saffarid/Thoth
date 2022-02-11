@@ -19,11 +19,15 @@
 
 .scroll-bar>.thumb{
     -fx-background-color:-light_disable;
-    -fx-opacity:0.5;
+    -fx-opacity:0.1;
     -fx-background-radius:0;
     -fx-border-radius:0;
     -fx-background-insets:0;
     -fx-padding:0;
+}
+
+.scroll-bar:hover>.thumb{
+    -fx-opacity:0.3;
 }
 
 .scroll-bar>.increment-button, .scroll-bar>.increment-button>.increment-arrow{

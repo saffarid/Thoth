@@ -41,10 +41,6 @@ public class Toggle extends StackPane {
         setOnMouseClicked(this::changeState);
         this.isTrue = new SimpleBooleanProperty(!isTrue);
 
-//        back.getChildren().addAll(
-//                point
-//        );
-
         getChildren().addAll(
                 back,
                 point
@@ -135,7 +131,6 @@ public class Toggle extends StackPane {
     private void changeState(MouseEvent mouseEvent) {
         switch (mouseEvent.getButton()) {
             case PRIMARY: {
-                System.out.println("Клик мышой");
                 isTrue.set(!isTrue.get());
                 break;
             }
