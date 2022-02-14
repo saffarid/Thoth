@@ -60,14 +60,12 @@ public class StoragableCard
             , AvaliableTables table
     ) {
         super(identifiable, table);
-        tools = new SimpleObjectProperty<>(
-                new ToolsPane( identifiableIsNew ? newStoragable : storagable )
-        );
+        tools = new SimpleObjectProperty<>( createToolsNode() );
     }
 
     @Override
-    protected Node createContent() {
-        super.createContent();
+    protected Node createContentNode() {
+        super.createContentNode();
 
         VBox vBox = new VBox();
 
@@ -114,6 +112,11 @@ public class StoragableCard
         contentNode.setCenter(vBox);
 
         return contentNode;
+    }
+
+    @Override
+    protected Node createToolsNode() {
+        return new ToolsPane( identifiableIsNew ? newStoragable : storagable );
     }
 
     private Node createRow(

@@ -76,7 +76,7 @@ public abstract class IdentifiableCard
         }
         this.table = table;
 
-        content = new SimpleObjectProperty<>(createContent());
+        content = new SimpleObjectProperty<>(createContentNode());
 
     }
 
@@ -118,8 +118,9 @@ public abstract class IdentifiableCard
                 , cancel
         );
     }
-
-    protected Node createContent() {
+    
+    @Override
+    protected Node createContentNode() {
         contentNode = new BorderPane();
 
         javafx.scene.control.ButtonBar buttonBar = createButtonBar();

@@ -2,11 +2,9 @@ package thoth_gui.thoth_lite.components.scenes;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
 import layout.basepane.BorderPane;
 import layout.custompane.NavigationMenu;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
-import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
@@ -19,8 +17,8 @@ public class ConfigDropdownList
     private static ConfigDropdownList instance;
 
     private ConfigDropdownList() {
-        tools = new SimpleObjectProperty<>(createToolsPane());
-        content = new SimpleObjectProperty<>(createContent());
+        tools = new SimpleObjectProperty<>(createToolsNode());
+        content = new SimpleObjectProperty<>(createContentNode());
     }
 
     public static ConfigDropdownList getInstance() {
@@ -30,13 +28,15 @@ public class ConfigDropdownList
         return instance;
     }
 
-    private BorderPane createContent(){
+    @Override
+    protected BorderPane createContentNode(){
         contentNode = new BorderPane();
         contentNode.setLeft(getNavigationMenu());
         return contentNode;
     }
 
-    private Node createToolsPane(){
+    @Override
+    protected Node createToolsNode(){
         toolsNode = new ToolsPane(Scenes.SYSTEM.getSceneCode());
 
         return toolsNode;

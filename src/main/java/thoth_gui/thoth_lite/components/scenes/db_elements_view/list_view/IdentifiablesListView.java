@@ -81,7 +81,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         super();
         this.table = table;
         this.datas = new SimpleListProperty<T>(  );
-        content = new SimpleObjectProperty<>(createListView());
+        content = new SimpleObjectProperty<>(createContentNode());
 
         this.datas.addListener((ListChangeListener<? super T>) change -> {
             //Для обновления отображения списка создаём задачу и выполняем её в потоке JavaFX
@@ -92,7 +92,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
             });
         });
         this.datas.setValue(FXCollections.observableList(datas));
-        tools = new SimpleObjectProperty<>(getToolsPanel());
+        tools = new SimpleObjectProperty<>(createToolsNode());
 
         try {
             ThothLite.getInstance().subscribeOnTable(this.table, this);
@@ -105,7 +105,18 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         }
     }
 
-    protected Node getToolsPanel(){
+    @Override
+    protected Node createContentNode(){
+        identifiableElementList = ListView.getInstance();
+
+        identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
+
+        contentNode = new BorderPane(identifiableElementList);
+        return contentNode;
+    }
+
+    @Override
+    protected Node createToolsNode(){
         toolsNode = new ToolsPane(table.name())
                 .addSortPane(getSortPane())
                 .addNewButton( SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool), this::openCreateNewIdentifiable)
@@ -115,18 +126,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     protected abstract SortPane getSortPane();
-
-    protected Node createListView(){
-        identifiableElementList = ListView.getInstance();
-
-        identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
-
-        contentNode = new BorderPane(identifiableElementList);
-        return contentNode;
-    }
-
-    protected abstract void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1);
-
 
     public static IdentifiablesListView getInstance(
             AvaliableTables type
@@ -166,6 +165,17 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return null;
     }
 
+    protected void openCreateNewIdentifiable(ActionEvent event){
+        Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null));
+    }
+
+    protected abstract void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1);
+
+    @Override
+    public void setCloseable(Closeable closeable) {
+
+    }
+
     /**
      * Функция завершает все текущие процессы
      * */
@@ -196,12 +206,4 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         subscription.request(1);
     }
 
-    protected void openCreateNewIdentifiable(ActionEvent event){
-        Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null));
-    }
-
-    @Override
-    public void setCloseable(Closeable closeable) {
-
-    }
 }

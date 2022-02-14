@@ -11,35 +11,25 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.util.Callback;
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
-import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.FinancialAccounting;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
-import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Button;
-import thoth_gui.thoth_lite.components.controls.ButtonBar;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.main_window.Workspace;
-import thoth_gui.thoth_styleconstants.color.ColorTheme;
 import thoth_gui.thoth_styleconstants.svg.Images;
-import tools.BorderWrapper;
 import tools.SvgWrapper;
 import window.Closeable;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -127,14 +117,15 @@ public class FinancialOperations
         init();
 
         tools = new SimpleObjectProperty<>(createToolsNode());
-        content = new SimpleObjectProperty<>(createContent());
+        content = new SimpleObjectProperty<>(createContentNode());
     }
 
     @Override
     public void close() {
     }
 
-    private Node createContent() {
+    @Override
+    protected Node createContentNode() {
 //        tableView = new TableView();
 
         contentNode = new BorderPane(finOpSumTable);
@@ -159,7 +150,8 @@ public class FinancialOperations
         return column;
     }
 
-    private Node createToolsNode() {
+    @Override
+    protected Node createToolsNode() {
 
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(0, 0, 0, 5));

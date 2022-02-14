@@ -6,16 +6,20 @@ import javafx.beans.property.SimpleObjectProperty;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import thoth_core.thoth_lite.config.ConfigEnums;
+import thoth_core.thoth_lite.config.Configuration;
 import thoth_gui.thoth_styleconstants.color.ColorTheme;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
-public class Config {
+public class Config
+        implements Configuration {
 
-    private enum KEYS {
+    public enum KEYS {
         FONT("font"),
         SCENE("scene"),
         WINDOW("window"),
@@ -48,26 +52,54 @@ public class Config {
     private Scene scene;
     private Window window;
 
-    private Config() throws IOException, ParseException {
-
+    private Config()
+            throws IOException, ParseException {
         configFile = new File(
                 pathConfig + File.separator + fileConfigName
         );
 
+        font = new Font();
+        scene = new Scene();
+        window = new Window();
         if (!configFile.exists()) {
-            font = new Font();
-            scene = new Scene();
-            window = new Window();
-
             exportConfig();
         } else {
-            JSONObject parse = importConfig();
-
-            font = new Font((JSONObject) parse.get(KEYS.FONT.getKey()));
-            scene = new Scene((JSONObject) parse.get(KEYS.SCENE.getKey()));
-            window = new Window((JSONObject) parse.get(KEYS.WINDOW.getKey()));
+            setConfig( importConfig() );
         }
+    }
 
+    @Override
+    public JSONObject getConfig() {
+        JSONObject config = new JSONObject();
+        config.put(KEYS.FONT.getKey(), font.getConfig());
+        config.put(KEYS.SCENE.getKey(), scene.getConfig());
+        config.put(KEYS.WINDOW.getKey(), window.getConfig());
+        return config;
+    }
+
+    @Override
+    public ConfigEnums[] getConfigEnums(String key) {
+        return null;
+    }
+
+    public Font getFont() {
+        return font;
+    }
+
+    public static Config getInstance()
+            throws IOException, ParseException {
+        if (config == null) {
+            config = new Config();
+        }
+        return config;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public Window getWindow() {
+        return window;
     }
 
     public void exportConfig() {
@@ -77,26 +109,11 @@ public class Config {
         }
 
         try (FileWriter writer = new FileWriter(configFile)) {
-            writer.write(getConfig().toJSONString());
+            writer.write(((JSONObject) getConfig()).toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-    }
-
-    public JSONObject getConfig(){
-        JSONObject config = new JSONObject();
-        config.put(KEYS.FONT.getKey(), font.exportJSON());
-        config.put(KEYS.SCENE.getKey(), scene.exportJSON());
-        config.put(KEYS.WINDOW.getKey(), window.exportJSON());
-        return config;
-    }
-
-    public static Config getInstance() throws IOException, ParseException {
-        if (config == null) {
-            config = new Config();
-        }
-        return config;
     }
 
     private JSONObject importConfig()
@@ -106,15 +123,15 @@ public class Config {
         return (JSONObject) parser.parse(reader);
     }
 
-    public Font getFont() {
-        return font;
-    }
-    public Scene getScene() {return scene;}
-    public Window getWindow() {
-        return window;
+    @Override
+    public void setConfig(JSONObject json) {
+        font  .setConfig((JSONObject) json.get(KEYS.FONT.getKey()));
+        scene .setConfig((JSONObject) json.get(KEYS.SCENE.getKey()));
+        window.setConfig((JSONObject) json.get(KEYS.WINDOW.getKey()));
     }
 
-    public class Font implements Configuration {
+    public class Font
+            implements Configuration {
 
         private final String KEY_SIZE = "size";
         private final String KEY_FAMILY = "family";
@@ -126,11 +143,10 @@ public class Config {
             font = new SimpleObjectProperty<>(f);
         }
 
-        public Font(JSONObject data) {
-            importJSON(data);
-        }
+        /* --- Getter --- */
 
-        public JSONObject exportJSON() {
+        @Override
+        public JSONObject getConfig() {
             JSONObject res = new JSONObject();
 
             res.put(KEY_SIZE, font.getValue().getSize());
@@ -140,24 +156,28 @@ public class Config {
         }
 
         @Override
-        public void importJSON(JSONObject data) {
+        public ConfigEnums[] getConfigEnums(String key) {
+            return null;
+        }
+
+        public javafx.scene.text.Font getFont() {
+            return font.get();
+        }
+
+        public SimpleObjectProperty<javafx.scene.text.Font> fontProperty() {
+            return font;
+        }
+
+        /* --- Setter --- */
+
+        @Override
+        public void setConfig(JSONObject data) {
             javafx.scene.text.Font f = new javafx.scene.text.Font(
                     (String) data.get(KEY_FAMILY)
                     , (double) data.get(KEY_SIZE)
             );
             font = new SimpleObjectProperty<>(f);
         }
-
-        /* --- Getter --- */
-
-        public SimpleObjectProperty<javafx.scene.text.Font> fontProperty() {
-            return font;
-        }
-        public javafx.scene.text.Font getFont() {
-            return font.get();
-        }
-
-        /* --- Setter --- */
 
         public void setFont(javafx.scene.text.Font font) {
             this.font.set(font);
@@ -167,8 +187,9 @@ public class Config {
 
     /**
      * Класс конфигурация отображения сцен
-     * */
-    public class Scene implements Configuration{
+     */
+    public class Scene
+            implements Configuration {
         private final String KEY_COLOR_THEME = "color_theme";
 
         private final ColorTheme themeDefault = ColorTheme.DARK;
@@ -179,31 +200,37 @@ public class Config {
             theme = themeDefault;
         }
 
-        public Scene(JSONObject importJson){
-            importJSON(importJson);
-        }
+        /* --- Getter --- */
 
         @Override
-        public JSONObject exportJSON() {
+        public JSONObject getConfig() {
             JSONObject res = new JSONObject();
             res.put(KEY_COLOR_THEME, theme.toString());
             return res;
         }
 
         @Override
-        public void importJSON(JSONObject importJson) {
-            theme = ColorTheme.valueOf( (String) importJson.get(KEY_COLOR_THEME) );
+        public ConfigEnums[] getConfigEnums(String key) {
+            return null;
         }
 
-        /* --- Getter --- */
         public ColorTheme getTheme() {
             return theme;
         }
 
         /* --- Setter --- */
+
+        @Override
+        public void setConfig(JSONObject importJson) {
+            theme = ColorTheme.valueOf((String) importJson.get(KEY_COLOR_THEME));
+        }
     }
 
-    public class Window implements Configuration {
+    /**
+     * Конфигурация положения и отображения окна
+     * */
+    public class Window
+            implements Configuration {
 
         private final String KEY_X_PRIMARY = "x_primary";
         private final String KEY_Y_PRIMARY = "y_primary";
@@ -241,24 +268,21 @@ public class Config {
         private SimpleDoubleProperty heightSecondary;
 
         public Window() {
-            xPrimary      = new SimpleDoubleProperty(xPrimaryDefault);
-            yPrimary      = new SimpleDoubleProperty(yPrimaryDefault);
-            widthPrimary  = new SimpleDoubleProperty(widthPrimaryDefault);
+            xPrimary = new SimpleDoubleProperty(xPrimaryDefault);
+            yPrimary = new SimpleDoubleProperty(yPrimaryDefault);
+            widthPrimary = new SimpleDoubleProperty(widthPrimaryDefault);
             heightPrimary = new SimpleDoubleProperty(heightPrimaryDefault);
-            isMax         = new SimpleBooleanProperty(isMaxDefault);
+            isMax = new SimpleBooleanProperty(isMaxDefault);
 
 
-            widthSecondary  = new SimpleDoubleProperty(widthSecondaryDefault);
+            widthSecondary = new SimpleDoubleProperty(widthSecondaryDefault);
             heightSecondary = new SimpleDoubleProperty(heightSecondaryDefault);
-            xSecondary      = new SimpleDoubleProperty(xPrimary.get() + ((widthPrimary.get() - widthSecondary.get()) / 2));
-            ySecondary      = new SimpleDoubleProperty(yPrimary.get() + ((heightPrimary.get() - heightSecondary.get()) / 2));
+            xSecondary = new SimpleDoubleProperty(xPrimary.get() + ((widthPrimary.get() - widthSecondary.get()) / 2));
+            ySecondary = new SimpleDoubleProperty(yPrimary.get() + ((heightPrimary.get() - heightSecondary.get()) / 2));
         }
 
-        public Window(JSONObject data) {
-            importJSON(data);
-        }
-
-        public JSONObject exportJSON() {
+        @Override
+        public JSONObject getConfig() {
             JSONObject res = new JSONObject();
 
             res.put(KEY_X_PRIMARY, xPrimary.doubleValue());
@@ -276,25 +300,31 @@ public class Config {
         }
 
         @Override
-        public void importJSON(JSONObject data) {
-            xPrimary      = new SimpleDoubleProperty( (double) data.get(KEY_X_PRIMARY) );
-            yPrimary      = new SimpleDoubleProperty( (double) data.get(KEY_Y_PRIMARY) );
-            widthPrimary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_PRIMARY) );
-            heightPrimary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_PRIMARY) );
-            isMax         = new SimpleBooleanProperty( (boolean) data.get(KEY_ISMAX) );
+        public ConfigEnums[] getConfigEnums(String key) {
+            return null;
+        }
 
-            widthSecondary  = new SimpleDoubleProperty( (double) data.get(KEY_WIDTH_SECONDARY) );
-            heightSecondary = new SimpleDoubleProperty( (double) data.get(KEY_HEIGHT_SECONDARY) );
-            xSecondary      = new SimpleDoubleProperty( (double) data.get(KEY_X_SECONDARY) );
-            ySecondary      = new SimpleDoubleProperty( (double) data.get(KEY_Y_SECONDARY) );
+        @Override
+        public void setConfig(JSONObject data) {
+            xPrimary = new SimpleDoubleProperty((double) data.get(KEY_X_PRIMARY));
+            yPrimary = new SimpleDoubleProperty((double) data.get(KEY_Y_PRIMARY));
+            widthPrimary = new SimpleDoubleProperty((double) data.get(KEY_WIDTH_PRIMARY));
+            heightPrimary = new SimpleDoubleProperty((double) data.get(KEY_HEIGHT_PRIMARY));
+            isMax = new SimpleBooleanProperty((boolean) data.get(KEY_ISMAX));
+
+            widthSecondary = new SimpleDoubleProperty((double) data.get(KEY_WIDTH_SECONDARY));
+            heightSecondary = new SimpleDoubleProperty((double) data.get(KEY_HEIGHT_SECONDARY));
+            xSecondary = new SimpleDoubleProperty((double) data.get(KEY_X_SECONDARY));
+            ySecondary = new SimpleDoubleProperty((double) data.get(KEY_Y_SECONDARY));
         }
 
         /*
-        * Функции для работы с первичным окном
-        * */
+         * Функции для работы с первичным окном
+         * */
         public double getHeightPrimary() {
             return heightPrimary.get();
         }
+
         public double getWidthPrimary() {
             return widthPrimary.get();
         }
@@ -302,6 +332,7 @@ public class Config {
         public double getHeightPrimaryMin() {
             return heightPrimaryMin;
         }
+
         public double getWidthPrimaryMin() {
             return widthPrimaryMin;
         }
@@ -309,6 +340,7 @@ public class Config {
         public double getxPrimary() {
             return xPrimary.get();
         }
+
         public double getyPrimary() {
             return yPrimary.get();
         }
@@ -316,9 +348,11 @@ public class Config {
         public boolean isIsMax() {
             return isMax.get();
         }
+
         public boolean isMaxDefault() {
             return isMaxDefault;
         }
+
         public SimpleBooleanProperty isMaxProperty() {
             return isMax;
         }
@@ -326,6 +360,7 @@ public class Config {
         public SimpleDoubleProperty widthPrimaryProperty() {
             return widthPrimary;
         }
+
         public SimpleDoubleProperty heightPrimaryProperty() {
             return heightPrimary;
         }
@@ -333,16 +368,18 @@ public class Config {
         public SimpleDoubleProperty xPrimaryProperty() {
             return xPrimary;
         }
+
         public SimpleDoubleProperty yPrimaryProperty() {
             return yPrimary;
         }
 
         /*
-        * Функции для работы с вторичным окном
-        * */
+         * Функции для работы с вторичным окном
+         * */
         public double getHeightSecondary() {
             return heightSecondary.get();
         }
+
         public double getWidthSecondary() {
             return widthSecondary.get();
         }
@@ -350,6 +387,7 @@ public class Config {
         public double getHeightSecondaryMin() {
             return heightSecondaryMin;
         }
+
         public double getWidthSecondaryMin() {
             return widthSecondaryMin;
         }
@@ -357,6 +395,7 @@ public class Config {
         public SimpleDoubleProperty heightSecondaryProperty() {
             return heightSecondary;
         }
+
         public SimpleDoubleProperty widthSecondaryProperty() {
             return widthSecondary;
         }
@@ -364,6 +403,7 @@ public class Config {
         public SimpleDoubleProperty xSecondaryProperty() {
             return xSecondary;
         }
+
         public SimpleDoubleProperty ySecondaryProperty() {
             return ySecondary;
         }
@@ -371,6 +411,7 @@ public class Config {
         public double getxSecondary() {
             return xSecondary.get();
         }
+
         public double getySecondary() {
             return ySecondary.get();
         }

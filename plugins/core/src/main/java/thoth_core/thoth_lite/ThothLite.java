@@ -2,6 +2,7 @@ package thoth_core.thoth_lite;
 
 import org.json.simple.JSONObject;
 import thoth_core.thoth_lite.config.Config;
+import thoth_core.thoth_lite.config.Configuration;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
 import thoth_core.thoth_lite.db_data.DBData;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Composite;
@@ -138,8 +139,8 @@ public class ThothLite {
     /**
      * Функция возвращает конфигурацию системы в формате json.
      */
-    public JSONObject getConfig() {
-        return config.getConfig();
+    public Configuration getConfig() {
+        return config;
     }
 
     /**
@@ -338,13 +339,6 @@ public class ThothLite {
         for (String name : data.keySet()) {
             database.remove(name, data.get(name));
         }
-    }
-
-    /**
-     * Функция передает новую конфигурацию для проверки и установки
-     */
-    public void setNewConfig(HashMap<String, Object> config) {
-        this.config.setNewConfig(config);
     }
 
     /**

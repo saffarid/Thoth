@@ -89,7 +89,7 @@ public class FinOperationCard
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
-        tools = new SimpleObjectProperty<>(new ToolsPane(title));
+        tools = new SimpleObjectProperty<>(createToolsNode());
     }
 
     private AvaliableTables categoryTable() {
@@ -106,8 +106,13 @@ public class FinOperationCard
         }
     }
 
-    protected Node createContent() {
-        super.createContent();
+    @Override
+    protected Node createToolsNode() {
+        return new ToolsPane(title);
+    }
+
+    protected Node createContentNode() {
+        super.createContentNode();
 
         VBox vBox = new VBox();
         vBox.setFillWidth(true);

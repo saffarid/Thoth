@@ -12,6 +12,8 @@ import layout.basepane.GridPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 
+import java.util.Locale;
+
 public class ToolsPane
         extends GridPane {
 
@@ -35,14 +37,14 @@ public class ToolsPane
 
         setGridLinesVisible(true);
         addRow(Priority.ALWAYS)
-                .addColumn(150., HPos.LEFT)
+                .addColumn(0, 150., 150., Priority.ALWAYS, HPos.LEFT, true)
                 .addColumn(Priority.NEVER)
                 .addColumn(Priority.ALWAYS)
                 .addColumn(Priority.NEVER);
 
         setHgap(5);
 
-        title = thoth_gui.thoth_lite.components.controls.Label.getInstanse(titleText);
+        title = thoth_gui.thoth_lite.components.controls.Label.getInstanse(titleText.toUpperCase(Locale.ROOT));
         add(title, 0, 0);
     }
 

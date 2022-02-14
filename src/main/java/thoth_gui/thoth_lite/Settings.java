@@ -1,115 +1,86 @@
 package thoth_gui.thoth_lite;
 
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.paint.Color;
-import thoth_gui.thoth_styleconstants.Stylesheets;
-import tools.BackgroundWrapper;
-import tools.BorderWrapper;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import thoth_core.thoth_lite.config.Keys;
-import thoth_core.thoth_lite.exceptions.NotContainsException;
-import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
-import thoth_core.thoth_lite.ThothLite;
-import controls.ComboBox;
-import controls.Toggle;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.text.Font;
-import javafx.stage.Stage;
-import layout.basepane.HBox;
+import controls.Twin;
+import javafx.beans.property.SimpleObjectProperty;
+import layout.basepane.BorderPane;
 import layout.basepane.VBox;
+import org.json.simple.parser.ParseException;
+import thoth_core.thoth_lite.config.Configuration;
+import thoth_gui.config.Config;
+import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
+import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
+import thoth_gui.thoth_styleconstants.svg.Images;
+import org.json.simple.JSONObject;
+import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_core.thoth_lite.ThothLite;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import layout.basepane.HBox;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
-import thoth_gui.config.Config;
-import thoth_gui.thoth_lite.components.controls.ButtonBar;
-import window.SecondaryWindow;
+import tools.SvgWrapper;
+import window.Closeable;
 
-import thoth_gui.thoth_lite.components.controls.Label;
-
-import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class Settings
-        extends SecondaryWindow
+        extends ThothSceneImpl
         implements Apply
         , Cancel {
 
+    private final String TITLE_TEXT = "settings";
 
-    enum DefaultSize {
-        HEIGHT(500),
-        WIDTH(800);
-        private double size;
+    private static Settings instance;
 
-        DefaultSize(double size) {
-            this.size = size;
-        }
+    /**
+     * Конфигурация ядра
+     * */
+    private Configuration configThothCore;
 
-        public double getSize() {
-            return size;
-        }
-    }
+    /**
+     * Конфигурация графической части
+     * */
+    private Configuration configGui;
 
-    enum ComboBoxesId {
-        DELAY_REREAD_DATABASE("delay_reread_database"),
-        FONT_FAMILY("font_family"),
-        FONT_SIZE("font_size"),
-        ;
-        private String id;
+    private List<JSONObject> configJSONs;
 
-        ComboBoxesId(String id) {
-            this.id = id;
-        }
-    }
+    public Settings() {
+        super();
 
-    enum SectorTitles {
-        TEXT("text"),
-        DATABASE("database"),
-        DELIVERY("delivery"),
-        ;
-        private String title;
-
-        SectorTitles(String title) {
-            this.title = title;
-        }
-    }
-
-    private HashMap<String, Object> jsonConfig;
-
-    private Font newFont;
-
-    public Settings(Stage stage, String title) {
-        super(stage, title);
+        //Запрос конфигураций
         try {
-            jsonConfig = ThothLite.getInstance().getConfig();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+            configThothCore = ThothLite.getInstance().getConfig();
+            configGui = Config.getInstance();
+
+            configJSONs = new LinkedList<>();
+            configJSONs.add( configGui.getConfig());
+            configJSONs.add( configThothCore.getConfig());
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
-        setCenter( fillCenter() );
+        catch (NotContainsException e) {
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        javafx.scene.control.ButtonBar instance = ButtonBar.getInstance(
-                event -> apply()
-                , event -> cancel()
-        );
-        initStyle();
-        setMargin(instance, new Insets(2));
-        setBottom(
-                instance
-        );
+        content = new SimpleObjectProperty<>( createContentNode() );
+        tools   = new SimpleObjectProperty<>( createToolsNode()   );
+
     }
 
     @Override
@@ -119,181 +90,92 @@ public class Settings
 
     @Override
     public void cancel() {
-        close();
-    }
 
-    private Node databaseConfig() {
-        VBox res = new VBox();
-        res.setAlignment(Pos.TOP_LEFT);
-        res.setPadding(new Insets(0, 0, 0, 5));
-        res.setSpacing(5);
-
-        res.getChildren().addAll(
-                getTitle(SectorTitles.DATABASE.title)
-                , gethBox(
-                        Label.getInstanse("autoupdate")
-                        , new Toggle(
-                                (Boolean) ((JSONObject) jsonConfig.get(Keys.Section.DATABASE.getKey())).get(Keys.Database.AUTOUPDATE.getKey())
-                        )
-                )
-                , gethBox(
-                        Label.getInstanse("autoupdate after transaction")
-                        , new Toggle(
-                                (Boolean) ((JSONObject) jsonConfig.get(Keys.Section.DATABASE.getKey())).get(Keys.Database.UPDATE_AFTER_TRANS.getKey())
-                        )
-                )
-                , gethBox(
-                        Label.getInstanse(ComboBoxesId.DELAY_REREAD_DATABASE.id)
-                        , getComboBox(ComboBoxesId.DELAY_REREAD_DATABASE)
-                )
-
-        );
-
-        return res;
-    }
-
-    private Node deliveryConfig() {
-        VBox res = new VBox();
-        res.setAlignment(Pos.TOP_LEFT);
-        res.setPadding(new Insets(0, 0, 0, 5));
-        res.setSpacing(5);
-
-        res.getChildren().addAll(
-                getTitle(SectorTitles.DELIVERY.title)
-                , gethBox(
-                        Label.getInstanse("delivery system state")
-                        , new Toggle(
-                                (Boolean) ((HashMap<String, Object>) jsonConfig.get(Keys.Section.DELIVERY.getKey())).get(Keys.Delivery.IS_CHECKDAY_BEFORE_DELIVERY.getKey())
-                        )
-                )
-
-        );
-
-        return res;
-    }
-
-    private Node fillCenter() {
-        VBox res = new VBox();
-        res.setPadding(new Insets(2));
-        res.setSpacing(2);
-        res.setFillWidth(true);
-
-        res.getChildren().addAll(
-                fontConfig()
-                , databaseConfig()
-                , deliveryConfig()
-        );
-
-        return res;
-    }
-
-    private Node fontConfig() {
-        VBox res = new VBox();
-        res.setSpacing(5);
-
-        FlowPane font = new FlowPane();
-        font.setAlignment(Pos.CENTER_LEFT);
-        font.setHgap(10);
-        font.setVgap(2);
-        font.setPadding(new Insets(2));
-
-        HBox family = gethBox(
-                Label.getInstanse(ComboBoxesId.FONT_FAMILY.id)
-                , getComboBox(ComboBoxesId.FONT_FAMILY)
-        );
-
-        HBox size = gethBox(
-                Label.getInstanse(ComboBoxesId.FONT_SIZE.id)
-                , getComboBox(ComboBoxesId.FONT_SIZE)
-        );
-
-        font.getChildren().addAll(
-                family
-                , size
-        );
-
-        res.getChildren().addAll(
-                getTitle(SectorTitles.TEXT.title)
-                , font
-        );
-
-        return res;
-    }
-
-    private ComboBox getComboBox(ComboBoxesId id) {
-        ComboBox res = new ComboBox();
-        res.setId(id.id);
-
-        switch (id) {
-            case DELAY_REREAD_DATABASE: {
-                res.setItems(
-                        FXCollections.observableList(Arrays.asList(PeriodAutoupdateDatabase.values()))
-                );
-                res.setValue(
-                        ((JSONObject) jsonConfig.get(Keys.Section.DATABASE.getKey())).get(Keys.Database.DELAY_AUTOUPDATE.getKey())
-                );
-                break;
-            }
-            case FONT_FAMILY: {
-                res.setPrefWidth(150);
-                CompletableFuture.supplyAsync(() -> {
-                    GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                    List<String> collect = Arrays.stream(graphicsEnvironment.getAllFonts())
-                            .map(font1 -> font1.getFamily())
-                            .distinct()
-                            .collect(Collectors.toList());
-                    return collect;
-                }).thenAccept(strings -> {
-                    Platform.runLater(() -> res.setItems(FXCollections.observableList(strings)));
-                });
-                break;
-            }
-            case FONT_SIZE: {
-                for (int size = 10; size < 24; size += 2) {
-                    res.getItems().add(size);
-                }
-                break;
-            }
-        }
-
-        return res;
-    }
-
-    private HBox gethBox(Node titleControl, Node control) {
-        HBox family = new HBox();
-        family.setAlignment(Pos.CENTER_LEFT);
-        family.setSpacing(4);
-        family.getChildren().addAll(
-                titleControl
-                , control
-        );
-        return family;
-    }
-
-    private Node getTitle(String mes) {
-
-        VBox res = new VBox();
-        res.setPadding(new Insets(2));
-        setMargin(res, new Insets(2, 2, 5, 2));
-        res.setBorder(
-                new BorderWrapper()
-                        .addBottomBorder(1)
-                        .setStyle(BorderStrokeStyle.SOLID)
-                        .setColor(Color.GRAY)
-                        .commit()
-        );
-
-        controls.Label label = Label.getInstanse(mes);
-        label.setPadding(0, 0, 0, 5);
-
-        res.getChildren().add(label);
-
-        return res;
     }
 
     @Override
-    protected void initStyle() {
-        getStylesheets().add(Stylesheets.WINDOW.getStylesheet());
+    public void close() {
+
+    }
+
+    @Override
+    protected Node createToolsNode() {
+
+        HBox hBox = new HBox();
+        hBox.setPadding(new Insets(0, 0, 0, 5));
+        hBox.getChildren().addAll(
+                Button.getInstance(
+                        SvgWrapper.getInstance(Images.CHECKMARK(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
+                        event -> apply()
+                ),
+                Button.getInstance(
+                        SvgWrapper.getInstance(Images.CLOSE(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
+                        event -> cancel()
+                )
+        );
+
+        toolsNode =
+                new ToolsPane(TITLE_TEXT)
+                        .addAdditional(hBox)
+        ;
+
+
+        return toolsNode;
+    }
+
+    @Override
+    protected Node createContentNode() {
+        contentNode = new BorderPane();
+        VBox vBox = new VBox();
+        //Проходим по все jsonам и строим на основе их контент
+        for(HashMap<String, Object> json : configJSONs){
+            parseJson(json, vBox);
+        }
+        contentNode.setCenter( vBox );
+        return contentNode;
+    }
+
+    private void parseJson(
+            HashMap<String, Object> json,
+            VBox vBox
+    ){
+        for(Object k : json.keySet()){
+            String key = String.valueOf(k);
+            //Игнорируем конфигурацию окна
+            if(key.equals(Config.KEYS.WINDOW.getKey())) continue;
+            Object value = json.get(k);
+            if(value instanceof JSONObject){
+                //Если value = json-объект, то добавляем компонент headline и парсим json дальше на предмет выявления компонентов
+                vBox.getChildren().add(Label.getInstanse(key));
+                parseJson((HashMap<String, Object>) value, vBox);
+            } else {
+                //Создаем компоненты
+                Twin twin = new Twin();
+                twin.setFirstNode(Label.getInstanse(key));
+
+                if(value instanceof String){
+                    twin.setSecondNode(Label.getInstanse("String"));
+                } else if(value instanceof Boolean){
+                    twin.setSecondNode(Label.getInstanse("Boolean"));
+                } else{
+                    twin.setSecondNode(Label.getInstanse("Number"));
+                }
+
+                vBox.getChildren().add(twin);
+            }
+        }
+    }
+
+    public static Settings getInstance(){
+        if(instance == null){
+            instance = new Settings();
+        }
+        return instance;
+    }
+
+    @Override
+    public void setCloseable(Closeable closeable) {
+
     }
 
 }

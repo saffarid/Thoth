@@ -186,35 +186,8 @@ public class ThothLiteWindow
         MenuItem config = new MenuItem("config");
         config.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         config.setOnAction(event -> {
-
-            Stage settings = new Stage(StageStyle.TRANSPARENT);
-            Scene settingsScene = new Scene(
-                    new Settings(settings, "settings")
-                    , this.config.getWindow().getWidthSecondary()
-                    , this.config.getWindow().getHeightSecondary()
-            );
-
-            //Установка начального положения
-            settings.setX(this.config.getWindow().getxSecondary());
-            settings.setY(this.config.getWindow().getySecondary());
-            //Установка минимальных размеров
-            settings.setMinWidth(this.config.getWindow().getWidthSecondaryMin());
-            settings.setMinHeight(this.config.getWindow().getHeightSecondaryMin());
-            //Связываем свойства начальных положений
-            this.config.getWindow().xSecondaryProperty().bind(settings.xProperty());
-            this.config.getWindow().ySecondaryProperty().bind(settings.yProperty());
-            //Связываем размеры окна
-            this.config.getWindow().widthSecondaryProperty().bind(settings.widthProperty());
-            this.config.getWindow().heightSecondaryProperty().bind(settings.heightProperty());
-
-            settings.initModality(Modality.APPLICATION_MODAL);
-            settings.initOwner(mainStage);
-
-            settings.setScene(settingsScene);
-
-            settings.show();
-
-            new StageResizer(settings);
+//            works.setNewScene(Settings.getInstance());
+            works.setNewScene(new Settings());
         });
 
         MenuItem about = new MenuItem("about");

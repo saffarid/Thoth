@@ -18,7 +18,7 @@ public class Home
 
     private Home() {
         super();
-        content = new SimpleObjectProperty<>(createContent());
+        content = new SimpleObjectProperty<>(createContentNode());
         tools = new SimpleObjectProperty<>(new Pane());
     }
 
@@ -29,7 +29,8 @@ public class Home
         return home;
     }
 
-    private BorderPane createContent(){
+    @Override
+    protected BorderPane createContentNode(){
         contentNode = new BorderPane(Label.getInstanse("Home page"));
         return contentNode;
     }
@@ -47,6 +48,11 @@ public class Home
     @Override
     public SimpleObjectProperty<Node> getContentProperty() {
         return content;
+    }
+
+    @Override
+    protected Node createToolsNode() {
+        return null;
     }
 
     @Override

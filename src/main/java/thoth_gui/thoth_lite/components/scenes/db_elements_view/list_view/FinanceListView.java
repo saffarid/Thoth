@@ -64,7 +64,7 @@ public class FinanceListView
     }
 
     @Override
-    protected Node getToolsPanel() {
+    protected Node createToolsNode() {
         toolsNode = new ToolsPane(table.name())
                 .addSortPane(
                         SortPane.getInstance()

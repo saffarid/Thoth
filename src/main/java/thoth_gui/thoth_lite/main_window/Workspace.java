@@ -2,6 +2,7 @@ package thoth_gui.thoth_lite.main_window;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import main.Main;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.scenes.ThothScene;
 
@@ -15,6 +16,7 @@ import tools.BorderWrapper;
 import tools.SvgWrapper;
 
 import java.util.Stack;
+import java.util.logging.Level;
 
 public class Workspace
         extends BorderPane {

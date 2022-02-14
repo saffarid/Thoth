@@ -35,7 +35,9 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PurchasableCard extends IdentifiableCard {
+public class PurchasableCard
+        extends IdentifiableCard
+{
 
     private final String newPurchase = "new_purchase";
     private final String purchase = "purchase";
@@ -69,9 +71,7 @@ public class PurchasableCard extends IdentifiableCard {
             , AvaliableTables table
     ) {
         super(identifiable, table);
-        tools = new SimpleObjectProperty<>(
-                new ToolsPane(identifiableIsNew?newPurchase:purchase)
-        );
+        tools = new SimpleObjectProperty<>( createToolsNode() );
     }
 
     @Override
@@ -97,8 +97,13 @@ public class PurchasableCard extends IdentifiableCard {
     }
 
     @Override
-    protected Node createContent() {
-        super.createContent();
+    protected Node createToolsNode() {
+        return new ToolsPane(identifiableIsNew?newPurchase:purchase);
+    }
+
+    @Override
+    protected Node createContentNode() {
+        super.createContentNode();
 
         GridPane content = new GridPane();
 

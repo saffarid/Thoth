@@ -1,6 +1,6 @@
 package thoth_core.thoth_lite.config;
 
-interface ConfigEnums {
+public interface ConfigEnums {
 
     String getText();
 

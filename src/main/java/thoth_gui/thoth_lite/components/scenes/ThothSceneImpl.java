@@ -32,4 +32,7 @@ public abstract class ThothSceneImpl
         return content;
     }
 
+    protected abstract Node createToolsNode();
+    protected abstract Node createContentNode();
+
 }
