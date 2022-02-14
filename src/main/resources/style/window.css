@@ -1,0 +1,6 @@
+.window{
+    -fx-background-color: -primary;
+    -fx-border-color:grey;
+    -fx-border-style:solid;
+    -fx-border-width:3px;
+}

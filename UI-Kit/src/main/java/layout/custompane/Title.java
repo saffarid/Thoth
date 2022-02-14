@@ -81,24 +81,6 @@ public class Title
         init();
     }
 
-    private void addStyle(){
-
-        setBackground(
-                new BackgroundWrapper()
-                        .setColor(Color.valueOf("#343A40"))
-                        .commit()
-        );
-        setBorder(
-                new BorderWrapper()
-                        .addBottomBorder(1)
-                        .setColor(Color.valueOf("#707070"))
-                        .setStyle(BorderStrokeStyle.SOLID)
-                        .commit()
-        );
-        setPadding(new Insets(0));
-
-    }
-
     public Title addClose(EventHandler<ActionEvent> event){
         close = getButton( SvgWrapper.getInstance(Images.CLOSE(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size, ButtonSize.VIEWBOX_WIDTH.size, ButtonSize.VIEWBOX_HEIGHT.size) );
         close.setOnAction(event);
@@ -202,14 +184,6 @@ public class Title
 
     public void init(){
         getStyleClass().add(STYLE_CLASS.TITLE.getStyleClass());
-
-        getStylesheets().addAll(
-                getClass().getResource("/style/layout/panes/custom/title.css").toExternalForm()
-                , getClass().getResource(Stylesheets.CONTEXT_MENU).toExternalForm()
-
-        );
-
-        addStyle();
     }
 
     public void setSwitchSceneX(double switchSceneX) {

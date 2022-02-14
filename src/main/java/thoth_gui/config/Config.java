@@ -7,7 +7,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import thoth_gui.thoth_styleconstants.color.ColorTheme;
-import thoth_gui.thoth_styleconstants.color.Dark;
 
 import java.io.File;
 import java.io.FileReader;
@@ -76,18 +75,21 @@ public class Config {
         if (!configFile.getParentFile().exists()) {
             configFile.getParentFile().mkdir();
         }
-        JSONObject config = new JSONObject();
-
-        config.put(KEYS.FONT.getKey(), font.exportJSON());
-        config.put(KEYS.SCENE.getKey(), scene.exportJSON());
-        config.put(KEYS.WINDOW.getKey(), window.exportJSON());
 
         try (FileWriter writer = new FileWriter(configFile)) {
-            writer.write(config.toJSONString());
+            writer.write(getConfig().toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public JSONObject getConfig(){
+        JSONObject config = new JSONObject();
+        config.put(KEYS.FONT.getKey(), font.exportJSON());
+        config.put(KEYS.SCENE.getKey(), scene.exportJSON());
+        config.put(KEYS.WINDOW.getKey(), window.exportJSON());
+        return config;
     }
 
     public static Config getInstance() throws IOException, ParseException {
@@ -146,17 +148,21 @@ public class Config {
             font = new SimpleObjectProperty<>(f);
         }
 
+        /* --- Getter --- */
+
         public SimpleObjectProperty<javafx.scene.text.Font> fontProperty() {
             return font;
         }
-
         public javafx.scene.text.Font getFont() {
             return font.get();
         }
 
+        /* --- Setter --- */
+
         public void setFont(javafx.scene.text.Font font) {
             this.font.set(font);
         }
+
     }
 
     /**
@@ -165,7 +171,7 @@ public class Config {
     public class Scene implements Configuration{
         private final String KEY_COLOR_THEME = "color_theme";
 
-        private final ColorTheme themeDefault = new Dark();
+        private final ColorTheme themeDefault = ColorTheme.DARK;
 
         private ColorTheme theme;
 
@@ -179,17 +185,22 @@ public class Config {
 
         @Override
         public JSONObject exportJSON() {
-            return null;
+            JSONObject res = new JSONObject();
+            res.put(KEY_COLOR_THEME, theme.toString());
+            return res;
         }
 
         @Override
         public void importJSON(JSONObject importJson) {
-            theme = themeDefault;
+            theme = ColorTheme.valueOf( (String) importJson.get(KEY_COLOR_THEME) );
         }
 
+        /* --- Getter --- */
         public ColorTheme getTheme() {
             return theme;
         }
+
+        /* --- Setter --- */
     }
 
     public class Window implements Configuration {

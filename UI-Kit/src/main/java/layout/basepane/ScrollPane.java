@@ -30,7 +30,6 @@ public class ScrollPane extends javafx.scene.control.ScrollPane {
 
     private void init(){
         getStylesheets().addAll(
-                getClass().getResource(Stylesheets.COLOR).toExternalForm(),
                 getClass().getResource(SSHEET_SPANE).toExternalForm()
         );
         getStyleClass().addAll(Styleclasses.BORDER, Styleclasses.DARK);

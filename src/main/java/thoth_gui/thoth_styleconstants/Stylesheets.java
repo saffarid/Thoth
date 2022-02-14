@@ -11,7 +11,9 @@ public enum Stylesheets {
     LIST_VIEW("/style/list_view.css"),
     SCROLL_BAR("/style/scroll_bar.css"),
     TABLE_VIEW("/style/table_view.css"),
-    TEXT_FIELD("/style/text_field.css")
+    TEXT_FIELD("/style/text_field.css"),
+    TITLE("/style/title.css"),
+    WINDOW("/style/window.css"),
     ;
 
     private String stylesheet;

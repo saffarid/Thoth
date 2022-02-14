@@ -63,7 +63,7 @@ public class CheckerFinishable
                     Runnable task = () -> notifySubscribers(finishable);
 
                     try {
-                        if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getDay()) && (finishDate.isAfter(currentDate))) {
+                        if ((daysDelay > Integer.parseInt(Config.getInstance().getDelivered().getDayBeforeDelivery().getText())) && (finishDate.isAfter(currentDate))) {
                             taskMap.put(
                                     finishable, poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
                             );

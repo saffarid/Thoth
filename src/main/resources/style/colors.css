@@ -35,3 +35,41 @@
     -text_hover: #E2E6EA;
     -text_disable: #FAFCFC;
 }
+
+.light{
+    -primary: #343A40;
+    -primary_hover:#23272B;
+    -primary_disable:#7A7E83;
+
+    -secondary: #23272B;
+    -secondary_hover:#5A6268;
+    -secondary_disable:#B0B6BA;
+
+    -active:#707070;
+
+    -border: #FFC107;
+
+    -danger: #DC3545;
+    -danger_hover: #C82333;
+    -danger_disable: #E97B86;
+
+    -info: #17A2B8;
+    -info_hover: #138496;
+    -info_disable: #67C3D0;
+
+    -light: #F8F9FA;
+    -light_hover: #E2E6EA;
+    -light_disable: #FAFCFC;
+
+    -success: #28A745;
+    -success_hover: #218838;
+    -success_disable: #74C686;
+
+    -warning: #FFC107;
+    -warning_hover: #E0A800;
+    -warning_disable: #FFD75E;
+
+    -text: #F8F9FA;
+    -text_hover: #E2E6EA;
+    -text_disable: #FAFCFC;
+}

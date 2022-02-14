@@ -16,6 +16,7 @@ public abstract class Window
     public Window() {
         super();
         isMinify = new SimpleBooleanProperty(true);
+        getStyleClass().add("window");
     }
 
     protected abstract void initStyle();

@@ -44,8 +44,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 public class ThothLiteWindow
-        extends PrimaryWindow
-{
+        extends PrimaryWindow {
 
     private Config config;
 
@@ -125,7 +124,7 @@ public class ThothLiteWindow
         return window;
     }
 
-    private Node createLeftNode(){
+    private Node createLeftNode() {
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(2));
 
@@ -155,37 +154,31 @@ public class ThothLiteWindow
 
     @Override
     protected void initStyle() {
-
-        CompletableFuture
-                .supplyAsync(() -> {
+        CompletableFuture.supplyAsync(() -> {
                     return new String[]{
                             Stylesheets.COLORS.getStylesheet(),
                             Stylesheets.LIST_VIEW.getStylesheet(),
                             Stylesheets.SCROLL_BAR.getStylesheet(),
+                            Stylesheets.TITLE.getStylesheet(),
+                            Stylesheets.WINDOW.getStylesheet(),
                     };
                 })
-                        .thenAccept(s -> {
-                                    Platform.runLater(() -> {
-                                        getStyleClass().add("dark");
-                                        for (String s1 : s) {
-                                            getStylesheets().add(s1);
-                                        }
-                                    });
-                                });
-
-
-        setBackground(
-                new BackgroundWrapper()
-                        .setColor(config.getScene().getTheme().PRIMARY())
-                        .commit()
-        );
-        setBorder(
-                new BorderWrapper()
-                        .addBorder(3)
-                        .setColor(Color.GREY)
-                        .setStyle(BorderStrokeStyle.SOLID)
-                        .commit()
-        );
+                .thenAccept(s -> {
+                    Platform.runLater(() -> {
+                        try {
+                            getStyleClass().add(
+                                    Config.getInstance().getScene().getTheme().name().toLowerCase()
+                            );
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        for (String s1 : s) {
+                            getStylesheets().add(s1);
+                        }
+                    });
+                });
     }
 
     private void menuConfig() {
@@ -202,17 +195,17 @@ public class ThothLiteWindow
             );
 
             //Установка начального положения
-            settings.setX( this.config.getWindow().getxSecondary() );
-            settings.setY( this.config.getWindow().getySecondary() );
+            settings.setX(this.config.getWindow().getxSecondary());
+            settings.setY(this.config.getWindow().getySecondary());
             //Установка минимальных размеров
-            settings.setMinWidth( this.config.getWindow().getWidthSecondaryMin() );
-            settings.setMinHeight( this.config.getWindow().getHeightSecondaryMin() );
+            settings.setMinWidth(this.config.getWindow().getWidthSecondaryMin());
+            settings.setMinHeight(this.config.getWindow().getHeightSecondaryMin());
             //Связываем свойства начальных положений
-            this.config.getWindow().xSecondaryProperty().bind( settings.xProperty() );
-            this.config.getWindow().ySecondaryProperty().bind( settings.yProperty() );
+            this.config.getWindow().xSecondaryProperty().bind(settings.xProperty());
+            this.config.getWindow().ySecondaryProperty().bind(settings.yProperty());
             //Связываем размеры окна
-            this.config.getWindow().widthSecondaryProperty().bind( settings.widthProperty() );
-            this.config.getWindow().heightSecondaryProperty().bind( settings.heightProperty() );
+            this.config.getWindow().widthSecondaryProperty().bind(settings.widthProperty());
+            this.config.getWindow().heightSecondaryProperty().bind(settings.heightProperty());
 
             settings.initModality(Modality.APPLICATION_MODAL);
             settings.initOwner(mainStage);
@@ -272,7 +265,7 @@ public class ThothLiteWindow
         works.setNewScene(Home.getInstance());
     }
 
-    private FinishableView getFinishableView(){
+    private FinishableView getFinishableView() {
         FinishableView res = new FinishableView();
 
         return res;

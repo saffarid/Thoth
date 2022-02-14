@@ -1,7 +1,8 @@
 package thoth_core.thoth_lite.config;
 
-
-public enum DayBeforeDelivery {
+public enum DayBeforeDelivery
+    implements ConfigEnums
+{
 
     NEVER(-1),
     ZERO(0),
@@ -15,7 +16,8 @@ public enum DayBeforeDelivery {
     DayBeforeDelivery(int day) {
         this.day = day;
     }
-    public int getDay() {
-        return day;
+    @Override
+    public String getText() {
+        return String.valueOf(day);
     }
 }

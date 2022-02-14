@@ -92,7 +92,6 @@ public class NavigationMenu
         setCenter(scrollPane);
         scrollPane.setFitToWidth(true);
 
-        getStylesheets().add(NavigationMenu.class.getResource(Stylesheets.COLOR).toExternalForm());
         getStylesheets().add(NavigationMenu.class.getResource("/style/layout/panes/custom/navigation_menu.css").toExternalForm());
         getStyleClass().addAll(STYLE_CLASS_NAV_MENU, Styleclasses.DARK);
         content.getStyleClass().add(STYLE_CLASS_CONTENT);

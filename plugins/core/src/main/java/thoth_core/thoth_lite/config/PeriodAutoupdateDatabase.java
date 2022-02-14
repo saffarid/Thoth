@@ -4,7 +4,9 @@ package thoth_core.thoth_lite.config;
  * Периодичность автообновления БД.
  * Измеряется в минутах.
  * */
-public enum PeriodAutoupdateDatabase {
+public enum PeriodAutoupdateDatabase
+    implements ConfigEnums
+{
 
     /**
      * Никогда.
@@ -46,7 +48,8 @@ public enum PeriodAutoupdateDatabase {
     PeriodAutoupdateDatabase(int period) {
         this.period = period;
     }
-    public int getPeriod() {
-        return period;
+    @Override
+    public String getText() {
+        return String.valueOf(period);
     }
 }

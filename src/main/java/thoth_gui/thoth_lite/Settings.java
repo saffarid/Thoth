@@ -2,6 +2,7 @@ package thoth_gui.thoth_lite;
 
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
+import thoth_gui.thoth_styleconstants.Stylesheets;
 import tools.BackgroundWrapper;
 import tools.BorderWrapper;
 import org.json.simple.JSONObject;
@@ -43,7 +44,6 @@ public class Settings
         extends SecondaryWindow
         implements Apply
         , Cancel {
-
 
 
     enum DefaultSize {
@@ -293,24 +293,7 @@ public class Settings
 
     @Override
     protected void initStyle() {
-        try {
-            setBackground(
-                    new BackgroundWrapper()
-                            .setColor(Config.getInstance().getScene().getTheme().PRIMARY())
-                            .commit()
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        setBorder(
-                new BorderWrapper()
-                        .addBorder(3)
-                        .setColor(Color.GREY)
-                        .setStyle(BorderStrokeStyle.SOLID)
-                        .commit()
-        );
+        getStylesheets().add(Stylesheets.WINDOW.getStylesheet());
     }
 
 }

@@ -122,7 +122,7 @@ public class ThothLite {
             cancelAutoReReadDb();
             if (newDelay != PeriodAutoupdateDatabase.NEVER) {
                 LOG.log(Level.INFO, "Запускаем новую задачу");
-                scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay.getPeriod(), TimeUnit.MINUTES);
+                scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, Integer.parseInt(newDelay.getText()), TimeUnit.MINUTES);
             }
         }
     }

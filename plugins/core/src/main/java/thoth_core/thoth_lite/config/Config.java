@@ -103,6 +103,17 @@ public class Config {
         delivered.setNewConfig( (JSONObject) data.get(Keys.Section.DELIVERY.getKey()) );
     }
 
+    public ConfigEnums[] getConfigEnums(String key){
+
+        if(key.equals(Keys.Database.DELAY_AUTOUPDATE.getKey())){
+            return PeriodAutoupdateDatabase.values();
+        } else if(key.equals(Keys.Delivery.DAY_BEFORE_DELIVERY.getKey())){
+            return DayBeforeDelivery.values();
+        }
+
+        return null;
+    }
+
     /**
      * Конфигурация работы базы данных
      */
@@ -226,5 +237,13 @@ public class Config {
             return dayBeforeDelivery;
         }
 
+        /* --- Setter --- */
+
+        public void setCheckDayBeforeDelivery(boolean checkDayBeforeDelivery) {
+            this.checkDayBeforeDelivery = checkDayBeforeDelivery;
+        }
+        public void setDayBeforeDelivery(DayBeforeDelivery dayBeforeDelivery) {
+            this.dayBeforeDelivery = dayBeforeDelivery;
+        }
     }
 }
