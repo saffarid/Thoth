@@ -5,7 +5,7 @@ package thoth_core.thoth_lite.config;
  * Измеряется в минутах.
  * */
 public enum PeriodAutoupdateDatabase
-    implements ConfigEnums
+    implements ConfigEnums<Integer>
 {
 
     /**
@@ -49,7 +49,12 @@ public enum PeriodAutoupdateDatabase
         this.period = period;
     }
     @Override
-    public String getText() {
-        return String.valueOf(period);
+    public String getName() {
+        return toString();
+    }
+
+    @Override
+    public Integer getValue() {
+        return period;
     }
 }

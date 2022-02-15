@@ -1,6 +1,5 @@
 package thoth_core.thoth_lite;
 
-import org.json.simple.JSONObject;
 import thoth_core.thoth_lite.config.Config;
 import thoth_core.thoth_lite.config.Configuration;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
@@ -123,7 +122,7 @@ public class ThothLite {
             cancelAutoReReadDb();
             if (newDelay != PeriodAutoupdateDatabase.NEVER) {
                 LOG.log(Level.INFO, "Запускаем новую задачу");
-                scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, Integer.parseInt(newDelay.getText()), TimeUnit.MINUTES);
+                scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay.getValue(), TimeUnit.MINUTES);
             }
         }
     }

@@ -3,7 +3,6 @@ package thoth_core.thoth_lite.timer;
 import thoth_core.thoth_lite.config.Config;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finishable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
-import thoth_core.thoth_lite.ThothLite;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.logging.Level;
 
 public class CheckerFinishable
         implements
@@ -63,7 +61,7 @@ public class CheckerFinishable
                     Runnable task = () -> notifySubscribers(finishable);
 
                     try {
-                        if ((daysDelay > Integer.parseInt(Config.getInstance().getDelivered().getDayBeforeDelivery().getText())) && (finishDate.isAfter(currentDate))) {
+                        if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getValue()) && (finishDate.isAfter(currentDate))) {
                             taskMap.put(
                                     finishable, poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
                             );

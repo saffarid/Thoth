@@ -109,9 +109,9 @@ public class Config
     }
 
     @Override
-    public void setConfig(JSONObject data){
-        database .setConfig((JSONObject) data.get(Keys.Section.DATABASE.getKey()));
-        delivered.setConfig((JSONObject) data.get(Keys.Section.DELIVERY.getKey()));
+    public void setConfig(JSONObject json){
+        database .setConfig((JSONObject) json.get(Keys.Section.DATABASE.getKey()));
+        delivered.setConfig((JSONObject) json.get(Keys.Section.DELIVERY.getKey()));
     }
 
     /**
@@ -162,15 +162,16 @@ public class Config
 
             res.put(KEY_AUTOUPDATE, isAutoupdate);
             res.put(KEY_UPDATE_AFTER_TRANS, isUpdateAfterTrans);
-            res.put(KEY_DELAY_AUTOUPDATE, period.toString());
+            res.put(KEY_DELAY_AUTOUPDATE, period.getName());
 
             return res;
         }
         @Override
-        public void setConfig(JSONObject data){
-            isAutoupdate = (boolean) data.get(KEY_AUTOUPDATE);
-            isUpdateAfterTrans = (boolean) data.get(KEY_UPDATE_AFTER_TRANS);
-            period = PeriodAutoupdateDatabase.valueOf((String) data.get(KEY_DELAY_AUTOUPDATE));
+        public void setConfig(JSONObject json){
+            if(json == null) return;
+            isAutoupdate = (boolean) json.get(KEY_AUTOUPDATE);
+            isUpdateAfterTrans = (boolean) json.get(KEY_UPDATE_AFTER_TRANS);
+            period = PeriodAutoupdateDatabase.valueOf((String) json.get(KEY_DELAY_AUTOUPDATE));
         }
 
         /* --- Getter --- */
@@ -223,14 +224,15 @@ public class Config
             JSONObject res = new JSONObject();
 
             res.put(KEY_IS_CHECKDAY_BEFORE_DELIVERY, checkDayBeforeDelivery);
-            res.put(KEY_DAY_BEFORE_DELIVERY, dayBeforeDelivery.toString());
+            res.put(KEY_DAY_BEFORE_DELIVERY, dayBeforeDelivery.getName());
 
             return res;
         }
         @Override
-        public void setConfig(JSONObject data){
-            checkDayBeforeDelivery = (boolean) data.get(KEY_IS_CHECKDAY_BEFORE_DELIVERY);
-            dayBeforeDelivery = DayBeforeDelivery.valueOf( (String) data.get(KEY_DAY_BEFORE_DELIVERY) );
+        public void setConfig(JSONObject json){
+            if(json == null) return;
+            checkDayBeforeDelivery = (boolean) json.get(KEY_IS_CHECKDAY_BEFORE_DELIVERY);
+            dayBeforeDelivery = DayBeforeDelivery.valueOf( (String) json.get(KEY_DAY_BEFORE_DELIVERY) );
         }
 
         @Override

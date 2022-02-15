@@ -25,11 +25,9 @@ public class Config
         WINDOW("window"),
         ;
         private String key;
-
         KEYS(String key) {
             this.key = key;
         }
-
         public String getKey() {
             return key;
         }
@@ -71,14 +69,17 @@ public class Config
     @Override
     public JSONObject getConfig() {
         JSONObject config = new JSONObject();
-        config.put(KEYS.FONT.getKey(), font.getConfig());
-        config.put(KEYS.SCENE.getKey(), scene.getConfig());
-        config.put(KEYS.WINDOW.getKey(), window.getConfig());
+        config.put(Keys.Section.FONT.getKey(), font.getConfig());
+        config.put(Keys.Section.SCENE.getKey(), scene.getConfig());
+        config.put(Keys.Section.WINDOW.getKey(), window.getConfig());
         return config;
     }
 
     @Override
     public ConfigEnums[] getConfigEnums(String key) {
+        if (key.equals(Keys.Scene.COLOR_THEME.getKey())){
+            return ColorTheme.values();
+        }
         return null;
     }
 
@@ -109,7 +110,7 @@ public class Config
         }
 
         try (FileWriter writer = new FileWriter(configFile)) {
-            writer.write(((JSONObject) getConfig()).toJSONString());
+            writer.write( getConfig().toJSONString() );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -125,16 +126,16 @@ public class Config
 
     @Override
     public void setConfig(JSONObject json) {
-        font  .setConfig((JSONObject) json.get(KEYS.FONT.getKey()));
-        scene .setConfig((JSONObject) json.get(KEYS.SCENE.getKey()));
-        window.setConfig((JSONObject) json.get(KEYS.WINDOW.getKey()));
+        font  .setConfig((JSONObject) json.get(Keys.Section.FONT.getKey()));
+        scene .setConfig((JSONObject) json.get(Keys.Section.SCENE.getKey()));
+        window.setConfig((JSONObject) json.get(Keys.Section.WINDOW.getKey()));
     }
 
     public class Font
             implements Configuration {
 
-        private final String KEY_SIZE = "size";
-        private final String KEY_FAMILY = "family";
+        private final String KEY_SIZE = Keys.Font.SIZE.getKey();
+        private final String KEY_FAMILY = Keys.Font.FAMILY.getKey();
 
         private SimpleObjectProperty<javafx.scene.text.Font> font;
 
@@ -171,10 +172,11 @@ public class Config
         /* --- Setter --- */
 
         @Override
-        public void setConfig(JSONObject data) {
+        public void setConfig(JSONObject json) {
+            if(json == null) return;
             javafx.scene.text.Font f = new javafx.scene.text.Font(
-                    (String) data.get(KEY_FAMILY)
-                    , (double) data.get(KEY_SIZE)
+                    (String) json.get(KEY_FAMILY)
+                    , (double) json.get(KEY_SIZE)
             );
             font = new SimpleObjectProperty<>(f);
         }
@@ -190,7 +192,7 @@ public class Config
      */
     public class Scene
             implements Configuration {
-        private final String KEY_COLOR_THEME = "color_theme";
+        private final String KEY_COLOR_THEME = Keys.Scene.COLOR_THEME.getKey();
 
         private final ColorTheme themeDefault = ColorTheme.DARK;
 
@@ -205,7 +207,7 @@ public class Config
         @Override
         public JSONObject getConfig() {
             JSONObject res = new JSONObject();
-            res.put(KEY_COLOR_THEME, theme.toString());
+            res.put(KEY_COLOR_THEME, theme.getName());
             return res;
         }
 
@@ -221,8 +223,9 @@ public class Config
         /* --- Setter --- */
 
         @Override
-        public void setConfig(JSONObject importJson) {
-            theme = ColorTheme.valueOf((String) importJson.get(KEY_COLOR_THEME));
+        public void setConfig(JSONObject json) {
+            if(json == null) return;
+            theme = ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME));
         }
     }
 
@@ -305,17 +308,18 @@ public class Config
         }
 
         @Override
-        public void setConfig(JSONObject data) {
-            xPrimary = new SimpleDoubleProperty((double) data.get(KEY_X_PRIMARY));
-            yPrimary = new SimpleDoubleProperty((double) data.get(KEY_Y_PRIMARY));
-            widthPrimary = new SimpleDoubleProperty((double) data.get(KEY_WIDTH_PRIMARY));
-            heightPrimary = new SimpleDoubleProperty((double) data.get(KEY_HEIGHT_PRIMARY));
-            isMax = new SimpleBooleanProperty((boolean) data.get(KEY_ISMAX));
+        public void setConfig(JSONObject json) {
+            if(json == null) return;
+            xPrimary = new SimpleDoubleProperty((double) json.get(KEY_X_PRIMARY));
+            yPrimary = new SimpleDoubleProperty((double) json.get(KEY_Y_PRIMARY));
+            widthPrimary = new SimpleDoubleProperty((double) json.get(KEY_WIDTH_PRIMARY));
+            heightPrimary = new SimpleDoubleProperty((double) json.get(KEY_HEIGHT_PRIMARY));
+            isMax = new SimpleBooleanProperty((boolean) json.get(KEY_ISMAX));
 
-            widthSecondary = new SimpleDoubleProperty((double) data.get(KEY_WIDTH_SECONDARY));
-            heightSecondary = new SimpleDoubleProperty((double) data.get(KEY_HEIGHT_SECONDARY));
-            xSecondary = new SimpleDoubleProperty((double) data.get(KEY_X_SECONDARY));
-            ySecondary = new SimpleDoubleProperty((double) data.get(KEY_Y_SECONDARY));
+            widthSecondary = new SimpleDoubleProperty((double) json.get(KEY_WIDTH_SECONDARY));
+            heightSecondary = new SimpleDoubleProperty((double) json.get(KEY_HEIGHT_SECONDARY));
+            xSecondary = new SimpleDoubleProperty((double) json.get(KEY_X_SECONDARY));
+            ySecondary = new SimpleDoubleProperty((double) json.get(KEY_Y_SECONDARY));
         }
 
         /*

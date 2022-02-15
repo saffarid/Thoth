@@ -1,16 +1,26 @@
 package thoth_gui.thoth_lite;
 
+import controls.Toggle;
 import controls.Twin;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import layout.basepane.BorderPane;
 import layout.basepane.VBox;
+import main.Main;
 import org.json.simple.parser.ParseException;
+import thoth_core.thoth_lite.config.ConfigEnums;
 import thoth_core.thoth_lite.config.Configuration;
 import thoth_gui.config.Config;
+import thoth_gui.config.Keys;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
+import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
+import thoth_gui.thoth_lite.components.controls.combo_boxes.ConfigEnumsComboBox;
 import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
+import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_styleconstants.svg.Images;
 import org.json.simple.JSONObject;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
@@ -23,11 +33,16 @@ import thoth_gui.Cancel;
 import tools.SvgWrapper;
 import window.Closeable;
 
+import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Settings
         extends ThothSceneImpl
@@ -37,6 +52,8 @@ public class Settings
     private final String TITLE_TEXT = "settings";
 
     private static Settings instance;
+
+    private Closeable closeable;
 
     /**
      * Конфигурация ядра
@@ -48,19 +65,24 @@ public class Settings
      * */
     private Configuration configGui;
 
-    private List<JSONObject> configJSONs;
+    private List<Configuration> configs;
+
+    /**
+     * Новая конфигурация. Объединяет все системы в одном json.
+     * */
+    private JSONObject newConfigJson;
+
 
     public Settings() {
         super();
 
         //Запрос конфигураций
         try {
-            configThothCore = ThothLite.getInstance().getConfig();
-            configGui = Config.getInstance();
+            newConfigJson = new JSONObject();
 
-            configJSONs = new LinkedList<>();
-            configJSONs.add( configGui.getConfig());
-            configJSONs.add( configThothCore.getConfig());
+            configs = new LinkedList<>();
+            configs.add( Config.getInstance() );
+            configs.add( ThothLite.getInstance().getConfig() );
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -85,12 +107,15 @@ public class Settings
 
     @Override
     public void apply() {
-
+        for(Configuration config : configs){
+            config.setConfig(newConfigJson);
+        }
+        cancel();
     }
 
     @Override
     public void cancel() {
-
+        closeable.close();
     }
 
     @Override
@@ -127,43 +152,99 @@ public class Settings
     protected Node createContentNode() {
         contentNode = new BorderPane();
         VBox vBox = new VBox();
+        vBox.setSpacing(5);
         //Проходим по все jsonам и строим на основе их контент
-        for(HashMap<String, Object> json : configJSONs){
-            parseJson(json, vBox);
+        for(Configuration json : configs){
+            parseJson(json, json.getConfig(), vBox, newConfigJson);
         }
+        Main.LOG.log(Level.INFO, newConfigJson.toJSONString());
         contentNode.setCenter( vBox );
         return contentNode;
     }
 
     private void parseJson(
-            HashMap<String, Object> json,
-            VBox vBox
+            Configuration config,
+            JSONObject json,
+            VBox vBox,
+            JSONObject newJson
     ){
         for(Object k : json.keySet()){
             String key = String.valueOf(k);
             //Игнорируем конфигурацию окна
             if(key.equals(Config.KEYS.WINDOW.getKey())) continue;
+
             Object value = json.get(k);
             if(value instanceof JSONObject){
                 //Если value = json-объект, то добавляем компонент headline и парсим json дальше на предмет выявления компонентов
                 vBox.getChildren().add(Label.getInstanse(key));
-                parseJson((HashMap<String, Object>) value, vBox);
+                JSONObject value1 = new JSONObject();
+                parseJson(config, (JSONObject) value, vBox, value1);
+                newConfigJson.put(key, value1);
             } else {
+
                 //Создаем компоненты
                 Twin twin = new Twin();
                 twin.setFirstNode(Label.getInstanse(key));
 
+                newJson.put(key, value);
+
                 if(value instanceof String){
-                    twin.setSecondNode(Label.getInstanse("String"));
+                    ConfigEnums[] configEnums = config.getConfigEnums(key);
+                    if(configEnums == null){
+                        //Проверяем на FontFamily
+                        if (key.equals(Keys.Font.FAMILY.getKey())) {
+                            //Добавляем комбобокс с family шрифтами
+                            twin.setSecondNode(createFamilyComboBox(String.valueOf(value), (observableValue, s, t1) -> newJson.put(key, t1)));
+                        } else {
+                            //Добавляем текстовое поле
+                        }
+                    }else{
+                        //Добавляем ComboBox
+                        twin.setSecondNode(ConfigEnumsComboBox.getInstance(configEnums, value, (observableValue, configEnums1, t1) -> newJson.put(key, t1.getName())));
+                    }
                 } else if(value instanceof Boolean){
-                    twin.setSecondNode(Label.getInstanse("Boolean"));
+                    Toggle right = new Toggle((boolean) value);
+                    right.isTrueProperty().addListener((observableValue, aBoolean, t1) -> newJson.put(key, t1));
+                    twin.setSecondNode(right);
                 } else{
-                    twin.setSecondNode(Label.getInstanse("Number"));
+                    if(key.equals(Keys.Font.SIZE.getKey())){
+                        //Комбобокс с вариантами размера шрифта
+                        twin.setSecondNode(createSizeComboBox((Number) value, (observableValue, number, t1) -> newJson.put(key, t1)));
+                    }
                 }
 
                 vBox.getChildren().add(twin);
+
             }
         }
+    }
+
+    private controls.ComboBox<Number> createSizeComboBox(Number value, ChangeListener<Number> valueListener){
+        controls.ComboBox<Number> res = ComboBox.getInstance();
+        for(double i = 10.; i < 22.; i+=2.){
+            res.getItems().add(i);
+        }
+        res.setValue(value);
+        res.valueProperty().addListener(valueListener);
+        return res;
+    }
+
+    private controls.ComboBox createFamilyComboBox(String value, ChangeListener<String> valueListener){
+        controls.ComboBox<String> res = ComboBox.getInstance();
+
+        CompletableFuture.supplyAsync(() -> {
+            return Arrays
+                    .stream(GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts())
+                    .map(font -> font.getFamily())
+                    .distinct()
+                    .collect(Collectors.toList())
+            ;
+        }).thenAccept(strings -> {
+            Platform.runLater(() -> res.setItems(FXCollections.observableList(strings)));
+        });
+        res.setValue(value);
+
+        return res;
     }
 
     public static Settings getInstance(){
@@ -175,7 +256,7 @@ public class Settings
 
     @Override
     public void setCloseable(Closeable closeable) {
-
+        this.closeable = closeable;
     }
 
 }

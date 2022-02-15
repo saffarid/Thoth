@@ -5,7 +5,7 @@ public class Keys {
     /**
      * Ключи для доступа к разделам конфигурации
      * */
-    public enum Section{
+    public enum Section {
         /**
          * Ключ раздела конфигурации базы данных
          * */
