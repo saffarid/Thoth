@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortCell;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
+import thoth_gui.thoth_lite.components.scenes.Scenes;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class StoragableListView extends IdentifiablesListView<Storagable> {
 
     public StoragableListView(List<Storagable> datas) {
         super(datas, AvaliableTables.STORAGABLE);
+        this.id = Scenes.STORAGABLE.name();
     }
 
     @Override

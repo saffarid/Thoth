@@ -11,6 +11,7 @@ import javafx.scene.layout.Priority;
 import layout.basepane.GridPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
+import thoth_gui.thoth_lite.tools.TextCase;
 
 import java.util.Locale;
 
@@ -44,7 +45,7 @@ public class ToolsPane
 
         setHgap(5);
 
-        title = thoth_gui.thoth_lite.components.controls.Label.getInstanse(titleText.toUpperCase(Locale.ROOT));
+        title = thoth_gui.thoth_lite.components.controls.Label.getInstanse(titleText, TextCase.UPPER);
         add(title, 0, 0);
     }
 

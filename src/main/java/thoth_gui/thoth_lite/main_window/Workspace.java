@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import main.Main;
 import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.scenes.Scenes;
 import thoth_gui.thoth_lite.components.scenes.ThothScene;
 
 import layout.basepane.BorderPane;
@@ -125,6 +126,7 @@ public class Workspace
      * Функция устанавливает новую сцену для рабочего поля
      */
     public void setNewScene(ThothScene newScene) {
+        if(this.currentScene!=null && this.currentScene.getId().equals(newScene.getId())) return;
         if (this.currentScene != null) {
             previousScene.push(this.currentScene);
             toolsPanel.centerProperty().unbind();

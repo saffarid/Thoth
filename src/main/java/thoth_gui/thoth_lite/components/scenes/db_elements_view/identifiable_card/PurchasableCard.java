@@ -71,6 +71,7 @@ public class PurchasableCard
             , AvaliableTables table
     ) {
         super(identifiable, table);
+        this.id = "purchasable-card";
         tools = new SimpleObjectProperty<>( createToolsNode() );
     }
 

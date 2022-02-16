@@ -2,6 +2,7 @@ package controls;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.layout.Border;
 
 public class Label extends javafx.scene.control.Label {
 
@@ -21,6 +22,11 @@ public class Label extends javafx.scene.control.Label {
     }
 
     private void init(){
+    }
+
+    public Label addBorder(Border border){
+        super.setBorder(border);
+        return this;
     }
 
     public Label setPadding(double padding){

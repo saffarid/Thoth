@@ -60,6 +60,7 @@ public class StoragableCard
             , AvaliableTables table
     ) {
         super(identifiable, table);
+        this.id = "storagable-card";
         tools = new SimpleObjectProperty<>( createToolsNode() );
     }
 

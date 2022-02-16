@@ -5,6 +5,8 @@ import javafx.scene.paint.Color;
 import thoth_gui.config.Config;
 import javafx.scene.Node;
 import org.json.simple.parser.ParseException;
+import thoth_gui.thoth_lite.tools.Properties;
+import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.Stylesheets;
 
 import java.io.IOException;
@@ -37,17 +39,21 @@ public class Label {
         return label;
     }
     public static controls.Label getInstanse(String s){
-        controls.Label label = new controls.Label(s);
-        label.setTextFill(Color.WHITE);
-        bindFont(label);
-        connectStyle(label);
+        return getInstanse(s, TextCase.NORMAL);
+    }
+    public static controls.Label getInstanse(String s, TextCase textCase){
+        controls.Label label = getInstanse();
+        label.setText(Properties.getString(s, textCase));
         return label;
     }
     public static controls.Label getInstanse(String s, Node node){
-        controls.Label label = new controls.Label(s, node);
-        label.setTextFill(Color.WHITE);
-        bindFont(label);
-        connectStyle(label);
+        controls.Label label = getInstanse(s);
+        label.setGraphic(node);
+        return label;
+    }
+    public static controls.Label getInstanse(String s, Node node, TextCase textCase){
+        controls.Label label = getInstanse(s, textCase);
+        label.setGraphic(node);
         return label;
     }
 }

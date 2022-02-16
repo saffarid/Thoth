@@ -1,15 +1,12 @@
 package controls;
 
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
 import layout.basepane.GridPane;
 
 public class Twin extends GridPane {
-
-    private final String STYLE_CLASS_TWIN = "twin";
-    private final String STYLE_CLASS_TWINCHILD = "twin-child";
 
     private Node firstNode;
     private Node secondNode;
@@ -20,8 +17,7 @@ public class Twin extends GridPane {
     }
 
     public Twin(Node first, Node second){
-        super();
-        init();
+        this();
         this.firstNode = first;
         this.secondNode = second;
         setFirstNode(this.firstNode);
@@ -37,29 +33,63 @@ public class Twin extends GridPane {
     }
 
     private void init(){
-
-        RowConstraints row1 = new RowConstraints();
-        ColumnConstraints column1 = new ColumnConstraints(120, 120, Double.MAX_VALUE);
-        ColumnConstraints column2 = new ColumnConstraints(120, 120, Double.MAX_VALUE);
-        row1.setVgrow(Priority.ALWAYS);
-
-        column1.setHgrow(Priority.SOMETIMES);
-        column2.setHgrow(Priority.ALWAYS);
-
-        column1.setFillWidth(true);
-        column2.setFillWidth(true);
-        getRowConstraints().add(row1);
-        getColumnConstraints().addAll(
-                column1
-                , column2
-        );
+        addRow(Priority.NEVER)
+                .addColumn(Priority.ALWAYS, HPos.LEFT)
+                .addColumn(Priority.ALWAYS, HPos.LEFT);
     }
 
-    public void setFirstNode(Node left){
+    public Twin setFirstNode(Node left){
         add(left, 0, 0);
+        return this;
     }
 
-    public void setSecondNode(Node right){
+    public Twin setMinLeftWidth(double w){
+        getColumnConstraints().get(0).setMinWidth(w);
+        return this;
+    }
+
+    public Twin setPrefLeftWidth(double w){
+        getColumnConstraints().get(0).setPrefWidth(w);
+        return this;
+    }
+
+    public Twin setMaxLeftWidth(double w){
+        getColumnConstraints().get(0).setMaxWidth(w);
+        return this;
+    }
+
+    public Twin setMinRightWidth(double w){
+        getColumnConstraints().get(1).setMinWidth(w);
+        return this;
+    }
+
+    public Twin setPrefRightWidth(double w){
+        getColumnConstraints().get(1).setPrefWidth(w);
+        return this;
+    }
+
+    public Twin setMaxRightWidth(double w){
+        getColumnConstraints().get(1).setMaxWidth(w);
+        return this;
+    }
+
+    public Twin setPadding(double padding){
+        setPadding(new Insets(padding));
+        return this;
+    }
+
+    public Twin setPadding(
+            double top
+            , double right
+            , double bottom
+            , double left
+    ){
+        setPadding(new Insets(top, right, bottom, left));
+        return this;
+    }
+
+    public Twin setSecondNode(Node right){
         add(right, 1, 0);
+        return this;
     }
 }

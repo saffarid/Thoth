@@ -22,6 +22,8 @@ public abstract class ThothSceneImpl
     protected BorderPane contentNode;
     protected ToolsPane toolsNode;
 
+    protected String id;
+
     @Override
     public SimpleObjectProperty<Node> getToolsProperty() {
         return tools;
@@ -35,4 +37,8 @@ public abstract class ThothSceneImpl
     protected abstract Node createToolsNode();
     protected abstract Node createContentNode();
 
+    @Override
+    public String getId() {
+        return this.id;
+    }
 }

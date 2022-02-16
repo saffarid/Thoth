@@ -114,6 +114,8 @@ public class FinancialOperations
     public FinancialOperations(AvaliableTables table) {
         this.table = table;
 
+        this.id = this.table==AvaliableTables.EXPENSES ? Scenes.EXPENSES.name() : Scenes.INCOMES.name();
+
         init();
 
         tools = new SimpleObjectProperty<>(createToolsNode());

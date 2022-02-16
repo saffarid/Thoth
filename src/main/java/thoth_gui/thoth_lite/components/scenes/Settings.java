@@ -1,4 +1,4 @@
-package thoth_gui.thoth_lite;
+package thoth_gui.thoth_lite.components.scenes;
 
 import controls.Toggle;
 import controls.Twin;
@@ -6,7 +6,9 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.scene.layout.Priority;
 import layout.basepane.BorderPane;
+import layout.basepane.GridPane;
 import layout.basepane.VBox;
 import main.Main;
 import org.json.simple.parser.ParseException;
@@ -16,11 +18,10 @@ import thoth_gui.config.Config;
 import thoth_gui.config.Keys;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ConfigEnumsComboBox;
-import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
-import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_styleconstants.svg.Images;
 import org.json.simple.JSONObject;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
@@ -37,7 +38,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.HashMap;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -51,63 +52,53 @@ public class Settings
 
     private final String TITLE_TEXT = "settings";
 
+    private final Insets headlineInsetsMargin = new Insets(0, 2, 0, 2);
+    private final Insets headlineInsetsPadding = new Insets(0, 0, 0, 5);
+    private final Insets configRowInsetsMargin = new Insets(0, 2, 0, 2);
+    private final Insets configRowInsetsPadding = new Insets(0, 0, 0, 10);
+
     private static Settings instance;
 
     private Closeable closeable;
-
-    /**
-     * Конфигурация ядра
-     * */
-    private Configuration configThothCore;
-
-    /**
-     * Конфигурация графической части
-     * */
-    private Configuration configGui;
 
     private List<Configuration> configs;
 
     /**
      * Новая конфигурация. Объединяет все системы в одном json.
-     * */
+     */
     private JSONObject newConfigJson;
 
 
     public Settings() {
         super();
-
+        this.id = Scenes.SETTINGS.name();
         //Запрос конфигураций
         try {
             newConfigJson = new JSONObject();
 
             configs = new LinkedList<>();
-            configs.add( Config.getInstance() );
-            configs.add( ThothLite.getInstance().getConfig() );
-        }
-        catch (SQLException e) {
+            configs.add(Config.getInstance());
+            configs.add(ThothLite.getInstance().getConfig());
+        } catch (SQLException e) {
             e.printStackTrace();
-        }
-        catch (NotContainsException e) {
+        } catch (NotContainsException e) {
             e.printStackTrace();
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        content = new SimpleObjectProperty<>( createContentNode() );
-        tools   = new SimpleObjectProperty<>( createToolsNode()   );
+        content = new SimpleObjectProperty<>(createContentNode());
+        tools = new SimpleObjectProperty<>(createToolsNode());
 
     }
 
     @Override
     public void apply() {
-        for(Configuration config : configs){
+        for (Configuration config : configs) {
             config.setConfig(newConfigJson);
         }
         cancel();
@@ -154,11 +145,11 @@ public class Settings
         VBox vBox = new VBox();
         vBox.setSpacing(5);
         //Проходим по все jsonам и строим на основе их контент
-        for(Configuration json : configs){
+        for (Configuration json : configs) {
             parseJson(json, json.getConfig(), vBox, newConfigJson);
         }
         Main.LOG.log(Level.INFO, newConfigJson.toJSONString());
-        contentNode.setCenter( vBox );
+        contentNode.setCenter(vBox);
         return contentNode;
     }
 
@@ -167,30 +158,30 @@ public class Settings
             JSONObject json,
             VBox vBox,
             JSONObject newJson
-    ){
-        for(Object k : json.keySet()){
+    ) {
+        for (Object k : json.keySet()) {
             String key = String.valueOf(k);
             //Игнорируем конфигурацию окна
-            if(key.equals(Config.KEYS.WINDOW.getKey())) continue;
+            if (key.equals(Config.KEYS.WINDOW.getKey())) continue;
 
             Object value = json.get(k);
-            if(value instanceof JSONObject){
+            if (value instanceof JSONObject) {
                 //Если value = json-объект, то добавляем компонент headline и парсим json дальше на предмет выявления компонентов
-                vBox.getChildren().add(Label.getInstanse(key));
+                vBox.getChildren().add(getHeadline(key));
                 JSONObject value1 = new JSONObject();
                 parseJson(config, (JSONObject) value, vBox, value1);
                 newConfigJson.put(key, value1);
             } else {
 
                 //Создаем компоненты
-                Twin twin = new Twin();
+                Twin twin = getConfigRow();
                 twin.setFirstNode(Label.getInstanse(key));
 
                 newJson.put(key, value);
 
-                if(value instanceof String){
+                if (value instanceof String) {
                     ConfigEnums[] configEnums = config.getConfigEnums(key);
-                    if(configEnums == null){
+                    if (configEnums == null) {
                         //Проверяем на FontFamily
                         if (key.equals(Keys.Font.FAMILY.getKey())) {
                             //Добавляем комбобокс с family шрифтами
@@ -198,16 +189,16 @@ public class Settings
                         } else {
                             //Добавляем текстовое поле
                         }
-                    }else{
+                    } else {
                         //Добавляем ComboBox
                         twin.setSecondNode(ConfigEnumsComboBox.getInstance(configEnums, value, (observableValue, configEnums1, t1) -> newJson.put(key, t1.getName())));
                     }
-                } else if(value instanceof Boolean){
+                } else if (value instanceof Boolean) {
                     Toggle right = new Toggle((boolean) value);
                     right.isTrueProperty().addListener((observableValue, aBoolean, t1) -> newJson.put(key, t1));
                     twin.setSecondNode(right);
-                } else{
-                    if(key.equals(Keys.Font.SIZE.getKey())){
+                } else {
+                    if (key.equals(Keys.Font.SIZE.getKey())) {
                         //Комбобокс с вариантами размера шрифта
                         twin.setSecondNode(createSizeComboBox((Number) value, (observableValue, number, t1) -> newJson.put(key, t1)));
                     }
@@ -219,9 +210,29 @@ public class Settings
         }
     }
 
-    private controls.ComboBox<Number> createSizeComboBox(Number value, ChangeListener<Number> valueListener){
+    private Node getHeadline(String text) {
+        GridPane pane = new GridPane();
+        pane
+                .addRow(Priority.NEVER)
+                .addColumn(Priority.ALWAYS);
+        VBox.setMargin(pane, headlineInsetsMargin);
+        pane.add(Label.getInstanse(text, TextCase.UPPER), 0, 0);
+        pane.setPadding(headlineInsetsPadding);
+        return pane;
+    }
+
+    private Twin getConfigRow() {
+        Twin twin = new Twin()
+                .setMaxLeftWidth(150)
+                .setMaxRightWidth(250);
+        twin.setPadding(configRowInsetsPadding);
+        VBox.setMargin(twin, configRowInsetsMargin);
+        return twin;
+    }
+
+    private controls.ComboBox<Number> createSizeComboBox(Number value, ChangeListener<Number> valueListener) {
         controls.ComboBox<Number> res = ComboBox.getInstance();
-        for(double i = 10.; i < 22.; i+=2.){
+        for (double i = 10.; i < 22.; i += 2.) {
             res.getItems().add(i);
         }
         res.setValue(value);
@@ -229,7 +240,7 @@ public class Settings
         return res;
     }
 
-    private controls.ComboBox createFamilyComboBox(String value, ChangeListener<String> valueListener){
+    private controls.ComboBox createFamilyComboBox(String value, ChangeListener<String> valueListener) {
         controls.ComboBox<String> res = ComboBox.getInstance();
 
         CompletableFuture.supplyAsync(() -> {
@@ -238,17 +249,18 @@ public class Settings
                     .map(font -> font.getFamily())
                     .distinct()
                     .collect(Collectors.toList())
-            ;
+                    ;
         }).thenAccept(strings -> {
             Platform.runLater(() -> res.setItems(FXCollections.observableList(strings)));
         });
         res.setValue(value);
+        res.valueProperty().addListener(valueListener);
 
         return res;
     }
 
-    public static Settings getInstance(){
-        if(instance == null){
+    public static Settings getInstance() {
+        if (instance == null) {
             instance = new Settings();
         }
         return instance;

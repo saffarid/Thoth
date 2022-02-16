@@ -6,6 +6,7 @@ import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import javafx.collections.ObservableList;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
+import thoth_gui.thoth_lite.components.scenes.Scenes;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class PurchasableListView extends IdentifiablesListView<Purchasable> {
 
     public PurchasableListView(List<Purchasable> datas) {
         super(datas, AvaliableTables.PURCHASABLE);
+        this.id = Scenes.PURCHASABLE.name();
     }
 
     @Override

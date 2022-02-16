@@ -140,7 +140,7 @@ public class Config
         private SimpleObjectProperty<javafx.scene.text.Font> font;
 
         public Font() {
-            javafx.scene.text.Font f = new javafx.scene.text.Font(12);
+            javafx.scene.text.Font f = new javafx.scene.text.Font("Arial", 12);
             font = new SimpleObjectProperty<>(f);
         }
 
@@ -178,7 +178,7 @@ public class Config
                     (String) json.get(KEY_FAMILY)
                     , (double) json.get(KEY_SIZE)
             );
-            font = new SimpleObjectProperty<>(f);
+            font.setValue(f);
         }
 
         public void setFont(javafx.scene.text.Font font) {
@@ -196,10 +196,10 @@ public class Config
 
         private final ColorTheme themeDefault = ColorTheme.DARK;
 
-        private ColorTheme theme;
+        private SimpleObjectProperty<ColorTheme> theme;
 
         public Scene() {
-            theme = themeDefault;
+            theme = new SimpleObjectProperty<>(themeDefault);
         }
 
         /* --- Getter --- */
@@ -207,7 +207,7 @@ public class Config
         @Override
         public JSONObject getConfig() {
             JSONObject res = new JSONObject();
-            res.put(KEY_COLOR_THEME, theme.getName());
+            res.put(KEY_COLOR_THEME, theme.getValue().getName());
             return res;
         }
 
@@ -216,8 +216,10 @@ public class Config
             return null;
         }
 
+        public SimpleObjectProperty<ColorTheme> getThemeProperty(){return theme;}
+
         public ColorTheme getTheme() {
-            return theme;
+            return theme.get();
         }
 
         /* --- Setter --- */
@@ -225,7 +227,7 @@ public class Config
         @Override
         public void setConfig(JSONObject json) {
             if(json == null) return;
-            theme = ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME));
+            theme.setValue(ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME)));
         }
     }
 

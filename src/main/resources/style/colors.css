@@ -37,7 +37,7 @@
 }
 
 .light{
-    -primary: #343A40;
+    -primary: red;
     -primary_hover:#23272B;
     -primary_disable:#7A7E83;
 

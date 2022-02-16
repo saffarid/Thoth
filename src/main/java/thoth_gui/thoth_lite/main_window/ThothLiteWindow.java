@@ -1,28 +1,29 @@
 package thoth_gui.thoth_lite.main_window;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
-import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
 
 import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
+import thoth_gui.thoth_lite.tools.Properties;
+import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.Stylesheets;
-import tools.BackgroundWrapper;
+import thoth_gui.thoth_styleconstants.color.ColorTheme;
 import tools.BorderWrapper;
 import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.config.Config;
-import thoth_gui.thoth_lite.Settings;
+import thoth_gui.thoth_lite.components.scenes.Settings;
 import thoth_gui.thoth_lite.components.scenes.ConfigDropdownList;
 import thoth_gui.thoth_lite.components.scenes.Home;
 import thoth_gui.thoth_lite.components.scenes.Scenes;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
 
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCode;
@@ -34,12 +35,12 @@ import layout.custompane.NavigationMenu;
 import org.json.simple.parser.ParseException;
 import thoth_gui.thoth_styleconstants.svg.*;
 import window.PrimaryWindow;
-import window.StageResizer;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
@@ -69,6 +70,8 @@ public class ThothLiteWindow
 
     private static ThothLiteWindow window;
 
+    private SimpleObjectProperty<ColorTheme> theme;
+
     private Stage mainStage;
 
     private NavigationMenu menu;
@@ -79,6 +82,7 @@ public class ThothLiteWindow
 
     static {
         LOG = Logger.getLogger("ThothLiteGUI");
+        Properties.loadProperties(Locale.getDefault());
     }
 
     private ThothLiteWindow(Stage stage) {
@@ -154,28 +158,28 @@ public class ThothLiteWindow
 
     @Override
     protected void initStyle() {
-        CompletableFuture.supplyAsync(() -> {
-                    return new String[]{
-                            Stylesheets.COLORS.getStylesheet(),
-                            Stylesheets.LIST_VIEW.getStylesheet(),
-                            Stylesheets.SCROLL_BAR.getStylesheet(),
-                            Stylesheets.TITLE.getStylesheet(),
-                            Stylesheets.WINDOW.getStylesheet(),
-                    };
-                })
-                .thenAccept(s -> {
-                    Platform.runLater(() -> {
-                        try {
-                            getStyleClass().add(
-                                    Config.getInstance().getScene().getTheme().name().toLowerCase()
-                            );
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+        CompletableFuture.runAsync(() -> {
+                    theme = new SimpleObjectProperty<>();
+                    theme.addListener((observableValue, colorTheme, t1) -> {
+                        if (t1 != null) {
+                            Platform.runLater(() -> {
+                                if(colorTheme != null) getStyleClass().remove( colorTheme.getName().toLowerCase() );
+                                getStyleClass().add(t1.getName().toLowerCase());
+                            });
                         }
-                        for (String s1 : s) {
-                            getStylesheets().add(s1);
+                    });
+                    try {
+                        theme.bind(Config.getInstance().getScene().getThemeProperty());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                })
+                .thenAccept(unused -> {
+                    Platform.runLater(() -> {
+                        for (Stylesheets s1 : Stylesheets.values()) {
+                            getStylesheets().add(s1.getStylesheet());
                         }
                     });
                 });
@@ -183,16 +187,15 @@ public class ThothLiteWindow
 
     private void menuConfig() {
 
-        MenuItem config = new MenuItem("config");
+        MenuItem config = new MenuItem(Properties.getString(Scenes.SETTINGS.name(), TextCase.NORMAL));
         config.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         config.setOnAction(event -> {
-//            works.setNewScene(Settings.getInstance());
             works.setNewScene(new Settings());
         });
 
-        MenuItem about = new MenuItem("about");
+        MenuItem about = new MenuItem(Properties.getString("about", TextCase.NORMAL));
 
-        MenuItem exit = new MenuItem("exit");
+        MenuItem exit = new MenuItem(Properties.getString("exit", TextCase.NORMAL));
         exit.setOnAction(event -> close());
         exit.setAccelerator(new KeyCodeCombination(KeyCode.F4, KeyCombination.ALT_DOWN));
 
@@ -203,27 +206,27 @@ public class ThothLiteWindow
     private Node navigationMenuConfig() {
         List<controls.MenuButton> menuButtons = new LinkedList<>();
         menuButtons.add(MenuButton.getInstance(
-                Scenes.HOME.getSceneCode(), SvgWrapper.getInstance(Images.HOME(), 20, 20),
+                Scenes.HOME.name(), SvgWrapper.getInstance(Images.HOME(), 20, 20),
                 event -> works.setNewScene(Home.getInstance())
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.EXPENSES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGDOWN(), 20, 20),
+                Scenes.EXPENSES.name(), SvgWrapper.getInstance(Images.TRADINGDOWN(), 20, 20),
                 event -> works.setNewScene(new FinancialOperations(AvaliableTables.EXPENSES))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.INCOMES.getSceneCode(), SvgWrapper.getInstance(Images.TRADINGUP(), 20, 20),
+                Scenes.INCOMES.name(), SvgWrapper.getInstance(Images.TRADINGUP(), 20, 20),
                 event -> works.setNewScene(new FinancialOperations(AvaliableTables.INCOMES))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.PURCHASES.getSceneCode(), SvgWrapper.getInstance(Images.PURCHASE(), 20, 20),
+                Scenes.PURCHASABLE.name(), SvgWrapper.getInstance(Images.PURCHASE(), 20, 20),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.STORAGABLE.getSceneCode(), SvgWrapper.getInstance(Images.PRODUCT(), 20, 20),
+                Scenes.STORAGABLE.name(), SvgWrapper.getInstance(Images.PRODUCT(), 20, 20),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.SYSTEM.getSceneCode(), SvgWrapper.getInstance(Images.LIST(), 20, 20),
+                Scenes.SYSTEM.name(), SvgWrapper.getInstance(Images.LIST(), 20, 20),
                 event -> works.setNewScene(ConfigDropdownList.getInstance())
         ));
         menu = new NavigationMenu(menuButtons);

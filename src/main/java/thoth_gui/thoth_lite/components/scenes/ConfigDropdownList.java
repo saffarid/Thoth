@@ -17,6 +17,7 @@ public class ConfigDropdownList
     private static ConfigDropdownList instance;
 
     private ConfigDropdownList() {
+        this.id = Scenes.SYSTEM.name();
         tools = new SimpleObjectProperty<>(createToolsNode());
         content = new SimpleObjectProperty<>(createContentNode());
     }
@@ -37,7 +38,7 @@ public class ConfigDropdownList
 
     @Override
     protected Node createToolsNode(){
-        toolsNode = new ToolsPane(Scenes.SYSTEM.getSceneCode());
+        toolsNode = new ToolsPane(Scenes.SYSTEM.name());
 
         return toolsNode;
     }

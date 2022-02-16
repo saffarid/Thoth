@@ -2,9 +2,9 @@ package thoth_gui.thoth_styleconstants;
 
 public enum Stylesheets {
 
+    COLORS("/style/colors.css"),
     DATE_PICKER("/style/date_picker.css"),
     CHECK_BOX("/style/check_box.css"),
-    COLORS("/style/colors.css"),
     COMBO_BOX("/style/combo_box.css"),
     IDENTIFIABLE_LIST("/style/identifiable-list.css"),
     LABEL("/style/label.css"),

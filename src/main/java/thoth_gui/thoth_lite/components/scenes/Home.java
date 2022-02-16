@@ -18,6 +18,7 @@ public class Home
 
     private Home() {
         super();
+        this.id = Scenes.HOME.name();
         content = new SimpleObjectProperty<>(createContentNode());
         tools = new SimpleObjectProperty<>(new Pane());
     }

@@ -1,5 +1,6 @@
 package thoth_core.thoth_lite.db_data.tables;
 
+import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.DBData;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Nameable;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.logging.Level;
 
 public abstract class Data<T extends Identifiable>
         implements Nameable
@@ -70,7 +72,7 @@ public abstract class Data<T extends Identifiable>
 
     @Override
     public void subscribe(Flow.Subscriber subscriber) {
-        System.out.println(publisher.getSubscribers().size());
+        ThothLite.LOG.log(Level.INFO, name + "/Subscribers = " + publisher.getSubscribers().size());
         if (!publisher.isSubscribed(subscriber)) {
             publisher.subscribe(subscriber);
         }

@@ -89,6 +89,7 @@ public class FinOperationCard
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
+        this.id = this.table==AvaliableTables.EXPENSES?"new-expenses":"new-incomes";
         tools = new SimpleObjectProperty<>(createToolsNode());
     }
 

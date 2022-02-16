@@ -1,0 +1,6 @@
+.headline{
+    -fx-padding: 0 0 0 5px;
+    -fx-border-color:-secondary;
+    -fx-border-width:0 0 1px 0;
+    -fx-border-style:solid;
+}
