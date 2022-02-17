@@ -13,6 +13,7 @@ public enum Stylesheets {
     TABLE_VIEW("/style/table_view.css"),
     TEXT_FIELD("/style/text_field.css"),
     TITLE("/style/title.css"),
+    TWIN("/style/twin.css"),
     WINDOW("/style/window.css"),
     ;
 

@@ -1,7 +1,5 @@
 package thoth_gui.thoth_lite.components.controls;
 
-import controls.Button;
-import controls.Label;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,15 +11,13 @@ import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.tools.TextCase;
 
-import java.util.Locale;
-
 public class ToolsPane
         extends GridPane {
 
     /**
      * Заголовок
      * */
-    private Label title;
+    private controls.Label title;
 
     /**
      * Панель сортировки
@@ -31,7 +27,7 @@ public class ToolsPane
     /**
      * Кнопка добавки нового элемента
      * */
-    private Button addNew;
+    private controls.Button addNew;
 
     public ToolsPane(String titleText) {
         super();
@@ -45,7 +41,7 @@ public class ToolsPane
 
         setHgap(5);
 
-        title = thoth_gui.thoth_lite.components.controls.Label.getInstanse(titleText, TextCase.UPPER);
+        title = Label.getInstanse(titleText, TextCase.UPPER);
         add(title, 0, 0);
     }
 
@@ -74,7 +70,7 @@ public class ToolsPane
             Node graphic,
             EventHandler<ActionEvent> event
     ){
-        addNew = thoth_gui.thoth_lite.components.controls.Button.getInstance(graphic, event);
+        addNew = Button.getInstance(graphic, event);
         add(addNew, 3, 0);
         return this;
     }

@@ -1,9 +1,0 @@
-.twin{
-    -fx-column-halignment:left;
-    -fx-hgap:5px;
-    -fx-vgap:5px;
-    -fx-row-valignment:center;
-}
-
-.twin .button, .twin .label, .twin .text-field{
-}

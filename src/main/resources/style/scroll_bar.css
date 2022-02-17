@@ -8,7 +8,7 @@
 
 .scroll-bar>.track{
     -fx-background-color:-primary;
-    -fx-background-insets:0;
+    -fx-background-insets:2px;
     -fx-padding:0;
 }
 

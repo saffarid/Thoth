@@ -8,6 +8,10 @@ import layout.basepane.GridPane;
 
 public class Twin extends GridPane {
 
+    private final static String styleclass = "twin";
+    private final static int LEFT = 0;
+    private final static int RIGHT = 1;
+
     private Node firstNode;
     private Node secondNode;
 
@@ -33,6 +37,9 @@ public class Twin extends GridPane {
     }
 
     private void init(){
+        setGridLinesVisible(true);
+        setHgap(5);
+        getStyleClass().add(styleclass);
         addRow(Priority.NEVER)
                 .addColumn(Priority.ALWAYS, HPos.LEFT)
                 .addColumn(Priority.ALWAYS, HPos.LEFT);
@@ -44,32 +51,52 @@ public class Twin extends GridPane {
     }
 
     public Twin setMinLeftWidth(double w){
-        getColumnConstraints().get(0).setMinWidth(w);
+        getColumnConstraints().get(LEFT).setMinWidth(w);
         return this;
     }
-
     public Twin setPrefLeftWidth(double w){
-        getColumnConstraints().get(0).setPrefWidth(w);
+        getColumnConstraints().get(LEFT).setPrefWidth(w);
         return this;
     }
-
     public Twin setMaxLeftWidth(double w){
-        getColumnConstraints().get(0).setMaxWidth(w);
+        getColumnConstraints().get(LEFT).setMaxWidth(w);
+        return this;
+    }
+    public Twin setPriorityLeft(Priority p){
+        getColumnConstraints().get(LEFT).setHgrow(p);
+        return this;
+    }
+    public Twin setHPosLeft(HPos pos){
+        getColumnConstraints().get(LEFT).setHalignment(pos);
+        return this;
+    }
+    public Twin setFillWidthLeft(boolean fill){
+        getColumnConstraints().get(LEFT).setFillWidth(fill);
         return this;
     }
 
     public Twin setMinRightWidth(double w){
-        getColumnConstraints().get(1).setMinWidth(w);
+        getColumnConstraints().get(RIGHT).setMinWidth(w);
         return this;
     }
-
     public Twin setPrefRightWidth(double w){
-        getColumnConstraints().get(1).setPrefWidth(w);
+        getColumnConstraints().get(RIGHT).setPrefWidth(w);
         return this;
     }
-
     public Twin setMaxRightWidth(double w){
-        getColumnConstraints().get(1).setMaxWidth(w);
+        getColumnConstraints().get(RIGHT).setMaxWidth(w);
+        return this;
+    }
+    public Twin setPriorityRight(Priority p){
+        getColumnConstraints().get(RIGHT).setHgrow(p);
+        return this;
+    }
+    public Twin setHPosRight(HPos pos){
+        getColumnConstraints().get(RIGHT).setHalignment(pos);
+        return this;
+    }
+    public Twin setFillWidthRight(boolean fill){
+        getColumnConstraints().get(RIGHT).setFillWidth(fill);
         return this;
     }
 

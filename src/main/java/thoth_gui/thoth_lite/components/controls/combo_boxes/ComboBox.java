@@ -31,10 +31,11 @@ public class ComboBox {
     public static controls.ComboBox getInstance(){
         controls.ComboBox comboBox = new controls.ComboBox();
         comboBox.setPlaceholder(Label.getInstanse("no_elements"));
+//        comboBox.setMinWidth(250);
+        comboBox.setMaxWidth(Double.MAX_VALUE);
+        comboBox.autosize();
         bindFont(comboBox);
         connectStyle(comboBox);
-        comboBox.setMaxWidth(150);
-        comboBox.setMaxWidth(500);
         return comboBox;
     }
     public static controls.ComboBox getInstance(ObservableList list){

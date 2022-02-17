@@ -222,7 +222,7 @@ public class ThothLiteWindow
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.STORAGABLE.name(), SvgWrapper.getInstance(Images.PRODUCT(), 20, 20),
+                Scenes.STORAGABLES.name(), SvgWrapper.getInstance(Images.PRODUCT(), 20, 20),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE))
         ));
         menuButtons.add(MenuButton.getInstance(

@@ -223,8 +223,12 @@ public class Settings
 
     private Twin getConfigRow() {
         Twin twin = new Twin()
-                .setMaxLeftWidth(150)
-                .setMaxRightWidth(250);
+                .setMinLeftWidth(250)
+                .setMaxLeftWidth(250)
+                .setPriorityLeft(Priority.NEVER)
+                .setMinRightWidth(200)
+                .setMaxRightWidth(450)
+                ;
         twin.setPadding(configRowInsetsPadding);
         VBox.setMargin(twin, configRowInsetsMargin);
         return twin;

@@ -125,17 +125,30 @@ public class PurchasableCard
         store = getComboBox(PropertiesPurchasableId.TRACK_NUMBER);
         datePicker = getDatePicker();
 
-        content.add(new Twin(Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id), trackNumber), 0, 0);
-        content.add(new Twin(Label.getInstanse(PropertiesPurchasableId.STORE.id), store), 0, 1);
-        content.add(new Twin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id), datePicker), 0, 2);
+        content.add(
+                getTwin(Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id), trackNumber), 0, 0);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.STORE.id), store), 0, 1);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id), datePicker), 0, 2);
 
-        content.add(new Twin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id), new Toggle(((Purchasable)identifiable).isDelivered())), 1, 0);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id), new Toggle(((Purchasable)identifiable).isDelivered())), 1, 0);
 
         content.add(new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew), 0, 3, 2, 1);
 
         contentNode.setCenter(content);
 
         return contentNode;
+    }
+
+    private Twin getTwin(Node left, Node right) {
+        return new Twin(left, right)
+                .setMinLeftWidth(200)
+                .setMaxLeftWidth(200)
+                .setPriorityLeft(Priority.NEVER)
+                .setMinRightWidth(200)
+                .setMaxRightWidth(200)
+                .setPriorityRight(Priority.NEVER)
+                .setFillWidthRight(true)
+                ;
     }
 
     protected controls.ComboBox getComboBox(PropertiesPurchasableId id) {
@@ -158,9 +171,6 @@ public class PurchasableCard
         if(!identifiableIsNew){
             res.setDisable(true);
         }
-
-        res.setMinWidth(120);
-        res.setMaxWidth(500);
 
         return res;
     }

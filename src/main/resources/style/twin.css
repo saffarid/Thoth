@@ -1,0 +1,4 @@
+.twin>.label{
+    -fx-wrap-text:true;
+    -fx-padding:0 10px 0 0;
+}

@@ -5,7 +5,7 @@ public enum Scenes {
     EXPENSES,
     INCOMES,
     PURCHASABLE,
-    STORAGABLE,
+    STORAGABLES,
     SYSTEM,
     SETTINGS,
 }
