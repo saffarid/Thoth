@@ -1,11 +1,19 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.*;
+
+import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
+import layout.basepane.BorderPane;
+import layout.basepane.GridPane;
+import layout.basepane.HBox;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.TextField;
 import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.BackgroundWrapper;
 import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
@@ -14,10 +22,7 @@ import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
 
-
-import controls.TextField;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -37,6 +42,22 @@ public class FinanceViewCell
         implements Apply, Cancel {
 
     private final String templateCurrency = "%1s-%2s";
+    private final double imgBtnSize = 17;
+    private final double imgBtnViewBoxSize = 20;
+
+    private final controls.Button toEdit = Button.getInstance(
+            SvgWrapper.getInstance(Images.EDIT(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , this::toEditMode);
+    private final controls.Button emptyFish = Button.getInstance(
+            SvgWrapper.getInstance(Images.EMPTY(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> {
+            });
+    private final controls.Button acceptEdit = Button.getInstance(
+            SvgWrapper.getInstance(Images.CHECKMARK(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> apply());
+    private final controls.Button cancelEdit = Button.getInstance(
+            SvgWrapper.getInstance(Images.CLOSE(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> cancel());
 
     private Finance finance;
 
@@ -45,20 +66,22 @@ public class FinanceViewCell
 
     private LocalDateTime prevClick;
 
-    private boolean modeIsEdit = false;
+    private SimpleBooleanProperty modeIsEdit = new SimpleBooleanProperty();
 
     private controls.Label courseLabel;
     private controls.Label currencyLabel;
-    private TextField course;
+    private controls.TextField course;
 
 
     protected FinanceViewCell(Finance finance) {
         super();
         this.finance = finance;
 
-        Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5, 12, 12);
+        modeIsEdit.addListener((observableValue, aBoolean, t1) -> changeStatusView());
 
-        currencyLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse(
+        Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5, 10, 10);
+
+        currencyLabel = Label.getInstanse(
                 String.format(
                         templateCurrency
                         , this.finance.getCurrency().getCurrencyCode()
@@ -66,14 +89,14 @@ public class FinanceViewCell
         );
         currencyLabel.setTooltip(new Tooltip(currencyLabel.getText()));
 
-        course = thoth_gui.thoth_lite.components.controls.TextField.getInstance(
+        course = TextField.getInstance(
                 String.valueOf(this.finance.getCourse())
         );
         courseLabel = Label.getInstanse();
         courseLabel.textProperty().bind(course.textProperty());
 
         setLeft(point);
-        createContent();
+        setCenter(createContent());
         setRight(createPallete());
 
         setTable(AvaliableTables.CURRENCIES);
@@ -109,82 +132,50 @@ public class FinanceViewCell
     }
 
     private void changeStatusView() {
-        modeIsEdit = !modeIsEdit;
-        createPallete();
-        createContent();
-    }
-
-    private void createContent() {
-        if (content == null) {
-            content = new GridPane();
-            content.setPadding(new Insets(2, 5, 2, 15));
-            content.setHgap(5);
-            setCenter(content);
-
-            content.getRowConstraints().add(new RowConstraints());
-            ColumnConstraints currency = new ColumnConstraints();
-            ColumnConstraints course = new ColumnConstraints();
-
-            currency.setFillWidth(true);
-            course.setFillWidth(true);
-
-            currency.setPercentWidth(60);
-            course.setPercentWidth(40);
-
-            currency.setHgrow(Priority.ALWAYS);
-            course.setHgrow(Priority.ALWAYS);
-
-            currency.setHalignment(HPos.RIGHT);
-            course.setHalignment(HPos.LEFT);
-
-            content.getColumnConstraints().addAll(
-                    currency
-                    , course
-            );
-            content.add(currencyLabel, 0, 0);
-            content.add(this.course, 1, 0);
-            content.add(courseLabel, 1, 0);
-        }
-        if (modeIsEdit) {
+        if (modeIsEdit.getValue()) {
             course.setOpacity(1);
             courseLabel.setOpacity(0);
+            pallete.getChildren().setAll(
+                    acceptEdit, cancelEdit
+            );
         } else {
             course.setOpacity(0);
             courseLabel.setOpacity(1);
+            pallete.getChildren().setAll(
+                    toEdit, emptyFish
+            );
         }
     }
 
+    private Node createContent() {
+        content = new GridPane();
+        content.setGridLinesVisible(true);
+        content.setPadding(new Insets(5));
+        content.setHgap(5);
+
+        content
+                .addRow(Priority.NEVER)
+                .addColumn(300, 300, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                .addColumn(100, 100, 100, Priority.NEVER, HPos.LEFT, true)
+        ;
+
+        currencyLabel.setWrapText(true);
+        content.add(currencyLabel, 0, 0);
+        content.add(this.course, 1, 0);
+        content.add(courseLabel, 1, 0);
+
+        return content;
+    }
+
     private Node createPallete() {
-        if (pallete == null) {
-            pallete = new HBox();
-            pallete.setSpacing(5);
-            setAlignment(pallete, Pos.CENTER);
-        }
-        double imgButtonWidth = 17;
-        double imgButtonHeight = 17;
-        if (!modeIsEdit) {
-            pallete.getChildren().setAll(
-                    Button.getInstance(
-                            SvgWrapper.getInstance(Images.EMPTY(), imgButtonWidth, imgButtonHeight, 20, 20)
-                            , event -> { }
-                    )
-                    , Button.getInstance(
-                            SvgWrapper.getInstance(Images.EDIT(), imgButtonWidth, imgButtonHeight,  20, 20)
-                            , this::toEditMode
-                    )
-            );
-        } else {
-            pallete.getChildren().setAll(
-                    Button.getInstance(
-                            SvgWrapper.getInstance(Images.CHECKMARK(), imgButtonWidth, imgButtonHeight,  20, 20)
-                            , event -> apply()
-                    )
-                    , Button.getInstance(
-                            SvgWrapper.getInstance(Images.CLOSE(), imgButtonWidth, imgButtonHeight,  20, 20)
-                            , event -> cancel()
-                    )
-            );
-        }
+
+        pallete = new HBox();
+        pallete.setSpacing(5);
+        BorderPane.setAlignment(pallete, Pos.CENTER);
+        pallete.setBackground(new BackgroundWrapper().setColor(Color.GREY).commit());
+        emptyFish.setDisable(true);
+        emptyFish.setOpacity(0);
+        pallete.setAlignment(Pos.CENTER);
 
         return pallete;
     }
@@ -192,11 +183,11 @@ public class FinanceViewCell
     private void keyPress(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case ENTER: {
-                if (modeIsEdit) apply();
+                if (modeIsEdit.getValue()) apply();
                 break;
             }
             case ESCAPE: {
-                if (modeIsEdit) cancel();
+                if (modeIsEdit.getValue()) cancel();
                 break;
             }
         }

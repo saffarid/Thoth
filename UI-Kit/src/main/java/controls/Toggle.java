@@ -18,7 +18,6 @@ public class Toggle extends StackPane {
 
     private Background toggleFalse;
     private Background toggleTrue;
-    private Background transparent;
 
     private FlowPane back;
 
@@ -30,9 +29,8 @@ public class Toggle extends StackPane {
 
         back = new FlowPane();
         point = new Pane();
-        toggleTrue = new Background(new BackgroundFill(Paint.valueOf("#28A745"), null, null));
-        toggleFalse = new Background(new BackgroundFill(Color.GREY, null, null));
-        transparent = new Background(new BackgroundFill(Paint.valueOf("transparent"), null, null));
+        toggleTrue = new Background(new BackgroundFill(Paint.valueOf("#28A745"), new CornerRadii(12), null));
+        toggleFalse = new Background(new BackgroundFill(Paint.valueOf("#424242"), new CornerRadii(12), null));
 
         StackPane.setAlignment(point, Pos.CENTER_LEFT);
 
@@ -59,9 +57,9 @@ public class Toggle extends StackPane {
 
         this.isTrue.addListener((observableValue, aBoolean, t1) -> {
             Timeline timeline = new Timeline();
-            Duration duration = new Duration(250);
+            Duration duration = new Duration(100);
 
-            double newX = getWidth() - point.getWidth() - 2;
+            double newX = getWidth() - point.getWidth() - 3;
 
             if (t1) {
                 timeline.getKeyFrames().addAll(
