@@ -39,7 +39,9 @@ public class Label {
         return label;
     }
     public static controls.Label getInstanse(String s){
-        return getInstanse(s, TextCase.NORMAL);
+        controls.Label instanse = getInstanse();
+        instanse.setText(s);
+        return instanse;
     }
     public static controls.Label getInstanse(String s, TextCase textCase){
         controls.Label label = getInstanse();

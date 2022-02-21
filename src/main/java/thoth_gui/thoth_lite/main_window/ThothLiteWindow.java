@@ -3,6 +3,7 @@ package thoth_gui.thoth_lite.main_window;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 
 import thoth_gui.thoth_lite.components.controls.MenuButton;
@@ -163,7 +164,7 @@ public class ThothLiteWindow
                     theme.addListener((observableValue, colorTheme, t1) -> {
                         if (t1 != null) {
                             Platform.runLater(() -> {
-                                if(colorTheme != null) getStyleClass().remove( colorTheme.getName().toLowerCase() );
+                                if (colorTheme != null) getStyleClass().remove(colorTheme.getName().toLowerCase());
                                 getStyleClass().add(t1.getName().toLowerCase());
                             });
                         }
@@ -194,6 +195,18 @@ public class ThothLiteWindow
         });
 
         MenuItem about = new MenuItem(Properties.getString("about", TextCase.NORMAL));
+        about.setOnAction(event -> {
+            Stage aboutStage = new Stage();
+            aboutStage.initStyle(StageStyle.UNDECORATED);
+            aboutStage.setScene(
+                    new Scene(
+                            new About(aboutStage, "About")
+                    )
+            );
+            aboutStage.initModality(Modality.APPLICATION_MODAL);
+            aboutStage.initOwner(stage);
+            aboutStage.show();
+        });
 
         MenuItem exit = new MenuItem(Properties.getString("exit", TextCase.NORMAL));
         exit.setOnAction(event -> close());

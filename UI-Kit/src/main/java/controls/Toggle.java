@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
 
@@ -30,7 +31,7 @@ public class Toggle extends StackPane {
         back = new FlowPane();
         point = new Pane();
         toggleTrue = new Background(new BackgroundFill(Paint.valueOf("#28A745"), null, null));
-        toggleFalse = new Background(new BackgroundFill(Paint.valueOf("#B00020"), null, null));
+        toggleFalse = new Background(new BackgroundFill(Color.GREY, null, null));
         transparent = new Background(new BackgroundFill(Paint.valueOf("transparent"), null, null));
 
         StackPane.setAlignment(point, Pos.CENTER_LEFT);
