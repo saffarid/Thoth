@@ -36,7 +36,6 @@ import java.time.temporal.ChronoField;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class FinanceViewCell
         extends IdentifiableViewCell
         implements Apply, Cancel {
@@ -47,7 +46,7 @@ public class FinanceViewCell
 
     private final controls.Button toEdit = Button.getInstance(
             SvgWrapper.getInstance(Images.EDIT(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
-            , this::toEditMode);
+            , event -> toFromEditMode());
     private final controls.Button emptyFish = Button.getInstance(
             SvgWrapper.getInstance(Images.EMPTY(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
             , event -> {
@@ -59,63 +58,38 @@ public class FinanceViewCell
             SvgWrapper.getInstance(Images.CLOSE(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
             , event -> cancel());
 
-    private Finance finance;
+    private SimpleBooleanProperty modeIsEdit = new SimpleBooleanProperty(true);
 
     private HBox pallete;
     private GridPane content;
 
     private LocalDateTime prevClick;
 
-    private SimpleBooleanProperty modeIsEdit = new SimpleBooleanProperty();
-
     private controls.Label courseLabel;
     private controls.Label currencyLabel;
     private controls.TextField course;
 
-
     protected FinanceViewCell(Finance finance) {
         super();
-        this.finance = finance;
+        this.identifiable.setValue(finance);
+        setTable(AvaliableTables.CURRENCIES);
 
         modeIsEdit.addListener((observableValue, aBoolean, t1) -> changeStatusView());
-
-        Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5, 10, 10);
-
-        currencyLabel = Label.getInstanse(
-                String.format(
-                        templateCurrency
-                        , this.finance.getCurrency().getCurrencyCode()
-                        , this.finance.getCurrency().getDisplayName())
-        );
-        currencyLabel.setTooltip(new Tooltip(currencyLabel.getText()));
-
-        course = TextField.getInstance(
-                String.valueOf(this.finance.getCourse())
-        );
-        courseLabel = Label.getInstanse();
-        courseLabel.textProperty().bind(course.textProperty());
-
-        setLeft(point);
-        setCenter(createContent());
-        setRight(createPallete());
-
-        setTable(AvaliableTables.CURRENCIES);
+        modeIsEdit.set(false);
 
         setOnMouseClicked(this::mouseClick);
         setOnKeyPressed(this::keyPress);
-
-        setPadding(new Insets(2));
-        setAlignment(point, Pos.CENTER);
     }
 
     @Override
     public void apply() {
+        Finance finance = (Finance)this.identifiable.getValue();
         finance.setCourse(Double.parseDouble(course.getText()));
         List<Finance> list = new LinkedList<>();
         list.add(finance);
         try {
             ThothLite.getInstance().updateInTable(table, list);
-            changeStatusView();
+            toFromEditMode();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (NotContainsException e) {
@@ -127,10 +101,14 @@ public class FinanceViewCell
 
     @Override
     public void cancel() {
+        Finance finance = (Finance)this.identifiable.getValue();
         course.setText(String.valueOf(finance.getCourse()));
-        changeStatusView();
+        toFromEditMode();
     }
 
+    /**
+     * Функция вызывается всякий раз как изменится флаг режима
+     * */
     private void changeStatusView() {
         if (modeIsEdit.getValue()) {
             course.setOpacity(1);
@@ -145,39 +123,6 @@ public class FinanceViewCell
                     toEdit, emptyFish
             );
         }
-    }
-
-    private Node createContent() {
-        content = new GridPane();
-        content.setGridLinesVisible(true);
-        content.setPadding(new Insets(5));
-        content.setHgap(5);
-
-        content
-                .addRow(Priority.NEVER)
-                .addColumn(300, 300, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                .addColumn(100, 100, 100, Priority.NEVER, HPos.LEFT, true)
-        ;
-
-        currencyLabel.setWrapText(true);
-        content.add(currencyLabel, 0, 0);
-        content.add(this.course, 1, 0);
-        content.add(courseLabel, 1, 0);
-
-        return content;
-    }
-
-    private Node createPallete() {
-
-        pallete = new HBox();
-        pallete.setSpacing(5);
-        BorderPane.setAlignment(pallete, Pos.CENTER);
-        pallete.setBackground(new BackgroundWrapper().setColor(Color.GREY).commit());
-        emptyFish.setDisable(true);
-        emptyFish.setOpacity(0);
-        pallete.setAlignment(Pos.CENTER);
-
-        return pallete;
     }
 
     private void keyPress(KeyEvent keyEvent) {
@@ -199,7 +144,7 @@ public class FinanceViewCell
                 LocalDateTime now = LocalDateTime.now();
                 long aLong = now.getLong(ChronoField.SECOND_OF_DAY);
                 if ((prevClick != null) && (aLong - prevClick.getLong(ChronoField.SECOND_OF_DAY)) < 1) {
-                    changeStatusView();
+                    toFromEditMode();
                 } else {
                     prevClick = now;
                 }
@@ -207,8 +152,62 @@ public class FinanceViewCell
         }
     }
 
-    private void toEditMode(ActionEvent event) {
-        changeStatusView();
+    private void toFromEditMode() {
+        modeIsEdit.set(!modeIsEdit.get());
     }
 
+    @Override
+    protected Node leftNode() {
+        Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5, 10, 10);
+        setAlignment(point, Pos.CENTER);
+        return point;
+    }
+
+    @Override
+    protected Node centerNode() {
+        Finance finance = (Finance)this.identifiable.getValue();
+        currencyLabel = Label.getInstanse(
+                String.format(
+                        templateCurrency
+                        , finance.getCurrency().getCurrencyCode()
+                        , finance.getCurrency().getDisplayName())
+        );
+        currencyLabel.setTooltip(new Tooltip(currencyLabel.getText()));
+
+        course = TextField.getInstance(
+                String.valueOf(finance.getCourse())
+        );
+        courseLabel = Label.getInstanse();
+        courseLabel.textProperty().bind(course.textProperty());
+
+        content = new GridPane();
+        content.setGridLinesVisible(true);
+        content.setPadding(new Insets(2));
+        content.setHgap(5);
+
+        content
+                .addRow(Priority.NEVER)
+                .addColumn(300, 300, 700, Priority.ALWAYS, HPos.LEFT, true)
+                .addColumn(100, 100, 100, Priority.NEVER, HPos.LEFT, true)
+        ;
+
+        currencyLabel.setWrapText(true);
+        content.add(currencyLabel, 0, 0);
+        content.add(this.course, 1, 0);
+        content.add(courseLabel, 1, 0);
+
+        return content;
+    }
+
+    @Override
+    protected Node rightNode() {
+        pallete = new HBox();
+        pallete.setSpacing(5);
+        BorderPane.setAlignment(pallete, Pos.CENTER);
+        emptyFish.setDisable(true);
+        emptyFish.setOpacity(0);
+        pallete.setAlignment(Pos.CENTER);
+
+        return pallete;
+    }
 }

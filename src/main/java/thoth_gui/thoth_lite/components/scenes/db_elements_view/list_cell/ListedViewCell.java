@@ -1,5 +1,17 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
+import layout.basepane.BorderPane;
+import layout.basepane.GridPane;
+import layout.basepane.HBox;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
+import thoth_gui.thoth_lite.components.controls.Button;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.TextField;
+import tools.BackgroundWrapper;
 import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
@@ -7,17 +19,12 @@ import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.RemoveItem;
-import controls.Button;
-import controls.Label;
-import controls.TextField;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import thoth_gui.thoth_styleconstants.svg.*;
 
 import java.sql.SQLException;
@@ -30,44 +37,48 @@ public class ListedViewCell
         extends IdentifiableViewCell
         implements Apply, Cancel, RemoveItemFromList {
 
-    private final Node point = SvgWrapper.getInstance(Images.POINT(), 9, 9);
+    private final double imgBtnSize = 17;
+    private final double imgBtnViewBoxSize = 20;
+
+    private final controls.Button toEdit = Button.getInstance(
+            SvgWrapper.getInstance(Images.EDIT(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> toFromEditMode());
+    private final controls.Button remove = Button.getInstance(
+            SvgWrapper.getInstance(Images.EMPTY(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> {
+            });
+    private final controls.Button acceptEdit = Button.getInstance(
+            SvgWrapper.getInstance(Images.CHECKMARK(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> apply());
+    private final controls.Button cancelEdit = Button.getInstance(
+            SvgWrapper.getInstance(Images.CLOSE(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> cancel());
+
+    private SimpleBooleanProperty modeIsEdit = new SimpleBooleanProperty(true);
+
     private HBox pallete;
 
     private LocalDateTime prevClick;
 
-    private boolean modeIsEdit = false;
-
-    private Typable typable;
-
-    private TextField value;
-    private Label valueLabel;
+    private controls.TextField value;
+    private controls.Label valueLabel;
 
     private RemoveItem removeItem;
 
-    private Button remove;
-
     protected ListedViewCell(Typable typable) {
         super();
+        this.identifiable.setValue(typable);
 
-        this.typable = typable;
-
-        value = thoth_gui.thoth_lite.components.controls.TextField.getInstance(typable.getValue());
-        valueLabel = thoth_gui.thoth_lite.components.controls.Label.getInstanse();
-
-        valueLabel.textProperty().bind(value.textProperty());
-
-        setLeft(point);
-        createContent();
-        setRight(createPallete());
+        modeIsEdit.addListener((observableValue, aBoolean, t1) -> changeStatusView());
+        modeIsEdit.set(false);
 
         setOnMouseClicked(this::mouseClick);
         setOnKeyPressed(this::keyPress);
-
-        initStyle();
     }
 
     @Override
     public void apply() {
+        Typable typable = (Typable) this.identifiable.getValue();
         typable.setValue(value.getText());
         List<Typable> list = new LinkedList<>();
         list.add(typable);
@@ -79,7 +90,7 @@ public class ListedViewCell
                 //Обновляем запись
                 ThothLite.getInstance().updateInTable(table, list);
             }
-            changeStatusView();
+            toFromEditMode();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (NotContainsException e) {
@@ -91,83 +102,34 @@ public class ListedViewCell
 
     @Override
     public void cancel() {
-        value.setText(typable.getValue());
-        changeStatusView();
+        value.setText(((Typable)this.identifiable.getValue()).getValue());
+        toFromEditMode();
     }
 
     private void changeStatusView() {
-        modeIsEdit = !modeIsEdit;
-        createPallete();
-        createContent();
-    }
-
-    private void createContent() {
-        if (modeIsEdit) {
-            setCenter(value);
-        } else {
-            setCenter(valueLabel);
-        }
-    }
-
-    private Node createPallete() {
-        if (pallete == null) {
-            pallete = new HBox();
-
-            pallete.setSpacing(5);
-            pallete.setPadding(new Insets(2));
-            setAlignment(pallete, Pos.CENTER);
-        }
-        double imgButtonWidth = 17;
-        double imgButtonHeight = 17;
-        if (!modeIsEdit) {
+        if (modeIsEdit.getValue()) {
+            value.setOpacity(1);
+            valueLabel.setOpacity(0);
             pallete.getChildren().setAll(
-                    getButton( SvgWrapper.getInstance(Images.EDIT(), imgButtonWidth, imgButtonHeight), this::toEditMode )
+                    acceptEdit, cancelEdit
             );
-//            if(listed.getId().equals("-1")) {
-            remove = getButton( SvgWrapper.getInstance(Images.TRASH(), imgButtonWidth, imgButtonHeight), this::remove );
-            remove.setDisable(!hasRemoveItem());
-            pallete.getChildren().add(remove);
-//            }
         } else {
+            value.setOpacity(0);
+            valueLabel.setOpacity(1);
             pallete.getChildren().setAll(
-                    getButton(SvgWrapper.getInstance(Images.CHECKMARK(), imgButtonWidth, imgButtonHeight), event -> apply())
-                    , getButton(SvgWrapper.getInstance(Images.CLOSE(), imgButtonWidth, imgButtonHeight), event -> cancel())
+                    toEdit, remove
             );
         }
-
-        return pallete;
-    }
-
-    protected Button getButton(
-            Node img
-            , EventHandler<ActionEvent> event
-    ) {
-        Button node = thoth_gui.thoth_lite.components.controls.Button.getInstance(
-                img
-                , event
-        );
-        node.setPadding(new Insets(5));
-        return node;
-    }
-
-    private void initStyle() {
-        setPadding(new Insets(5, 2, 5, 2));
-        setAlignment(point, Pos.CENTER);
-    }
-
-    @Override
-    public boolean hasRemoveItem() {
-        return removeItem != null;
     }
 
     private void keyPress(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case ENTER: {
-                if (modeIsEdit) apply();
+                if (modeIsEdit.getValue()) apply();
                 break;
             }
             case ESCAPE: {
-                if (modeIsEdit) cancel();
+                if (modeIsEdit.getValue()) cancel();
                 break;
             }
         }
@@ -179,21 +141,64 @@ public class ListedViewCell
                 LocalDateTime now = LocalDateTime.now();
                 long aLong = now.getLong(ChronoField.SECOND_OF_DAY);
                 if ((prevClick != null) && (aLong - prevClick.getLong(ChronoField.SECOND_OF_DAY)) < 1) {
-                    changeStatusView();
+                    toFromEditMode();
                 } else {
                     prevClick = now;
                 }
             }
         }
-
     }
 
-    private void toEditMode(ActionEvent event) {
-        changeStatusView();
+    private void toFromEditMode() {
+        modeIsEdit.set(!modeIsEdit.get());
+    }
+
+    @Override
+    protected Node leftNode() {
+        Node point = SvgWrapper.getInstance(Images.POINT(), 7.5, 7.5, 10, 10);
+        setAlignment(point, Pos.CENTER);
+        return point;
+    }
+
+    @Override
+    protected Node centerNode() {
+
+
+        value = TextField.getInstance(((Typable)this.identifiable.getValue()).getValue());
+        valueLabel = Label.getInstanse();
+        valueLabel.textProperty().bind(value.textProperty());
+
+        GridPane pane = new GridPane()
+                .addRow(Priority.NEVER)
+                .addColumn(Priority.ALWAYS)
+                ;
+
+        pane.add(value, 0, 0);
+        pane.add(valueLabel, 0, 0);
+        return pane;
+    }
+
+    @Override
+    protected Node rightNode() {
+        pallete = new HBox();
+        pallete.setSpacing(5);
+        BorderPane.setAlignment(pallete, Pos.CENTER);
+        remove.setDisable(true);
+        remove.setOpacity(0);
+        pallete.setAlignment(Pos.CENTER);
+
+        return pallete;
+    }
+
+
+
+    @Override
+    public boolean hasRemoveItem() {
+        return removeItem != null;
     }
 
     private void remove(ActionEvent event) {
-        if (!typable.getId().equals("-1")) {
+        if (!this.identifiable.getValue().getId().equals("-1")) {
 //            DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
 //            Optional<ButtonType> optional = instance.showAndWait();
 //            if(optional.isPresent()){
@@ -213,7 +218,7 @@ public class ListedViewCell
 //                }
 //            }
         } else {
-            removeItem.removeItem(typable);
+            removeItem.removeItem(((Typable)this.identifiable.getValue()));
         }
 
     }

@@ -155,11 +155,14 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 default:
                     return new ListedListView( (List<Typable>) dataFromTable, type);
             }
-        } catch (SQLException throwables) {
+        }
+        catch (SQLException throwables) {
             throwables.printStackTrace();
-        } catch (NotContainsException e) {
+        }
+        catch (NotContainsException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;

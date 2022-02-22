@@ -1,7 +1,5 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
-import javafx.geometry.Pos;
-import javafx.scene.paint.Color;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
@@ -12,7 +10,7 @@ import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card
 import thoth_gui.thoth_lite.dialog_windows.DialogWindow;
 import thoth_gui.thoth_lite.dialog_windows.DialogWindowType;
 import thoth_gui.thoth_lite.main_window.Workspace;
-import javafx.geometry.Insets;
+
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
@@ -37,10 +35,11 @@ public class IdentifiableListCell<T extends Identifiable>
         super();
         this.table = table;
         setOnMouseClicked(this::cellClick);
+        setMinWidth(300);
+        setMaxWidth(1000);
     }
 
     private void cellClick(MouseEvent mouseEvent) {
-
         switch (mouseEvent.getButton()) {
             case PRIMARY: {
                 if (!(identifiable instanceof Typable) &&

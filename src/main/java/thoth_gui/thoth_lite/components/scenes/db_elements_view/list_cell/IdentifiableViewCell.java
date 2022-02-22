@@ -1,7 +1,8 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
@@ -21,11 +22,7 @@ import tools.SvgWrapper;
 public abstract class IdentifiableViewCell
         extends BorderPane {
 
-    protected Node icon;
-    protected controls.Label title;
-    protected controls.Label subtitle;
-    protected controls.Label property;
-    protected Node edit;
+    protected SimpleObjectProperty<Identifiable> identifiable = new SimpleObjectProperty<>(null);
 
     protected AvaliableTables table;
 
@@ -34,70 +31,24 @@ public abstract class IdentifiableViewCell
         init();
     }
 
-    protected IdentifiableViewCell(
-            Node node,
-            String title,
-            String subtitle,
-            String property) {
-        super();
-        init();
-
-        this.icon = node;
-        this.title = Label.getInstanse();
-        this.subtitle = Label.getInstanse();
-        this.property = Label.getInstanse();
-        this.edit = SvgWrapper.getInstance(Images.ARROW_RIGHT());
-
-        setTextTitle(title);
-        setTextSubtitle(subtitle);
-        setTextProperty(property);
-
-        setLeft(this.icon);
-        setCenter(getFillCenter());
-        setRight(this.edit);
-
-        BorderPane.setAlignment(this, Pos.CENTER);
-
-    }
-
     /**
      * Общая инициализация для всех исполнений
      */
     private void init() {
-        initStyle();
+        identifiable.addListener(this::identifiableChange);
+
+        BorderPane.setAlignment(this, Pos.CENTER);
     }
 
-    /**
-     * Инициализация стиля
-     */
-    private void initStyle() {
-//        setMargin(this, new Insets(0));
-        setBackground(
-                new BackgroundWrapper()
-                        .setColor(Color.TRANSPARENT)
-                        .commit()
-        );
-        setBorder(
-                new BorderWrapper()
-                        .setColor(Color.GREY)
-                        .addBorder(1)
-                        .commit()
-        );
-        hoverProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1) {
-                setBackground(
-                        new BackgroundWrapper()
-                                .setColor(Color.GREY)
-                                .commit()
-                );
-            } else {
-                setBackground(
-                        new BackgroundWrapper()
-                                .setColor(Color.TRANSPARENT)
-                                .commit()
-                );
-            }
-        });
+    protected void identifiableChange(
+            ObservableValue<? extends Identifiable> observableValue,
+            Identifiable prevObj,
+            Identifiable curObj){
+        if(curObj == null) return;
+
+        setLeft(leftNode());
+        setCenter(centerNode());
+        setRight(rightNode());
     }
 
     public void setTable(AvaliableTables table) {
@@ -105,16 +56,10 @@ public abstract class IdentifiableViewCell
     }
 
     static IdentifiableViewCell getInstance(Identifiable identifiable) {
-        if (identifiable instanceof Orderable) {
-            return new OrderableViewCell((Orderable) identifiable);
-        } else if (identifiable instanceof Storagable) {
+        if (identifiable instanceof Storagable) {
             return new StoragableViewCell((Storagable) identifiable);
-        } else if (identifiable instanceof Projectable) {
-            return new ProjectableViewCell((Projectable) identifiable);
         } else if (identifiable instanceof Purchasable) {
             return new PurchasableViewCell((Purchasable) identifiable);
-        } else if (identifiable instanceof Storing) {
-            return new StoringViewCell((Storing) identifiable);
         } else if (identifiable instanceof Typable) {
             return new ListedViewCell((Typable) identifiable);
         } else if (identifiable instanceof Finance) {
@@ -123,35 +68,10 @@ public abstract class IdentifiableViewCell
         return null;
     }
 
-    private GridPane getFillCenter() {
-        GridPane res = new GridPane();
+    protected abstract Node leftNode();
 
-        res
-                .addColumn(Priority.ALWAYS, HPos.LEFT)
-                .addColumn(Priority.ALWAYS, HPos.RIGHT)
-                .addRow(Priority.ALWAYS)
-                .addRow(Priority.ALWAYS);
+    protected abstract Node centerNode();
 
-        res.add(this.title, 0, 0);
-        res.add(this.subtitle, 0, 1);
-        res.add(this.property, 1, 1);
-
-        BorderPane.setAlignment(res, Pos.CENTER);
-
-        return res;
-    }
-
-    public void setTextTitle(String text) {
-        this.title.setText(text);
-    }
-
-    public void setTextSubtitle(String text) {
-        this.subtitle.setText(text);
-    }
-
-    public void setTextProperty(String text) {
-        this.property.setText(text);
-    }
-
+    protected abstract Node rightNode();
 
 }
