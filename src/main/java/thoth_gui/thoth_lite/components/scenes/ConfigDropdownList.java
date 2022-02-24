@@ -62,6 +62,7 @@ public class ConfigDropdownList
                 , getMenuButton(AvaliableTables.INCOMES_TYPES)
                 , getMenuButton(AvaliableTables.ORDER_STATUS)
                 , getMenuButton(AvaliableTables.PRODUCT_TYPES)
+                , getMenuButton(AvaliableTables.PARTNERS)
                 , getMenuButton(AvaliableTables.STORING)
         );
         return menu;

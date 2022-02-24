@@ -19,7 +19,12 @@ public class Purchase
     private boolean isDelivered;
     private List<Storing> purchasedProducts;
 
-    public Purchase(String orderNumber, Partnership store, LocalDate deliveryDate, boolean isDelivered) {
+    public Purchase(
+            String orderNumber,
+            Partnership store,
+            LocalDate deliveryDate,
+            boolean isDelivered
+    ) {
         this.orderNumber = orderNumber;
         this.store = store;
         this.deliveryDate = deliveryDate;

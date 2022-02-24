@@ -4,6 +4,7 @@ package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 
+import javafx.geometry.Pos;
 import thoth_gui.thoth_lite.components.controls.ListView;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
@@ -41,12 +42,12 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     extends ThothSceneImpl
         implements Flow.Subscriber<List<T>>
 {
-
-    private IdentifiableListCell identifiableListCell;
+    private static final double MAX_WIDTH = 750;
 
     protected enum Ids {
         IDENTIFIABLE_ADD("add"),
         SORTED_BOX("sort_box");
+
         private String id;
         Ids(String id) {
             this.id = id;
@@ -57,7 +58,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     protected static Logger LOG;
-
+    private IdentifiableListCell identifiableListCell;
     protected AvaliableTables table;
 
     /**
@@ -96,11 +97,14 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
         try {
             ThothLite.getInstance().subscribeOnTable(this.table, this);
-        } catch (NotContainsException e) {
+        }
+        catch (NotContainsException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -112,6 +116,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
 
         contentNode = new BorderPane(identifiableElementList);
+        contentNode.setMaxWidth(MAX_WIDTH);
+        BorderPane.setAlignment(contentNode, Pos.CENTER_LEFT);
         return contentNode;
     }
 
@@ -146,9 +152,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 case PURCHASABLE: {
                     return new PurchasableListView((List<Purchasable>) dataFromTable);
                 }
-//                case STORING: {
-//                    return new StoringListView((List<Storing>) dataFromTable);
-//                }
+                case PARTNERS: {
+                    return new PartnerListView((List<Partnership>) dataFromTable);
+                }
                 case CURRENCIES:{
                     return new FinanceListView((List<Finance>) dataFromTable);
                 }

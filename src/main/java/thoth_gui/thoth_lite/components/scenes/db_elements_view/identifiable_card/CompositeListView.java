@@ -95,12 +95,9 @@ public class CompositeListView
         this.items = new SimpleListProperty<>(FXCollections.observableList(items));
         this.identifiableIsNew = identifiableIsNew;
 
-//        setPadding(new Insets(2));
 
         setTop(createTitle());
-//        setLeft(createNewStoringRow());
         setCenter(createGrid());
-//        setBottom(createTotal());
 
         getStylesheets().add(Stylesheets.IDENTIFIABLE_LIST.getStylesheet());
     }
@@ -127,112 +124,11 @@ public class CompositeListView
         controls.Label countType = Label.getInstanse();
         controls.TextField price = getTextField(PRICE);
         controls.ComboBox<Finance> financeComboBox = FinanceComboBox.getInstance();
-        controls.Button addButton = thoth_gui.thoth_lite.components.controls.Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30));
 
         storagableComboBox.valueProperty().addListener((observableValue, storagable, t1) -> {
             if (t1 != null) {
                 countType.setText(t1.getCountType().getValue());
             }
-        });
-
-        addButton.setOnAction(actionEvent -> {
-            Storing newStoring = new Storing() {
-                private String id;
-                private Storagable product;
-                private Double count;
-                private Typable countType;
-                private Double price;
-                private Finance currency;
-
-                @Override
-                public Double getCount() {
-                    return count;
-                }
-
-                @Override
-                public String getId() {
-                    return id;
-                }
-
-                @Override
-                public Typable getCountType() {
-                    return countType;
-                }
-
-                @Override
-                public Storagable getStoragable() {
-                    return product;
-                }
-
-                @Override
-                public void setId(String id) {
-                    this.id = id;
-                }
-
-                @Override
-                public void setCount(Double count) {
-                    this.count = count;
-                }
-
-                @Override
-                public void setCountType(Typable countType) {
-                    this.countType = countType;
-                }
-
-                @Override
-                public void setStorageable(Storagable storageable) {
-                    this.product = storageable;
-                }
-
-                @Override
-                public Double getPrice() {
-                    return price;
-                }
-
-                @Override
-                public void setPrice(Double price) {
-                    this.price = price;
-                }
-
-                @Override
-                public Finance getCurrency() {
-                    return currency;
-                }
-
-                @Override
-                public void setCurrency(Finance currency) {
-                    this.currency = currency;
-                }
-            };
-
-            newStoring.setStorageable(storagableComboBox.getValue());
-            newStoring.setCount(Double.parseDouble(count.getText()));
-            newStoring.setCountType(storagableComboBox.getValue().getCountType());
-            newStoring.setPrice(Double.parseDouble(price.getText()));
-            newStoring.setCurrency(financeComboBox.getValue());
-
-            //Нужна проверка на наличие продукта в списке
-            //Флаг на наличине продукта в списке
-            boolean alreadyExsist = false;
-
-            for (Storing storing : items.getValue()) {
-                if (storing.getStoragable().equals(newStoring.getStoragable())) {
-                    alreadyExsist = true;
-                }
-            }
-
-            //Если продукт уже есть в списке, то не добавляем его, необходимо выдавать оповещение что продукт уже добавлен.
-            if (!alreadyExsist) {
-                items.add(
-                        newStoring
-                );
-            }
-
-            storagableComboBox.setValue(null);
-            count.setText("");
-//            countType.setValue(countType.getItems().get(0));
-            price.setText("");
-            financeComboBox.setValue(financeComboBox.getItems().get(0));
         });
 
         controls.getChildren().addAll(
@@ -254,8 +150,106 @@ public class CompositeListView
 
         HBox buttons = new HBox();
         buttons.getChildren().addAll(
-                thoth_gui.thoth_lite.components.controls.Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30))
-                , thoth_gui.thoth_lite.components.controls.Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30))
+                Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30), event -> {
+                    Storing newStoring = new Storing() {
+                        private String id;
+                        private Storagable product;
+                        private Double count;
+                        private Typable countType;
+                        private Double price;
+                        private Finance currency;
+
+                        @Override
+                        public Double getCount() {
+                            return count;
+                        }
+
+                        @Override
+                        public String getId() {
+                            return id;
+                        }
+
+                        @Override
+                        public Typable getCountType() {
+                            return countType;
+                        }
+
+                        @Override
+                        public Storagable getStoragable() {
+                            return product;
+                        }
+
+                        @Override
+                        public void setId(String id) {
+                            this.id = id;
+                        }
+
+                        @Override
+                        public void setCount(Double count) {
+                            this.count = count;
+                        }
+
+                        @Override
+                        public void setCountType(Typable countType) {
+                            this.countType = countType;
+                        }
+
+                        @Override
+                        public void setStorageable(Storagable storageable) {
+                            this.product = storageable;
+                        }
+
+                        @Override
+                        public Double getPrice() {
+                            return price;
+                        }
+
+                        @Override
+                        public void setPrice(Double price) {
+                            this.price = price;
+                        }
+
+                        @Override
+                        public Finance getCurrency() {
+                            return currency;
+                        }
+
+                        @Override
+                        public void setCurrency(Finance currency) {
+                            this.currency = currency;
+                        }
+                    };
+
+                    newStoring.setStorageable(storagableComboBox.getValue());
+                    newStoring.setCount(Double.parseDouble(count.getText()));
+                    newStoring.setCountType(storagableComboBox.getValue().getCountType());
+                    newStoring.setPrice(Double.parseDouble(price.getText()));
+                    newStoring.setCurrency(financeComboBox.getValue());
+
+                    //Нужна проверка на наличие продукта в списке
+                    //Флаг на наличине продукта в списке
+                    boolean alreadyExsist = false;
+
+                    for (Storing storing : items.getValue()) {
+                        if (storing.getStoragable().equals(newStoring.getStoragable())) {
+                            alreadyExsist = true;
+                        }
+                    }
+
+                    //Если продукт уже есть в списке, то не добавляем его, необходимо выдавать оповещение что продукт уже добавлен.
+                    if (!alreadyExsist) {
+                        items.add(
+                                newStoring
+                        );
+                    }
+
+                    storagableComboBox.setValue(null);
+                    count.setText("");
+//            countType.setValue(countType.getItems().get(0));
+                    price.setText("");
+                    financeComboBox.setValue(financeComboBox.getItems().get(0));
+                })
+//                , Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30))
 
         );
 

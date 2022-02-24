@@ -38,7 +38,7 @@ public class Purchases
 
             //Заполнение карты описания
             description.put(StructureDescription.PurchasesDesc.PURCHASE_ID, purchasable.getId());
-            description.put(StructureDescription.PurchasesDesc.STORE_ID, purchasable.getPartner().getName());
+            description.put(StructureDescription.PurchasesDesc.STORE_ID, (purchasable.getPartner()!=null)?purchasable.getPartner().getName():null);
             description.put(StructureDescription.PurchasesDesc.DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
             description.put(StructureDescription.PurchasesDesc.IS_DELIVERED, purchasable.isDelivered() ? 1 : 0);
             datasDesc.add(description);
@@ -50,7 +50,8 @@ public class Purchases
                 composition.put(StructureDescription.PurchasesComposition.COUNT, storing.getCount());
                 composition.put(StructureDescription.PurchasesComposition.COUNT_TYPE_ID, storing.getCountType().getValue());
                 composition.put(StructureDescription.PurchasesComposition.PRICE, storing.getPrice());
-                composition.put(StructureDescription.PurchasesComposition.CURRENCY_ID, storing.getCurrency().getCurrency());
+                composition.put(StructureDescription.PurchasesComposition.CURRENCY_ID, storing.getCurrency().getCurrency().getCurrencyCode());
+                composition.put(StructureDescription.PurchasesComposition.COURSE, storing.getCurrency().getCourse());
                 datasComposition.add(composition);
             }
         }
@@ -70,7 +71,7 @@ public class Purchases
                                 String.valueOf(row.get(StructureDescription.PurchasesDesc.PURCHASE_ID)),
                                 (Partnership) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(StructureDescription.PurchasesDesc.STORE_ID))),
                                 LocalDate.parse(String.valueOf(row.get(StructureDescription.PurchasesDesc.DELIVERY_DATE))),
-                                (boolean) row.get(StructureDescription.PurchasesDesc.IS_DELIVERED)
+                                (int)row.get(StructureDescription.PurchasesDesc.IS_DELIVERED)==1
                         )
                 );
             } catch (NotContainsException e) {
@@ -87,7 +88,7 @@ public class Purchases
         for(HashMap<String, Object> row : data){
 
             try {
-                Purchasable byId = getById(String.valueOf(row.get(row.get(StructureDescription.PurchasesComposition.PURCHASE_ID))));
+                Purchasable byId = getById(String.valueOf(row.get(StructureDescription.PurchasesComposition.PURCHASE_ID)));
                 List<Storing> composition = byId.getComposition();
 
                 composition.add(new StorageCell(
@@ -109,10 +110,10 @@ public class Purchases
 
     @Override
     public void readTable(StructureDescription.TableTypes tableType, List<HashMap<String, Object>> data) throws ParseException {
-        datas.clear();
 
         switch (tableType) {
             case DESC: {
+                datas.clear();
                 readDescription(data);
                 break;
             }

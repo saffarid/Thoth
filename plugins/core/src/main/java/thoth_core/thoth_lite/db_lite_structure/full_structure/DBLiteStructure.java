@@ -475,7 +475,7 @@ public class DBLiteStructure extends DataBaseSQL {
                     StructureDescription.PurchasesDesc.PURCHASE_ID, DataTypes.TEXT
             ));
             addColumn(getCustomColumn(
-                    StructureDescription.PurchasesDesc.STORE_ID, DataTypes.INT, false, true,
+                    StructureDescription.PurchasesDesc.STORE_ID, DataTypes.INT, false, false,
                     getTable(StructureDescription.Partners.TABLE_NAME).getColumnByName(StructureDescription.Partners.ID)
             ));
             addColumn(getCustomColumn(

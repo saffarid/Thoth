@@ -46,9 +46,9 @@ public class DataBaseLite {
         dbFile = new File(URL_DB);
         if (!this.dbFile.exists()) {
             firstInit();
-        } else {
-            readDataBase();
         }
+        readDataBase();
+
     }
 
     /**

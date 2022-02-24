@@ -3,6 +3,7 @@ package thoth_core.thoth_lite.db_data.db_data_element.properties;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Commentable;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 public interface FinancialAccounting
 extends Identifiable,

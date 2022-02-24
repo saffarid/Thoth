@@ -64,6 +64,8 @@ public abstract class IdentifiableViewCell
             return new ListedViewCell((Typable) identifiable);
         } else if (identifiable instanceof Finance) {
             return new FinanceViewCell((Finance) identifiable);
+        } else if(identifiable instanceof Partnership){
+            return new PartnerViewCell((Partnership) identifiable);
         }
         return null;
     }

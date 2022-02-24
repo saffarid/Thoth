@@ -66,13 +66,8 @@ public class FinanceListView
     @Override
     protected Node createToolsNode() {
         toolsNode = new ToolsPane(table.name())
-                .addSortPane(
-                        SortPane.getInstance()
-                                .setSortItems(SORT_BY.values())
-                                .setCell()
-                                .setSortMethod(this::sort)
-                                .setValue(SORT_BY.SORT_BY_CURRENCY_UP)
-                );
+                .addSortPane( getSortPane() )
+        ;
 
         return toolsNode;
     }

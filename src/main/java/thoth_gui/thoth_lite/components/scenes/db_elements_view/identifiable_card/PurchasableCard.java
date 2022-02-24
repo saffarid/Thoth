@@ -106,6 +106,8 @@ public class PurchasableCard
     protected Node createContentNode() {
         super.createContentNode();
 
+        toggleDelivered = new Toggle(((Purchasable)identifiable).isDelivered());
+
         GridPane content = new GridPane();
 
         content.setPadding(new Insets(2));
@@ -130,7 +132,7 @@ public class PurchasableCard
         content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.STORE.id), store), 0, 1);
         content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id), datePicker), 0, 2);
 
-        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id), new Toggle(((Purchasable)identifiable).isDelivered())), 1, 0);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id), toggleDelivered), 1, 0);
 
         content.add(new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew), 0, 3, 2, 1);
 
