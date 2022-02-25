@@ -73,7 +73,7 @@ public class ThothLite {
 
     }
 
-    public void acceptPurchase(Purchasable purchasable) throws NotContainsException, SQLException {
+    public void acceptPurchase(Purchasable purchasable) throws NotContainsException {
 
         /*   Приём покупки включает в себя:
          *  1. Обновление записей в таблице покупок - установка флага isDelivered.
@@ -93,12 +93,22 @@ public class ThothLite {
         List<Purchasable> purchase = new LinkedList<>();
         purchase.add(purchasable);
 
-        //Для атомарности операции стартуем транзакцию
-        database.beginTransaction();
-        updateInTable(getTableName(AvaliableTables.PURCHASABLE), purchase);
-        updateInTable(getTableName(AvaliableTables.STORAGABLE), listStoragable);
-        database.commitTransaction();
-        //При удачном выполнении завершаем транзакцию
+        try {
+            //Для атомарности операции стартуем транзакцию
+            database.beginTransaction();
+            updateInTable(getTableName(AvaliableTables.PURCHASABLE), purchase);
+            updateInTable(getTableName(AvaliableTables.STORAGABLE), listStoragable);
+        } catch (SQLException exception) {
+            LOG.log(Level.INFO, exception.getMessage());
+        } finally {
+            //При любом сценарии завершаем транзакцию
+            try {
+                database.commitTransaction();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**
@@ -212,12 +222,21 @@ public class ThothLite {
     }
 
     public void insertToTable(AvaliableTables table, List<? extends Identifiable> datas)
-            throws NotContainsException, SQLException, ClassNotFoundException {
+            throws NotContainsException, ClassNotFoundException {
         String tableName = getTableName(table);
-        database.beginTransaction();
-        insertToTable(tableName, datas);
-        database.commitTransaction();
-        database.readTable(tableName);
+        try {
+            database.beginTransaction();
+            insertToTable(tableName, datas);
+        } catch (SQLException exception) {
+            LOG.log(Level.INFO, exception.getMessage());
+        } finally {
+            try {
+                database.commitTransaction();
+                database.readTable(tableName);
+            } catch (SQLException exception) {
+                LOG.log(Level.INFO, exception.getMessage());
+            }
+        }
     }
 
     /**
@@ -229,48 +248,61 @@ public class ThothLite {
      */
     private void insertToTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
+
         Data table = dbData.getTable(tableName);
+        Data products = dbData.getTable(StructureDescription.Products.TABLE_NAME);
+
+        List<Storagable> datasProducts = new LinkedList<>(); //Список продуктов, входящих в состав
+        List<FinancialAccounting> finOps = new LinkedList<>(); //Список финансовых операций
 
         for (Identifiable data : datas) {
-//            Если объект обладает свойством составного проверяем его состав на наличие записей в БД
-            if (data instanceof Composite) {
-                Composite composite = (Composite) data;
-                //Запрашиваем состав
-                Data products = dbData.getTable(StructureDescription.Products.TABLE_NAME);
-                List<Storagable> datasProducts = new LinkedList<>(); //Список продуктов, входящих в состав
-                List<FinancialAccounting> finOps = new LinkedList<>(); //Список финансовых операций
-                //Проходим по составу и добавляем каждую запись в список
-                for (Storing storing : composite.getComposition()) {
-                    Storagable storagable = storing.getStoragable(); //Продукт
-                    finOps.add(
-                            new FinancialOperation(
-                                    "-1", storagable.getType(), storing.getCount(), LocalDate.now(), storing.getCurrency(), storing.getCurrency().getCourse(), ""
-                            )
-                    );
-                    if (!products.contains(storagable)) {
-                        datasProducts.add(storagable);
-                    }
+            // Проверяем исходный объект на реализацию Composite
+            if (!(data instanceof Composite)) continue;
+
+            Composite composite = (Composite) data;
+            //Запрашиваем состав
+            //Проходим по составу и добавляем каждую запись в список
+            for (Storing storing : composite.getComposition()) {
+                Storagable storagable = storing.getStoragable(); //Продукт
+                finOps.add(
+                        new FinancialOperation(
+                                "-1", storagable.getType(), storing.getCount(), LocalDate.now(), storing.getCurrency(), storing.getCurrency().getCourse(), ""
+                        )
+                );
+                if (!products.contains(storagable)) {
+                    datasProducts.add(storagable);
                 }
-                //Добавляем записи
-                if (!datasProducts.isEmpty()) {
-                    HashMap<String, List<HashMap<String, Object>>> compositeData = products.convertToMap(datasProducts);
-                    for (String tableForInsert : compositeData.keySet()) {
-                        database.insert(tableForInsert, compositeData.get(tableForInsert));
-                    }
-                }
-                if (data instanceof Purchasable) {
-                    HashMap<String, List<HashMap<String, Object>>> hashMap = DBData.getInstance().getTable(StructureDescription.Expenses.TABLE_NAME).convertToMap(finOps);
-                    for (String key : hashMap.keySet()) {
-                        database.insert(
-                                StructureDescription.Expenses.TABLE_NAME,
-                                hashMap.get(key)
-                        );
-                    }
-                }
-            } /////
+            }
         }
 
-        if(tableName.equals(StructureDescription.ProductTypes.TABLE_NAME)){
+        /* Добавляем записи в таблицу продуктов в случае
+          если исходный объект был составным и есть что записывать */
+        if (!datasProducts.isEmpty()) {
+            HashMap<String, List<HashMap<String, Object>>> compositeData = products.convertToMap(datasProducts);
+            for (String tableForInsert : compositeData.keySet()) {
+                database.insert(tableForInsert, compositeData.get(tableForInsert));
+            }
+        }
+
+        // Добавляем записи исходного объекта в таблицу
+        HashMap<String, List<HashMap<String, Object>>> data = table.convertToMap(datas);
+        for (String tableForInsert : data.keySet()) {
+            database.insert(tableForInsert, data.get(tableForInsert));
+        }
+
+        // Если исходный объект instanceof Purchasable - добавляем записи в таблицу расходов
+        if (data instanceof Purchasable) {
+            HashMap<String, List<HashMap<String, Object>>> hashMap = DBData.getInstance().getTable(StructureDescription.Expenses.TABLE_NAME).convertToMap(finOps);
+            for (String key : hashMap.keySet()) {
+                database.insert(
+                        StructureDescription.Expenses.TABLE_NAME,
+                        hashMap.get(key)
+                );
+            }
+        }
+
+        // Блок работает только тогда, когда добавляются записи в PRODUCT_TYPES
+        if (tableName.equals(StructureDescription.ProductTypes.TABLE_NAME)) {
             HashMap<String, List<HashMap<String, Object>>> expTypes = DBData.getInstance().getTable(StructureDescription.ExpensesTypes.TABLE_NAME).convertToMap(datas);
             HashMap<String, List<HashMap<String, Object>>> incTypes = DBData.getInstance().getTable(StructureDescription.IncomesTypes.TABLE_NAME).convertToMap(datas);
 
@@ -280,11 +312,6 @@ public class ThothLite {
             for (String tableForInsert : incTypes.keySet()) {
                 database.insert(tableForInsert, incTypes.get(tableForInsert));
             }
-        }
-
-        HashMap<String, List<HashMap<String, Object>>> data = table.convertToMap(datas);
-        for (String tableForInsert : data.keySet()) {
-            database.insert(tableForInsert, data.get(tableForInsert));
         }
     }
 
@@ -326,31 +353,27 @@ public class ThothLite {
     }
 
     /**
-     * Функция для считывания БД
-     */
-    public void reReadDb() {
-        if (config.getDatabase().isAutoupdate()) {
-            if (config.getDatabase().isUpdateAfterTrans()) {
-                LOG.log(Level.INFO, "enter to reReadDb");
-                CompletableFuture.runAsync(reReader);
-                LOG.log(Level.INFO, "exit from reReadDb");
-            }
-        }
-    }
-
-    /**
      * Функция удаляет данные из таблицы.
      *
      * @param table таблица из которой удаляются записи.
      * @param datas удаляемые записи.
      */
     public void removeFromTable(AvaliableTables table, List<? extends Identifiable> datas)
-            throws SQLException, NotContainsException, ClassNotFoundException {
-        database.beginTransaction();
+            throws NotContainsException, ClassNotFoundException {
         String tableName = getTableName(table);
-        removeFromTable(tableName, datas);
-        database.commitTransaction();
-        database.readTable(tableName);
+        try {
+            database.beginTransaction();
+            removeFromTable(tableName, datas);
+        } catch (SQLException exception) {
+            LOG.log(Level.INFO, exception.getMessage());
+        } finally {
+            try {
+                database.commitTransaction();
+                database.readTable(tableName);
+            } catch (SQLException exception) {
+                LOG.log(Level.INFO, exception.getMessage());
+            }
+        }
     }
 
     /**
@@ -379,10 +402,19 @@ public class ThothLite {
     }
 
     public void updateInTable(AvaliableTables table, List<? extends Identifiable> datas)
-            throws NotContainsException, SQLException {
-        database.beginTransaction();
-        updateInTable(getTableName(table), datas);
-        database.commitTransaction();
+            throws NotContainsException {
+        try {
+            database.beginTransaction();
+            updateInTable(getTableName(table), datas);
+        } catch (SQLException exception) {
+            LOG.log(Level.INFO, exception.getMessage());
+        } finally {
+            try {
+                database.commitTransaction();
+            } catch (SQLException exception) {
+                LOG.log(Level.INFO, exception.getMessage());
+            }
+        }
     }
 
     /**

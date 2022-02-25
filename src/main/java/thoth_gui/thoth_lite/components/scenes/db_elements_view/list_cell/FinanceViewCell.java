@@ -181,7 +181,7 @@ public class FinanceViewCell
         courseLabel.textProperty().bind(course.textProperty());
 
         content = new GridPane();
-        content.setGridLinesVisible(true);
+
         content.setPadding(new Insets(2));
         content.setHgap(5);
 

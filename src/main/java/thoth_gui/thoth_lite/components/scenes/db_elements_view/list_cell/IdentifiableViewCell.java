@@ -36,8 +36,8 @@ public abstract class IdentifiableViewCell
      */
     private void init() {
         identifiable.addListener(this::identifiableChange);
-
         BorderPane.setAlignment(this, Pos.CENTER);
+
     }
 
     protected void identifiableChange(

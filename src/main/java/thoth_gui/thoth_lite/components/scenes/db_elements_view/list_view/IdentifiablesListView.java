@@ -1,6 +1,5 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view;
 
-
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 
@@ -42,6 +41,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     extends ThothSceneImpl
         implements Flow.Subscriber<List<T>>
 {
+
     private static final double MAX_WIDTH = 750;
 
     protected enum Ids {

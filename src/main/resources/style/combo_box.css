@@ -14,23 +14,32 @@
 }
 
 .combo-box .list-view{
-    -fx-background-color:-primary;
     -fx-border-color:-border;
     -fx-border-style:solid;
 }
 
-.combo-box .list-cell{
+.combo-box>.list-cell,
+.combo-box>.combo-box-popup>.list-view>.virtual-flow>.clipped-container>.sheet>.cell.indexed-cell.list-cell
+{
+    -fx-background-color:-active;
     -fx-text-fill:-text;
+    -fx-padding:3px;
+    -fx-border-color:transparent;
+    -fx-border-width:1px;
+    -fx-border-style:solid;
 }
 
-.combo-box:hover .list-cell{
+.combo-box:hover>.list-cell,
+.combo-box:hover>.combo-box-popup>.list-view>.virtual-flow>.clipped-container>.sheet>.cell.indexed-cell.list-cell
+{
+    -fx-background-color:-secondary;
     -fx-text-fill:-text_hover;
 }
 
-.combo-box .arrow-button .arrow{
+.combo-box>.arrow-button>.arrow{
     -fx-background-color:-light;
 }
 
-.combo-box:hover .arrow-button .arrow{
+.combo-box:hover>.arrow-button>.arrow{
     -fx-background-color:-light_hover;
 }

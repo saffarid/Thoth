@@ -7,6 +7,8 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 
 import thoth_core.thoth_lite.config.ConfigEnums;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.tools.TextCase;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -39,7 +41,7 @@ public class ConfigEnumsComboBox {
         protected void updateItem(ConfigEnums configEnums, boolean b) {
             if(configEnums != null) {
                 super.updateItem(configEnums, b);
-                setText(configEnums.getName());
+                setGraphic(Label.getInstanse(configEnums.getName(), TextCase.NORMAL));
             }
         }
     }

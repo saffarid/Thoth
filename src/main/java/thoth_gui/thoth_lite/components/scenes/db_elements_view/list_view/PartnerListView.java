@@ -16,24 +16,73 @@ import java.util.List;
 public class PartnerListView
     extends IdentifiablesListView<Partnership>{
 
+    private enum SORT_BY implements SortBy{
+        BY_NAME_UP("sort_by_name_up"),
+        BY_NAME_DOWN("sort_by_name_down"),
+        BY_WEB_UP("sort_by_web_up"),
+        BY_WEB_DOWN("sort_by_web_down"),
+        BY_PHONE_UP("sort_by_phone_up"),
+        BY_PHONE_DOWN("sort_by_phone_down"),
+        ;
+
+        private String sortBy;
+
+        SORT_BY(String sortBy) {
+            this.sortBy = sortBy;
+        }
+
+        @Override
+        public String getSortName() {
+            return sortBy;
+        }
+    }
+
     protected PartnerListView(List<Partnership> datas) {
         super(datas, AvaliableTables.PARTNERS);
     }
 
-
     @Override
     protected SortPane getSortPane() {
         sortPane = SortPane.getInstance()
-//                .setSortItems(FinanceListView.SORT_BY.values())
+                .setSortItems(SORT_BY.values())
                 .setCell()
-//                .setSortMethod(this::sort)
-//                .setValue(FinanceListView.SORT_BY.SORT_BY_CURRENCY_UP)
+                .setSortMethod(this::sort)
+                .setValue(SORT_BY.BY_NAME_UP)
         ;
         return sortPane;
     }
 
     @Override
     protected void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1) {
+
+        ObservableList<Partnership> list = identifiableElementList.getItems();
+        SORT_BY t1 = (SORT_BY) sortBy1;
+        switch (t1){
+            case BY_NAME_UP:{
+                list.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+                break;
+            }
+            case BY_NAME_DOWN:{
+                list.sort((o1, o2) -> o2.getName().compareTo(o1.getName()));
+                break;
+            }
+            case BY_PHONE_UP:{
+                list.sort((o1, o2) -> o1.getWeb().compareTo(o2.getWeb()));
+                break;
+            }
+            case BY_PHONE_DOWN:{
+                list.sort((o1, o2) -> o2.getWeb().compareTo(o1.getWeb()));
+                break;
+            }
+            case BY_WEB_UP:{
+                list.sort((o1, o2) -> o1.getPhone().compareTo(o2.getPhone()));
+                break;
+            }
+            case BY_WEB_DOWN:{
+                list.sort((o1, o2) -> o2.getPhone().compareTo(o1.getPhone()));
+                break;
+            }
+        }
 
     }
 

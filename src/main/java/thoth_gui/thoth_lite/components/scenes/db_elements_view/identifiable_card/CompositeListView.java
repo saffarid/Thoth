@@ -99,7 +99,6 @@ public class CompositeListView
         setTop(createTitle());
         setCenter(createGrid());
 
-        getStylesheets().add(Stylesheets.IDENTIFIABLE_LIST.getStylesheet());
     }
 
     private Node createPalette() {

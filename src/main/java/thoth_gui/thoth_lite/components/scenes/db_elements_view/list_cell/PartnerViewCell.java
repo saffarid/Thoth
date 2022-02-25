@@ -112,7 +112,7 @@ public class PartnerViewCell
                 ;
 
         content.setHgap(5);
-        content.setGridLinesVisible(true);
+
         content.setPadding(new Insets(2));
 
         nameLabel.setWrapText(true);
