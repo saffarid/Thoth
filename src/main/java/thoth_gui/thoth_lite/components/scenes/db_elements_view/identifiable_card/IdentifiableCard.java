@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
 
@@ -75,9 +76,8 @@ public abstract class IdentifiableCard
             identifiableIsNew = true;
         }
         this.table = table;
-
+        GuiLogger.log.info("Show card " + this.table);
         content = new SimpleObjectProperty<>(createContentNode());
-
     }
 
     @Override
@@ -89,17 +89,22 @@ public abstract class IdentifiableCard
             list.add(identifiable);
             try {
                 if (identifiableIsNew) {
+                    GuiLogger.log.info("Insert into " + this.table);
                     ThothLite.getInstance().insertToTable(table, list);
                 } else {
+                    GuiLogger.log.info("Update in " + this.table);
                     ThothLite.getInstance().updateInTable(table, list);
                 }
                 closeable.close();
-            } catch (NotContainsException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            }
+            catch (NotContainsException e) {
+                GuiLogger.log.error(e.getMessage(), e);
+            }
+            catch (SQLException e) {
+                GuiLogger.log.error(e.getMessage(), e);
+            }
+            catch (ClassNotFoundException e) {
+                GuiLogger.log.error(e.getMessage(), e);
             }
         }
     }

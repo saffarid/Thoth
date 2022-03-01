@@ -17,6 +17,7 @@ import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextField;
@@ -148,22 +149,24 @@ public class PartnerViewCell
         list.add(partner);
         try {
             if (partner.getId().equals("-1")) {
+                GuiLogger.log.info("Insert partner into table");
                 //Вставляем запись в таблицу БД
                 ThothLite.getInstance().insertToTable(table, list);
             } else {
+                GuiLogger.log.info("Update partner into table");
                 //Обновляем запись
                 ThothLite.getInstance().updateInTable(table, list);
             }
             toFromEditMode();
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            GuiLogger.log.error(e.getMessage(), e);
         }
         catch (NotContainsException e) {
-            e.printStackTrace();
+            GuiLogger.log.error(e.getMessage(), e);
         }
         catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            GuiLogger.log.error(e.getMessage(), e);
         }
     }
 

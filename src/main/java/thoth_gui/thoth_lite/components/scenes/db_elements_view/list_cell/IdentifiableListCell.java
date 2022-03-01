@@ -6,6 +6,7 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.dialog_windows.DialogWindow;
 import thoth_gui.thoth_lite.dialog_windows.DialogWindowType;
@@ -33,6 +34,7 @@ public class IdentifiableListCell<T extends Identifiable>
 
     public IdentifiableListCell(AvaliableTables table) {
         super();
+        GuiLogger.log.info("Draw list-cell " + table);
         this.table = table;
         setOnMouseClicked(this::cellClick);
         setMinWidth(300);

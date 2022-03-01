@@ -12,5 +12,6 @@ module launcher {
     requires java.sql;
     requires java.desktop;
     requires json.simple;
+    requires slf4j.api;
 
 }

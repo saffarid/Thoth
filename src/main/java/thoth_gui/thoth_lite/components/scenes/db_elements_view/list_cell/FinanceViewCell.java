@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
 import layout.basepane.GridPane;
 import layout.basepane.HBox;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextField;
@@ -88,14 +89,18 @@ public class FinanceViewCell
         List<Finance> list = new LinkedList<>();
         list.add(finance);
         try {
+            GuiLogger.log.info("Update finance");
             ThothLite.getInstance().updateInTable(table, list);
             toFromEditMode();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        }
+        catch (SQLException e) {
+            GuiLogger.log.error(e.getMessage(), e);
+        }
+        catch (NotContainsException e) {
+            GuiLogger.log.error(e.getMessage(), e);
+        }
+        catch (ClassNotFoundException e) {
+            GuiLogger.log.error(e.getMessage(), e);
         }
     }
 

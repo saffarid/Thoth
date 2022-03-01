@@ -13,7 +13,8 @@
     -fx-text-fill:-text_hover;
 }
 
-.combo-box .list-view{
+.combo-box>.combo-box-popup>.list-view{
+    -fx-background-color:-secondary;
     -fx-border-color:-border;
     -fx-border-style:solid;
 }
@@ -34,6 +35,10 @@
 {
     -fx-background-color:-secondary;
     -fx-text-fill:-text_hover;
+}
+
+.combo-box:hover>.arrow-button{
+    -fx-background-color:-secondary;
 }
 
 .combo-box>.arrow-button>.arrow{

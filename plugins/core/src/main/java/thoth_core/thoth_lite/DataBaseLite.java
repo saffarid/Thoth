@@ -47,8 +47,8 @@ public class DataBaseLite {
         if (!this.dbFile.exists()) {
             firstInit();
         }
+        CoreLogger.log.info("Read database");
         readDataBase();
-
     }
 
     /**
@@ -56,10 +56,10 @@ public class DataBaseLite {
      */
     private void firstInit()
             throws SQLException, ClassNotFoundException {
-        LOG.log(Level.INFO, "Создаю БД");
+        CoreLogger.log.info("Create database");
         dbManager.createDatabase(this.dbFile);
 
-        LOG.log(Level.INFO, "Добавляю таблицы в БД");
+        CoreLogger.log.info("Add table in database");
         for (Table table : structure.getTables()) {
             dbManager.createTable(table, this.dbFile);
 
@@ -72,7 +72,7 @@ public class DataBaseLite {
                 );
             }
         }
-        LOG.log(Level.INFO, "Создание структуры успешно пройдено");
+        CoreLogger.log.info("Create database is done");
     }
 
     /**
@@ -80,15 +80,18 @@ public class DataBaseLite {
      */
     public void beginTransaction()
             throws SQLException {
+        CoreLogger.log.info("Begin transaction");
         dbManager.beginTransaction(dbFile);
     }
 
     public void commitTransaction()
             throws SQLException {
+        CoreLogger.log.info("Commit transaction");
         dbManager.commitTransaction(dbFile);
     }
 
     private ContentValues convertToContentValues(String tableName, HashMap<String, Object> data) {
+        CoreLogger.log.info("Convert to ContentValues");
         ContentValues contentValues = new ContentValues();
 
         for (String columnName : data.keySet()) {
@@ -99,17 +102,19 @@ public class DataBaseLite {
                 contentValues.put(columnByName, data.get(columnName));
             }
         }
-
+        CoreLogger.log.info("Convert to ContentValues is Done");
         return contentValues;
     }
 
     private WhereValues convertToWhereValues(String tableName, HashMap<String, Object> data) {
+        CoreLogger.log.info("Convert to WhereValues");
         WhereValues whereValues = new WhereValues();
 
         PrimaryKey primaryKeyColumn = structure.getTable(tableName).getPrimaryKeyColumn();
         whereValues.put(
                 primaryKeyColumn, data.get(primaryKeyColumn.getName())
         );
+        CoreLogger.log.info("Convert to WhereValues is Done");
         return whereValues;
     }
 
@@ -125,6 +130,7 @@ public class DataBaseLite {
 
     public void insert(String tableName, List<HashMap<String, Object>> datas)
             throws SQLException {
+        CoreLogger.log.info("Insert into table " + tableName);
         for (HashMap<String, Object> data : datas) {
             dbManager.insert(
                     structure.getTable(tableName),
@@ -132,6 +138,7 @@ public class DataBaseLite {
                     dbFile
             );
         }
+        CoreLogger.log.info("Insert into table " + tableName + " is Done");
     }
 
     /**
@@ -139,6 +146,7 @@ public class DataBaseLite {
      */
     public void readDataBase()
             throws SQLException, ClassNotFoundException {
+        CoreLogger.log.info("Read database");
         List<Table> collect = structure.getTables()
                 .stream()
                 .filter(table -> !table.getType().equals(TableTypes.SYSTEM_TABLE.getType()))
@@ -149,6 +157,7 @@ public class DataBaseLite {
                     dbManager.getDataTable(dbFile, table, false)
             );
         }
+        CoreLogger.log.info("Read database is Done");
     }
 
     /**
@@ -177,13 +186,15 @@ public class DataBaseLite {
      * Чтение содержимого таблицы
      */
     private void readTable(Table table, List<HashMap<String, Object>> data) {
+        CoreLogger.log.info("Read table " + table.getName());
         try {
             TableTypes tableType = TableTypes.valueOf(table.getType());
             DBData.getInstance()
                     .getTableReadable(table.getName())
                     .readTable(tableType, data);
+            CoreLogger.log.info("Read table " + table.getName() + " is Done");
         } catch (ParseException e) {
-            e.printStackTrace();
+            CoreLogger.log.error("Parse table" + table.getName() + " error:", e);
         } catch (NotContainsException e) {
             e.printStackTrace();
         }
@@ -197,6 +208,7 @@ public class DataBaseLite {
      */
     public void remove(String tableName, List<HashMap<String, Object>> datas)
             throws SQLException {
+        CoreLogger.log.info("Remove from table " + tableName);
         for (HashMap<String, Object> data : datas) {
             dbManager.removedRow(
                     structure.getTable(tableName)
@@ -204,10 +216,12 @@ public class DataBaseLite {
                     , dbFile
             );
         }
+        CoreLogger.log.info("Remove from table " + tableName + " is Done");
     }
 
     public void update(String tableName, List<HashMap<String, Object>> datas)
             throws SQLException {
+        CoreLogger.log.info("Update table " + tableName);
         for (HashMap<String, Object> data : datas) {
             dbManager.update(
                     structure.getTable(tableName)
@@ -216,7 +230,7 @@ public class DataBaseLite {
                     , dbFile
             );
         }
-
+        CoreLogger.log.info("Update table " + tableName + " is Done");
     }
 
 }

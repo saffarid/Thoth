@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 
 import javafx.geometry.Pos;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.ListView;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
@@ -82,8 +83,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         super();
         this.table = table;
         this.datas = new SimpleListProperty<T>(  );
+        GuiLogger.log.info("Create list-view");
         content = new SimpleObjectProperty<>(createContentNode());
-
+        GuiLogger.log.info("Add list-data");
         this.datas.addListener((ListChangeListener<? super T>) change -> {
             //Для обновления отображения списка создаём задачу и выполняем её в потоке JavaFX
             Platform.runLater(() -> {
@@ -93,6 +95,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
             });
         });
         this.datas.setValue(FXCollections.observableList(datas));
+        GuiLogger.log.info("Create tools-view");
         tools = new SimpleObjectProperty<>(createToolsNode());
 
         try {

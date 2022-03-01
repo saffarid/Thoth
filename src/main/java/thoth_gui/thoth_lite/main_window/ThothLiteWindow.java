@@ -6,6 +6,8 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 
+import main.Main;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
 import thoth_gui.thoth_lite.tools.Properties;
@@ -67,8 +69,6 @@ public class ThothLiteWindow
         }
     }
 
-    private static Logger LOG;
-
     private static ThothLiteWindow window;
 
     private SimpleObjectProperty<ColorTheme> theme;
@@ -82,29 +82,28 @@ public class ThothLiteWindow
     private ThothLite thoth;
 
     static {
-        LOG = Logger.getLogger("ThothLiteGUI");
         Properties.loadProperties(Locale.getDefault());
     }
 
     private ThothLiteWindow(Stage stage) {
         super(stage);
-
         try {
+            GuiLogger.log.info("Get thoth-core");
             this.thoth = ThothLite.getInstance();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GuiLogger.log.error(e.getMessage(), e);
         } catch (NotContainsException e) {
-            e.printStackTrace();
+            GuiLogger.log.error(e.getMessage(), e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            GuiLogger.log.error(e.getMessage(), e);
         }
 
         try {
             this.config = Config.getInstance();
         } catch (IOException e) {
-            e.printStackTrace();
+            GuiLogger.log.error(e.getMessage(), e);
         } catch (ParseException e) {
-            e.printStackTrace();
+            GuiLogger.log.error(e.getMessage(), e);
         }
 
         mainStage = stage;
@@ -130,6 +129,7 @@ public class ThothLiteWindow
     }
 
     private Node createLeftNode() {
+        GuiLogger.log.info("Create left node on main-scene");
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(2));
 
@@ -153,13 +153,16 @@ public class ThothLiteWindow
 
     @Override
     public void close() {
+        GuiLogger.log.info("Thoth-core close");
         thoth.close();
+        GuiLogger.log.info("Window close");
         mainStage.close();
     }
 
     @Override
     protected void initStyle() {
         CompletableFuture.runAsync(() -> {
+                    GuiLogger.log.info("Theme init");
                     theme = new SimpleObjectProperty<>();
                     theme.addListener((observableValue, colorTheme, t1) -> {
                         if (t1 != null) {
@@ -187,6 +190,8 @@ public class ThothLiteWindow
     }
 
     private void menuConfig() {
+
+        GuiLogger.log.info("Create menu");
 
         MenuItem config = new MenuItem(Properties.getString(Scenes.SETTINGS.name(), TextCase.NORMAL));
         config.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
@@ -217,6 +222,7 @@ public class ThothLiteWindow
     }
 
     private Node navigationMenuConfig() {
+        GuiLogger.log.info("Create navigation menu");
         List<controls.MenuButton> menuButtons = new LinkedList<>();
         menuButtons.add(MenuButton.getInstance(
                 Scenes.HOME.name(), SvgWrapper.getInstance(Images.HOME(), 20, 20),
@@ -249,6 +255,7 @@ public class ThothLiteWindow
     }
 
     private void workspaceConfig() {
+        GuiLogger.log.info("Create workspace");
         works = Workspace.getInstance();
         setCenter(works);
         works.setNewScene(Home.getInstance());

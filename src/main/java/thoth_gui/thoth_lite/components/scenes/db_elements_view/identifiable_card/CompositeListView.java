@@ -25,6 +25,7 @@ import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.main_window.Workspace;
+import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.Stylesheets;
 
 import javafx.beans.property.SimpleListProperty;
@@ -421,6 +422,7 @@ public class CompositeListView
 
         try {
             res.setItems(FXCollections.observableList((List<Storagable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORAGABLE)));
+            ThothLite.getInstance().subscribeOnTable(AvaliableTables.STORAGABLE, res);
         } catch (NotContainsException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -488,8 +490,10 @@ public class CompositeListView
             if (storagable != null) {
                 super.updateItem(storagable, b);
 
-                setText(
-                        String.format(TEMPLATE, storagable.getId(), storagable.getName())
+                setGraphic(
+                        Label.getInstanse(
+                                String.format(TEMPLATE, storagable.getId(), storagable.getName())
+                        )
                 );
             }
         }
@@ -578,31 +582,41 @@ public class CompositeListView
 
             res
                     .addRow(Priority.NEVER)
-                            .addColumn(200, 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                            .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true);
+                    .addColumn(200, 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true);
 
             res.add(
-                    Label.getInstanse(String.format(TEMPLATE_NAME, storing.getStoragable().getId(), storing.getStoragable().getName()))
+                    Label.getInstanse(
+                            String.format(TEMPLATE_NAME, storing.getStoragable().getId(), storing.getStoragable().getName())
+                    )
                     , 0, 0
             );
             res.add(
-                    Label.getInstanse(String.format(TEMPLATE_COUNT, COUNT, storing.getCount()))
+                    Label.getInstanse(
+                            String.format(TEMPLATE_COUNT, COUNT, storing.getCount())
+                    )
                     , 1, 0
             );
             res.add(
-                    Label.getInstanse(storing.getCountType().getValue())
+                    Label.getInstanse(
+                            storing.getCountType().getValue()
+                    )
                     , 2, 0
             );
             res.add(
-                    Label.getInstanse(String.format(TEMPLATE_COUNT, PRICE, storing.getPrice()))
+                    Label.getInstanse(
+                            String.format(TEMPLATE_COUNT, PRICE, storing.getPrice())
+                    )
                     , 3, 0
             );
             res.add(
-                    Label.getInstanse(storing.getCurrency().getCurrency().getCurrencyCode())
+                    Label.getInstanse(
+                            storing.getCurrency().getCurrency().getCurrencyCode()
+                    )
                     , 4, 0
             );
             res.add(

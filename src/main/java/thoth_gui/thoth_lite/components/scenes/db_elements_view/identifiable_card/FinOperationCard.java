@@ -15,6 +15,7 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextArea;
 import thoth_gui.thoth_lite.components.controls.TextField;

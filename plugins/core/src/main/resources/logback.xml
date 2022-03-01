@@ -1,0 +1,55 @@
+<configuration>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{dd.MM.yyyy HH:mm:ss.SSS} [Thread - %thread] %-5level %logger{20} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="thoth" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>
+            ./log/thoth.log
+        </file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./log/thoth-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1MB</maxFileSize>
+            <maxHistory>31</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                %d{dd.MM.yyyy HH:mm:ss.SSS} [Thread - %thread] %-5level %logger{20} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="thoth-sys" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>
+            ./log/thoth-sys.log
+        </file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./log/thoth-sys-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <totalSizeCap>1MB</totalSizeCap>
+            <maxHistory>31</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+
+    <root level="all">
+        <appender-ref ref="thoth"/>
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>

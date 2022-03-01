@@ -1,6 +1,5 @@
 package thoth_gui.thoth_lite.components.controls.combo_boxes;
 
-import controls.ComboBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
@@ -8,6 +7,8 @@ import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.tools.TextCase;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -16,21 +17,25 @@ import java.util.stream.Collectors;
 
 public class FinanceComboBox {
 
-    public static ComboBox<Finance> getInstance() {
-        ComboBox<Finance> res = thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox.getInstance();
+    public static controls.ComboBox<Finance> getInstance() {
+        controls.ComboBox<Finance> res = ComboBox.getInstance();
 
         CompletableFuture.supplyAsync(() -> {
             List<Finance> finances = new LinkedList<>();
             try {
+                ThothLite.getInstance().subscribeOnTable(AvaliableTables.CURRENCIES, res);
                 finances = ((List<Finance>) ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES))
                         .stream()
                         .filter(finance -> finance.getCourse().doubleValue() > 0)
                         .collect(Collectors.toList());
-            } catch (NotContainsException e) {
+            }
+            catch (NotContainsException e) {
                 e.printStackTrace();
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             return finances;
@@ -75,13 +80,13 @@ public class FinanceComboBox {
         protected void updateItem(Finance currency, boolean b) {
             if (currency != null) {
                 super.updateItem(currency, b);
-                setText(
+                setGraphic(Label.getInstanse(
                         String.format(
                                 template,
                                 currency.getCurrency().getCurrencyCode(),
                                 currency.getCurrency().getDisplayName()
                         )
-                );
+                ));
             }
         }
     }

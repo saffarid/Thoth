@@ -52,12 +52,15 @@ public class ThothLite {
 
         try {
             config = Config.getInstance();
-        } catch (IOException e) {
-            LOG.log(Level.INFO, "Ошибка открытия файла конфигурации.");
-        } catch (ParseException e) {
-            LOG.log(Level.INFO, "Ошибка чтения файла конфигурации.");
+        }
+        catch (IOException e) {
+            CoreLogger.log.error("Open config error", e);
+        }
+        catch (ParseException e) {
+            CoreLogger.log.error("Read config error", e);
         }
         //Инициализация пустой локальной БД
+        CoreLogger.log.info("Init empty local base");
         dbData = DBData.getInstance();
         //Инициализация системы оповещения
         watcherPurchasesFinish = new CheckerFinishable();
@@ -73,7 +76,8 @@ public class ThothLite {
 
     }
 
-    public void acceptPurchase(Purchasable purchasable) throws NotContainsException {
+    public void acceptPurchase(Purchasable purchasable)
+            throws NotContainsException {
 
         /*   Приём покупки включает в себя:
          *  1. Обновление записей в таблице покупок - установка флага isDelivered.
@@ -98,14 +102,14 @@ public class ThothLite {
             database.beginTransaction();
             updateInTable(getTableName(AvaliableTables.PURCHASABLE), purchase);
             updateInTable(getTableName(AvaliableTables.STORAGABLE), listStoragable);
-        } catch (SQLException exception) {
-            LOG.log(Level.INFO, exception.getMessage());
+        } catch (SQLException e) {
+            CoreLogger.log.error(e.getMessage(), e);
         } finally {
             //При любом сценарии завершаем транзакцию
             try {
                 database.commitTransaction();
             } catch (SQLException e) {
-                e.printStackTrace();
+                CoreLogger.log.error(e.getMessage(), e);
             }
         }
 
@@ -115,9 +119,8 @@ public class ThothLite {
      * Отмена периодического перечитывания базы
      */
     public void cancelAutoReReadDb() {
-        LOG.log(Level.INFO, "Отменяем старую задачу");
+        CoreLogger.log.info("Reread database cancel");
         scheduledFutureReReadDb.cancel(false);
-        LOG.log(Level.INFO, "Старая задача отменена");
     }
 
     /**
@@ -139,7 +142,7 @@ public class ThothLite {
      */
     public void close() {
         config.exportConfig();
-        LOG.log(Level.INFO, "Good bye, my friend. I will miss you.");
+        CoreLogger.log.info("Good bye, my friend. I will miss you.");
     }
 
     public void forceRereadDatabase()
@@ -398,6 +401,7 @@ public class ThothLite {
             AvaliableTables table
             , Flow.Subscriber subscriber
     ) throws NotContainsException {
+        CoreLogger.log.info("Subscribed to " + table);
         DBData.getInstance().getTable(getTableName(table)).subscribe(subscriber);
     }
 
@@ -437,13 +441,13 @@ public class ThothLite {
         @Override
         public void run() {
             try {
-                LOG.log(Level.INFO, "start reRead");
                 database.readDataBase();
-                LOG.log(Level.INFO, "finish successful reRead");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            }
+            catch (SQLException e) {
+                CoreLogger.log.error(e.getMessage(), e);
+            }
+            catch (ClassNotFoundException e) {
+                CoreLogger.log.error(e.getMessage(), e);
             }
         }
     }

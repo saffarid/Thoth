@@ -14,6 +14,7 @@ import main.Main;
 import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.config.ConfigEnums;
 import thoth_core.thoth_lite.config.Configuration;
+import thoth_gui.GuiLogger;
 import thoth_gui.config.Config;
 import thoth_gui.config.Keys;
 import thoth_gui.thoth_lite.components.controls.Button;
@@ -74,6 +75,7 @@ public class Settings
         this.id = Scenes.SETTINGS.name();
         //Запрос конфигураций
         try {
+            GuiLogger.log.info("Get config-json");
             newConfigJson = new JSONObject();
 
             configs = new LinkedList<>();
@@ -98,6 +100,7 @@ public class Settings
 
     @Override
     public void apply() {
+        GuiLogger.log.info("Save config");
         for (Configuration config : configs) {
             config.setConfig(newConfigJson);
         }
@@ -145,10 +148,11 @@ public class Settings
         VBox vBox = new VBox();
         vBox.setSpacing(5);
         //Проходим по все jsonам и строим на основе их контент
+        GuiLogger.log.info("Create config-view");
         for (Configuration json : configs) {
             parseJson(json, json.getConfig(), vBox, newConfigJson);
         }
-        Main.LOG.log(Level.INFO, newConfigJson.toJSONString());
+        GuiLogger.log.info("Create config-view is done");
         contentNode.setCenter(vBox);
         return contentNode;
     }

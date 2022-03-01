@@ -10,5 +10,5 @@ module thoth {
 
     requires java.sql;
     requires json.simple;
-
+    requires slf4j.api;
 }

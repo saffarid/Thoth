@@ -1,6 +1,7 @@
 package main;
 
 import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_gui.GuiLogger;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.main_window.ThothLiteWindow;
 import thoth_core.thoth_lite.ThothLite;
@@ -14,19 +15,25 @@ import window.StageResizer;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Main extends Application{
 
-    public static Logger LOG;
     private Stage stage;
-
     private Config config;
 
     static {
-        LOG = Logger.getLogger("Thoth");
+        Properties properties = System.getProperties();
+        for (Object key : properties.keySet()){
+            System.out.println(key.toString() + " - " + System.getProperty(key.toString()));
+        }
+        Map<String, String> getenv = System.getenv();
+        for (Object key : getenv.keySet()){
+            System.out.println(key.toString() + " - " + System.getenv(key.toString()));
+        }
     }
 
     @Override
@@ -41,7 +48,7 @@ public class Main extends Application{
         this.stage.initStyle(StageStyle.UNDECORATED);
         this.stage.show();
         CompletableFuture.runAsync(() -> {
-            LOG.log(Level.INFO, "Read config.");
+            GuiLogger.log.info("Read config");
             try {
                 config = Config.getInstance();
             } catch (IOException e) {
@@ -52,7 +59,7 @@ public class Main extends Application{
         });
         CompletableFuture.runAsync(() -> {
             try {
-                LOG.log(Level.INFO, "Init Thoth.");
+                GuiLogger.log.info("Init thoth-core");
                 ThothLite.getInstance();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -64,7 +71,7 @@ public class Main extends Application{
         }).thenAccept(unused -> {
             Platform.runLater(() -> {
 
-                LOG.log(Level.INFO, "start");
+                GuiLogger.log.info("Scene create");
                 ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage);
 
                 Scene scene = new Scene(
@@ -86,6 +93,7 @@ public class Main extends Application{
                 config.getWindow().widthPrimaryProperty().bind( this.stage.widthProperty() );
                 config.getWindow().heightPrimaryProperty().bind( this.stage.heightProperty() );
 
+                GuiLogger.log.info("Show scene");
                 stage.setScene( scene );
 
 //                stage.show();
@@ -104,7 +112,9 @@ public class Main extends Application{
     @Override
     public void stop() throws Exception {
         super.stop();
+        GuiLogger.log.info("Export config");
         config.exportConfig();
+        GuiLogger.log.info("Good bye my friend");
         System.exit(-1);
     }
 }

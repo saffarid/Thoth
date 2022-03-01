@@ -8,6 +8,7 @@ import layout.basepane.BorderPane;
 import layout.basepane.GridPane;
 import layout.basepane.HBox;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextField;
@@ -85,18 +86,23 @@ public class ListedViewCell
         try {
             if (typable.getId().equals("-1")) {
                 //Вставляем запись в таблицу БД
+                GuiLogger.log.info("Insert list-item into table");
                 ThothLite.getInstance().insertToTable(table, list);
             } else {
+                GuiLogger.log.info("Update list-item into table");
                 //Обновляем запись
                 ThothLite.getInstance().updateInTable(table, list);
             }
             toFromEditMode();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        }
+        catch (SQLException e) {
+            GuiLogger.log.error(e.getMessage(), e);
+        }
+        catch (NotContainsException e) {
+            GuiLogger.log.error(e.getMessage(), e);
+        }
+        catch (ClassNotFoundException e) {
+            GuiLogger.log.error(e.getMessage(), e);
         }
     }
 
@@ -189,7 +195,6 @@ public class ListedViewCell
 
         return pallete;
     }
-
 
 
     @Override

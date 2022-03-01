@@ -8,6 +8,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.config.ConfigEnums;
 import thoth_core.thoth_lite.config.Configuration;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_styleconstants.color.ColorTheme;
 
 import java.io.File;
@@ -119,6 +120,7 @@ public class Config
 
     private JSONObject importConfig()
             throws IOException, ParseException {
+        GuiLogger.log.info("Read gui-config file");
         FileReader reader = new FileReader(configFile);
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(reader);
@@ -126,6 +128,7 @@ public class Config
 
     @Override
     public void setConfig(JSONObject json) {
+        GuiLogger.log.info("Install new gui-config");
         font  .setConfig((JSONObject) json.get(Keys.Section.FONT.getKey()));
         scene .setConfig((JSONObject) json.get(Keys.Section.SCENE.getKey()));
         window.setConfig((JSONObject) json.get(Keys.Section.WINDOW.getKey()));

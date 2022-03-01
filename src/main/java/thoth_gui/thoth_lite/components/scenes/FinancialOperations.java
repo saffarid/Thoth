@@ -1,6 +1,5 @@
 package thoth_gui.thoth_lite.components.scenes;
 
-import controls.table_view.TableView;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -19,11 +18,13 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.FinancialAccount
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
+import thoth_gui.thoth_lite.components.controls.table_view.TableView;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_styleconstants.svg.Images;
@@ -87,12 +88,12 @@ public class FinancialOperations
     /**
      * Таблица с суммарными данными
      */
-    private TableView<HashMap<String, Object>> finOpSumTable;
+    private controls.table_view.TableView<HashMap<String, Object>> finOpSumTable;
 
     /**
      * Таблица с суммарными данными
      */
-    private TableView<FinancialAccounting> finOpHistoryTable;
+    private controls.table_view.TableView<FinancialAccounting> finOpHistoryTable;
 
     /**
      * Исходные данные для отображения в таблице
@@ -129,7 +130,6 @@ public class FinancialOperations
     @Override
     protected Node createContentNode() {
 //        tableView = new TableView();
-
         contentNode = new BorderPane(finOpSumTable);
         return contentNode;
     }
@@ -179,7 +179,8 @@ public class FinancialOperations
     }
 
     private void init() {
-        finOpSumTable = thoth_gui.thoth_lite.components.controls.table_view.TableView.getInstance();
+        GuiLogger.log.info("Create financial view " + this.id);
+        finOpSumTable = TableView.getInstance();
         finOpSumTable.setPlaceholder(Label.getInstanse("no_elements"));
 
         initHistoryTable();
@@ -202,19 +203,22 @@ public class FinancialOperations
                     FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
             );
             ThothLite.getInstance().subscribeOnTable(table, this);
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        }
+        catch (NotContainsException e) {
+            GuiLogger.log.error(e.getMessage(), e);
+        }
+        catch (SQLException e) {
+            GuiLogger.log.error(e.getMessage(), e);
+        }
+        catch (ClassNotFoundException e) {
+            GuiLogger.log.error(e.getMessage(), e);
         }
 
         initStyle();
     }
 
     private void initHistoryTable() {
-        finOpHistoryTable = thoth_gui.thoth_lite.components.controls.table_view.TableView.getInstance();
+        finOpHistoryTable = TableView.getInstance();
         finOpHistoryTable.setPlaceholder(Label.getInstanse("no_elements"));
 
         controls.table_view.TableColumn<FinancialAccounting, LocalDate> dateColumn = thoth_gui.thoth_lite.components.controls.table_view.TableColumn.getInstance();
@@ -269,6 +273,7 @@ public class FinancialOperations
 
     private void initialDataChange() {
         CompletableFuture.supplyAsync(() -> {
+            GuiLogger.log.info("Prepare data");
             HashMap<Typable, HashMap<String, Double>> data = new HashMap<>();
 
             columnKeys = new HashSet<>();
@@ -362,8 +367,8 @@ public class FinancialOperations
     }
 
     private void initStyle() {
-        finOpSumTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        finOpHistoryTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        finOpSumTable.setColumnResizePolicy(controls.table_view.TableView.CONSTRAINED_RESIZE_POLICY);
+        finOpHistoryTable.setColumnResizePolicy(controls.table_view.TableView.CONSTRAINED_RESIZE_POLICY);
 //        tableView.setRowFactory(data -> new FinRow());
     }
 
@@ -374,6 +379,7 @@ public class FinancialOperations
 
     private void showData(ListChangeListener.Change<? extends HashMap<String, Object>> change) {
         Platform.runLater(() -> {
+            GuiLogger.log.info("Form columns");
             if (!data.isEmpty()) {
                 finOpSumTable.getColumns().clear();
                 finOpSumTable.setItems(data);

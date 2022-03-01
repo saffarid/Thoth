@@ -1,6 +1,7 @@
 package thoth_gui.thoth_lite.tools;
 
 import main.Main;
+import thoth_gui.GuiLogger;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -19,13 +20,11 @@ public class Properties {
         try{
             bundle = ResourceBundle.getBundle(propertiesName, locale);
         }catch (NullPointerException exp){
-            Main.LOG.log(
-                    Level.INFO,
+            GuiLogger.log.info(
                     String.format(loadTemplateExp, propertiesName, exp.getMessage())
             );
         }catch (MissingResourceException exp){
-            Main.LOG.log(
-                    Level.INFO,
+            GuiLogger.log.info(
                     String.format(loadTemplateExp, propertiesName, exp.getMessage())
             );
         }
@@ -52,19 +51,16 @@ public class Properties {
                 case DEFAULT: default: return string;
             }
         }catch (NullPointerException exp){
-            Main.LOG.log(
-                    Level.INFO,
-                    String.format(keyTemplateExp, key, exp.getMessage())
+            GuiLogger.log.error(
+                    String.format(keyTemplateExp, key, exp.getMessage()), exp
             );
         }catch (MissingResourceException exp){
-            Main.LOG.log(
-                    Level.INFO,
-                    String.format(keyTemplateExp, key, exp.getMessage())
+            GuiLogger.log.error(
+                    String.format(keyTemplateExp, key, exp.getMessage()), exp
             );
         }catch (ClassCastException exp){
-            Main.LOG.log(
-                    Level.INFO,
-                    String.format(keyTemplateExp, key, exp.getMessage())
+            GuiLogger.log.info(
+                    String.format(keyTemplateExp, key, exp.getMessage()), exp
             );
         }
         return key;
