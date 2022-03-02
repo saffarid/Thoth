@@ -138,7 +138,6 @@ public class Settings
                         .addAdditional(hBox)
         ;
 
-
         return toolsNode;
     }
 
@@ -179,7 +178,7 @@ public class Settings
 
                 //Создаем компоненты
                 Twin twin = getConfigRow();
-                twin.setFirstNode(Label.getInstanse(key));
+                twin.setFirstNode(Label.getInstanse(key, TextCase.NORMAL));
 
                 newJson.put(key, value);
 

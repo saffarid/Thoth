@@ -16,18 +16,18 @@ import javafx.scene.Node;
 
 import layout.basepane.HBox;
 import layout.basepane.VBox;
-import thoth_gui.thoth_lite.components.controls.Label;
-import thoth_gui.thoth_lite.components.controls.TextArea;
-import thoth_gui.thoth_lite.components.controls.TextField;
-import thoth_gui.thoth_lite.components.controls.ToolsPane;
+import thoth_gui.thoth_lite.components.controls.*;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
+import thoth_gui.thoth_lite.tools.TextCase;
+import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.SvgWrapper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StoragableCard
-       extends IdentifiableCard {
+        extends IdentifiableCard {
 
     private final String newStoragable = "new_storagable";
     private final String storagable = "storagable";
@@ -50,6 +50,7 @@ public class StoragableCard
         ADRESS("adress"),
         NOTE("note");
         private String id;
+
         ControlsId(String id) {
             this.id = id;
         }
@@ -61,7 +62,7 @@ public class StoragableCard
     ) {
         super(identifiable, table);
         this.id = "storagable-card";
-        tools = new SimpleObjectProperty<>( createToolsNode() );
+        tools = new SimpleObjectProperty<>(createToolsNode());
     }
 
     @Override
@@ -102,12 +103,30 @@ public class StoragableCard
         );
 
         vBox.getChildren().addAll(
-                createRow(Label.getInstanse(ControlsId.ARTICLE.id), article)
-                , createRow(Label.getInstanse(ControlsId.NAME.id), name)
-                , createRow(Label.getInstanse(ControlsId.PRODUCT_TYPE.id), type)
-                , createRow(Label.getInstanse(ControlsId.COUNT.id), count)
-                , createRow(Label.getInstanse(ControlsId.ADRESS.id), adress)
-                , createRow(Label.getInstanse(ControlsId.NOTE.id), note)
+                createRow(
+                        Label.getInstanse(ControlsId.ARTICLE.id, TextCase.NORMAL),
+                        article
+                )
+                , createRow(
+                        Label.getInstanse(ControlsId.NAME.id, TextCase.NORMAL),
+                        name
+                )
+                , createRow(
+                        Label.getInstanse(ControlsId.PRODUCT_TYPE.id, TextCase.NORMAL),
+                        type
+                )
+                , createRow(
+                        Label.getInstanse(ControlsId.COUNT.id, TextCase.NORMAL),
+                        count
+                )
+                , createRow(
+                        Label.getInstanse(ControlsId.ADRESS.id, TextCase.NORMAL),
+                        adress
+                )
+                , createRow(
+                        Label.getInstanse(ControlsId.NOTE.id, TextCase.NORMAL),
+                        note
+                )
         );
 
         contentNode.setCenter(vBox);
@@ -117,7 +136,8 @@ public class StoragableCard
 
     @Override
     protected Node createToolsNode() {
-        return new ToolsPane( identifiableIsNew ? newStoragable : storagable );
+        return ( (ToolsPane) super.createToolsNode() )
+                .setTitleText( identifiableIsNew ? newStoragable : storagable );
     }
 
     private Node createRow(

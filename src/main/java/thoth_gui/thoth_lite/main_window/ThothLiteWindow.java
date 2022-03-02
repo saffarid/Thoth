@@ -6,7 +6,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 
-import main.Main;
 import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
@@ -45,7 +44,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Logger;
 
 public class ThothLiteWindow
         extends PrimaryWindow {
@@ -208,6 +206,10 @@ public class ThothLiteWindow
                             new About(aboutStage, "About")
                     )
             );
+
+            aboutStage.setX(mainStage.getX() + (mainStage.getWidth()/2));
+            aboutStage.setY(mainStage.getY() + (mainStage.getHeight()/2));
+
             aboutStage.initModality(Modality.APPLICATION_MODAL);
             aboutStage.initOwner(stage);
             aboutStage.show();
@@ -245,7 +247,7 @@ public class ThothLiteWindow
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.SYSTEM.name(), SvgWrapper.getInstance(Images.LIST(), 20, 20),
+                Scenes.SYSTEM_TABLE.name(), SvgWrapper.getInstance(Images.LIST(), 20, 20),
                 event -> works.setNewScene(ConfigDropdownList.getInstance())
         ));
         menu = new NavigationMenu(menuButtons);

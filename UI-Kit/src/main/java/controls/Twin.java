@@ -37,7 +37,6 @@ public class Twin extends GridPane {
     }
 
     private void init(){
-        setGridLinesVisible(true);
         setHgap(5);
         getStyleClass().add(styleclass);
         addRow(Priority.NEVER)

@@ -2,3 +2,6 @@
 /target/
 /UI-Kit/target/
 /plugins/core/target/
+/log/
+/config/
+/db/

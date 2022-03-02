@@ -1,5 +1,7 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
 
 import javafx.scene.layout.*;
@@ -20,10 +22,12 @@ import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextField;
+import thoth_gui.thoth_lite.components.controls.Tooltip;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
+import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
 import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.Stylesheets;
@@ -59,7 +63,6 @@ public class CompositeListView
     private final static String PRICE = "price";
     private final static String CURRENCY = "currency";
     private final static String SEARCH = "search";
-    private final static String SORT = "sort";
 
     private enum SORT_BY implements SortBy {
         ID_UP("sort_by_id_up"),
@@ -84,6 +87,9 @@ public class CompositeListView
     private final static double maxWidthPallete = 200;
 
     private boolean identifiableIsNew;
+
+    private SimpleDoubleProperty countProperty = new SimpleDoubleProperty();
+    private SimpleDoubleProperty priceProperty = new SimpleDoubleProperty();
 
     private SimpleListProperty<Storing> items;
 
@@ -125,6 +131,9 @@ public class CompositeListView
         controls.TextField price = getTextField(PRICE);
         controls.ComboBox<Finance> financeComboBox = FinanceComboBox.getInstance();
 
+        Bindings.bindBidirectional(count.textProperty(), countProperty, new StringDoubleConverter());
+        Bindings.bindBidirectional(price.textProperty(), priceProperty, new StringDoubleConverter());
+
         storagableComboBox.valueProperty().addListener((observableValue, storagable, t1) -> {
             if (t1 != null) {
                 countType.setText(t1.getCountType().getValue());
@@ -133,122 +142,130 @@ public class CompositeListView
 
         controls.getChildren().addAll(
                 createRow(
-                        thoth_gui.thoth_lite.components.controls.Label.getInstanse(STORAGABLE)
+                        Label.getInstanse(STORAGABLE, TextCase.NORMAL)
                         , storagableComboBox
                 )
                 , createRow(
-                        thoth_gui.thoth_lite.components.controls.Label.getInstanse(COUNT)
+                        Label.getInstanse(COUNT, TextCase.NORMAL)
                         , count
                         , countType
                 )
                 , createRow(
-                        thoth_gui.thoth_lite.components.controls.Label.getInstanse(PRICE)
+                        Label.getInstanse(PRICE, TextCase.NORMAL)
                         , price
                         , financeComboBox
                 )
         );
 
         HBox buttons = new HBox();
-        buttons.getChildren().addAll(
-                Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30), event -> {
-                    Storing newStoring = new Storing() {
-                        private String id;
-                        private Storagable product;
-                        private Double count;
-                        private Typable countType;
-                        private Double price;
-                        private Finance currency;
+        controls.Button add = Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30), event -> {
+            Storing newStoring = new Storing() {
+                private String id;
+                private Storagable product;
+                private Double count;
+                private Typable countType;
+                private Double price;
+                private Finance currency;
 
-                        @Override
-                        public Double getCount() {
-                            return count;
-                        }
+                @Override
+                public Double getCount() {
+                    return count;
+                }
 
-                        @Override
-                        public String getId() {
-                            return id;
-                        }
+                @Override
+                public String getId() {
+                    return id;
+                }
 
-                        @Override
-                        public Typable getCountType() {
-                            return countType;
-                        }
+                @Override
+                public Typable getCountType() {
+                    return countType;
+                }
 
-                        @Override
-                        public Storagable getStoragable() {
-                            return product;
-                        }
+                @Override
+                public Storagable getStoragable() {
+                    return product;
+                }
 
-                        @Override
-                        public void setId(String id) {
-                            this.id = id;
-                        }
+                @Override
+                public void setId(String id) {
+                    this.id = id;
+                }
 
-                        @Override
-                        public void setCount(Double count) {
-                            this.count = count;
-                        }
+                @Override
+                public void setCount(Double count) {
+                    this.count = count;
+                }
 
-                        @Override
-                        public void setCountType(Typable countType) {
-                            this.countType = countType;
-                        }
+                @Override
+                public void setCountType(Typable countType) {
+                    this.countType = countType;
+                }
 
-                        @Override
-                        public void setStorageable(Storagable storageable) {
-                            this.product = storageable;
-                        }
+                @Override
+                public void setStorageable(Storagable storageable) {
+                    this.product = storageable;
+                }
 
-                        @Override
-                        public Double getPrice() {
-                            return price;
-                        }
+                @Override
+                public Double getPrice() {
+                    return price;
+                }
 
-                        @Override
-                        public void setPrice(Double price) {
-                            this.price = price;
-                        }
+                @Override
+                public void setPrice(Double price) {
+                    this.price = price;
+                }
 
-                        @Override
-                        public Finance getCurrency() {
-                            return currency;
-                        }
+                @Override
+                public Finance getCurrency() {
+                    return currency;
+                }
 
-                        @Override
-                        public void setCurrency(Finance currency) {
-                            this.currency = currency;
-                        }
-                    };
+                @Override
+                public void setCurrency(Finance currency) {
+                    this.currency = currency;
+                }
+            };
 
-                    newStoring.setStorageable(storagableComboBox.getValue());
-                    newStoring.setCount(Double.parseDouble(count.getText()));
-                    newStoring.setCountType(storagableComboBox.getValue().getCountType());
-                    newStoring.setPrice(Double.parseDouble(price.getText()));
-                    newStoring.setCurrency(financeComboBox.getValue());
+            newStoring.setStorageable(storagableComboBox.getValue());
+            newStoring.setCount(Double.parseDouble(count.getText()));
+            newStoring.setCountType(storagableComboBox.getValue().getCountType());
+            newStoring.setPrice(Double.parseDouble(price.getText()));
+            newStoring.setCurrency(financeComboBox.getValue());
 
-                    //Нужна проверка на наличие продукта в списке
-                    //Флаг на наличине продукта в списке
-                    boolean alreadyExsist = false;
+            //Нужна проверка на наличие продукта в списке
+            //Флаг на наличине продукта в списке
+            boolean alreadyExsist = false;
 
-                    for (Storing storing : items.getValue()) {
-                        if (storing.getStoragable().equals(newStoring.getStoragable())) {
-                            alreadyExsist = true;
-                        }
-                    }
+            for (Storing storing : items.getValue()) {
+                if (storing.getStoragable().equals(newStoring.getStoragable())) {
+                    alreadyExsist = true;
+                }
+            }
 
-                    //Если продукт уже есть в списке, то не добавляем его, необходимо выдавать оповещение что продукт уже добавлен.
-                    if (!alreadyExsist) {
-                        items.add(
-                                newStoring
-                        );
-                    }
+            //Если продукт уже есть в списке, то не добавляем его, необходимо выдавать оповещение что продукт уже добавлен.
+            if (!alreadyExsist) {
+                items.add(
+                        newStoring
+                );
+            }
 
-                    storagableComboBox.setValue(null);
-                    count.setText("");
+            storagableComboBox.setValue(null);
+            count.setText("");
 //            countType.setValue(countType.getItems().get(0));
-                    price.setText("");
-                    financeComboBox.setValue(financeComboBox.getItems().get(0));
-                })
+            price.setText("");
+            financeComboBox.setValue(financeComboBox.getItems().get(0));
+        });
+        add.setTooltip(Tooltip.getInstance("add"));
+
+        add.disableProperty().bind( storagableComboBox.valueProperty().isNull()
+                .or(countProperty.lessThanOrEqualTo(StringDoubleConverter.countMin+0.0001))
+                .or(priceProperty.lessThanOrEqualTo(StringDoubleConverter.priceMin)))
+        ;
+
+        buttons.getChildren().addAll(
+                add
 //                , Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30))
 
         );
@@ -265,11 +282,13 @@ public class CompositeListView
         content.setBorder(
                 new BorderWrapper()
                         .addTopBorder(1)
-                        .addBottomBorder(1)
+//                        .addBottomBorder(1)
                         .setColor(Color.GREY)
                         .setStyle(BorderStrokeStyle.SOLID)
                         .commit()
         );
+
+        content.setPadding(new Insets(2));
 
         content
                 .addRow(Priority.ALWAYS)
@@ -352,7 +371,7 @@ public class CompositeListView
         HBox res = new HBox();
 
         res.getChildren().addAll(
-                thoth_gui.thoth_lite.components.controls.Label.getInstanse(BACKET)
+                Label.getInstanse(BACKET, TextCase.NORMAL)
         );
 
         res.setPadding(new Insets(2));
@@ -366,7 +385,7 @@ public class CompositeListView
         res.setPadding(new Insets(0));
 
         res.getChildren().addAll(
-                thoth_gui.thoth_lite.components.controls.Label.getInstanse("total")
+                Label.getInstanse("total", TextCase.NORMAL)
         );
 
         return res;

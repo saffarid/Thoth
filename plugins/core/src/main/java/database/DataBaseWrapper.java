@@ -4,6 +4,7 @@ import database.Column.Autoincrement;
 import database.Column.ForeignKey;
 import database.Column.PrimaryKey;
 import database.Column.TableColumn;
+import thoth_core.thoth_lite.CoreLogger;
 
 import java.io.File;
 import java.sql.*;
@@ -24,11 +25,7 @@ public class DataBaseWrapper {
     private final static String PRE_URL_SQLITE = "jdbc:sqlite:";
     private final static String CLASS_NAME_SQLITE = "org.sqlite.JDBC";
     private final static boolean isExecute = true;
-    private static Logger LOG;
 
-    static {
-        LOG = Logger.getLogger(DataBaseWrapper.class.getName());
-    }
 
     /**
      * Функция добавляет новый столбец в таблицу
@@ -176,7 +173,6 @@ public class DataBaseWrapper {
      */
     private static void execute(Connection conn,
                                 String comand) throws SQLException {
-        LOG.log(Level.INFO, comand);
         if (isExecute) {
             Statement statement = conn.createStatement();
             statement.execute(comand);
@@ -247,7 +243,6 @@ public class DataBaseWrapper {
     public static void rollbackSavepoint(Connection conn,
                                          String savepointName) throws SQLException {
         String comand = String.format("rollback%1s", ((savepointName != null) ? (" to savepoint " + savepointName) : ("")));
-        LOG.log(Level.INFO, comand);
         execute(conn, comand);
     }
 
@@ -266,7 +261,6 @@ public class DataBaseWrapper {
     public static void savepointTransaction(Connection conn,
                                             String savepointName) throws SQLException {
         String comand = String.format("savepoint%1s", ((savepointName == null) ? ("") : (" " + savepointName)));
-        LOG.log(Level.INFO, comand);
         execute(conn, comand);
     }
 
@@ -314,7 +308,7 @@ public class DataBaseWrapper {
             String templateWhere = "%1s where %2s";
             comand = String.format(templateWhere, comand, where.toString());
         }
-        LOG.log(Level.INFO, comand);
+
         Statement statement = conn.createStatement();
         result = statement.executeQuery(comand);
 
@@ -423,7 +417,7 @@ public class DataBaseWrapper {
             String templateWhere = "%1s where %2s";
             comand = String.format(templateWhere, comand, where.toString());
         }
-        LOG.log(Level.INFO, comand);
+
         Statement statement = conn.createStatement();
         result = statement.executeQuery(comand);
 

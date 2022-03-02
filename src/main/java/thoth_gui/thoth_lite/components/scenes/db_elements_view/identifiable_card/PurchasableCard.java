@@ -28,6 +28,7 @@ import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextField;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
+import thoth_gui.thoth_lite.tools.TextCase;
 
 
 import java.sql.SQLException;
@@ -99,7 +100,8 @@ public class PurchasableCard
 
     @Override
     protected Node createToolsNode() {
-        return new ToolsPane(identifiableIsNew?newPurchase:purchase);
+        return ( (ToolsPane) super.createToolsNode() )
+                .setTitleText( identifiableIsNew ? newPurchase : purchase );
     }
 
     @Override
@@ -128,11 +130,11 @@ public class PurchasableCard
         datePicker = getDatePicker();
 
         content.add(
-                getTwin(Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id), trackNumber), 0, 0);
-        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.STORE.id), store), 0, 1);
-        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id), datePicker), 0, 2);
+                getTwin( Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id, TextCase.NORMAL), trackNumber), 0, 0);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.STORE.id, TextCase.NORMAL), store), 0, 1);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id, TextCase.NORMAL), datePicker), 0, 2);
 
-        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id), toggleDelivered), 1, 0);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id, TextCase.NORMAL), toggleDelivered), 1, 0);
 
         content.add(new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew), 0, 3, 2, 1);
 
@@ -141,13 +143,16 @@ public class PurchasableCard
         return contentNode;
     }
 
-    private Twin getTwin(Node left, Node right) {
+    private Twin getTwin(
+            Node left,
+            Node right
+    ) {
         return new Twin(left, right)
-                .setMinLeftWidth(200)
-                .setMaxLeftWidth(200)
+                .setMinLeftWidth(150)
+                .setMaxLeftWidth(150)
                 .setPriorityLeft(Priority.NEVER)
-                .setMinRightWidth(200)
-                .setMaxRightWidth(200)
+                .setMinRightWidth(150)
+                .setMaxRightWidth(150)
                 .setPriorityRight(Priority.NEVER)
                 .setFillWidthRight(true)
                 ;

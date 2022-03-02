@@ -9,6 +9,7 @@ import javafx.scene.layout.Priority;
 import layout.basepane.GridPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
+import thoth_gui.thoth_lite.tools.Properties;
 import thoth_gui.thoth_lite.tools.TextCase;
 
 public class ToolsPane
@@ -29,10 +30,9 @@ public class ToolsPane
      * */
     private controls.Button addNew;
 
-    public ToolsPane(String titleText) {
+    public ToolsPane(){
         super();
 
-        setGridLinesVisible(true);
         addRow(Priority.ALWAYS)
                 .addColumn(0, 150., 150., Priority.ALWAYS, HPos.LEFT, true)
                 .addColumn(Priority.NEVER)
@@ -41,8 +41,13 @@ public class ToolsPane
 
         setHgap(5);
 
-        title = Label.getInstanse(titleText, TextCase.UPPER);
+        title = Label.getInstanse();
         add(title, 0, 0);
+    }
+
+    public ToolsPane(String titleText) {
+        this();
+        setTitleText(titleText);
     }
 
     public ToolsPane addSortPane(
@@ -77,6 +82,11 @@ public class ToolsPane
 
     public ToolsPane addAdditional(Node additional){
         add(additional, 2, 0);
+        return this;
+    }
+
+    public ToolsPane setTitleText(String text){
+        title.setText(Properties.getString(text, TextCase.NORMAL));
         return this;
     }
 }

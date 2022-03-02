@@ -6,6 +6,6 @@ public enum Scenes {
     INCOMES,
     PURCHASABLE,
     STORAGABLES,
-    SYSTEM,
+    SYSTEM_TABLE,
     SETTINGS,
 }

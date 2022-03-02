@@ -105,7 +105,7 @@ public class Config
     }
 
     public void exportConfig() {
-
+        GuiLogger.log.info("Export gui-config");
         if (!configFile.getParentFile().exists()) {
             configFile.getParentFile().mkdir();
         }
@@ -113,7 +113,7 @@ public class Config
         try (FileWriter writer = new FileWriter(configFile)) {
             writer.write( getConfig().toJSONString() );
         } catch (IOException e) {
-            e.printStackTrace();
+            GuiLogger.log.error("Export gui-config error", e);
         }
 
     }
@@ -128,7 +128,7 @@ public class Config
 
     @Override
     public void setConfig(JSONObject json) {
-        GuiLogger.log.info("Install new gui-config");
+        GuiLogger.log.info("Set new gui-config");
         font  .setConfig((JSONObject) json.get(Keys.Section.FONT.getKey()));
         scene .setConfig((JSONObject) json.get(Keys.Section.SCENE.getKey()));
         window.setConfig((JSONObject) json.get(Keys.Section.WINDOW.getKey()));

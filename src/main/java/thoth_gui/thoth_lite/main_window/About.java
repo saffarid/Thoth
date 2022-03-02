@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import layout.basepane.BorderPane;
 import layout.basepane.VBox;
 import org.json.simple.parser.ParseException;
+import thoth_gui.GuiLogger;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_styleconstants.Stylesheets;
@@ -21,6 +22,8 @@ public class About
         extends SecondaryWindow {
 
     private final String RUNTIME_TEMPLATE = "Runtime version: %1s";
+    private final String VIRTUAL_MACHINE_TEMPLATE = "VM: %1s";
+    private final String RUNTIME_FX_TEMPLATE = "Runtime FX: %1s";
     private final Insets marginVBox = new Insets(5);
 
     private BorderPane content;
@@ -39,7 +42,9 @@ public class About
 
         vBox.getChildren().addAll(
                 Label.getInstanse("Thoth v.1.0.0"),
-                Label.getInstanse(String.format(RUNTIME_TEMPLATE, Runtime.version().toString()))
+                Label.getInstanse( String.format(RUNTIME_TEMPLATE, System.getProperty("java.runtime.version")) ),
+                Label.getInstanse( String.format(VIRTUAL_MACHINE_TEMPLATE, System.getProperty("java.vm.name")) ),
+                Label.getInstanse( String.format(RUNTIME_FX_TEMPLATE, System.getProperty("javafx.runtime.version")) )
         );
 
         content.setCenter(vBox);

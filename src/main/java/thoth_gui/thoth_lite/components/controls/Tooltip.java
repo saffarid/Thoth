@@ -2,6 +2,8 @@ package thoth_gui.thoth_lite.components.controls;
 
 import thoth_gui.config.Config;
 import org.json.simple.parser.ParseException;
+import thoth_gui.thoth_lite.tools.Properties;
+import thoth_gui.thoth_lite.tools.TextCase;
 
 import java.io.IOException;
 
@@ -22,7 +24,7 @@ public class Tooltip {
         return tooltip;
     }
     public static javafx.scene.control.Tooltip getInstance(String s){
-        javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(s);
+        javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(Properties.getString(s, TextCase.NORMAL));
         bindFont(tooltip);
         return tooltip;
     }

@@ -23,6 +23,7 @@ import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
+import thoth_gui.thoth_lite.tools.TextCase;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -110,7 +111,7 @@ public class FinOperationCard
 
     @Override
     protected Node createToolsNode() {
-        return new ToolsPane(title);
+        return ( (ToolsPane) super.createToolsNode() ).setTitleText(title);
     }
 
     protected Node createContentNode() {
@@ -187,10 +188,10 @@ public class FinOperationCard
     }
 
     private controls.Label getLabel(String text) {
-        controls.Label res = Label.getInstanse(text);
+        controls.Label res = Label.getInstanse(text, TextCase.NORMAL);
         res.setMinWidth(120);
         res.setPrefWidth(120);
-        res.setMaxWidth(120);
+        res.setMaxWidth(200);
         return res;
     }
 

@@ -26,14 +26,10 @@ public class Main extends Application{
     private Config config;
 
     static {
-        Properties properties = System.getProperties();
-        for (Object key : properties.keySet()){
-            System.out.println(key.toString() + " - " + System.getProperty(key.toString()));
-        }
-        Map<String, String> getenv = System.getenv();
-        for (Object key : getenv.keySet()){
-            System.out.println(key.toString() + " - " + System.getenv(key.toString()));
-        }
+        GuiLogger.log.trace( "java.runtime.version - " + System.getProperty("java.runtime.version") );
+        GuiLogger.log.trace( "os.name - " + System.getProperty("os.name") );
+        GuiLogger.log.trace( "java.vm.name - " + System.getProperty("java.vm.name") );
+        GuiLogger.log.trace( "javafx.runtime.version - " + System.getProperty("javafx.runtime.version") );
     }
 
     @Override
@@ -42,7 +38,8 @@ public class Main extends Application{
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage)
+            throws Exception {
         this.stage = stage;
 
         this.stage.initStyle(StageStyle.UNDECORATED);
@@ -110,7 +107,8 @@ public class Main extends Application{
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop()
+            throws Exception {
         super.stop();
         GuiLogger.log.info("Export config");
         config.exportConfig();

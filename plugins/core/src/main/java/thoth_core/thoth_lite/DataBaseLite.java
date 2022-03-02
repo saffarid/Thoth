@@ -84,6 +84,14 @@ public class DataBaseLite {
         dbManager.beginTransaction(dbFile);
     }
 
+    public void close(){
+        try {
+            dbManager.closeConnection(dbFile);
+        } catch (SQLException e) {
+            CoreLogger.log.error("Close connection error ", e);
+        }
+    }
+
     public void commitTransaction()
             throws SQLException {
         CoreLogger.log.info("Commit transaction");

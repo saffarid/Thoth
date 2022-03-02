@@ -1,6 +1,5 @@
 package thoth_gui.thoth_lite.components.controls.combo_boxes;
 
-import controls.ComboBox;
 import controls.ListCell;
 
 import javafx.application.Platform;
@@ -14,8 +13,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class ConfigEnumsComboBox {
 
-    public static ComboBox<ConfigEnums> getInstance(ConfigEnums[] list, Object value, ChangeListener<ConfigEnums> valueChanger){
-        ComboBox<ConfigEnums> res = thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox.getInstance();
+    public static controls.ComboBox<ConfigEnums> getInstance(
+            ConfigEnums[] list,
+            Object value,
+            ChangeListener<ConfigEnums> valueChanger){
+        controls.ComboBox<ConfigEnums> res = ComboBox.getInstance();
 
         CompletableFuture.runAsync(() -> {
             for(ConfigEnums enums : list){
@@ -41,10 +43,17 @@ public class ConfigEnumsComboBox {
         protected void updateItem(ConfigEnums configEnums, boolean b) {
             if(configEnums != null) {
                 super.updateItem(configEnums, b);
-                setGraphic(Label.getInstanse(configEnums.getName(), TextCase.NORMAL));
+                if(configEnums.getName().equalsIgnoreCase("never")){
+                    setGraphic(
+                            Label.getInstanse( configEnums.getName(), TextCase.NORMAL )
+                    );
+                }else{
+                    setGraphic(
+                            Label.getInstanse( String.valueOf(configEnums.getValue()) )
+                    );
+                }
             }
         }
     }
-
 
 }

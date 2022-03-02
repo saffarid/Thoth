@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.tools.TextCase;
 import tools.BackgroundWrapper;
 
 public class SortedPane
@@ -16,7 +17,7 @@ public class SortedPane
         setAlignment(Pos.CENTER_LEFT);
 
         getChildren().addAll(
-                Label.getInstanse(labelText)
+                Label.getInstanse(labelText, TextCase.NORMAL)
                 , box
         );
     }

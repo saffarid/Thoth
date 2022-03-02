@@ -73,7 +73,7 @@ public class ThothLite {
         reReader = new ReReadDatabase();
 //        periodReReadDb = new ScheduledThreadPoolExecutor(1);
 //        scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, 5, TimeUnit.SECONDS);
-
+        CoreLogger.log.info("Init thoth-core is Done");
     }
 
     public void acceptPurchase(Purchasable purchasable)
@@ -141,6 +141,7 @@ public class ThothLite {
      * Функция завершает выполнение всех процессов
      */
     public void close() {
+        database.close();
         config.exportConfig();
         CoreLogger.log.info("Good bye, my friend. I will miss you.");
     }

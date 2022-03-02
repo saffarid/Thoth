@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import layout.basepane.BorderPane;
 
+import layout.basepane.HBox;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
@@ -20,8 +21,12 @@ import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.ButtonBar;
 
+import thoth_gui.thoth_lite.components.controls.ToolsPane;
+import thoth_gui.thoth_lite.components.controls.Tooltip;
 import thoth_gui.thoth_lite.components.scenes.ThothSceneImpl;
 
+import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.SvgWrapper;
 import window.Closeable;
 
 import java.sql.SQLException;
@@ -36,11 +41,20 @@ public abstract class IdentifiableCard
         implements Apply
         , Cancel {
 
+    protected final controls.Button apply = Button.getInstance(
+            SvgWrapper.getInstance(Images.CHECKMARK(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
+            event -> apply()
+    );
+    protected final controls.Button cancel = Button.getInstance(
+            SvgWrapper.getInstance(Images.CLOSE(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
+            event -> cancel()
+    );
+
     protected static final Logger LOG;
 
     private EventHandler<ActionEvent> closeEvent;
 
-    private enum ButtonText {
+    protected enum ButtonText {
         APPLY("apply"),
         CANCEL("cancel");
         private String text;
@@ -49,9 +63,6 @@ public abstract class IdentifiableCard
             this.text = text;
         }
     }
-
-    protected controls.Button apply;
-    protected controls.Button cancel;
 
     protected boolean identifiableIsNew;
     protected Identifiable identifiable;
@@ -114,25 +125,27 @@ public abstract class IdentifiableCard
         closeable.close();
     }
 
-    private javafx.scene.control.ButtonBar createButtonBar() {
-        apply = Button.getInstance(ButtonText.APPLY.text, event -> apply());
-        cancel = Button.getInstance(ButtonText.CANCEL.text, event -> cancel());
-
-        return ButtonBar.getInstance(
-                apply
-                , cancel
-        );
-    }
-    
     @Override
     protected Node createContentNode() {
         contentNode = new BorderPane();
-
-        javafx.scene.control.ButtonBar buttonBar = createButtonBar();
-        contentNode.setBottom(buttonBar);
-        contentNode.setMargin(buttonBar, new Insets(2));
-
         return contentNode;
+    }
+
+    @Override
+    protected Node createToolsNode() {
+        HBox hBox = new HBox();
+        hBox.setPadding(new Insets(0, 0, 0, 5));
+
+        apply.setTooltip(Tooltip.getInstance(ButtonText.APPLY.name()));
+        cancel.setTooltip(Tooltip.getInstance(ButtonText.CANCEL.name()));
+
+        hBox.getChildren().addAll(
+                apply,
+                cancel
+        );
+
+        return new ToolsPane()
+                .addAdditional(hBox);
     }
 
     protected abstract Identifiable identifiableInstance();

@@ -27,6 +27,7 @@ import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.controls.table_view.TableView;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.main_window.Workspace;
+import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.svg.Images;
 import tools.SvgWrapper;
 import window.Closeable;
@@ -43,6 +44,8 @@ import java.util.stream.Collectors;
 public class FinancialOperations
         extends ThothSceneImpl
         implements Flow.Subscriber<List<FinancialAccounting>> {
+
+    private final controls.Label placeholder = Label.getInstanse("no_elements", TextCase.NORMAL);
 
     private enum SORT_BY implements SortBy {
         MONTH("last_month"),
@@ -181,7 +184,7 @@ public class FinancialOperations
     private void init() {
         GuiLogger.log.info("Create financial view " + this.id);
         finOpSumTable = TableView.getInstance();
-        finOpSumTable.setPlaceholder(Label.getInstanse("no_elements"));
+        finOpSumTable.setPlaceholder(placeholder);
 
         initHistoryTable();
 
@@ -219,10 +222,10 @@ public class FinancialOperations
 
     private void initHistoryTable() {
         finOpHistoryTable = TableView.getInstance();
-        finOpHistoryTable.setPlaceholder(Label.getInstanse("no_elements"));
+        finOpHistoryTable.setPlaceholder(placeholder);
 
         controls.table_view.TableColumn<FinancialAccounting, LocalDate> dateColumn = thoth_gui.thoth_lite.components.controls.table_view.TableColumn.getInstance();
-        dateColumn.setGraphic(new BorderPane(Label.getInstanse("date")));
+        dateColumn.setGraphic(new BorderPane(Label.getInstanse("date", TextCase.NORMAL)));
         dateColumn.setCellValueFactory(finance -> {
             return new SimpleObjectProperty<LocalDate>(finance.getValue().getDate());
         });
@@ -238,7 +241,7 @@ public class FinancialOperations
         });
 
         controls.table_view.TableColumn<FinancialAccounting, Typable> catColumn = thoth_gui.thoth_lite.components.controls.table_view.TableColumn.getInstance();
-        catColumn.setGraphic(new BorderPane(Label.getInstanse("category")));
+        catColumn.setGraphic(new BorderPane(Label.getInstanse("category", TextCase.NORMAL)));
         catColumn.setCellValueFactory(finance -> {
             return new SimpleObjectProperty<Typable>(finance.getValue().getCategory());
         });
@@ -253,7 +256,7 @@ public class FinancialOperations
         });
 
         controls.table_view.TableColumn<FinancialAccounting, Double> valueColumn = thoth_gui.thoth_lite.components.controls.table_view.TableColumn.getInstance();
-        valueColumn.setGraphic(new BorderPane(Label.getInstanse("value")));
+        valueColumn.setGraphic(new BorderPane(Label.getInstanse("value", TextCase.NORMAL)));
         valueColumn.setCellValueFactory(finance -> {
             return new SimpleObjectProperty<Double>(finance.getValue().getValue());
         });

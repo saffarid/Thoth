@@ -3,6 +3,7 @@ package thoth_core.thoth_lite.config;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import thoth_core.thoth_lite.CoreLogger;
 import thoth_core.thoth_lite.ThothLite;
 
 import java.io.*;
@@ -53,14 +54,15 @@ public class Config
     }
 
     public void exportConfig(){
-
+        CoreLogger.log.info("Export core-config");
         if(!configFile.getParentFile().exists()){
             configFile.getParentFile().mkdir();
         }
         try (FileWriter writer = new FileWriter(configFile)){
             writer.write( ((JSONObject) getConfig()).toJSONString() );
-        } catch (IOException e) {
-            ThothLite.LOG.log(Level.INFO, "Fail export thoth config");
+        }
+        catch (IOException e) {
+            CoreLogger.log.error("Export core-config error ", e);
         }
 
     }
@@ -103,6 +105,7 @@ public class Config
 
     private JSONObject importConfig()
             throws IOException, ParseException {
+        CoreLogger.log.info("Read core-config file");
         FileReader reader = new FileReader(configFile);
         JSONParser parser = new JSONParser();
         return (JSONObject)parser.parse(reader);
@@ -110,6 +113,7 @@ public class Config
 
     @Override
     public void setConfig(JSONObject json){
+        CoreLogger.log.info("Set new core-config");
         database .setConfig((JSONObject) json.get(Keys.Section.DATABASE.getKey()));
         delivered.setConfig((JSONObject) json.get(Keys.Section.DELIVERY.getKey()));
     }
