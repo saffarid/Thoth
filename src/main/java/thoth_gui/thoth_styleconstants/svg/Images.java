@@ -9,6 +9,7 @@ public class Images extends styleconstants.imagesvg.Images {
     public static Group EDIT(){return Edit.getInstance();}
     public static Group HISTORY(){return History.getInstance();}
     public static Group HOME(){return Home.getInstance();}
+    public static Group INFO(){return Info.getInstance();}
     public static Group LIST(){return List.getInstance();}
     public static Group PLUS(){return Plus.getInstance();}
     public static Group POINT(){return Point.getInstance();}

@@ -30,7 +30,6 @@ import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
 import thoth_gui.thoth_lite.main_window.Workspace;
 import thoth_gui.thoth_lite.tools.TextCase;
-import thoth_gui.thoth_styleconstants.Stylesheets;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -69,8 +68,8 @@ public class CompositeListView
         ID_DOWN("sort_by_id_down"),
         COUNT_UP("sort_by_count_up"),
         COUNT_DOWN("sort_by_count_down"),
-        COUNT_TYPE_UP("sort_by_count_type_up"),
-        COUNT_TYPE_DOWN("sort_by_count_type_down");
+        PRICE_UP("sort_by_price_up"),
+        PRICE_DOWN("sort_by_price_down");
         private String id;
 
         SORT_BY(String id) {
@@ -266,8 +265,6 @@ public class CompositeListView
 
         buttons.getChildren().addAll(
                 add
-//                , Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30))
-
         );
 
         palette.setCenter(controls);
@@ -424,11 +421,11 @@ public class CompositeListView
                 items.sort((o1, o2) -> o2.getCount().compareTo(o1.getCount()));
                 break;
             }
-            case COUNT_TYPE_UP: {
+            case PRICE_UP: {
                 items.sort((o1, o2) -> o1.getCountType().getValue().compareTo(o2.getCountType().getValue()));
                 break;
             }
-            case COUNT_TYPE_DOWN: {
+            case PRICE_DOWN: {
                 items.sort((o1, o2) -> o2.getCountType().getValue().compareTo(o1.getCountType().getValue()));
                 break;
             }

@@ -93,8 +93,6 @@ public class Main extends Application{
                 GuiLogger.log.info("Show scene");
                 stage.setScene( scene );
 
-//                stage.show();
-
                 new StageResizer(stage);
 
             });

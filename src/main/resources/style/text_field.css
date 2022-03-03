@@ -1,8 +1,8 @@
 .text-area, .text-field{
-    -fx-background-color:transparent;
+    -fx-background-color: -active;
     -fx-background-insets:0;
     -fx-background-radius:0;
-    -fx-border-color:-border;
+    -fx-border-color:-active;
     -fx-border-style:solid;
     -fx-border-width:0 0 2px 0;
     -fx-text-fill:-text;
@@ -21,9 +21,14 @@
     -fx-background-radius:0;
 }
 
-.text-area:hover, .text-field:hover{
+.text-area:hover, .text-field:hover, .text-field:focused{
     -fx-border-color:-border;
     -fx-text-fill:-text_hover;
+}
+
+.text-field:disabled{
+    -fx-background-color:-disable;
+    -fx-border-color:-disable;
 }
 
 .text-area:disabled, .text-field:disabled{

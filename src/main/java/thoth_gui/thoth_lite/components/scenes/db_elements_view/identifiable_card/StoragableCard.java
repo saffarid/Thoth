@@ -5,6 +5,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
+import javafx.scene.control.ContentDisplay;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
@@ -120,7 +121,8 @@ public class StoragableCard
                         count
                 )
                 , createRow(
-                        Label.getInstanse(ControlsId.ADRESS.id, TextCase.NORMAL),
+                        Label.getInstanse( ControlsId.ADRESS.id, TextCase.NORMAL )
+                                .setInfoGraph( LabeledInfoGraphic.getInstance("Расположение продукта") ),
                         adress
                 )
                 , createRow(

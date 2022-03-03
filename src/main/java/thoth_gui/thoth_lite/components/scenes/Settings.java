@@ -19,6 +19,7 @@ import thoth_gui.config.Config;
 import thoth_gui.config.Keys;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.components.controls.Tooltip;
 import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
@@ -126,11 +127,11 @@ public class Settings
                 Button.getInstance(
                         SvgWrapper.getInstance(Images.CHECKMARK(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
                         event -> apply()
-                ),
+                ).setTool(Tooltip.getInstance("apply")),
                 Button.getInstance(
                         SvgWrapper.getInstance(Images.CLOSE(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
                         event -> cancel()
-                )
+                ).setTool(Tooltip.getInstance("cancel"))
         );
 
         toolsNode =

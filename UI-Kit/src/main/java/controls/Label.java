@@ -2,6 +2,7 @@ package controls;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.layout.Border;
 
 public class Label extends javafx.scene.control.Label {
@@ -41,6 +42,12 @@ public class Label extends javafx.scene.control.Label {
             , double left
     ){
         setPadding(new Insets(top, right, bottom, left));
+        return this;
+    }
+
+    public Label setInfoGraph(Node node){
+        setGraphic(node);
+        setContentDisplay(ContentDisplay.RIGHT);
         return this;
     }
 

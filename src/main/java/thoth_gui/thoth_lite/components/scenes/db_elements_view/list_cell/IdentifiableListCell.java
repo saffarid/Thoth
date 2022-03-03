@@ -34,7 +34,6 @@ public class IdentifiableListCell<T extends Identifiable>
 
     public IdentifiableListCell(AvaliableTables table) {
         super();
-        GuiLogger.log.info("Draw list-cell " + table);
         this.table = table;
         setOnMouseClicked(this::cellClick);
         setMinWidth(300);

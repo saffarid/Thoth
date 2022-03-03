@@ -32,6 +32,6 @@
 }
 
 .img-button:disabled{
-    -fx-background-color:#B0B6BA;
+    -fx-background-color:transparent;
     -fx-text-fill:#FAFCFC;
 }

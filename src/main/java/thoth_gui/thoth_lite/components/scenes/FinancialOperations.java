@@ -22,6 +22,7 @@ import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
+import thoth_gui.thoth_lite.components.controls.Tooltip;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.controls.table_view.TableView;
@@ -164,11 +165,11 @@ public class FinancialOperations
                 Button.getInstance(
                         SvgWrapper.getInstance(Images.HISTORY(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
                         event -> contentNode.setCenter(finOpHistoryTable)
-                ),
+                ).setTool(Tooltip.getInstance("history")),
                 Button.getInstance(
                         SvgWrapper.getInstance(Images.STATISTIC(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
                         event -> contentNode.setCenter(finOpSumTable)
-                )
+                ).setTool(Tooltip.getInstance("statistic"))
         );
 
         toolsNode = new ToolsPane(table.name())

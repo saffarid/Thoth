@@ -52,29 +52,30 @@ public class CheckerFinishable
         for (Finishable finishable : finishables) {
 
             //Игнорируем задачу если она уже завершена
-            if (!finishable.isFinish()) {
-                //Планируем задачу только если она ещё на запланирована
-                if (!isFinishableNotificationPlanning((Identifiable) finishable)) {
-                    LocalDate finishDate = finishable.finishDate();
-                    int daysDelay = Period.between(currentDate, finishDate).getDays();
+            if (finishable.isFinish()) continue;
+            //Планируем задачу только если она ещё на запланирована
+            if (!isFinishableNotificationPlanning((Identifiable) finishable)) continue;
 
-                    Runnable task = () -> notifySubscribers(finishable);
+            LocalDate finishDate = finishable.finishDate();
 
-                    try {
-                        if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getValue()) && (finishDate.isAfter(currentDate))) {
-                            taskMap.put(
-                                    finishable, poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
-                            );
-                        } else {
-                            poolExecutor.schedule(task, 1, TimeUnit.SECONDS);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+            int daysDelay = Period.between(currentDate, finishDate).getDays();
+
+            Runnable task = () -> notifySubscribers(finishable);
+
+            try {
+                if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getValue()) && (finishDate.isAfter(currentDate))) {
+                    taskMap.put(
+                            finishable, poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
+                    );
+                } else {
+                    poolExecutor.schedule(task, 1, TimeUnit.SECONDS);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+
 
         }
     }

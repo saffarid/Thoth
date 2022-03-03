@@ -204,6 +204,7 @@ public class DataBaseLite {
         } catch (ParseException e) {
             CoreLogger.log.error("Parse table" + table.getName() + " error:", e);
         } catch (NotContainsException e) {
+            CoreLogger.log.error("Not Contains in table" + table.getName() + " error:", e);
             e.printStackTrace();
         }
     }

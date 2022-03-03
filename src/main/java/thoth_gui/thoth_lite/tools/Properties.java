@@ -16,14 +16,18 @@ public class Properties {
     private static final String propertiesName = "thoth";
     private static  ResourceBundle bundle;
 
-    public static void loadProperties(Locale locale){
+    public static void loadProperties(
+            Locale locale
+    ){
         try{
             bundle = ResourceBundle.getBundle(propertiesName, locale);
-        }catch (NullPointerException exp){
+        }
+        catch (NullPointerException exp){
             GuiLogger.log.info(
                     String.format(loadTemplateExp, propertiesName, exp.getMessage())
             );
-        }catch (MissingResourceException exp){
+        }
+        catch (MissingResourceException exp){
             GuiLogger.log.info(
                     String.format(loadTemplateExp, propertiesName, exp.getMessage())
             );
@@ -36,7 +40,6 @@ public class Properties {
     ){
         try{
             String string = bundle.getString(key.toLowerCase());
-
             switch (textCase){
                 case UPPER: return string.toUpperCase();
                 case LOWER: return string.toLowerCase();
@@ -47,23 +50,18 @@ public class Properties {
                     ;
                     return builder.toString();
                 }
-
                 case DEFAULT: default: return string;
             }
-        }catch (NullPointerException exp){
-            GuiLogger.log.error(
-                    String.format(keyTemplateExp, key, exp.getMessage()), exp
-            );
-        }catch (MissingResourceException exp){
-            GuiLogger.log.error(
-                    String.format(keyTemplateExp, key, exp.getMessage()), exp
-            );
-        }catch (ClassCastException exp){
-            GuiLogger.log.info(
-                    String.format(keyTemplateExp, key, exp.getMessage()), exp
-            );
         }
-        return key;
+        catch (NullPointerException exp){
+            return key;
+        }
+        catch (MissingResourceException exp){
+            return key;
+        }
+        catch (ClassCastException exp){
+            return key;
+        }
     }
 
 }

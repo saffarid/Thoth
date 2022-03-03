@@ -2,6 +2,7 @@ package thoth_gui.thoth_styleconstants;
 
 public enum Stylesheets {
 
+    BUTTON("/style/button.css"),
     COLORS("/style/colors.css"),
     LIST_VIEW("/style/list_view.css"),
     DATE_PICKER("/style/date_picker.css"),

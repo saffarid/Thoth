@@ -60,7 +60,7 @@ public class ConfigDropdownList
                 , getMenuButton(AvaliableTables.CURRENCIES)
                 , getMenuButton(AvaliableTables.EXPENSES_TYPES)
                 , getMenuButton(AvaliableTables.INCOMES_TYPES)
-                , getMenuButton(AvaliableTables.ORDER_STATUS)
+//                , getMenuButton(AvaliableTables.ORDER_STATUS)
                 , getMenuButton(AvaliableTables.PRODUCT_TYPES)
                 , getMenuButton(AvaliableTables.PARTNERS)
                 , getMenuButton(AvaliableTables.STORING)

@@ -1,11 +1,10 @@
 package controls;
 
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 
 public class Button extends javafx.scene.control.Button {
 
-    public static final String BUTTON = "/style/controls/button.css";
     private final static String STYLE_CLASS_TEXT_BTN = "text-button";
     private final static String STYLE_CLASS_IMG_BTN = "img-button";
 
@@ -26,13 +25,15 @@ public class Button extends javafx.scene.control.Button {
     }
 
     private void init(boolean hasText) {
-
         if (hasText) {
             getStyleClass().add(STYLE_CLASS_TEXT_BTN);
         } else {
             getStyleClass().add(STYLE_CLASS_IMG_BTN);
         }
+    }
 
-        getStylesheets().add(getClass().getResource(BUTTON).toExternalForm());
+    public Button setTool(Tooltip t){
+        setTooltip(t);
+        return this;
     }
 }

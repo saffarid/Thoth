@@ -253,15 +253,15 @@ public class Config
 
         private final double xPrimaryDefault = 0;
         private final double yPrimaryDefault = 0;
-        private final double widthPrimaryMin = 806;
-        private final double heightPrimaryMin = 406;
+        private final double widthPrimaryMin = 1006;
+        private final double heightPrimaryMin = 606;
         private final double widthPrimaryDefault = 1006;
-        private final double heightPrimaryDefault = 606;
+        private final double heightPrimaryDefault = 806;
         private final boolean isMaxDefault = false;
 
         private final double widthSecondaryDefault = 806;
         private final double heightSecondaryDefault = 606;
-        private final double widthSecondaryMin = 806;
+        private final double widthSecondaryMin = 1006;
         private final double heightSecondaryMin = 406;
 
         private SimpleDoubleProperty xPrimary;

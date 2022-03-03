@@ -2,25 +2,20 @@ package thoth_gui.thoth_lite.main_window;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import main.Main;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
-import thoth_gui.thoth_lite.components.scenes.Scenes;
+import thoth_gui.thoth_lite.components.controls.Tooltip;
 import thoth_gui.thoth_lite.components.scenes.ThothScene;
-
 import layout.basepane.BorderPane;
 import layout.basepane.HBox;
-
 import javafx.scene.Node;
 import javafx.beans.property.SimpleObjectProperty;
 import thoth_gui.thoth_styleconstants.svg.Images;
-import tools.BorderWrapper;
 import tools.SvgWrapper;
-
 import java.sql.SQLException;
 import java.util.Stack;
-import java.util.logging.Level;
 
 public class Workspace
         extends BorderPane {
@@ -29,6 +24,7 @@ public class Workspace
     public final static double svgHeightTools = 20;
     public final static double svgViewBoxWidthTools = 30;
     public final static double svgViewBoxHeightTools = 30;
+
     /**
      * Кнопка установки предыдущей сцены
      */
@@ -44,24 +40,21 @@ public class Workspace
     );
     /**
      * Кнопка обновления базы данных
-     * */
+     */
     private final controls.Button refresh = Button.getInstance(
             SvgWrapper.getInstance(Images.REFRESH(), svgWidthTools, svgHeightTools, svgViewBoxWidthTools, svgViewBoxHeightTools)
             , event -> {
                 try {
                     ThothLite.getInstance().forceRereadDatabase();
-                }
-                catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                catch (NotContainsException e) {
-                    e.printStackTrace();
+                } catch (SQLException e) {
+                    GuiLogger.log.error("Reread database error", e);
+                } catch (ClassNotFoundException e) {
+                    GuiLogger.log.error(e.getMessage(), e);
+                } catch (NotContainsException e) {
+                    GuiLogger.log.error(e.getMessage(), e);
                 }
             }
-    );
+    ).setTool(Tooltip.getInstance("reread"));
 
     private static Workspace workspace;
 

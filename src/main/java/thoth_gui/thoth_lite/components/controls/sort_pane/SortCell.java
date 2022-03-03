@@ -34,10 +34,16 @@ public class SortCell
     private Node createGraphic(String text) {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
+
+        Node node = (text.endsWith("down") || text.endsWith("up")) ? ((text.endsWith("down")) ? (down) : (up)) : (null);
+
         hBox.getChildren().addAll(
-                Label.getInstanse((text.endsWith("down"))?(text.replace("_down", "")):(text.replace("_up", "")), TextCase.LOWER),
-                (text.endsWith("down"))?(down):(up)
+                Label.getInstanse(
+                        (text.endsWith("down"))?(text.replace("_down", "")):(text.replace("_up", "")), TextCase.LOWER
+                )
         );
+
+        if(node != null) hBox.getChildren().addAll( node );
 
         return hBox;
     }

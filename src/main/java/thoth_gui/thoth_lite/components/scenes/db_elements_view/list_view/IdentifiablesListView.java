@@ -34,14 +34,14 @@ import window.Closeable;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class IdentifiablesListView<T extends Identifiable>
-    extends ThothSceneImpl
-        implements Flow.Subscriber<List<T>>
-{
+        extends ThothSceneImpl
+        implements Flow.Subscriber<List<T>> {
 
     private static final double MAX_WIDTH = 750;
 
@@ -50,10 +50,12 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         SORTED_BOX("sort_box");
 
         private String id;
+
         Ids(String id) {
             this.id = id;
         }
-        public String toString(){
+
+        public String toString() {
             return id;
         }
     }
@@ -64,13 +66,13 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     /**
      * Объект подписки
-     * */
+     */
     private Flow.Subscription subscription;
 
     protected SimpleListProperty<T> datas;
 
     protected SortPane sortPane;
-    protected controls.ListView<T> identifiableElementList;
+    protected controls.ListView<T> identifiableElementList = ListView.getInstance();
 
     static {
         LOG = Logger.getLogger(IdentifiablesListView.class.getName());
@@ -82,7 +84,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     ) {
         super();
         this.table = table;
-        this.datas = new SimpleListProperty<T>(  );
+        this.datas = new SimpleListProperty<T>();
         GuiLogger.log.info("Create list-view");
         content = new SimpleObjectProperty<>(createContentNode());
         GuiLogger.log.info("Add list-data");
@@ -94,28 +96,23 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
             });
         });
-        this.datas.setValue(FXCollections.observableList(datas));
+        setNewList(datas);
         GuiLogger.log.info("Create tools-view");
         tools = new SimpleObjectProperty<>(createToolsNode());
 
         try {
             ThothLite.getInstance().subscribeOnTable(this.table, this);
-        }
-        catch (NotContainsException e) {
+        } catch (NotContainsException e) {
             e.printStackTrace();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    protected Node createContentNode(){
-        identifiableElementList = ListView.getInstance();
-
+    protected Node createContentNode() {
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
 
         contentNode = new BorderPane(identifiableElementList);
@@ -125,12 +122,13 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     }
 
     @Override
-    protected Node createToolsNode(){
+    protected Node createToolsNode() {
         toolsNode = new ToolsPane(table.name())
                 .addSortPane(getSortPane())
-                .addNewButton( SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool), this::openCreateNewIdentifiable)
-                ;
-
+                .addNewButton(
+                        SvgWrapper.getInstance(Images.PLUS(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
+                        this::openCreateNewIdentifiable
+                );
         return toolsNode;
     }
 
@@ -138,9 +136,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     public static IdentifiablesListView getInstance(
             AvaliableTables type
-    )   {
+    ) {
         try {
-
             List<? extends Identifiable> dataFromTable = ThothLite.getInstance().getDataFromTable(type);
             switch (type) {
                 case ORDERABLE: {
@@ -158,27 +155,59 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 case PARTNERS: {
                     return new PartnerListView((List<Partnership>) dataFromTable);
                 }
-                case CURRENCIES:{
+                case CURRENCIES: {
                     return new FinanceListView((List<Finance>) dataFromTable);
                 }
                 default:
-                    return new ListedListView( (List<Typable>) dataFromTable, type);
+                    return new ListedListView((List<Typable>) dataFromTable, type);
             }
-        }
-        catch (SQLException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        catch (NotContainsException e) {
+        } catch (NotContainsException e) {
             e.printStackTrace();
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    protected void openCreateNewIdentifiable(ActionEvent event){
+    protected void openCreateNewIdentifiable(ActionEvent event) {
         Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null));
+    }
+
+    private void setNewList(List<T> items) {
+
+        CompletableFuture.supplyAsync(() -> {
+            if (this.table == AvaliableTables.EXPENSES_TYPES ||
+                this.table == AvaliableTables.INCOMES_TYPES) {
+                try {
+                    List<Typable> productTypes = (List<Typable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.PRODUCT_TYPES);
+                    for (Typable typable : productTypes){
+                        for(Typable t : (List<Typable>) items){
+                            if(t.getValue().equals(typable.getValue())){
+                                items.remove(t);
+                            }
+                        }
+                    }
+                }
+                catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (NotContainsException e) {
+                    e.printStackTrace();
+                }
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            return items;
+        }).thenAccept(item -> {
+            this.datas.setValue(FXCollections.observableList(item));
+        });
+
+
+
+
     }
 
     protected abstract void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1);
@@ -190,9 +219,9 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     /**
      * Функция завершает все текущие процессы
-     * */
+     */
     @Override
-    public void close(){
+    public void close() {
         this.subscription.cancel();
     }
 
@@ -209,7 +238,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     public void onNext(List<T> item) {
         this.subscription.request(1);
         LOG.log(Level.INFO, "Обновление datas");
-        this.datas.setValue( FXCollections.observableList(item) );
+        setNewList(item);
     }
 
     @Override

@@ -44,11 +44,11 @@ public abstract class IdentifiableCard
     protected final controls.Button apply = Button.getInstance(
             SvgWrapper.getInstance(Images.CHECKMARK(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
             event -> apply()
-    );
+    ).setTool(Tooltip.getInstance(ButtonText.APPLY.name()));
     protected final controls.Button cancel = Button.getInstance(
             SvgWrapper.getInstance(Images.CLOSE(), svgWidthTool, svgHeightTool, svgViewBoxWidthTool, svgViewBoxHeightTool),
             event -> cancel()
-    );
+    ).setTool(Tooltip.getInstance(ButtonText.CANCEL.name()));
 
     protected static final Logger LOG;
 
@@ -135,9 +135,6 @@ public abstract class IdentifiableCard
     protected Node createToolsNode() {
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(0, 0, 0, 5));
-
-        apply.setTooltip(Tooltip.getInstance(ButtonText.APPLY.name()));
-        cancel.setTooltip(Tooltip.getInstance(ButtonText.CANCEL.name()));
 
         hBox.getChildren().addAll(
                 apply,
