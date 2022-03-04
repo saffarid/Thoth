@@ -23,7 +23,7 @@ public class CheckerFinishable
     private Flow.Subscription subscription;
 
     private HashMap<Finishable, ScheduledFuture> taskMap;
-    private List<Finishable> buffer;
+    private List<HashMap<WhatDo, Finishable>> buffer;
     private ScheduledThreadPoolExecutor poolExecutor;
 
     public CheckerFinishable() {
@@ -33,28 +33,38 @@ public class CheckerFinishable
         buffer = new LinkedList<>();
     }
 
-    private boolean isFinishableNotificationPlanning(Identifiable identifiable) {
-
+    /**
+     * Проверка запланированности задачи.
+     * Если задача запланирована, функция возвращает объект задачи
+     * */
+    private Finishable isFinishableNotificationPlanning(Identifiable identifiable) {
         return taskMap.keySet()
                 .stream()
                 .filter(finishable -> ((Identifiable) finishable).getId().equals(identifiable.getId()))
                 .findAny()
-                .isPresent();
-
+                .get();
     }
 
     /**
      * Функция распределяет запланированные задачи для оповещения наступления даты
-     */
+     * */
     public void notificationPlanning(List<Finishable> finishables) {
         LocalDate currentDate = LocalDate.now();
 
         for (Finishable finishable : finishables) {
 
-            //Игнорируем задачу если она уже завершена
-            if (finishable.isFinish()) continue;
-            //Планируем задачу только если она ещё на запланирована
-            if (!isFinishableNotificationPlanning((Identifiable) finishable)) continue;
+            Finishable finishablePlanning = isFinishableNotificationPlanning((Identifiable) finishable);
+            boolean finishableIsPlan = finishablePlanning != null;
+
+            if(finishableIsPlan){
+                //Ветка запланированной задачи
+                if(finishable.isFinish()){
+                    taskMap.get(finishable).cancel(true);
+                    notifySubscribers(wrappedFinishable(WhatDo.CANCEL, finishablePlanning));
+                }
+            }else{
+                //Ветка не запланированной задачи
+            }
 
             LocalDate finishDate = finishable.finishDate();
 
@@ -70,14 +80,22 @@ public class CheckerFinishable
                 } else {
                     poolExecutor.schedule(task, 1, TimeUnit.SECONDS);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 e.printStackTrace();
-            } catch (ParseException e) {
+            }
+            catch (ParseException e) {
                 e.printStackTrace();
             }
 
 
         }
+    }
+
+    private HashMap<WhatDo, Finishable> wrappedFinishable(WhatDo whatDo, Finishable finishable){
+        HashMap<WhatDo, Finishable> res = new HashMap<>();
+        res.put(whatDo, finishable);
+        return res;
     }
 
     @Override
@@ -103,7 +121,7 @@ public class CheckerFinishable
         }
     }
 
-    private void notifySubscribers(Finishable finishable) {
+    private void notifySubscribers(HashMap<WhatDo, Finishable> finishable) {
         if (publisher.hasSubscribers()) {
             publisher.submit(finishable);
         } else {
