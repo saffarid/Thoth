@@ -48,7 +48,7 @@ public class StoragableCard
         PRODUCT_TYPE("product-type"),
         COUNT("count"),
         COUNT_TYPE("count_type"),
-        ADRESS("adress"),
+        ADRESS("storing"),
         NOTE("note");
         private String id;
 

@@ -3,9 +3,12 @@ package thoth_gui.thoth_lite.main_window;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 
+import layout.basepane.GridPane;
 import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
@@ -73,7 +76,7 @@ public class ThothLiteWindow
 
     private Stage mainStage;
 
-    private NavigationMenu menu;
+//    private NavigationMenu menu;
 
     private Workspace works;
 
@@ -128,25 +131,29 @@ public class ThothLiteWindow
 
     private Node createLeftNode() {
         GuiLogger.log.info("Create left node on main-scene");
-        VBox vBox = new VBox();
-        vBox.setPadding(new Insets(2));
+
+        GridPane left = new GridPane()
+                .addColumn(Priority.NEVER)
+                .addRow(150., VPos.TOP)
+                .addRow(Priority.ALWAYS);
+
+        left.setPadding(new Insets(2));
+        left.setVgap(2);
 
         FinishableView finishableViewPurchase = getFinishableView();
         thoth.purchasesSubscribe(finishableViewPurchase);
 
-        vBox.setBorder(
+        left.setBorder(
                 new BorderWrapper()
                         .addRightBorder(1)
                         .setColor(Color.valueOf("#707070"))
                         .commit()
         );
 
-        vBox.getChildren().addAll(
-                navigationMenuConfig()
-                , finishableViewPurchase
-        );
+        left.add(navigationMenuConfig(), 0, 0);
+        left.add(finishableViewPurchase, 0, 1);
 
-        return vBox;
+        return left;
     }
 
     @Override
@@ -154,7 +161,7 @@ public class ThothLiteWindow
         GuiLogger.log.info("Thoth-core close");
         thoth.close();
         GuiLogger.log.info("Window close");
-        mainStage.close();
+        Platform.exit();
     }
 
     @Override
@@ -207,8 +214,8 @@ public class ThothLiteWindow
                     )
             );
 
-            aboutStage.setX(mainStage.getX() + (mainStage.getWidth()/2));
-            aboutStage.setY(mainStage.getY() + (mainStage.getHeight()/2));
+            aboutStage.setX(mainStage.getX() + (mainStage.getWidth() / 2));
+            aboutStage.setY(mainStage.getY() + (mainStage.getHeight() / 2));
 
             aboutStage.initModality(Modality.APPLICATION_MODAL);
             aboutStage.initOwner(stage);
@@ -225,32 +232,36 @@ public class ThothLiteWindow
 
     private Node navigationMenuConfig() {
         GuiLogger.log.info("Create navigation menu");
+        double size = 17;
+        double sizeViewbox = 17;
+
         List<controls.MenuButton> menuButtons = new LinkedList<>();
         menuButtons.add(MenuButton.getInstance(
-                Scenes.HOME.name(), SvgWrapper.getInstance(Images.HOME(), 20, 20),
+                Scenes.HOME.name(), SvgWrapper.getInstance(Images.HOME(), size, size),
                 event -> works.setNewScene(Home.getInstance())
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.EXPENSES.name(), SvgWrapper.getInstance(Images.TRADINGDOWN(), 20, 20),
+                Scenes.EXPENSES.name(), SvgWrapper.getInstance(Images.TRADINGDOWN(), size, size),
                 event -> works.setNewScene(new FinancialOperations(AvaliableTables.EXPENSES))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.INCOMES.name(), SvgWrapper.getInstance(Images.TRADINGUP(), 20, 20),
+                Scenes.INCOMES.name(), SvgWrapper.getInstance(Images.TRADINGUP(), size, size),
                 event -> works.setNewScene(new FinancialOperations(AvaliableTables.INCOMES))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.PURCHASABLE.name(), SvgWrapper.getInstance(Images.PURCHASE(), 20, 20),
+                Scenes.PURCHASABLE.name(), SvgWrapper.getInstance(Images.PURCHASE(), size, size),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.PURCHASABLE))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.STORAGABLES.name(), SvgWrapper.getInstance(Images.PRODUCT(), 20, 20),
+                Scenes.STORAGABLES.name(), SvgWrapper.getInstance(Images.PRODUCT(), size, size),
                 event -> works.setNewScene(IdentifiablesListView.getInstance(AvaliableTables.STORAGABLE))
         ));
         menuButtons.add(MenuButton.getInstance(
-                Scenes.SYSTEM_TABLE.name(), SvgWrapper.getInstance(Images.LIST(), 20, 20),
+                Scenes.SYSTEM_TABLE.name(), SvgWrapper.getInstance(Images.LIST(), size, size),
                 event -> works.setNewScene(ConfigDropdownList.getInstance())
         ));
-        menu = new NavigationMenu(menuButtons);
+        NavigationMenu menu = new NavigationMenu(menuButtons);
+        menu.setPadding(new Insets(0));
         menu.setWidth(DEFAULT_SIZE.WIDTH_LEFT_BLOCK.getSize());
 
         return menu;

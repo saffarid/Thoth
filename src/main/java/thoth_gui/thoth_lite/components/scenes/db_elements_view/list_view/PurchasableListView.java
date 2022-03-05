@@ -51,11 +51,11 @@ public class PurchasableListView extends IdentifiablesListView<Purchasable> {
         SORT_BY t1 = (SORT_BY) sortBy1;
         switch (t1){
             case ID_UP:{
-                items.sort((o1, o2) -> o1.getId().compareTo(o2.getId()));
+                items.sort((o1, o2) -> o2.getId().compareTo(o1.getId()));
                 break;
             }
             case ID_DOWN:{
-                items.sort((o1, o2) -> o2.getId().compareTo(o1.getId()));
+                items.sort((o1, o2) -> o1.getId().compareTo(o2.getId()));
                 break;
             }
             case DATE_UP:{

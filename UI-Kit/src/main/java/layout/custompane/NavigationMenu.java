@@ -4,6 +4,7 @@ import java.util.logging.*;
 import controls.MenuButton;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -86,6 +87,9 @@ public class NavigationMenu
         content = new VBox();
         ScrollPane scrollPane = new ScrollPane();
         isMinified = new SimpleBooleanProperty(false);
+
+        scrollPane.setPadding(new Insets(0));
+        content.setPadding(new Insets(0));
 
         scrollPane.setContent(content);
         setTop(this.title);

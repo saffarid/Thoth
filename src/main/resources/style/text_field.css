@@ -4,7 +4,7 @@
     -fx-background-radius:0;
     -fx-border-color:-active;
     -fx-border-style:solid;
-    -fx-border-width:0 0 2px 0;
+    -fx-border-width:0 0 1px 0;
     -fx-text-fill:-text;
 }
 
@@ -21,6 +21,10 @@
     -fx-background-radius:0;
 }
 
+.text-field:hover{
+    -fx-background-color:-secondary;
+}
+
 .text-area:hover, .text-field:hover, .text-field:focused{
     -fx-border-color:-border;
     -fx-text-fill:-text_hover;
@@ -32,6 +36,6 @@
 }
 
 .text-area:disabled, .text-field:disabled{
-    -fx-border-color:-border;
+    -fx-border-color:-disable;
     -fx-text-fill:-text_disable;
 }

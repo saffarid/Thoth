@@ -1,6 +1,7 @@
 package thoth_gui.thoth_lite.components.controls.combo_boxes;
 
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
@@ -51,6 +52,7 @@ public class TypableComboBox {
         protected void updateItem(Typable typable, boolean b) {
             if (typable != null) {
                 super.updateItem(typable, b);
+                setPadding(new Insets(0));
                 setGraphic(Label.getInstanse(typable.getValue()));
             }
         }

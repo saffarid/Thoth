@@ -34,9 +34,7 @@ public class ComboBox {
         comboBox.setPlaceholder(
                 Label.getInstanse("no_elements", TextCase.NORMAL)
         );
-//        comboBox.setMinWidth(250);
         comboBox.setMaxWidth(Double.MAX_VALUE);
-        comboBox.autosize();
         bindFont(comboBox);
         connectStyle(comboBox);
         return comboBox;

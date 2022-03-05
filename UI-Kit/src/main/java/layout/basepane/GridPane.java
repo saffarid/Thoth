@@ -81,6 +81,7 @@ public class GridPane
     public GridPane addRow(Priority priority) {
         RowConstraints row = new RowConstraints();
         row.setVgrow(priority);
+        row.setFillHeight(true);
         getRowConstraints().add(row);
         return this;
     }

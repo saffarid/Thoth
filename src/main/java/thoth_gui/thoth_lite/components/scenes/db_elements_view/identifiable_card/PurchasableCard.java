@@ -132,14 +132,13 @@ public class PurchasableCard
         store = getComboBox(PropertiesPurchasableId.TRACK_NUMBER);
         datePicker = getDatePicker();
 
-        content.add(
-                getTwin( Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id, TextCase.NORMAL), trackNumber), 0, 0);
-        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.STORE.id, TextCase.NORMAL), store), 0, 1);
-        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id, TextCase.NORMAL), datePicker), 0, 2);
+        content.add( getTwin( Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id, TextCase.NORMAL), trackNumber), 0, 0 );
+        content.add( getTwin(Label.getInstanse(PropertiesPurchasableId.STORE.id, TextCase.NORMAL), store), 0, 1 );
+        content.add( getTwin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id, TextCase.NORMAL), datePicker), 0, 2 );
 
-        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id, TextCase.NORMAL), toggleDelivered), 1, 0);
+        content.add( getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id, TextCase.NORMAL), toggleDelivered), 1, 0 );
 
-        content.add(new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew), 0, 3, 2, 1);
+        content.add( new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew), 0, 3, 2, 1 );
 
         contentNode.setCenter(content);
 

@@ -12,12 +12,15 @@ public class TextField {
     private static void bindFont(controls.TextField node) {
         try {
             node.fontProperty().bind(Config.getInstance().getFont().fontProperty());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        }
+        catch (ParseException e) {
             e.printStackTrace();
         }
     }
+
     private static void connectStyle(controls.TextField node){
         CompletableFuture
                 .supplyAsync(() -> Stylesheets.TEXT_FIELD.getStylesheet())

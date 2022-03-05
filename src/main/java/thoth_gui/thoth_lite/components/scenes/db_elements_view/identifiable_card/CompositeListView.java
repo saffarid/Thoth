@@ -2,6 +2,7 @@ package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_car
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 
 import javafx.scene.layout.*;
@@ -29,6 +30,7 @@ import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
 import thoth_gui.thoth_lite.main_window.Workspace;
+import thoth_gui.thoth_lite.tools.Properties;
 import thoth_gui.thoth_lite.tools.TextCase;
 
 import javafx.beans.property.SimpleListProperty;
@@ -47,6 +49,7 @@ import tools.SvgWrapper;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,11 +60,16 @@ public class CompositeListView
 
     private final static String TITLE = "composite";
     private final static String STORAGABLE = "storagable";
-    private final static String COUNT = "count";
+    private final static String COUNT = Properties.getString("count", TextCase.NORMAL);
+    private final static String POS_COUNT = Properties.getString("pos_count", TextCase.NORMAL);
     private final static String COUNT_TYPE = "count_type";
-    private final static String PRICE = "price";
+    private final static String PRICE = Properties.getString("price", TextCase.NORMAL);
     private final static String CURRENCY = "currency";
     private final static String SEARCH = "search";
+
+    private final static String TOTAL = Properties.getString("total", TextCase.NORMAL);
+
+    private final String TOTAL_TEMPLATE = TOTAL + ":\t" + POS_COUNT + ": %1$s\t" + PRICE + ": %2$s";
 
     private enum SORT_BY implements SortBy {
         ID_UP("sort_by_id_up"),
@@ -85,12 +93,13 @@ public class CompositeListView
     private final static double widthPallete = 50;
     private final static double maxWidthPallete = 200;
 
-    private boolean identifiableIsNew;
+    private final boolean identifiableIsNew;
 
-    private SimpleDoubleProperty countProperty = new SimpleDoubleProperty();
-    private SimpleDoubleProperty priceProperty = new SimpleDoubleProperty();
+    private final SimpleDoubleProperty countProperty = new SimpleDoubleProperty();
+    private final SimpleDoubleProperty priceProperty = new SimpleDoubleProperty();
+    private final SimpleStringProperty totalProperty = new SimpleStringProperty();
 
-    private SimpleListProperty<Storing> items;
+    private final SimpleListProperty<Storing> items;
 
     public CompositeListView(
             List<Storing> items
@@ -111,7 +120,7 @@ public class CompositeListView
         BorderPane palette = new BorderPane();
 
         VBox controls = new VBox();
-
+        controls.setPadding(new Insets(0, 2, 0, 0));
         palette.setBorder(
                 new BorderWrapper()
                         .addRightBorder(1)
@@ -258,8 +267,8 @@ public class CompositeListView
         });
         add.setTooltip(Tooltip.getInstance("add"));
 
-        add.disableProperty().bind( storagableComboBox.valueProperty().isNull()
-                .or(countProperty.lessThanOrEqualTo(StringDoubleConverter.countMin+0.0001))
+        add.disableProperty().bind(storagableComboBox.valueProperty().isNull()
+                .or(countProperty.lessThanOrEqualTo(StringDoubleConverter.countMin + 0.0001))
                 .or(priceProperty.lessThanOrEqualTo(StringDoubleConverter.priceMin)))
         ;
 
@@ -314,6 +323,14 @@ public class CompositeListView
         );
         listView.setCellFactory(storingListView -> new CompositeCell());
         items.addListener((observableValue, storings, t1) -> {
+
+            CompletableFuture.runAsync(() -> {
+                double price = -1
+                        totalProperty.setValue(
+                                String.format(TOTAL_TEMPLATE, String.valueOf(items.getValue().size()), String.valueOf())
+                        );
+            });
+
             listView.setCellFactory(null);
             listView.setCellFactory(storingListView -> new CompositeCell());
         });
@@ -345,10 +362,11 @@ public class CompositeListView
         res.setAlignment(Pos.TOP_LEFT);
         res.setFillWidth(true);
         res.setPadding(new Insets(2));
+        res.setSpacing(5);
 
         if (enterNodes.length > 1) {
             HBox hBox = new HBox(enterNodes);
-            hBox.setSpacing(5);
+            hBox.setSpacing(2);
 
             res.getChildren().addAll(
                     titleNode
@@ -381,9 +399,9 @@ public class CompositeListView
 
         res.setPadding(new Insets(0));
 
-        res.getChildren().addAll(
-                Label.getInstanse("total", TextCase.NORMAL)
-        );
+        controls.Label instanse = Label.getInstanse();
+        instanse.textProperty().bind(totalProperty);
+        res.getChildren().add(instanse);
 
         return res;
     }

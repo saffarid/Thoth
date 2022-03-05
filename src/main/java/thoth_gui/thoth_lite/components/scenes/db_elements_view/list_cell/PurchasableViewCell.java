@@ -10,6 +10,7 @@ import layout.basepane.GridPane;
 
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Purchasable;
 import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.svg.Images;
 import tools.SvgWrapper;
 
@@ -48,7 +49,7 @@ public class PurchasableViewCell
 
         res.add(Label.getInstanse(purchase.getId()), 0, 0);
         res.add(Label.getInstanse(purchase.finishDate().format(DateTimeFormatter.ISO_DATE)), 0, 1);
-        res.add(Label.getInstanse((purchase.isDelivered())?(DELIVERED):(NOT_DELIVERED)), 1, 1);
+        res.add(Label.getInstanse((purchase.isDelivered())?(DELIVERED):(NOT_DELIVERED), TextCase.NORMAL), 1, 1);
 
         BorderPane.setAlignment(res, Pos.CENTER);
 
