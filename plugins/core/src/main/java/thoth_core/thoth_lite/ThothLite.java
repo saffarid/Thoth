@@ -14,6 +14,7 @@ import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.timer.CheckerFinishable;
 import thoth_core.thoth_lite.timer.Traceable;
 import org.json.simple.parser.ParseException;
+import thoth_core.thoth_lite.timer.WhatDo;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -108,7 +109,10 @@ public class ThothLite {
             //При любом сценарии завершаем транзакцию
             try {
                 database.commitTransaction();
+                database.readDataBase();
             } catch (SQLException e) {
+                CoreLogger.log.error(e.getMessage(), e);
+            } catch (ClassNotFoundException e) {
                 CoreLogger.log.error(e.getMessage(), e);
             }
         }
@@ -236,7 +240,8 @@ public class ThothLite {
         } finally {
             try {
                 database.commitTransaction();
-                database.readTable(tableName);
+//                database.readTable(tableName);
+                database.readDataBase();
             } catch (SQLException exception) {
                 LOG.log(Level.INFO, exception.getMessage());
             }
@@ -322,7 +327,7 @@ public class ThothLite {
     /**
      * Подписка на публикацию наступления плановой даты завершения заказа
      */
-    public void orderSubscribe(Flow.Subscriber<Finishable> subscriber) {
+    public void orderSubscribe(Flow.Subscriber<HashMap<WhatDo, Finishable>> subscriber) {
         watcherOrdersFinish.subscribe(subscriber);
     }
 
@@ -352,7 +357,7 @@ public class ThothLite {
     /**
      * Подписка на публикацию наступления даты получения покупки
      */
-    public void purchasesSubscribe(Flow.Subscriber<Finishable> subscriber) {
+    public void purchasesSubscribe(Flow.Subscriber<HashMap<WhatDo, Finishable>> subscriber) {
         watcherPurchasesFinish.subscribe(subscriber);
     }
 

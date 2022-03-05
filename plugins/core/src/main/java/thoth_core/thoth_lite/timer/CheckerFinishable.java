@@ -36,18 +36,19 @@ public class CheckerFinishable
     /**
      * Проверка запланированности задачи.
      * Если задача запланирована, функция возвращает объект задачи
-     * */
+     */
     private Finishable isFinishableNotificationPlanning(Identifiable identifiable) {
-        return taskMap.keySet()
+        Optional<Finishable> first = taskMap.keySet()
                 .stream()
                 .filter(finishable -> ((Identifiable) finishable).getId().equals(identifiable.getId()))
-                .findAny()
-                .get();
+                .findFirst();
+        if (first.isEmpty()) return null;
+        return first.get();
     }
 
     /**
      * Функция распределяет запланированные задачи для оповещения наступления даты
-     * */
+     */
     public void notificationPlanning(List<Finishable> finishables) {
         LocalDate currentDate = LocalDate.now();
 
@@ -56,43 +57,43 @@ public class CheckerFinishable
             Finishable finishablePlanning = isFinishableNotificationPlanning((Identifiable) finishable);
             boolean finishableIsPlan = finishablePlanning != null;
 
-            if(finishableIsPlan){
+            if (finishableIsPlan) {
                 //Ветка запланированной задачи
-                if(finishable.isFinish()){
-                    taskMap.get(finishable).cancel(true);
+                if (finishable.isFinish()) {
+                    taskMap.get(finishablePlanning).cancel(true);
+                    taskMap.remove(finishablePlanning);
                     notifySubscribers(wrappedFinishable(WhatDo.CANCEL, finishablePlanning));
                 }
-            }else{
+            } else {
                 //Ветка не запланированной задачи
-            }
+                if (finishable.isFinish()) continue;
 
-            LocalDate finishDate = finishable.finishDate();
-
-            int daysDelay = Period.between(currentDate, finishDate).getDays();
-
-            Runnable task = () -> notifySubscribers(finishable);
-
-            try {
-                if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getValue()) && (finishDate.isAfter(currentDate))) {
-                    taskMap.put(
-                            finishable, poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
-                    );
-                } else {
-                    poolExecutor.schedule(task, 1, TimeUnit.SECONDS);
+                LocalDate finishDate = finishable.finishDate();
+                int daysDelay = Period.between(currentDate, finishDate).getDays();
+                Runnable task = () -> notifySubscribers(wrappedFinishable(WhatDo.PLANNING, finishable));
+                try {
+                    if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getValue()) && (finishDate.isAfter(currentDate))) {
+                        taskMap.put(
+                                finishable,
+                                poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
+                        );
+                    } else {
+                        taskMap.put(
+                                finishable,
+                                poolExecutor.schedule(task, 1, TimeUnit.SECONDS)
+                        );
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            catch (ParseException e) {
-                e.printStackTrace();
-            }
-
 
         }
     }
 
-    private HashMap<WhatDo, Finishable> wrappedFinishable(WhatDo whatDo, Finishable finishable){
+    private HashMap<WhatDo, Finishable> wrappedFinishable(WhatDo whatDo, Finishable finishable) {
         HashMap<WhatDo, Finishable> res = new HashMap<>();
         res.put(whatDo, finishable);
         return res;
@@ -114,7 +115,7 @@ public class CheckerFinishable
         boolean hadSubscribers = publisher.hasSubscribers();
         publisher.subscribe(subscriber);
         if (!hadSubscribers) {
-            for (Finishable finishable : buffer) {
+            for (HashMap<WhatDo, Finishable> finishable : buffer) {
                 notifySubscribers(finishable);
                 buffer.remove(finishable);
             }

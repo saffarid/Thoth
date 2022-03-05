@@ -6,6 +6,7 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
+import thoth_core.thoth_lite.timer.WhatDo;
 import tools.BorderWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finishable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
@@ -14,13 +15,14 @@ import javafx.application.Platform;
 import layout.basepane.BorderPane;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.Flow;
 
 public class FinishableView
         extends BorderPane
         implements
-        Flow.Subscriber<Finishable> {
+        Flow.Subscriber<HashMap<WhatDo, Finishable>> {
 
     private final String NO_ELEMENTS_LABEL = "no_elements";
     private final double WIDTH_SIZE = 200;
@@ -83,6 +85,13 @@ public class FinishableView
 
     }
 
+    /**
+     * Функция удаляет Finishable-элемент из списка оповещения
+     * */
+    private void removeItem(Finishable finishable){
+        finishables.getValue().remove(finishable);
+    }
+
     public void setWidth(double width) {
         setMinWidth(width);
         setPrefWidth(width);
@@ -98,10 +107,17 @@ public class FinishableView
     }
 
     @Override
-    public void onNext(Finishable item) {
+    public void onNext(HashMap<WhatDo, Finishable> item) {
         //Обработка
-        addItem(item);
         this.subscription.request(1);
+        if (item.containsKey(WhatDo.PLANNING)){
+            addItem(item.get(WhatDo.PLANNING));
+            return;
+        }
+        if (item.containsKey(WhatDo.CANCEL)){
+            removeItem(item.get(WhatDo.CANCEL));
+            return;
+        }
     }
 
     @Override

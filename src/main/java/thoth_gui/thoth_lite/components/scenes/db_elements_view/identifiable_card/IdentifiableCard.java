@@ -68,7 +68,7 @@ public abstract class IdentifiableCard
     protected Identifiable identifiable;
     protected AvaliableTables table;
 
-    private Closeable closeable;
+    protected Closeable closeable;
 
     static {
         LOG = Logger.getLogger(IdentifiableCard.class.getName());

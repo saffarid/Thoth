@@ -81,17 +81,20 @@ public class PurchasableCard
         if(identifiableIsNew){
             super.apply();
         }else{
-
             if(toggleDelivered.isIsTrue()) {
                 ((Purchasable) identifiable).delivered();
             }
             try {
                 ThothLite.getInstance().acceptPurchase((Purchasable) identifiable);
-            } catch (NotContainsException e) {
+                closeable.close();
+            }
+            catch (NotContainsException e) {
                 e.printStackTrace();
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
 

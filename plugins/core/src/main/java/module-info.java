@@ -7,6 +7,7 @@ module thoth {
     exports thoth_core.thoth_lite.db_data.db_data_element.implement;
     exports thoth_core.thoth_lite.exceptions;
     exports thoth_core.thoth_lite.config;
+    exports thoth_core.thoth_lite.timer;
 
     requires java.sql;
     requires json.simple;
