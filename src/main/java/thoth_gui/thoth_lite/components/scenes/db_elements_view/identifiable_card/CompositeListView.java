@@ -1,11 +1,13 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
 import layout.basepane.GridPane;
@@ -20,10 +22,7 @@ import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
 
-import thoth_gui.thoth_lite.components.controls.Button;
-import thoth_gui.thoth_lite.components.controls.Label;
-import thoth_gui.thoth_lite.components.controls.TextField;
-import thoth_gui.thoth_lite.components.controls.Tooltip;
+import thoth_gui.thoth_lite.components.controls.*;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
@@ -38,7 +37,6 @@ import javafx.collections.FXCollections;
 import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
 import thoth_gui.thoth_styleconstants.svg.Images;
@@ -48,6 +46,7 @@ import tools.SvgWrapper;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
@@ -55,21 +54,6 @@ import java.util.regex.Pattern;
 
 public class CompositeListView
         extends BorderPane {
-
-    private final static String BACKET = "backet";
-
-    private final static String TITLE = "composite";
-    private final static String STORAGABLE = "storagable";
-    private final static String COUNT = Properties.getString("count", TextCase.NORMAL);
-    private final static String POS_COUNT = Properties.getString("pos_count", TextCase.NORMAL);
-    private final static String COUNT_TYPE = "count_type";
-    private final static String PRICE = Properties.getString("price", TextCase.NORMAL);
-    private final static String CURRENCY = "currency";
-    private final static String SEARCH = "search";
-
-    private final static String TOTAL = Properties.getString("total", TextCase.NORMAL);
-
-    private final String TOTAL_TEMPLATE = TOTAL + ":\t" + POS_COUNT + ": %1$s\t" + PRICE + ": %2$s";
 
     private enum SORT_BY implements SortBy {
         ID_UP("sort_by_id_up"),
@@ -90,8 +74,31 @@ public class CompositeListView
         }
     }
 
+    private final static String BACKET = Properties.getString("backet", TextCase.NORMAL);
+    private final static String TITLE = Properties.getString("composite", TextCase.NORMAL);
+    private final static String STORAGABLE = Properties.getString("storagable", TextCase.NORMAL);
+    private final static String COUNT = Properties.getString("count", TextCase.NORMAL);
+    private final static String POS_COUNT = Properties.getString("pos_count", TextCase.NORMAL);
+    private final static String COUNT_TYPE = Properties.getString("count_type", TextCase.NORMAL);
+    private final static String PRICE = Properties.getString("price", TextCase.NORMAL);
+    private final static String CURRENCY = Properties.getString("currency", TextCase.NORMAL);
+
+    private final static String SEARCH = Properties.getString("search", TextCase.NORMAL);
+    private final static String TOTAL = Properties.getString("total", TextCase.NORMAL);
+
+    private final String TOTAL_TEMPLATE = TOTAL + ":\t" + POS_COUNT + ": %1$s\t" + PRICE + ": %2$s";
+
     private final static double widthPallete = 50;
     private final static double maxWidthPallete = 200;
+
+    private final controls.Label title = Label.getInstanse(BACKET).setPadding(2);
+    private final controls.Label total = Label.getInstanse().setPadding(2);
+
+    private final SortPane sortPane = SortPane.getInstance()
+            .setSortItems(SORT_BY.values())
+            .setSortMethod(this::sort)
+            .setCell();
+    private controls.ComboBox<Finance> financeList = FinanceComboBox.getInstance();
 
     private final boolean identifiableIsNew;
 
@@ -99,21 +106,56 @@ public class CompositeListView
     private final SimpleDoubleProperty priceProperty = new SimpleDoubleProperty();
     private final SimpleStringProperty totalProperty = new SimpleStringProperty();
 
+    private final List<Storing> storings;
     private final SimpleListProperty<Storing> items;
+
+    private final controls.ListView<Storing> listView = ListView.getInstance();
 
     public CompositeListView(
             List<Storing> items
             , boolean identifiableIsNew
     ) {
         super();
-
-        this.items = new SimpleListProperty<>(FXCollections.observableList(items));
         this.identifiableIsNew = identifiableIsNew;
 
+        if (this.identifiableIsNew) {
+            storings = items;
+            this.items = new SimpleListProperty<>(FXCollections.observableList(new LinkedList<>()));
+        } else {
+            storings = null;
+//            this.items = new SimpleListProperty<>(FXCollections.observableList(items));
+            this.items = null;
+        }
 
-        setTop(createTitle());
+        total.textProperty().bind(totalProperty);
+
+        setTop(title);
         setCenter(createGrid());
+    }
 
+    private Node createGrid() {
+        GridPane content = new GridPane();
+
+        content.setBorder(
+                new BorderWrapper()
+                        .addTopBorder(1)
+//                        .addBottomBorder(1)
+                        .setColor(Color.GREY)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .commit()
+        );
+
+        content.setPadding(new Insets(2));
+
+        content
+                .addRow(Priority.ALWAYS)
+                .addColumn(widthPallete, widthPallete, maxWidthPallete, Priority.ALWAYS, HPos.RIGHT, true)
+                .addColumn(Priority.ALWAYS);
+
+        content.add(createPalette(), 0, 0);
+        content.add(createList(), 1, 0);
+
+        return content;
     }
 
     private Node createPalette() {
@@ -150,16 +192,16 @@ public class CompositeListView
 
         controls.getChildren().addAll(
                 createRow(
-                        Label.getInstanse(STORAGABLE, TextCase.NORMAL)
+                        Label.getInstanse(STORAGABLE)
                         , storagableComboBox
                 )
                 , createRow(
-                        Label.getInstanse(COUNT, TextCase.NORMAL)
+                        Label.getInstanse(COUNT)
                         , count
                         , countType
                 )
                 , createRow(
-                        Label.getInstanse(PRICE, TextCase.NORMAL)
+                        Label.getInstanse(PRICE)
                         , price
                         , financeComboBox
                 )
@@ -167,80 +209,13 @@ public class CompositeListView
 
         HBox buttons = new HBox();
         controls.Button add = Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30), event -> {
-            Storing newStoring = new Storing() {
-                private String id;
-                private Storagable product;
-                private Double count;
-                private Typable countType;
-                private Double price;
-                private Finance currency;
-
-                @Override
-                public Double getCount() {
-                    return count;
-                }
-
-                @Override
-                public String getId() {
-                    return id;
-                }
-
-                @Override
-                public Typable getCountType() {
-                    return countType;
-                }
-
-                @Override
-                public Storagable getStoragable() {
-                    return product;
-                }
-
-                @Override
-                public void setId(String id) {
-                    this.id = id;
-                }
-
-                @Override
-                public void setCount(Double count) {
-                    this.count = count;
-                }
-
-                @Override
-                public void setCountType(Typable countType) {
-                    this.countType = countType;
-                }
-
-                @Override
-                public void setStorageable(Storagable storageable) {
-                    this.product = storageable;
-                }
-
-                @Override
-                public Double getPrice() {
-                    return price;
-                }
-
-                @Override
-                public void setPrice(Double price) {
-                    this.price = price;
-                }
-
-                @Override
-                public Finance getCurrency() {
-                    return currency;
-                }
-
-                @Override
-                public void setCurrency(Finance currency) {
-                    this.currency = currency;
-                }
-            };
-
-            newStoring.setStorageable(storagableComboBox.getValue());
-            newStoring.setCount(Double.parseDouble(count.getText()));
-            newStoring.setCountType(storagableComboBox.getValue().getCountType());
-            newStoring.setPrice(Double.parseDouble(price.getText()));
-            newStoring.setCurrency(financeComboBox.getValue());
+            LocalStoringCell newStoring = new LocalStoringCell(
+                    storagableComboBox.getValue(),
+                    Double.parseDouble(count.getText()),
+                    storagableComboBox.getValue().getCountType(),
+                    Double.parseDouble(price.getText()),
+                    financeComboBox.getValue()
+            );
 
             //Нужна проверка на наличие продукта в списке
             //Флаг на наличине продукта в списке
@@ -254,15 +229,14 @@ public class CompositeListView
 
             //Если продукт уже есть в списке, то не добавляем его, необходимо выдавать оповещение что продукт уже добавлен.
             if (!alreadyExsist) {
-                items.add(
-                        newStoring
-                );
+                items.add(newStoring);
+                storings.add(newStoring);
             }
 
             storagableComboBox.setValue(null);
-            count.setText("");
+            count.setText("0.0");
 //            countType.setValue(countType.getItems().get(0));
-            price.setText("");
+            price.setText("0.0");
             financeComboBox.setValue(financeComboBox.getItems().get(0));
         });
         add.setTooltip(Tooltip.getInstance("add"));
@@ -282,37 +256,10 @@ public class CompositeListView
         return palette;
     }
 
-    private Node createGrid() {
-        GridPane content = new GridPane();
-
-        content.setBorder(
-                new BorderWrapper()
-                        .addTopBorder(1)
-//                        .addBottomBorder(1)
-                        .setColor(Color.GREY)
-                        .setStyle(BorderStrokeStyle.SOLID)
-                        .commit()
-        );
-
-        content.setPadding(new Insets(2));
-
-        content
-                .addRow(Priority.ALWAYS)
-                .addColumn(widthPallete, widthPallete, maxWidthPallete, Priority.ALWAYS, HPos.RIGHT, true)
-                .addColumn(Priority.ALWAYS);
-
-        content.add(createPalette(), 0, 0);
-        content.add(createList(), 1, 0);
-
-        return content;
-    }
-
     private Node createList() {
         BorderPane res = new BorderPane();
 
-        res.setPadding(new Insets(2));
-
-        ListView<Storing> listView = new ListView<>();
+        res.setPadding(new Insets(0, 0, 0, 2));
 
         listView.setBorder(
                 new BorderWrapper()
@@ -325,10 +272,16 @@ public class CompositeListView
         items.addListener((observableValue, storings, t1) -> {
 
             CompletableFuture.runAsync(() -> {
-                double price = -1
+                double price = 0;
+                for (Storing storing : items.getValue()) {
+                    price += storing.getPrice().doubleValue() * storing.getCount().doubleValue();
+                }
+                double finalPrice = price;
+                Platform.runLater(() ->
                         totalProperty.setValue(
-                                String.format(TOTAL_TEMPLATE, String.valueOf(items.getValue().size()), String.valueOf())
-                        );
+                                String.format(TOTAL_TEMPLATE, String.valueOf(items.getValue().size()), String.valueOf(finalPrice))
+                        ));
+
             });
 
             listView.setCellFactory(null);
@@ -346,11 +299,26 @@ public class CompositeListView
         });
         listView.setPadding(new Insets(0, 0, 2, 0));
 
-        res.setTop(getSortComboBox());
+        res.setTop(createToolsList());
         res.setCenter(listView);
-        res.setBottom(createTotal());
+        res.setBottom(total);
 
         return res;
+    }
+
+    private Node createToolsList() {
+        GridPane toolsList = new GridPane()
+                .addRow(Priority.NEVER)
+                .addColumn(Priority.NEVER)
+                .addColumn(Priority.NEVER);
+        toolsList.setHgap(5);
+        toolsList.setPadding(new Insets(0, 0, 2, 0));
+        sortPane.setValue(SORT_BY.ID_UP);
+
+        toolsList.add(sortPane, 0, 0);
+        toolsList.add(financeList, 1, 0);
+
+        return toolsList;
     }
 
     private Node createRow(
@@ -382,42 +350,8 @@ public class CompositeListView
         return res;
     }
 
-    private Node createTitle() {
-        HBox res = new HBox();
-
-        res.getChildren().addAll(
-                Label.getInstanse(BACKET, TextCase.NORMAL)
-        );
-
-        res.setPadding(new Insets(2));
-
-        return res;
-    }
-
-    private Node createTotal() {
-        HBox res = new HBox();
-
-        res.setPadding(new Insets(0));
-
-        controls.Label instanse = Label.getInstanse();
-        instanse.textProperty().bind(totalProperty);
-        res.getChildren().add(instanse);
-
-        return res;
-    }
-
     public List<Storing> getComposite() {
         return items.getValue();
-    }
-
-    private Node getSortComboBox() {
-        SortPane res = SortPane.getInstance()
-                .setSortItems(SORT_BY.values())
-                .setSortMethod(this::sort)
-                .setCell()
-                .setValue(SORT_BY.ID_UP);
-        res.setPadding(new Insets(2));
-        return res;
     }
 
     private void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1) {
@@ -440,11 +374,11 @@ public class CompositeListView
                 break;
             }
             case PRICE_UP: {
-                items.sort((o1, o2) -> o1.getCountType().getValue().compareTo(o2.getCountType().getValue()));
+                items.sort((o1, o2) -> o1.getPrice().compareTo(o2.getPrice()));
                 break;
             }
             case PRICE_DOWN: {
-                items.sort((o1, o2) -> o2.getCountType().getValue().compareTo(o1.getCountType().getValue()));
+                items.sort((o1, o2) -> o2.getPrice().compareTo(o1.getPrice()));
                 break;
             }
         }
@@ -663,4 +597,103 @@ public class CompositeListView
 
     }
 
+    private class LocalStoringCell
+            implements Storing {
+
+        private String id;
+        private Storagable product;
+        private Double count;
+        private Typable countType;
+        private Double price;
+        private Finance currency;
+        private Double course;
+
+        public LocalStoringCell(
+                String id
+                , Storagable product
+                , Double count
+                , Typable countType
+                , Double price
+                , Finance currency
+                , Double course
+        ) {
+            this.id = id;
+            this.product = product;
+            this.count = count;
+            this.countType = countType;
+            this.price = price;
+            this.currency = currency;
+        }
+
+        @Override
+        public Double getCount() {
+            return count;
+        }
+
+        @Override
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public Typable getCountType() {
+            return countType;
+        }
+
+        @Override
+        public Storagable getStoragable() {
+            return product;
+        }
+
+        @Override
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public void setCount(Double count) {
+            this.count = count;
+        }
+
+        @Override
+        public void setCountType(Typable countType) {
+            this.countType = countType;
+        }
+
+        @Override
+        public void setStorageable(Storagable storageable) {
+            this.product = storageable;
+        }
+
+        @Override
+        public Double getCourse() {
+            return course;
+        }
+
+        @Override
+        public void setCourse(Double course) {
+            this.course = course;
+        }
+
+        @Override
+        public Double getPrice() {
+            return price;
+        }
+
+        @Override
+        public void setPrice(Double price) {
+            this.price = price;
+        }
+
+        @Override
+        public Finance getCurrency() {
+            return currency;
+        }
+
+        @Override
+        public void setCurrency(Finance currency) {
+            this.currency = currency;
+        }
+
+    }
 }

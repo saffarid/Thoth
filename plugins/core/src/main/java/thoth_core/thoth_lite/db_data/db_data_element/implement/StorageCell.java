@@ -16,6 +16,7 @@ public class StorageCell
     private Typable countType;
     private Double price;
     private Finance currency;
+    private Double course;
 
     public StorageCell(
             String id
@@ -24,6 +25,7 @@ public class StorageCell
             , Typable countType
             , Double price
             , Finance currency
+            , Double course
     ) {
         this.id = id;
         this.product = product;
@@ -74,6 +76,16 @@ public class StorageCell
     }
 
     @Override
+    public Double getCourse() {
+        return course;
+    }
+
+    @Override
+    public void setCourse(Double course) {
+        this.course = course;
+    }
+
+    @Override
     public Double getPrice() {
         return price;
     }
@@ -92,4 +104,5 @@ public class StorageCell
     public void setCurrency(Finance currency) {
         this.currency = currency;
     }
+
 }

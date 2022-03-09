@@ -15,4 +15,7 @@ public interface Storing
     Storagable getStoragable();
     void setStorageable(Storagable storageable);
 
+    Double getCourse();
+    void setCourse(Double course);
+
 }

@@ -97,7 +97,8 @@ public class Purchases
                         Double.parseDouble(String.valueOf(row.get(StructureDescription.PurchasesComposition.COUNT))),
                         (Typable) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(StructureDescription.PurchasesComposition.COUNT_TYPE_ID))),
                         Double.parseDouble(String.valueOf(row.get(StructureDescription.PurchasesComposition.PRICE))),
-                        (Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(StructureDescription.PurchasesComposition.CURRENCY_ID)))
+                        (Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(StructureDescription.PurchasesComposition.CURRENCY_ID))),
+                        Double.parseDouble(String.valueOf(row.get(StructureDescription.PurchasesComposition.COURSE)))
                 ));
 
             } catch (NotContainsException e) {
