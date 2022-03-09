@@ -84,7 +84,6 @@ public class Purchases
      * Функция считывает состав покупки
      */
     private void readComposition(List<HashMap<String, Object>> data) {
-
         for(HashMap<String, Object> row : data){
 
             try {
@@ -106,7 +105,6 @@ public class Purchases
             }
 
         }
-
     }
 
     @Override

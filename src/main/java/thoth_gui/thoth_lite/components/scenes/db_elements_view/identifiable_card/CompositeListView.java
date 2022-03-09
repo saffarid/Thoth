@@ -6,7 +6,9 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 
+import javafx.event.ActionEvent;
 import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
@@ -14,10 +16,7 @@ import layout.basepane.GridPane;
 import layout.basepane.HBox;
 import layout.basepane.VBox;
 
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Storing;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
@@ -45,9 +44,7 @@ import tools.BorderWrapper;
 import tools.SvgWrapper;
 
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,9 +76,14 @@ public class CompositeListView
     private final static String STORAGABLE = Properties.getString("storagable", TextCase.NORMAL);
     private final static String COUNT = Properties.getString("count", TextCase.NORMAL);
     private final static String POS_COUNT = Properties.getString("pos_count", TextCase.NORMAL);
+    private final static String CURRENCIES = Properties.getString("currencies", TextCase.NORMAL);
     private final static String COUNT_TYPE = Properties.getString("count_type", TextCase.NORMAL);
+    private final static String PRICE_PER_UNIT = Properties.getString("price_per_unit", TextCase.NORMAL);
     private final static String PRICE = Properties.getString("price", TextCase.NORMAL);
-    private final static String CURRENCY = Properties.getString("currency", TextCase.NORMAL);
+    private final static String DEF_CURRENCY = Properties.getString("def_currency", TextCase.NORMAL);
+    private final static String COURSE = Properties.getString("course", TextCase.NORMAL);
+    private final static String CONV_PRICE_PER_UNIT = Properties.getString("conv_price_per_unit", TextCase.NORMAL);
+    private final static String CONV_PRICE = Properties.getString("conv_price", TextCase.NORMAL);
 
     private final static String SEARCH = Properties.getString("search", TextCase.NORMAL);
     private final static String TOTAL = Properties.getString("total", TextCase.NORMAL);
@@ -90,6 +92,9 @@ public class CompositeListView
 
     private final static double widthPallete = 50;
     private final static double maxWidthPallete = 200;
+
+    private final static double sizeSvg = 20;
+    private final static double sizeSvgViewbox = 30;
 
     private final controls.Label title = Label.getInstanse(BACKET).setPadding(2);
     private final controls.Label total = Label.getInstanse().setPadding(2);
@@ -103,8 +108,28 @@ public class CompositeListView
     private final boolean identifiableIsNew;
 
     private final SimpleDoubleProperty countProperty = new SimpleDoubleProperty();
+    private final SimpleDoubleProperty courseProperty = new SimpleDoubleProperty();
+    private final SimpleDoubleProperty pricePerUnitProperty = new SimpleDoubleProperty();
     private final SimpleDoubleProperty priceProperty = new SimpleDoubleProperty();
+    private final SimpleDoubleProperty convPricePerUnitProperty = new SimpleDoubleProperty();
+    private final SimpleDoubleProperty convPriceProperty = new SimpleDoubleProperty();
     private final SimpleStringProperty totalProperty = new SimpleStringProperty();
+
+    private final controls.ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
+    private final controls.TextField count = getTextField();
+    private final controls.TextField countType = TextField.getInstance();
+    private final controls.TextField pricePerUnit = getTextField();
+    private final controls.TextField price = getTextField();
+    private final controls.ComboBox<Finance> financeComboBox = FinanceComboBox.getInstance();
+    private final controls.TextField course = getTextField();
+    private final javafx.scene.control.CheckBox courseCurrency = CheckBox.getInstance();
+    private final controls.TextField convertedPricePerUnit = getTextField();
+    private final controls.TextField convertedPrice = getTextField();
+    private final controls.TextField convertedCurrency = TextField.getInstance(Currency.getInstance(Locale.getDefault()).getCurrencyCode());
+
+    private final controls.Button add =
+            Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), sizeSvg, sizeSvg, sizeSvgViewbox, sizeSvgViewbox), this::addItem)
+                    .setTool(Tooltip.getInstance("add"));
 
     private final List<Storing> storings;
     private final SimpleListProperty<Storing> items;
@@ -123,8 +148,7 @@ public class CompositeListView
             this.items = new SimpleListProperty<>(FXCollections.observableList(new LinkedList<>()));
         } else {
             storings = null;
-//            this.items = new SimpleListProperty<>(FXCollections.observableList(items));
-            this.items = null;
+            this.items = new SimpleListProperty<>(FXCollections.observableList(items));
         }
 
         total.textProperty().bind(totalProperty);
@@ -147,19 +171,28 @@ public class CompositeListView
 
         content.setPadding(new Insets(2));
 
-        content
-                .addRow(Priority.ALWAYS)
-                .addColumn(widthPallete, widthPallete, maxWidthPallete, Priority.ALWAYS, HPos.RIGHT, true)
-                .addColumn(Priority.ALWAYS);
+        if (identifiableIsNew) {
+            content
+                    .addRow(Priority.ALWAYS)
+                    .addColumn(widthPallete, widthPallete, maxWidthPallete, Priority.ALWAYS, HPos.RIGHT, true)
+                    .addColumn(Priority.ALWAYS);
 
-        content.add(createPalette(), 0, 0);
-        content.add(createList(), 1, 0);
+            content.add(createPalette(), 0, 0);
+            content.add(createList(), 1, 0);
+        } else {
+            content
+                    .addRow(Priority.ALWAYS)
+                    .addColumn(Priority.ALWAYS);
+
+            content.add(createList(), 0, 0);
+        }
 
         return content;
     }
 
     private Node createPalette() {
         BorderPane palette = new BorderPane();
+        palette.setDisable(!identifiableIsNew);
 
         VBox controls = new VBox();
         controls.setPadding(new Insets(0, 2, 0, 0));
@@ -171,24 +204,43 @@ public class CompositeListView
                         .commit()
         );
 
-        if (!identifiableIsNew) {
-            palette.setDisable(true);
-        }
-
-        controls.ComboBox<Storagable> storagableComboBox = getStoragableComboBox();
-        controls.TextField count = getTextField(COUNT);
-        controls.Label countType = Label.getInstanse();
-        controls.TextField price = getTextField(PRICE);
-        controls.ComboBox<Finance> financeComboBox = FinanceComboBox.getInstance();
-
         Bindings.bindBidirectional(count.textProperty(), countProperty, new StringDoubleConverter());
+        Bindings.bindBidirectional(course.textProperty(), courseProperty, new StringDoubleConverter());
         Bindings.bindBidirectional(price.textProperty(), priceProperty, new StringDoubleConverter());
+        Bindings.bindBidirectional(pricePerUnit.textProperty(), pricePerUnitProperty, new StringDoubleConverter());
+        Bindings.bindBidirectional(convertedPricePerUnit.textProperty(), convPricePerUnitProperty, new StringDoubleConverter());
+        Bindings.bindBidirectional(convertedPrice.textProperty(), convPriceProperty, new StringDoubleConverter());
 
         storagableComboBox.valueProperty().addListener((observableValue, storagable, t1) -> {
             if (t1 != null) {
                 countType.setText(t1.getCountType().getValue());
             }
         });
+
+        countType.setEditable(false);
+        convertedCurrency.setEditable(false);
+        convertedPricePerUnit.setEditable(false);
+        price.setEditable(false);
+        convertedPrice.setEditable(false);
+
+        financeComboBox.valueProperty().addListener((observableValue, finance, t1) -> {
+            if (t1 == null) return;
+            courseCurrency.setSelected(
+                    t1.getCurrency().getCurrencyCode().equals(Currency.getInstance(Locale.getDefault()).getCurrencyCode())
+            );
+        });
+
+        course.editableProperty().bind(courseCurrency.selectedProperty().not());
+
+        courseCurrency.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1) {
+                course.setText(financeComboBox.getValue().getCourse().toString());
+            }
+        });
+
+        priceProperty.bind(countProperty.multiply(pricePerUnitProperty));
+        convPricePerUnitProperty.bind(pricePerUnitProperty.multiply(courseProperty));
+        convPriceProperty.bind(countProperty.multiply(convPricePerUnitProperty));
 
         controls.getChildren().addAll(
                 createRow(
@@ -201,51 +253,36 @@ public class CompositeListView
                         , countType
                 )
                 , createRow(
-                        Label.getInstanse(PRICE)
-                        , price
+                        Label.getInstanse(CURRENCIES)
                         , financeComboBox
+                )
+                , createRow(
+                        new Pane()
+                        , wrap(Label.getInstanse(PRICE_PER_UNIT), pricePerUnit)
+                        , wrap(Label.getInstanse(PRICE), price)
+                )
+                , createRow(
+                        Label.getInstanse(COURSE)
+                        , course
+                        , courseCurrency
+                )
+                , createRow(
+                        Label.getInstanse(DEF_CURRENCY)
+                        , convertedCurrency
+                )
+                , createRow(
+                        new Pane()
+                        , wrap(Label.getInstanse(PRICE_PER_UNIT), convertedPricePerUnit)
+                        , wrap(Label.getInstanse(PRICE), convertedPrice)
                 )
         );
 
-        HBox buttons = new HBox();
-        controls.Button add = Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), 20, 20, 30, 30), event -> {
-            LocalStoringCell newStoring = new LocalStoringCell(
-                    storagableComboBox.getValue(),
-                    Double.parseDouble(count.getText()),
-                    storagableComboBox.getValue().getCountType(),
-                    Double.parseDouble(price.getText()),
-                    financeComboBox.getValue()
-            );
-
-            //Нужна проверка на наличие продукта в списке
-            //Флаг на наличине продукта в списке
-            boolean alreadyExsist = false;
-
-            for (Storing storing : items.getValue()) {
-                if (storing.getStoragable().equals(newStoring.getStoragable())) {
-                    alreadyExsist = true;
-                }
-            }
-
-            //Если продукт уже есть в списке, то не добавляем его, необходимо выдавать оповещение что продукт уже добавлен.
-            if (!alreadyExsist) {
-                items.add(newStoring);
-                storings.add(newStoring);
-            }
-
-            storagableComboBox.setValue(null);
-            count.setText("0.0");
-//            countType.setValue(countType.getItems().get(0));
-            price.setText("0.0");
-            financeComboBox.setValue(financeComboBox.getItems().get(0));
-        });
-        add.setTooltip(Tooltip.getInstance("add"));
-
         add.disableProperty().bind(storagableComboBox.valueProperty().isNull()
                 .or(countProperty.lessThanOrEqualTo(StringDoubleConverter.countMin + 0.0001))
-                .or(priceProperty.lessThanOrEqualTo(StringDoubleConverter.priceMin)))
+                .or(pricePerUnitProperty.lessThanOrEqualTo(StringDoubleConverter.priceMin)))
         ;
 
+        HBox buttons = new HBox();
         buttons.getChildren().addAll(
                 add
         );
@@ -256,9 +293,39 @@ public class CompositeListView
         return palette;
     }
 
+    private void addItem(ActionEvent event) {
+        LocalStoringCell newStoring = new LocalStoringCell(
+                storagableComboBox.getValue(),
+                Double.parseDouble(count.getText()),
+                storagableComboBox.getValue().getCountType(),
+                Double.parseDouble(pricePerUnit.getText()),
+                financeComboBox.getValue(),
+                Double.parseDouble(course.getText())
+        );
+
+        //Нужна проверка на наличие продукта в списке
+        //Флаг на наличине продукта в списке
+        boolean alreadyExsist = false;
+
+        for (Storing storing : items.getValue()) {
+            if (storing.getStoragable().equals(newStoring.getStoragable())) {
+                alreadyExsist = true;
+            }
+        }
+
+        //Если продукт уже есть в списке, то не добавляем его, необходимо выдавать оповещение что продукт уже добавлен.
+        if (!alreadyExsist) {
+            items.add(newStoring);
+            storings.add(newStoring);
+        }
+
+        storagableComboBox.setValue(null);
+        count.setText("0.0");
+        pricePerUnit.setText("0.0");
+    }
+
     private Node createList() {
         BorderPane res = new BorderPane();
-
         res.setPadding(new Insets(0, 0, 0, 2));
 
         listView.setBorder(
@@ -298,10 +365,13 @@ public class CompositeListView
             }
         });
         listView.setPadding(new Insets(0, 0, 2, 0));
+        listView.setMaxWidth(750);
 
         res.setTop(createToolsList());
         res.setCenter(listView);
         res.setBottom(total);
+
+        BorderPane.setAlignment(listView, Pos.CENTER_LEFT);
 
         return res;
     }
@@ -316,7 +386,7 @@ public class CompositeListView
         sortPane.setValue(SORT_BY.ID_UP);
 
         toolsList.add(sortPane, 0, 0);
-        toolsList.add(financeList, 1, 0);
+//        toolsList.add(financeList, 1, 0);
 
         return toolsList;
     }
@@ -405,46 +475,40 @@ public class CompositeListView
         return res;
     }
 
-    private controls.TextField getTextField(String id) {
-        return getTextField(id, null);
-    }
-
-    private controls.TextField getTextField(
-            String id
-            , String text
-    ) {
+    private controls.TextField getTextField() {
         controls.TextField res = TextField.getInstance();
-        res.setId(id);
 
-        if (text != null) {
-            res.setText(text);
-        } else {
-            res.setText(String.valueOf(0.0));
-        }
+        res.setText(String.valueOf(0.0));
 
         res.textProperty().addListener((observableValue, s, t1) -> {
-            if (!t1.equals("")) {
-                Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
-                Matcher matcher = pattern.matcher(t1);
+            if (t1.equals("")) return;
 
-                if (!matcher.matches()) {
-                    res.setText(s);
-                }
+            Pattern pattern = Pattern.compile("^[0-9]*[.]?[0-9]*$");
+            Matcher matcher = pattern.matcher(t1);
+
+            if (!matcher.matches()) {
+                res.setText(s);
             }
         });
 
         res.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 == false) {
+            if (!t1) {
                 if (res.getText().equals("")) {
                     res.setText(String.valueOf(0.0));
                 }
             }
         });
 
-        res.setMinWidth(75);
-        res.setPrefWidth(75);
-        res.setMaxWidth(75);
+        return res;
+    }
 
+    private VBox wrap(
+            Node title,
+            Node node
+    ) {
+        VBox res = new VBox();
+        res.setSpacing(2);
+        res.getChildren().addAll(title, node);
         return res;
     }
 
@@ -491,11 +555,9 @@ public class CompositeListView
 
         private final static String CLASS_NAME = "composite-cell-content";
 
-        private final static String TEMPLATE_NAME = "%1s-%2s";
-        private final static String TEMPLATE_COUNT = "%1s: %2s";
-        private final static String COUNT = "count";
-        private final static String COUNT_TYPE = "count_type";
-        private final static String PRICE = "price";
+        private final static String COUNT_TEMPLATE = "%1$.4f %2$s";
+        private final static String FINANCE_TEMPLATE = "%1$.2f %2$s";
+        private final static String CONV_FINANCE_TEMPLATE = "%1$s / %2$s";
 
         private Storing storing;
 
@@ -550,51 +612,45 @@ public class CompositeListView
 
             res
                     .addRow(Priority.NEVER)
-                    .addColumn(200, 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
-                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true);
+                    .addColumn(100, 100, Double.MAX_VALUE, Priority.SOMETIMES, HPos.CENTER, true) //Артикул
+                    .addColumn(100, 100, Double.MAX_VALUE, Priority.SOMETIMES, HPos.CENTER, true) //Наименование
+                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.CENTER, true) //Кол-во
+                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.CENTER, true) //Цена
+                    .addColumn(50, 50, Double.MAX_VALUE, Priority.ALWAYS, HPos.CENTER, true) //Цена итого
+            ;
 
-            res.add(
-                    Label.getInstanse(
-                            String.format(TEMPLATE_NAME, storing.getStoragable().getId(), storing.getStoragable().getName())
-                    )
-                    , 0, 0
-            );
-            res.add(
-                    Label.getInstanse(
-                            String.format(TEMPLATE_COUNT, COUNT, storing.getCount())
-                    )
-                    , 1, 0
-            );
-            res.add(
-                    Label.getInstanse(
-                            storing.getCountType().getValue()
-                    )
-                    , 2, 0
-            );
-            res.add(
-                    Label.getInstanse(
-                            String.format(TEMPLATE_COUNT, PRICE, storing.getPrice())
-                    )
-                    , 3, 0
-            );
-            res.add(
-                    Label.getInstanse(
-                            storing.getCurrency().getCurrency().getCurrencyCode()
-                    )
-                    , 4, 0
-            );
-            res.add(
-                    createRemoveButton()
-                    , 5, 0
-            );
+            res.add(Label.getInstanse(storing.getStoragable().getId()), 0, 0);
+            res.add(Label.getInstanse(storing.getStoragable().getName()), 1, 0);
+            res.add(Label.getInstanse(String.format(COUNT_TEMPLATE, storing.getCount().doubleValue(), storing.getStoragable().getCountType().getValue())), 2, 0);
+            if (storing.getCurrency().getCurrency().getCurrencyCode().equals(Currency.getInstance(Locale.getDefault()).getCurrencyCode())) {
+                res.add(
+                        Label.getInstanse(
+                                String.format(FINANCE_TEMPLATE, storing.getPrice(), storing.getCurrency().getCurrency().getCurrencyCode())
+                        )
+                        , 3, 0
+                );
+                res.add(
+                        Label.getInstanse(
+                                String.format(FINANCE_TEMPLATE, storing.getPrice().doubleValue() * storing.getCount().doubleValue(), storing.getCurrency().getCurrency().getCurrencyCode())
+                        )
+                        , 4, 0
+                );
+            } else {
+                res.add(
+                        Label.getInstanse(
+                                String.format(
+                                        CONV_FINANCE_TEMPLATE,
+                                        String.format(FINANCE_TEMPLATE, storing.getPrice().doubleValue() * storing.getCount().doubleValue(), storing.getCurrency().getCurrency().getCurrencyCode()),
+                                        String.format(FINANCE_TEMPLATE, storing.getPrice().doubleValue() * storing.getCount().doubleValue() * storing.getCourse().doubleValue(), Currency.getInstance(Locale.getDefault()).getCurrencyCode())
+                                )
+                        )
+                        , 4, 0
+                );
+            }
+
 
             return res;
         }
-
     }
 
     private class LocalStoringCell
@@ -609,8 +665,7 @@ public class CompositeListView
         private Double course;
 
         public LocalStoringCell(
-                String id
-                , Storagable product
+                Storagable product
                 , Double count
                 , Typable countType
                 , Double price
@@ -623,6 +678,7 @@ public class CompositeListView
             this.countType = countType;
             this.price = price;
             this.currency = currency;
+            this.course = course;
         }
 
         @Override

@@ -33,6 +33,7 @@ public class StorageCell
         this.countType = countType;
         this.price = price;
         this.currency = currency;
+        this.course = course;
     }
 
     @Override
