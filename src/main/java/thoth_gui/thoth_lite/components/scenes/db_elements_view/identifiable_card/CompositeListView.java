@@ -206,10 +206,7 @@ public class CompositeListView
 
         Bindings.bindBidirectional(count.textProperty(), countProperty, new StringDoubleConverter());
         Bindings.bindBidirectional(course.textProperty(), courseProperty, new StringDoubleConverter());
-        Bindings.bindBidirectional(price.textProperty(), priceProperty, new StringDoubleConverter());
         Bindings.bindBidirectional(pricePerUnit.textProperty(), pricePerUnitProperty, new StringDoubleConverter());
-        Bindings.bindBidirectional(convertedPricePerUnit.textProperty(), convPricePerUnitProperty, new StringDoubleConverter());
-        Bindings.bindBidirectional(convertedPrice.textProperty(), convPriceProperty, new StringDoubleConverter());
 
         storagableComboBox.valueProperty().addListener((observableValue, storagable, t1) -> {
             if (t1 != null) {
@@ -241,6 +238,10 @@ public class CompositeListView
         priceProperty.bind(countProperty.multiply(pricePerUnitProperty));
         convPricePerUnitProperty.bind(pricePerUnitProperty.multiply(courseProperty));
         convPriceProperty.bind(countProperty.multiply(convPricePerUnitProperty));
+
+        price.textProperty().bind(priceProperty.asString());
+        convertedPricePerUnit.textProperty().bind(convPricePerUnitProperty.asString());
+        convertedPrice.textProperty().bind(convPriceProperty.asString());
 
         controls.getChildren().addAll(
                 createRow(
