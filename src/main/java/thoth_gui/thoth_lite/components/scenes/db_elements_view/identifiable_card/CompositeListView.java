@@ -71,6 +71,8 @@ public class CompositeListView
         }
     }
 
+
+    private final static String USE_COURSE_FROM_FINANCE = Properties.getString("use_course_from_finance", TextCase.NORMAL);
     private final static String BACKET = Properties.getString("backet", TextCase.NORMAL);
     private final static String TITLE = Properties.getString("composite", TextCase.NORMAL);
     private final static String STORAGABLE = Properties.getString("storagable", TextCase.NORMAL);
@@ -169,7 +171,7 @@ public class CompositeListView
                         .commit()
         );
 
-        content.setPadding(new Insets(2));
+        content.setPadding(new Insets(0));
 
         if (identifiableIsNew) {
             content
@@ -244,34 +246,34 @@ public class CompositeListView
         convertedPrice.textProperty().bind(convPriceProperty.asString());
 
         controls.getChildren().addAll(
-                createRow(
+                Row.getInstance(
                         Label.getInstanse(STORAGABLE)
                         , storagableComboBox
                 )
-                , createRow(
+                , Row.getInstance(
                         Label.getInstanse(COUNT)
                         , count
                         , countType
                 )
-                , createRow(
+                , Row.getInstance(
                         Label.getInstanse(CURRENCIES)
                         , financeComboBox
                 )
-                , createRow(
+                , Row.getInstance(
                         new Pane()
                         , wrap(Label.getInstanse(PRICE_PER_UNIT), pricePerUnit)
                         , wrap(Label.getInstanse(PRICE), price)
                 )
-                , createRow(
+                , Row.getInstance(
                         Label.getInstanse(COURSE)
                         , course
                         , courseCurrency
                 )
-                , createRow(
+                , Row.getInstance(
                         Label.getInstanse(DEF_CURRENCY)
                         , convertedCurrency
                 )
-                , createRow(
+                , Row.getInstance(
                         new Pane()
                         , wrap(Label.getInstanse(PRICE_PER_UNIT), convertedPricePerUnit)
                         , wrap(Label.getInstanse(PRICE), convertedPrice)
@@ -327,7 +329,7 @@ public class CompositeListView
 
     private Node createList() {
         BorderPane res = new BorderPane();
-        res.setPadding(new Insets(0, 0, 0, 2));
+        res.setPadding(new Insets(2, 0, 2, 2));
 
         listView.setBorder(
                 new BorderWrapper()
@@ -365,13 +367,13 @@ public class CompositeListView
                 }
             }
         });
-        listView.setPadding(new Insets(0, 0, 2, 0));
-        listView.setMaxWidth(750);
+        listView.setPadding(new Insets(2));
 
         res.setTop(createToolsList());
         res.setCenter(listView);
         res.setBottom(total);
 
+        BorderPane.setMargin(listView, new Insets(1, 0, 2, 0));
         BorderPane.setAlignment(listView, Pos.CENTER_LEFT);
 
         return res;
@@ -387,38 +389,8 @@ public class CompositeListView
         sortPane.setValue(SORT_BY.ID_UP);
 
         toolsList.add(sortPane, 0, 0);
-//        toolsList.add(financeList, 1, 0);
 
         return toolsList;
-    }
-
-    private Node createRow(
-            Node titleNode
-            , Node... enterNodes
-    ) {
-        VBox res = new VBox();
-
-        res.setAlignment(Pos.TOP_LEFT);
-        res.setFillWidth(true);
-        res.setPadding(new Insets(2));
-        res.setSpacing(5);
-
-        if (enterNodes.length > 1) {
-            HBox hBox = new HBox(enterNodes);
-            hBox.setSpacing(2);
-
-            res.getChildren().addAll(
-                    titleNode
-                    , hBox
-            );
-        } else {
-            res.getChildren().addAll(
-                    titleNode
-                    , Arrays.stream(enterNodes).findFirst().get()
-            );
-        }
-
-        return res;
     }
 
     public List<Storing> getComposite() {

@@ -64,8 +64,10 @@ public abstract class IdentifiableCard
         }
     }
 
+    protected final SimpleObjectProperty<Identifiable> identifiable = new SimpleObjectProperty<>(null);
+
     protected boolean identifiableIsNew;
-    protected Identifiable identifiable;
+//    protected Identifiable identifiable;
     protected AvaliableTables table;
 
     protected Closeable closeable;
@@ -79,25 +81,29 @@ public abstract class IdentifiableCard
             , AvaliableTables table
     ) {
 
-        if (identifiable != null) {
-            this.identifiable = identifiable;
-            identifiableIsNew = false;
-        } else {
-            this.identifiable = identifiableInstance();
-            identifiableIsNew = true;
-        }
-        this.table = table;
         GuiLogger.log.info("Show card " + this.table);
-        content = new SimpleObjectProperty<>(createContentNode());
+        content = new SimpleObjectProperty<>(null);
+        this.table = table;
+        this.identifiable.addListener((observableValue, identifiable1, t1) -> {
+            content.setValue(createContentNode());
+        });
+
+        if (identifiable != null) {
+            identifiableIsNew = false;
+            this.identifiable.setValue(identifiable);
+        } else {
+            identifiableIsNew = true;
+            this.identifiable.setValue(identifiableInstance());
+        }
     }
 
     @Override
     public void apply() {
         LOG.log(Level.INFO, identifiable.toString());
-        if (identifiable != null) {
+        if (identifiable.getValue() != null) {
             updateIdentifiable();
             List<Identifiable> list = new LinkedList<>();
-            list.add(identifiable);
+            list.add(identifiable.getValue());
             try {
                 if (identifiableIsNew) {
                     GuiLogger.log.info("Insert into " + this.table);

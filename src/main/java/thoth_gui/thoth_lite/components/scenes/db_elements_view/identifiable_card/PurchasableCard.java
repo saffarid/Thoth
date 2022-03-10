@@ -5,8 +5,12 @@ import controls.Toggle;
 import controls.Twin;
 import javafx.beans.property.SimpleObjectProperty;
 
+import javafx.geometry.Pos;
+import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.Priority;
 
+import javafx.scene.paint.Color;
+import layout.basepane.BorderPane;
 import layout.basepane.GridPane;
 
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
@@ -29,6 +33,7 @@ import thoth_gui.thoth_lite.components.controls.TextField;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
 import thoth_gui.thoth_lite.tools.TextCase;
+import tools.BorderWrapper;
 
 
 import java.sql.SQLException;
@@ -82,10 +87,10 @@ public class PurchasableCard
             super.apply();
         }else{
             if(toggleDelivered.isIsTrue()) {
-                ((Purchasable) identifiable).delivered();
+                ((Purchasable) identifiable.getValue()).delivered();
             }
             try {
-                ThothLite.getInstance().acceptPurchase((Purchasable) identifiable);
+                ThothLite.getInstance().acceptPurchase((Purchasable) identifiable.getValue());
                 closeable.close();
             }
             catch (NotContainsException e) {
@@ -103,6 +108,7 @@ public class PurchasableCard
 
     @Override
     protected Node createToolsNode() {
+        apply.setDisable(((Purchasable)identifiable.getValue()).isDelivered());
         return ( (ToolsPane) super.createToolsNode() )
                 .setTitleText( identifiableIsNew ? newPurchase : purchase );
     }
@@ -111,7 +117,16 @@ public class PurchasableCard
     protected Node createContentNode() {
         super.createContentNode();
 
-        toggleDelivered = new Toggle(((Purchasable)identifiable).isDelivered());
+        contentNode.setBorder(
+                new BorderWrapper()
+                        .addRightBorder(1)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .setColor(Color.GREY)
+                        .commit()
+        );
+
+        toggleDelivered = new Toggle(((Purchasable)identifiable.getValue()).isDelivered());
+        toggleDelivered.setDisable(((Purchasable)identifiable.getValue()).isDelivered());
 
         GridPane content = new GridPane();
 
@@ -124,7 +139,7 @@ public class PurchasableCard
                 .addRow(Priority.NEVER)
                 .addRow(Priority.NEVER)
                 .addRow(Priority.ALWAYS)
-                .addColumn(Priority.ALWAYS)
+                .addColumn(Priority.SOMETIMES)
                 .addColumn(Priority.ALWAYS)
         ;
 
@@ -138,7 +153,7 @@ public class PurchasableCard
 
         content.add( getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id, TextCase.NORMAL), toggleDelivered), 1, 0 );
 
-        content.add( new CompositeListView(((Purchasable) identifiable).getComposition(), identifiableIsNew), 0, 3, 2, 1 );
+        content.add( new CompositeListView(((Purchasable) identifiable.getValue()).getComposition(), identifiableIsNew), 0, 3, 2, 1 );
 
         contentNode.setCenter(content);
 
@@ -185,7 +200,7 @@ public class PurchasableCard
     }
 
     private DatePicker getDatePicker(){
-        DatePicker datePicker = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance(((Purchasable) identifiable).finishDate());
+        DatePicker datePicker = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance(((Purchasable) identifiable.getValue()).finishDate());
 
         if(!identifiableIsNew){
             datePicker.setDisable(true);
@@ -200,7 +215,7 @@ public class PurchasableCard
 
         switch (id) {
             case TRACK_NUMBER: {
-                res.setText(((Purchasable) identifiable).getId());
+                res.setText(((Purchasable) identifiable.getValue()).getId());
                 break;
             }
         }
@@ -330,9 +345,9 @@ public class PurchasableCard
 
     @Override
     protected void updateIdentifiable() {
-        ((Purchasable)identifiable).setId(trackNumber.getText());
-        ((Purchasable)identifiable).setPartner((Partnership) store.getValue());
-        ((Purchasable)identifiable).setFinishDate(datePicker.getValue());
+        ((Purchasable)identifiable.getValue()).setId(trackNumber.getText());
+        ((Purchasable)identifiable.getValue()).setPartner((Partnership) store.getValue());
+        ((Purchasable)identifiable.getValue()).setFinishDate(datePicker.getValue());
     }
 
     private class PartnerCell

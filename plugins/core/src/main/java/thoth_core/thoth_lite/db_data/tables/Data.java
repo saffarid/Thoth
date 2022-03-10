@@ -28,12 +28,14 @@ public abstract class Data<T extends Identifiable>
         publisher = new SubmissionPublisher<>();
     }
 
+
     public void addData(T data) {
         if (!contains(data)) datas.add(data);
     }
 
-
-
+    /**
+     * Проверка существования записи в таблице
+     * */
     public boolean contains(T data) {
         return datas
                 .stream()
@@ -59,12 +61,19 @@ public abstract class Data<T extends Identifiable>
      * */
     public abstract HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list);
 
+    /**
+     * @param id идентификатор объекта
+     * @return Объект таблицы с заданным идентификатором
+     * */
     public T getById(String id) throws NotContainsException {
         Optional<T> element = datas.stream().filter(t -> t.getId().equals(id)).findFirst();
         if (!element.isPresent()) throw new NotContainsException();
         return element.get();
     }
 
+    /**
+     * @return полный список записей таблицы
+     * */
     public List<T> getDatas() {
         return datas;
     }
@@ -85,9 +94,11 @@ public abstract class Data<T extends Identifiable>
         this.name = name;
     }
 
+    /**
+     * Функция осуществляет подписку на таблицу
+     * */
     @Override
     public void subscribe(Flow.Subscriber subscriber) {
-        ThothLite.LOG.log(Level.INFO, name + "/Subscribers = " + publisher.getSubscribers().size());
         if (!publisher.isSubscribed(subscriber)) {
             publisher.subscribe(subscriber);
         }

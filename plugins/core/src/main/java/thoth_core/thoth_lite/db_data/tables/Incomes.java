@@ -34,8 +34,10 @@ public class Incomes
     public HashMap< String, List< HashMap<String, Object> > > convertToMap(List<? extends Identifiable> list) {
         HashMap<String, List<HashMap<String, Object>>> res = new HashMap<>();
         List<HashMap<String, Object>> data = new LinkedList<>();
-        for (FinancialAccounting financialAccounting : datas) {
+        for (Identifiable identifiable : list) {
             HashMap<String, Object> row = new HashMap<>();
+
+            FinancialAccounting financialAccounting = (FinancialAccounting) identifiable;
 
             row.put(INCOMES_TYPE_ID, financialAccounting.getCategory().getValue());
             row.put(VALUE, financialAccounting.getValue());
@@ -59,7 +61,7 @@ public class Incomes
                 datas.add(
                         new FinancialOperation(
                                 String.valueOf(row.get(ID)),
-                                (Typable) getFromTableById(StructureDescription.ExpensesTypes.TABLE_NAME, String.valueOf(row.get(EXPENSES_TYPE_ID))),
+                                (Typable) getFromTableById(StructureDescription.IncomesTypes.TABLE_NAME, String.valueOf(row.get(INCOMES_TYPE_ID))),
                                 (Double) row.get(VALUE),
                                 LocalDate.parse((String) row.get(DATE)),
                                 (row.get(CURRENCY_ID) == null)?(null):((Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(CURRENCY_ID)))),

@@ -1,11 +1,11 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
+import controls.ComboBox;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-import javafx.scene.control.ContentDisplay;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
@@ -21,8 +21,6 @@ import thoth_gui.thoth_lite.components.controls.*;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
 import thoth_gui.thoth_lite.tools.TextCase;
-import thoth_gui.thoth_styleconstants.svg.Images;
-import tools.SvgWrapper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,12 +33,12 @@ public class StoragableCard
 
     private controls.TextField article;
     private controls.TextField name;
-    private controls.ComboBox type;
-    private controls.ComboBox adress;
+    private ComboBox<Typable>  type;
+    private ComboBox<Typable>  adress;
     private controls.TextField count;
-    private DoubleProperty countProperty;
-    private controls.ComboBox countType;
-    private controls.TextArea note;
+    private DoubleProperty     countProperty;
+    private ComboBox<Typable>  countType;
+    private controls.TextArea  note;
 
     private enum ControlsId {
         ARTICLE("article"),
@@ -72,19 +70,18 @@ public class StoragableCard
 
         VBox vBox = new VBox();
 
+        article = getTextField(ControlsId.ARTICLE);;
+        name = getTextField(ControlsId.NAME);
+        type = TypableComboBox.getInstance(AvaliableTables.PRODUCT_TYPES, ((Storagable) identifiable.getValue()).getType());
+        adress = TypableComboBox.getInstance(AvaliableTables.STORING, ((Storagable) identifiable.getValue()).getAdress());
+        count = getTextField(ControlsId.COUNT);
         countProperty = new SimpleDoubleProperty();
-
-        this.article = getTextField(ControlsId.ARTICLE);
-        this.name = getTextField(ControlsId.NAME);
-        this.type = TypableComboBox.getInstance(AvaliableTables.PRODUCT_TYPES, ((Storagable) identifiable).getType());
-        this.count = getTextField(ControlsId.COUNT);
-        this.countType = TypableComboBox.getInstance(AvaliableTables.COUNT_TYPES, ((Storagable) identifiable).getCountType());
-        this.adress = TypableComboBox.getInstance(AvaliableTables.STORING, ((Storagable) identifiable).getAdress());
-        this.note = TextArea.getInstance();
+        countType = TypableComboBox.getInstance(AvaliableTables.COUNT_TYPES, ((Storagable) identifiable.getValue()).getCountType());
+        note = TextArea.getInstance();
 
         Bindings.bindBidirectional(this.count.textProperty(), countProperty, new StringDoubleConverter());
 
-        note.setText(((Storagable) identifiable).getNote());
+        note.setText(((Storagable) identifiable.getValue()).getNote());
 
         apply.disableProperty().bind(
                 article.textProperty().isEqualTo("")
@@ -104,28 +101,28 @@ public class StoragableCard
         );
 
         vBox.getChildren().addAll(
-                createRow(
+                Row.getInstance(
                         Label.getInstanse(ControlsId.ARTICLE.id, TextCase.NORMAL),
                         article
                 )
-                , createRow(
+                , Row.getInstance(
                         Label.getInstanse(ControlsId.NAME.id, TextCase.NORMAL),
                         name
                 )
-                , createRow(
+                , Row.getInstance(
                         Label.getInstanse(ControlsId.PRODUCT_TYPE.id, TextCase.NORMAL),
                         type
                 )
-                , createRow(
+                , Row.getInstance(
                         Label.getInstanse(ControlsId.COUNT.id, TextCase.NORMAL),
                         count
                 )
-                , createRow(
-                        Label.getInstanse( ControlsId.ADRESS.id, TextCase.NORMAL )
-                                .setInfoGraph( LabeledInfoGraphic.getInstance("Расположение продукта") ),
+                , Row.getInstance(
+                        Label.getInstanse(ControlsId.ADRESS.id, TextCase.NORMAL)
+                                .setInfoGraph(LabeledInfoGraphic.getInstance("Расположение продукта")),
                         adress
                 )
-                , createRow(
+                , Row.getInstance(
                         Label.getInstanse(ControlsId.NOTE.id, TextCase.NORMAL),
                         note
                 )
@@ -138,26 +135,8 @@ public class StoragableCard
 
     @Override
     protected Node createToolsNode() {
-        return ( (ToolsPane) super.createToolsNode() )
-                .setTitleText( identifiableIsNew ? newStoragable : storagable );
-    }
-
-    private Node createRow(
-            Node titleNode
-            , Node enterNode
-    ) {
-        VBox res = new VBox();
-
-        res.setAlignment(Pos.TOP_LEFT);
-        res.setFillWidth(true);
-        res.setPadding(new Insets(2));
-
-        res.getChildren().addAll(
-                titleNode
-                , enterNode
-        );
-
-        return res;
+        return ((ToolsPane) super.createToolsNode())
+                .setTitleText(identifiableIsNew ? newStoragable : storagable);
     }
 
     private controls.TextField getTextField(ControlsId id) {
@@ -166,15 +145,15 @@ public class StoragableCard
 
         switch (id) {
             case ARTICLE: {
-                res.setText(identifiable.getId());
+                res.setText(identifiable.getValue().getId());
                 break;
             }
             case NAME: {
-                res.setText(((Storagable) identifiable).getName());
+                res.setText(((Storagable) identifiable.getValue()).getName());
                 break;
             }
             case COUNT: {
-                res.setText(String.valueOf(((Storagable) identifiable).getCount()));
+                res.setText(String.valueOf(((Storagable) identifiable.getValue()).getCount()));
                 break;
             }
         }
@@ -182,29 +161,25 @@ public class StoragableCard
         res.textProperty().addListener((observableValue, s, t1) -> {
             switch (id) {
                 case COUNT: {
-                    if (!t1.equals("")) {
-                        Pattern pattern = Pattern.compile(StringDoubleConverter.countRegEx);
-                        Matcher matcher = pattern.matcher(t1);
+                    if (t1.equals("")) return;
 
-                        if (!matcher.matches()) {
-                            res.setText(s);
-                        }
+                    Pattern pattern = Pattern.compile(StringDoubleConverter.countRegEx);
+                    Matcher matcher = pattern.matcher(t1);
+                    if (!matcher.matches()) {
+                        res.setText(s);
                     }
                 }
             }
         });
 
         res.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 == false) {
-
-                switch (id) {
-                    case COUNT: {
-                        if (res.getText().equals("")) {
-                            res.setText(String.valueOf(0.0));
-                        }
+            if (t1) return;
+            switch (id) {
+                case COUNT: {
+                    if (res.getText().equals("")) {
+                        res.setText(String.valueOf(0.0));
                     }
                 }
-
             }
         });
         return res;
@@ -298,13 +273,13 @@ public class StoragableCard
     @Override
     protected void updateIdentifiable() {
 
-        ((Storagable) identifiable).setId(article.getText());
-        ((Storagable) identifiable).setName(name.getText());
-        ((Storagable) identifiable).setType((Typable) type.getValue());
-        ((Storagable) identifiable).setCount(Double.parseDouble(count.getText()));
-        ((Storagable) identifiable).setCountType((Typable) countType.getValue());
-        ((Storagable) identifiable).setAdress((Typable) adress.getValue());
-        ((Storagable) identifiable).setNote(note.getText());
+        ((Storagable) identifiable.getValue()).setId(article.getText());
+        ((Storagable) identifiable.getValue()).setName(name.getText());
+        ((Storagable) identifiable.getValue()).setType((Typable) type.getValue());
+        ((Storagable) identifiable.getValue()).setCount(Double.parseDouble(count.getText()));
+        ((Storagable) identifiable.getValue()).setCountType((Typable) countType.getValue());
+        ((Storagable) identifiable.getValue()).setAdress((Typable) adress.getValue());
+        ((Storagable) identifiable.getValue()).setNote(note.getText());
 
     }
 }

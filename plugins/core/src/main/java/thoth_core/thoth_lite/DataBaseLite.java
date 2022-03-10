@@ -210,6 +210,13 @@ public class DataBaseLite {
     }
 
     /**
+     * Функция отменяет транзакцию
+     * */
+    public void rollbackTransaction(){
+        dbManager.rollbackTransaction(dbFile);
+    }
+
+    /**
      * Функция удаляет записи из таблицы.
      *
      * @param tableName имя таблицы.

@@ -43,8 +43,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         extends ThothSceneImpl
         implements Flow.Subscriber<List<T>> {
 
-    private static final double MAX_WIDTH = 750;
-
     protected enum Ids {
         IDENTIFIABLE_ADD("add"),
         SORTED_BOX("sort_box");
@@ -116,8 +114,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
 
         contentNode = new BorderPane(identifiableElementList);
-        contentNode.setMaxWidth(MAX_WIDTH);
-        BorderPane.setAlignment(contentNode, Pos.CENTER_LEFT);
         return contentNode;
     }
 

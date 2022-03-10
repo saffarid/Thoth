@@ -20,6 +20,8 @@ import java.util.Stack;
 public class Workspace
         extends BorderPane {
 
+    private final static double MAX_WIDTH = 750;
+
     public final static double svgWidthTools = 20;
     public final static double svgHeightTools = 20;
     public final static double svgViewBoxWidthTools = 30;
@@ -81,10 +83,13 @@ public class Workspace
         previousScene = new Stack();
         nextScene = new Stack();
 
+        setMaxWidth(MAX_WIDTH);
+        BorderPane.setAlignment(this, Pos.CENTER_LEFT);
     }
 
     private Node getToolsPanel() {
         this.toolsPanel = new BorderPane();
+
         this.toolsPanel.setPadding(new Insets(2));
         HBox toolsPanel = new HBox();
         toolsPanel.setSpacing(2);
@@ -115,6 +120,7 @@ public class Workspace
     public void closeScene() {
         if (!previousScene.empty()) {
             toolsPanel.centerProperty().unbind();
+            //Отписку сцены от обновлений вставлять сюда
             this.currentScene = previousScene.pop();
             setscene();
         }

@@ -204,6 +204,19 @@ public class DataBaseManager {
     }
 
     /**
+     * Функция отменяет транзакцию
+     * */
+    public void rollbackTransaction(
+            File db
+    ){
+        try {
+            DataBaseWrapper.rollbackTransaction(conns.get(db), null);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Функция возвращает выборку строк из таблицы
      */
     public List<LinkedHashMap<TableColumn, Object>> select(Table table,

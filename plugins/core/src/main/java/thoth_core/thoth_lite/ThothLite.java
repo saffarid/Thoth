@@ -23,12 +23,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class ThothLite {
 
-    public static Logger LOG;
     private static ThothLite thoth;
     private ScheduledFuture<?> scheduledFutureReReadDb;
 
@@ -44,9 +42,6 @@ public class ThothLite {
 
     private Runnable reReader;
 
-    static {
-        LOG = Logger.getLogger(ThothLite.class.getName());
-    }
 
     private ThothLite()
             throws SQLException, ClassNotFoundException, NotContainsException {
@@ -103,18 +98,10 @@ public class ThothLite {
             database.beginTransaction();
             updateInTable(getTableName(AvaliableTables.PURCHASABLE), purchase);
             updateInTable(getTableName(AvaliableTables.STORAGABLE), listStoragable);
+            database.commitTransaction();
         } catch (SQLException e) {
             CoreLogger.log.error(e.getMessage(), e);
-        } finally {
-            //При любом сценарии завершаем транзакцию
-            try {
-                database.commitTransaction();
-                database.readDataBase();
-            } catch (SQLException e) {
-                CoreLogger.log.error(e.getMessage(), e);
-            } catch (ClassNotFoundException e) {
-                CoreLogger.log.error(e.getMessage(), e);
-            }
+            database.rollbackTransaction();
         }
 
     }
@@ -135,7 +122,6 @@ public class ThothLite {
         if (config.getDatabase().isAutoupdate()) {
             cancelAutoReReadDb();
             if (newDelay != PeriodAutoupdateDatabase.NEVER) {
-                LOG.log(Level.INFO, "Запускаем новую задачу");
                 scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay.getValue(), TimeUnit.MINUTES);
             }
         }
@@ -235,15 +221,14 @@ public class ThothLite {
         try {
             database.beginTransaction();
             insertToTable(tableName, datas);
+            database.commitTransaction();
         } catch (SQLException exception) {
-            LOG.log(Level.INFO, exception.getMessage());
+            database.rollbackTransaction();
         } finally {
             try {
-                database.commitTransaction();
-//                database.readTable(tableName);
                 database.readDataBase();
             } catch (SQLException exception) {
-                LOG.log(Level.INFO, exception.getMessage());
+                CoreLogger.log.error(exception.getMessage(), exception);
             }
         }
     }
@@ -278,6 +263,7 @@ public class ThothLite {
                                 "-1", storagable.getType(), storing.getCount(), LocalDate.now(), storing.getCurrency(), storing.getCurrency().getCourse(), ""
                         )
                 );
+
                 if (!products.contains(storagable)) {
                     datasProducts.add(storagable);
                 }
@@ -373,14 +359,14 @@ public class ThothLite {
         try {
             database.beginTransaction();
             removeFromTable(tableName, datas);
+            database.commitTransaction();
         } catch (SQLException exception) {
-            LOG.log(Level.INFO, exception.getMessage());
+            database.rollbackTransaction();
         } finally {
             try {
-                database.commitTransaction();
                 database.readTable(tableName);
             } catch (SQLException exception) {
-                LOG.log(Level.INFO, exception.getMessage());
+                CoreLogger.log.error(exception.getMessage(), exception);
             }
         }
     }
@@ -416,13 +402,13 @@ public class ThothLite {
         try {
             database.beginTransaction();
             updateInTable(getTableName(table), datas);
+            database.commitTransaction();
         } catch (SQLException exception) {
-            LOG.log(Level.INFO, exception.getMessage());
+            database.rollbackTransaction();
         } finally {
             try {
-                database.commitTransaction();
-            } catch (SQLException exception) {
-                LOG.log(Level.INFO, exception.getMessage());
+                database.readTable(getTableName(table));
+            } catch (SQLException | ClassNotFoundException exception) {
             }
         }
     }
@@ -449,10 +435,7 @@ public class ThothLite {
             try {
                 database.readDataBase();
             }
-            catch (SQLException e) {
-                CoreLogger.log.error(e.getMessage(), e);
-            }
-            catch (ClassNotFoundException e) {
+            catch (SQLException | ClassNotFoundException e) {
                 CoreLogger.log.error(e.getMessage(), e);
             }
         }
