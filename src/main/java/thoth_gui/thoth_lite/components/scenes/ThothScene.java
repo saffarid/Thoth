@@ -5,14 +5,14 @@ import javafx.scene.Node;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.IdentifiablesListView;
 import window.Closeable;
+import window.Openable;
 
 public interface ThothScene
-        extends Closeable {
+        extends Closeable, Openable {
 
     SimpleObjectProperty<Node> getToolsProperty();
     SimpleObjectProperty<Node> getContentProperty();
     void setCloseable(Closeable closeable);
-
     String getId();
 
 }

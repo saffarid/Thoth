@@ -98,15 +98,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         GuiLogger.log.info("Create tools-view");
         tools = new SimpleObjectProperty<>(createToolsNode());
 
-        try {
-            ThothLite.getInstance().subscribeOnTable(this.table, this);
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -167,12 +159,20 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return null;
     }
 
+    @Override
+    public void open() {
+        try {
+            ThothLite.getInstance().subscribeOnTable(this.table, this);
+        } catch (NotContainsException | SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void openCreateNewIdentifiable(ActionEvent event) {
         Workspace.getInstance().setNewScene(IdentifiableCard.getInstance(table, null));
     }
 
     private void setNewList(List<T> items) {
-
         CompletableFuture.supplyAsync(() -> {
             if (this.table == AvaliableTables.EXPENSES_TYPES ||
                 this.table == AvaliableTables.INCOMES_TYPES) {
@@ -186,31 +186,21 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                         }
                     }
                 }
-                catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                catch (NotContainsException e) {
-                    e.printStackTrace();
-                }
-                catch (SQLException e) {
-                    e.printStackTrace();
+                catch (ClassNotFoundException | NotContainsException | SQLException e) {
+                    GuiLogger.log.error(e.getMessage(), e);
                 }
             }
             return items;
-        }).thenAccept(item -> {
+        })
+                .thenAccept(item -> {
             this.datas.setValue(FXCollections.observableList(item));
         });
-
-
-
-
     }
 
     protected abstract void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1);
 
     @Override
     public void setCloseable(Closeable closeable) {
-
     }
 
     /**

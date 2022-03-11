@@ -279,4 +279,8 @@ public class Settings
         this.closeable = closeable;
     }
 
+    @Override
+    public void open() {
+
+    }
 }

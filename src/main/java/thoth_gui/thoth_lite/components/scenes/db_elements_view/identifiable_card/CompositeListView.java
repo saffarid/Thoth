@@ -594,7 +594,7 @@ public class CompositeListView
 
             res.add(Label.getInstanse(storing.getStoragable().getId()), 0, 0);
             res.add(Label.getInstanse(storing.getStoragable().getName()), 1, 0);
-            res.add(Label.getInstanse(String.format(COUNT_TEMPLATE, storing.getCount().doubleValue(), storing.getStoragable().getCountType().getValue())), 2, 0);
+            res.add(Label.getInstanse(String.format(COUNT_TEMPLATE, storing.getCount(), storing.getStoragable().getCountType().getValue())), 2, 0);
             if (storing.getCurrency().getCurrency().getCurrencyCode().equals(Currency.getInstance(Locale.getDefault()).getCurrencyCode())) {
                 res.add(
                         Label.getInstanse(
@@ -604,11 +604,21 @@ public class CompositeListView
                 );
                 res.add(
                         Label.getInstanse(
-                                String.format(FINANCE_TEMPLATE, storing.getPrice().doubleValue() * storing.getCount().doubleValue(), storing.getCurrency().getCurrency().getCurrencyCode())
+                                String.format(FINANCE_TEMPLATE, storing.getPrice() * storing.getCount(), storing.getCurrency().getCurrency().getCurrencyCode())
                         )
                         , 4, 0
                 );
             } else {
+                res.add(
+                        Label.getInstanse(
+                                String.format(
+                                        CONV_FINANCE_TEMPLATE,
+                                        String.format(FINANCE_TEMPLATE, storing.getPrice(), storing.getCurrency().getCurrency().getCurrencyCode()),
+                                        String.format(FINANCE_TEMPLATE, storing.getPrice() * storing.getCourse(), Currency.getInstance(Locale.getDefault()).getCurrencyCode())
+                                )
+                        )
+                        , 3, 0
+                );
                 res.add(
                         Label.getInstanse(
                                 String.format(

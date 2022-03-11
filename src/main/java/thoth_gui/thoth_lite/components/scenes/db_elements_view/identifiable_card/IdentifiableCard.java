@@ -19,7 +19,6 @@ import javafx.scene.Node;
 
 import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
-import thoth_gui.thoth_lite.components.controls.ButtonBar;
 
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.Tooltip;
@@ -69,8 +68,6 @@ public abstract class IdentifiableCard
     protected boolean identifiableIsNew;
 //    protected Identifiable identifiable;
     protected AvaliableTables table;
-
-    protected Closeable closeable;
 
     static {
         LOG = Logger.getLogger(IdentifiableCard.class.getName());
@@ -170,6 +167,11 @@ public abstract class IdentifiableCard
             }
         }
         return null;
+    }
+
+    @Override
+    public void open() {
+
     }
 
     protected abstract void updateIdentifiable();

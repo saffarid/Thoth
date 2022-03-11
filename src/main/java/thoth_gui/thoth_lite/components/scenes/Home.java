@@ -59,4 +59,9 @@ public class Home
     @Override
     public void setCloseable(Closeable closeable) {
     }
+
+    @Override
+    public void open() {
+
+    }
 }

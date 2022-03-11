@@ -28,6 +28,7 @@ import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
 import thoth_gui.thoth_lite.components.controls.table_view.TableView;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card.IdentifiableCard;
 import thoth_gui.thoth_lite.main_window.Workspace;
+import thoth_gui.thoth_lite.tools.Properties;
 import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.svg.Images;
 import tools.SvgWrapper;
@@ -46,15 +47,15 @@ public class FinancialOperations
         extends ThothSceneImpl
         implements Flow.Subscriber<List<FinancialAccounting>> {
 
-    private final controls.Label placeholder = Label.getInstanse("no_elements", TextCase.NORMAL);
+    private final controls.Label placeholder = Label.getInstanse(Properties.getString("no_elements", TextCase.NORMAL));
 
     private enum SORT_BY implements SortBy {
-        MONTH("last_month"),
+        MONTH(Properties.getString("last_month", TextCase.NORMAL)),
         //        CURRENT_MONTH("current_month"),
-        QUARTER("quarter"),
-        HALFYEAR("halfyear"),
-        YEAR("year"),
-        ALL("all");
+        QUARTER(Properties.getString("quarter", TextCase.NORMAL)),
+        HALFYEAR(Properties.getString("halfyear", TextCase.NORMAL)),
+        YEAR(Properties.getString("year", TextCase.NORMAL)),
+        ALL(Properties.getString("all", TextCase.NORMAL));
         private String sortCode;
 
         SORT_BY(String sortCode) {
@@ -92,12 +93,12 @@ public class FinancialOperations
     /**
      * Таблица с суммарными данными
      */
-    private controls.table_view.TableView<HashMap<String, Object>> finOpSumTable;
+    private final controls.table_view.TableView<HashMap<String, Object>> finOpSumTable = TableView.getInstance();
 
     /**
      * Таблица с суммарными данными
      */
-    private controls.table_view.TableView<FinancialAccounting> finOpHistoryTable;
+    private final controls.table_view.TableView<FinancialAccounting> finOpHistoryTable = TableView.getInstance();
 
     /**
      * Исходные данные для отображения в таблице
@@ -121,7 +122,9 @@ public class FinancialOperations
 
         this.id = this.table==AvaliableTables.EXPENSES ? Scenes.EXPENSES.name() : Scenes.INCOMES.name();
 
-        init();
+        initFinOpSumTable();
+        initHistoryTable();
+        initStyle();
 
         tools = new SimpleObjectProperty<>(createToolsNode());
         content = new SimpleObjectProperty<>(createContentNode());
@@ -129,11 +132,11 @@ public class FinancialOperations
 
     @Override
     public void close() {
+        this.subscription.cancel();
     }
 
     @Override
     protected Node createContentNode() {
-//        tableView = new TableView();
         contentNode = new BorderPane(finOpSumTable);
         return contentNode;
     }
@@ -182,12 +185,9 @@ public class FinancialOperations
         return toolsNode;
     }
 
-    private void init() {
+    private void initFinOpSumTable() {
         GuiLogger.log.info("Create financial view " + this.id);
-        finOpSumTable = TableView.getInstance();
         finOpSumTable.setPlaceholder(placeholder);
-
-        initHistoryTable();
 
         data = new SimpleListProperty<>();
         initialData = new SimpleListProperty<>();
@@ -202,27 +202,18 @@ public class FinancialOperations
         initialData.addListener((ListChangeListener<? super FinancialAccounting>) change -> initialDataChange());
         data.addListener(this::showData);
 
-        try {
-            initialData.setValue(
-                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
-            );
-            ThothLite.getInstance().subscribeOnTable(table, this);
-        }
-        catch (NotContainsException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-        catch (SQLException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-        catch (ClassNotFoundException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-
-        initStyle();
+//        try {
+//            initialData.setValue(
+//                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
+//            );
+//            ThothLite.getInstance().subscribeOnTable(table, this);
+//        }
+//        catch (NotContainsException | SQLException | ClassNotFoundException e) {
+//            GuiLogger.log.error(e.getMessage(), e);
+//        }
     }
 
     private void initHistoryTable() {
-        finOpHistoryTable = TableView.getInstance();
         finOpHistoryTable.setPlaceholder(placeholder);
 
         controls.table_view.TableColumn<FinancialAccounting, LocalDate> dateColumn = thoth_gui.thoth_lite.components.controls.table_view.TableColumn.getInstance();
@@ -377,8 +368,21 @@ public class FinancialOperations
     }
 
     @Override
-    public void setCloseable(Closeable closeable) {
+    public void open() {
+        try {
+//            initialData.setValue(
+//                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
+//            );
+            ThothLite.getInstance().subscribeOnTable(table, this);
+        }
+        catch (NotContainsException | SQLException | ClassNotFoundException e) {
+            GuiLogger.log.error(e.getMessage(), e);
+        }
+    }
 
+    @Override
+    public void setCloseable(Closeable closeable) {
+        this.closeable = closeable;
     }
 
     private void showData(ListChangeListener.Change<? extends HashMap<String, Object>> change) {

@@ -16,6 +16,8 @@ public class ConfigDropdownList
 
     private static ConfigDropdownList instance;
 
+    private IdentifiablesListView identifiablesList;
+
     private ConfigDropdownList() {
         this.id = Scenes.SYSTEM_TABLE.name();
         tools = new SimpleObjectProperty<>(createToolsNode());
@@ -47,9 +49,11 @@ public class ConfigDropdownList
         return MenuButton.getInstance(
                 table.name()
                 , event -> {
-                    IdentifiablesListView instance = IdentifiablesListView.getInstance(table);
-                    contentNode.setCenter((Node) instance.getContentProperty().getValue());
-                    tools.setValue((Node) instance.getToolsProperty().getValue());
+                    if(identifiablesList != null) identifiablesList.close();
+                    identifiablesList = IdentifiablesListView.getInstance(table);
+                    identifiablesList.open();
+                    contentNode.setCenter((Node) identifiablesList.getContentProperty().getValue());
+                    tools.setValue((Node) identifiablesList.getToolsProperty().getValue());
                 }
         );
     }
@@ -72,10 +76,16 @@ public class ConfigDropdownList
 
     @Override
     public void close() {
-
+        if(identifiablesList == null) return;
+        identifiablesList.close();
     }
 
     @Override
     public void setCloseable(Closeable closeable) {
+    }
+
+    @Override
+    public void open() {
+
     }
 }

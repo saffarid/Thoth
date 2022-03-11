@@ -6,6 +6,7 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Nameable;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,6 +102,8 @@ public abstract class Data<T extends Identifiable>
     public void subscribe(Flow.Subscriber subscriber) {
         if (!publisher.isSubscribed(subscriber)) {
             publisher.subscribe(subscriber);
+            System.out.println(name + " subscribers: " + this.publisher.getNumberOfSubscribers());
+            publisher.submit(datas);
         }
     }
 }

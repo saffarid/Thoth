@@ -7,8 +7,8 @@ import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Label;
-import thoth_gui.thoth_lite.tools.TextCase;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -20,50 +20,45 @@ public class FinanceComboBox {
     public static controls.ComboBox<Finance> getInstance() {
         controls.ComboBox<Finance> res = ComboBox.getInstance();
 
-        CompletableFuture.supplyAsync(() -> {
-            List<Finance> finances = new LinkedList<>();
-            try {
-                ThothLite.getInstance().subscribeOnTable(AvaliableTables.CURRENCIES, res);
-                finances = ((List<Finance>) ThothLite.getInstance().getDataFromTable(AvaliableTables.CURRENCIES))
+        res.setChangeListener((observableValue, t0, t1) -> {
+            CompletableFuture.supplyAsync(() -> {
+                return res.getDataProperty().getValue()
                         .stream()
-                        .filter(finance -> finance.getCourse().doubleValue() > 0)
+                        .filter(finance -> finance.getCourse() > 0)
                         .collect(Collectors.toList());
-            }
-            catch (NotContainsException e) {
-                e.printStackTrace();
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-            catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            return finances;
-        }).thenApply(finances -> {
-            Platform.runLater(() -> {
-                res.setItems(
-                        FXCollections.observableList(finances)
-                );
-            });
-            return finances;
-        }).thenApply(finances -> {
-            Optional<Finance> first = finances.stream()
-                    .filter(finance ->
-                            finance.getCurrency().getCurrencyCode().equals(Currency.getInstance(Locale.getDefault()).getCurrencyCode())
-                    )
-                    .findFirst();
-            return first;
-        }).thenAccept(finance -> {
-            Platform.runLater(() -> {
-                if (finance.isPresent()) {
-                    res.setValue(finance.get());
-                } else {
-                    if (!res.getItems().isEmpty()) {
-                        res.setValue(res.getItems().get(0));
+
+            }).thenApply(finances -> {
+                Platform.runLater(() -> {
+                    res.setItems(
+                            FXCollections.observableList(finances)
+                    );
+                });
+                return finances;
+            }).thenApply(finances -> {
+                Optional<Finance> first = finances.stream()
+                        .filter(finance ->
+                                finance.getCurrency().getCurrencyCode().equals(Currency.getInstance(Locale.getDefault()).getCurrencyCode())
+                        )
+                        .findFirst();
+                return first;
+            }).thenAccept(finance -> {
+                Platform.runLater(() -> {
+                    if (finance.isPresent()) {
+                        res.setValue(finance.get());
+                    } else {
+                        if (!res.getItems().isEmpty()) {
+                            res.setValue(res.getItems().get(0));
+                        }
                     }
-                }
+                });
             });
         });
+
+        try {
+            ThothLite.getInstance().subscribeOnTable(AvaliableTables.CURRENCIES, res);
+        } catch (NotContainsException | SQLException | ClassNotFoundException e) {
+            GuiLogger.log.error(e.getMessage(), e);
+        }
 
         res.setCellFactory(listedListView -> new CurrencyCell());
         res.setButtonCell(new CurrencyCell());

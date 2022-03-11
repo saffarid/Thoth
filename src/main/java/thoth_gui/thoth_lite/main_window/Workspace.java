@@ -119,14 +119,16 @@ public class Workspace
      */
     public void closeScene() {
         if (!previousScene.empty()) {
-            toolsPanel.centerProperty().unbind();
             //Отписку сцены от обновлений вставлять сюда
+            this.currentScene.close();
+            toolsPanel.centerProperty().unbind();
             this.currentScene = previousScene.pop();
             setscene();
         }
     }
 
     private void setscene() {
+        this.currentScene.open();
         SimpleObjectProperty<Node> value = this.currentScene.getToolsProperty();
         if (value != null) {
             toolsPanel.centerProperty().bind(value);
@@ -157,6 +159,7 @@ public class Workspace
         if (this.currentScene != null) {
             previousScene.push(this.currentScene);
             toolsPanel.centerProperty().unbind();
+            this.currentScene.close();
         }
         this.currentScene = newScene;
         setscene();
@@ -170,6 +173,7 @@ public class Workspace
      */
     public void stepToNextScene() {
         if (!nextScene.empty()) {
+            currentScene.close();
             previousScene.push(currentScene);
 
             toolsPanel.centerProperty().unbind();
@@ -186,7 +190,7 @@ public class Workspace
     public void stepToPreviousScene() {
         if (!previousScene.empty()) {
             nextScene.push(currentScene);
-
+            currentScene.close();
             toolsPanel.centerProperty().unbind();
             currentScene = previousScene.pop();
             setscene();

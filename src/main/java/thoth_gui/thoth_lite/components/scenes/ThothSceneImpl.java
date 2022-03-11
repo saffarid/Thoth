@@ -7,6 +7,8 @@ import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.main_window.Workspace;
 import window.Closeable;
 
+import java.util.concurrent.Flow;
+
 public abstract class ThothSceneImpl
     implements ThothScene
 {
@@ -23,6 +25,8 @@ public abstract class ThothSceneImpl
     protected ToolsPane toolsNode;
 
     protected String id;
+
+    protected Closeable closeable;
 
     @Override
     public SimpleObjectProperty<Node> getToolsProperty() {
