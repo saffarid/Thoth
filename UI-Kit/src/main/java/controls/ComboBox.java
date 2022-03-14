@@ -1,6 +1,5 @@
 package controls;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -16,6 +15,7 @@ public class ComboBox<T>
     private Flow.Subscription subscription;
     private final SimpleListProperty<T> datas = new SimpleListProperty<>();
     private final ChangeListener<ObservableList<T>> defaultListener = (observableValue, ts, t1) -> { getItems().setAll(datas.getValue()); };
+    private ChangeListener<ObservableList<T>> currentListener ;
 
     public ComboBox() {
         super();
@@ -36,7 +36,7 @@ public class ComboBox<T>
     }
 
     private void init() {
-        datas.addListener(defaultListener);
+        setDefaultChangeListener();
     }
 
     public ComboBox<T> setData(List<T> data){
@@ -45,11 +45,13 @@ public class ComboBox<T>
     }
 
     public ComboBox<T> setDefaultChangeListener(){
-        datas.addListener(defaultListener);
+        setChangeListener(defaultListener);
         return this;
     }
 
     public ComboBox<T> setChangeListener(ChangeListener<ObservableList<T>> data){
+        if(currentListener != null) datas.removeListener(currentListener);
+        currentListener = data;
         datas.addListener(data);
         return this;
     }

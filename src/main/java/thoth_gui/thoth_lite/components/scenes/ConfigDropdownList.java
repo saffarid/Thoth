@@ -72,8 +72,6 @@ public class ConfigDropdownList
         return menu;
     }
 
-
-
     @Override
     public void close() {
         if(identifiablesList == null) return;

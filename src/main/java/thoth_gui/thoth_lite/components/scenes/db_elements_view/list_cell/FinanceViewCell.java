@@ -66,8 +66,7 @@ public class FinanceViewCell
 
     private LocalDateTime prevClick;
 
-    private controls.Label courseLabel;
-    private controls.Label currencyLabel;
+    private controls.TextField currencyLabel;
     private controls.TextField course;
 
     protected FinanceViewCell(Finance finance) {
@@ -93,13 +92,7 @@ public class FinanceViewCell
             ThothLite.getInstance().updateInTable(table, list);
             toFromEditMode();
         }
-        catch (SQLException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-        catch (NotContainsException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-        catch (ClassNotFoundException e) {
+        catch (SQLException | NotContainsException | ClassNotFoundException e) {
             GuiLogger.log.error(e.getMessage(), e);
         }
     }
@@ -116,14 +109,10 @@ public class FinanceViewCell
      * */
     private void changeStatusView() {
         if (modeIsEdit.getValue()) {
-            course.setOpacity(1);
-            courseLabel.setOpacity(0);
             pallete.getChildren().setAll(
                     acceptEdit, cancelEdit
             );
         } else {
-            course.setOpacity(0);
-            courseLabel.setOpacity(1);
             pallete.getChildren().setAll(
                     toEdit, emptyFish
             );
@@ -171,19 +160,20 @@ public class FinanceViewCell
     @Override
     protected Node centerNode() {
         Finance finance = (Finance)this.identifiable.getValue();
-        currencyLabel = Label.getInstanse(
+        currencyLabel = TextField.getInstance(
                 String.format(
                         templateCurrency
                         , finance.getCurrency().getCurrencyCode()
                         , finance.getCurrency().getDisplayName())
         );
         currencyLabel.setTooltip(new Tooltip(currencyLabel.getText()));
+        currencyLabel.setEditable(false);
 
         course = TextField.getInstance(
                 String.valueOf(finance.getCourse())
         );
-        courseLabel = Label.getInstanse();
-        courseLabel.textProperty().bind(course.textProperty());
+
+        course.editableProperty().bind(modeIsEdit);
 
         content = new GridPane();
 
@@ -196,10 +186,9 @@ public class FinanceViewCell
                 .addColumn(100, 100, 100, Priority.NEVER, HPos.LEFT, true)
         ;
 
-        currencyLabel.setWrapText(true);
+
         content.add(currencyLabel, 0, 0);
         content.add(this.course, 1, 0);
-        content.add(courseLabel, 1, 0);
 
         return content;
     }

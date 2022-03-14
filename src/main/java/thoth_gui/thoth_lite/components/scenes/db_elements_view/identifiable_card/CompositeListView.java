@@ -147,10 +147,10 @@ public class CompositeListView
 
         if (this.identifiableIsNew) {
             storings = items;
-            this.items = new SimpleListProperty<>(FXCollections.observableList(new LinkedList<>()));
+            this.items = new SimpleListProperty<>( FXCollections.observableList(new LinkedList<>()) );
         } else {
             storings = null;
-            this.items = new SimpleListProperty<>(FXCollections.observableList(items));
+            this.items = new SimpleListProperty<>( FXCollections.observableList(items) );
         }
 
         total.textProperty().bind(totalProperty);
@@ -333,7 +333,8 @@ public class CompositeListView
 
         listView.setBorder(
                 new BorderWrapper()
-                        .addBorder(1)
+                        .addTopBorder(1)
+                        .addBottomBorder(1)
                         .setColor(Color.GREY)
                         .setStyle(BorderStrokeStyle.SOLID)
                         .commit()
@@ -354,8 +355,8 @@ public class CompositeListView
 
             });
 
-            listView.setCellFactory(null);
-            listView.setCellFactory(storingListView -> new CompositeCell());
+//            listView.setCellFactory(null);
+
         });
         listView.itemsProperty().bind(items);
         listView.getSelectionModel().clearSelection();
@@ -368,6 +369,16 @@ public class CompositeListView
             }
         });
         listView.setPadding(new Insets(2));
+
+        listView.setCellFactory(storingListView -> new CompositeCell());
+
+//        total.setBorder(
+//                new BorderWrapper()
+//                        .addTopBorder(1)
+//                        .setColor(Color.GREY)
+//                        .setStyle(BorderStrokeStyle.SOLID)
+//                        .commit()
+//        );
 
         res.setTop(createToolsList());
         res.setCenter(listView);
@@ -389,6 +400,14 @@ public class CompositeListView
         sortPane.setValue(SORT_BY.ID_UP);
 
         toolsList.add(sortPane, 0, 0);
+
+//        toolsList.setBorder(
+//                new BorderWrapper()
+//                        .addBottomBorder(1)
+//                        .setColor(Color.GREY)
+//                        .setStyle(BorderStrokeStyle.SOLID)
+//                        .commit()
+//        );
 
         return toolsList;
     }
@@ -432,13 +451,8 @@ public class CompositeListView
         controls.ComboBox<Storagable> res = ComboBox.getInstance();
 
         try {
-            res.setItems(FXCollections.observableList((List<Storagable>) ThothLite.getInstance().getDataFromTable(AvaliableTables.STORAGABLE)));
             ThothLite.getInstance().subscribeOnTable(AvaliableTables.STORAGABLE, res);
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (NotContainsException | SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

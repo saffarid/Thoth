@@ -117,14 +117,6 @@ public class PurchasableCard
     protected Node createContentNode() {
         super.createContentNode();
 
-        contentNode.setBorder(
-                new BorderWrapper()
-                        .addRightBorder(1)
-                        .setStyle(BorderStrokeStyle.SOLID)
-                        .setColor(Color.GREY)
-                        .commit()
-        );
-
         toggleDelivered = new Toggle(((Purchasable)identifiable.getValue()).isDelivered());
         toggleDelivered.setDisable(((Purchasable)identifiable.getValue()).isDelivered());
 
@@ -332,7 +324,7 @@ public class PurchasableCard
 
             @Override
             public String toString() {
-                return "$classname{" +
+                return "Purchase{" +
                         "orderNumber='" + orderNumber + '\'' +
                         ", store=" + store +
                         ", deliveryDate=" + deliveryDate +

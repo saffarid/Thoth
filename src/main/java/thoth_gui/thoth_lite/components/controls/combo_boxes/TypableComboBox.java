@@ -21,24 +21,6 @@ public class TypableComboBox {
     ){
         controls.ComboBox<Typable> res = ComboBox.getInstance();
 
-        res.setChangeListener((observableValue, typables, t1) -> {
-            res.setCellFactory(data -> null);
-            res.setButtonCell(null);
-            res.setItems(res.getDataProperty().getValue() );
-            res.setCellFactory(data -> new TypableComboBoxCell());
-            res.setButtonCell(new TypableComboBoxCell());
-        });
-
-//        try {
-//            res.setItems(FXCollections.observableList((List<Typable>) ThothLite.getInstance().getDataFromTable(table)));
-//        } catch (NotContainsException e) {
-//            e.printStackTrace();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
         if(value == null){
             if(!res.getItems().isEmpty()){
                 res.setValue(res.getItems().get(0));
@@ -47,14 +29,14 @@ public class TypableComboBox {
             res.setValue(value);
         }
 
+        res.setCellFactory(data -> new TypableComboBoxCell());
+        res.setButtonCell(new TypableComboBoxCell());
+
         try {
             ThothLite.getInstance().subscribeOnTable(table, res);
         } catch (NotContainsException | SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-//        res.setCellFactory(data -> new TypableComboBoxCell());
-//        res.setButtonCell(new TypableComboBoxCell());
 
         return res;
     }

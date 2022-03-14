@@ -2,6 +2,8 @@ package thoth_gui.thoth_lite.main_window;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.paint.Color;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.GuiLogger;
@@ -13,6 +15,7 @@ import layout.basepane.HBox;
 import javafx.scene.Node;
 import javafx.beans.property.SimpleObjectProperty;
 import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.BorderWrapper;
 import tools.SvgWrapper;
 import java.sql.SQLException;
 import java.util.Stack;
@@ -91,6 +94,15 @@ public class Workspace
         this.toolsPanel = new BorderPane();
 
         this.toolsPanel.setPadding(new Insets(2));
+
+        this.toolsPanel.setBorder(
+                new BorderWrapper()
+                        .addBottomBorder(1)
+                        .setColor(Color.GREY)
+                        .setStyle(BorderStrokeStyle.SOLID)
+                        .commit()
+        );
+
         HBox toolsPanel = new HBox();
         toolsPanel.setSpacing(2);
         toolsPanel.setPadding(new Insets(0, 5, 0, 0));

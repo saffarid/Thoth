@@ -89,22 +89,18 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         this.datas.addListener((ListChangeListener<? super T>) change -> {
             //Для обновления отображения списка создаём задачу и выполняем её в потоке JavaFX
             Platform.runLater(() -> {
-                identifiableElementList.setCellFactory(tListView -> null);
                 identifiableElementList.getItems().setAll(this.datas.getValue());
-                identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
             });
         });
         setNewList(datas);
         GuiLogger.log.info("Create tools-view");
         tools = new SimpleObjectProperty<>(createToolsNode());
 
-
     }
 
     @Override
     protected Node createContentNode() {
         identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
-
         contentNode = new BorderPane(identifiableElementList);
         return contentNode;
     }

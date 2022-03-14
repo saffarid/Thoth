@@ -26,6 +26,7 @@ public class ListedListView
         SORT_BY_UP("sort_by_up"),
         SORT_BY_DOWN("sort_by_down");
         private String sortBy;
+
         SORT_BY(String sortBy) {
             this.sortBy = sortBy;
         }
@@ -36,18 +37,14 @@ public class ListedListView
         }
     }
 
-    private final ScheduleTask scheduleTask;
+    private final ScheduleTask scheduleTask = new ScheduleTask(this);
+    private final ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
 
     protected ListedListView(
             List<Typable> datas
             , AvaliableTables table
     ) {
         super(datas, table);
-
-        scheduleTask = new ScheduleTask(this);
-        ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
-        poolExecutor.schedule(scheduleTask, 300, TimeUnit.MILLISECONDS);
-
         identifiableElementList.getItems().addListener((ListChangeListener<? super Typable>) change -> {
             poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
         });
@@ -68,12 +65,12 @@ public class ListedListView
     protected void sort(ObservableValue<? extends SortBy> observableValue, SortBy sortBy, SortBy sortBy1) {
         ObservableList<Typable> items = identifiableElementList.getItems();
         SORT_BY t1 = (SORT_BY) sortBy1;
-        switch (t1){
-            case SORT_BY_UP:{
+        switch (t1) {
+            case SORT_BY_UP: {
                 items.sort((o1, o2) -> o1.getValue().compareTo(o2.getValue()));
                 break;
             }
-            case SORT_BY_DOWN:{
+            case SORT_BY_DOWN: {
                 items.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
                 break;
             }
@@ -94,7 +91,7 @@ public class ListedListView
     protected void openCreateNewIdentifiable(ActionEvent event) {
         Typable typableInstance = new Typable() {
 
-            private String id = "-1";
+            private String id = "new";
             private String value = "default";
 
             @Override
@@ -135,9 +132,10 @@ public class ListedListView
                 for (int i = 0; i < cell1.getCellCount(); i++) {
                     IdentifiableListCell<Typable> cell2 = (IdentifiableListCell<Typable>) cell1.getCell(i);
                     RemoveItemFromList viewCell = (RemoveItemFromList) cell2.getView();
-                    if(!viewCell.hasRemoveItem()) {
-                        viewCell.setRemoveItem(listedListView::removeItem);
-                    }
+
+                    if (viewCell.hasRemoveItem()) continue;
+
+                    viewCell.setRemoveItem(listedListView::removeItem);
                 }
             }
         }

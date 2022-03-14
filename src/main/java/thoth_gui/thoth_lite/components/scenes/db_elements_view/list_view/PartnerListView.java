@@ -1,20 +1,27 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view;
 
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.skin.VirtualFlow;
+import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Partnership;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
-import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortBy;
 import thoth_gui.thoth_lite.components.controls.sort_pane.SortPane;
+import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell.IdentifiableListCell;
+import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell.RemoveItemFromList;
 
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class PartnerListView
-    extends IdentifiablesListView<Partnership>{
+    extends IdentifiablesListView<Partnership>
+    implements RemoveItem{
 
     private enum SORT_BY implements SortBy{
         BY_NAME_UP("sort_by_name_up"),
@@ -37,8 +44,15 @@ public class PartnerListView
         }
     }
 
+    private final ScheduleTask scheduleTask = new ScheduleTask(this);
+    private final ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
+
     protected PartnerListView(List<Partnership> datas) {
         super(datas, AvaliableTables.PARTNERS);
+
+        identifiableElementList.getItems().addListener((ListChangeListener<? super Partnership>) change -> {
+            poolExecutor.schedule(scheduleTask, 250, TimeUnit.MILLISECONDS);
+        });
     }
 
     @Override
@@ -90,7 +104,7 @@ public class PartnerListView
     protected void openCreateNewIdentifiable(ActionEvent event) {
         Partnership newPartner = new Partnership() {
 
-            private String id = "-1";
+            private String id = "new";
             private String name;
             private String phone;
             private String web;
@@ -148,5 +162,40 @@ public class PartnerListView
         };
         ObservableList<Partnership> items = identifiableElementList.getItems();
         items.add(newPartner);
+    }
+
+    @Override
+    public void removeItem(Identifiable identifiable) {
+        if (identifiableElementList.getItems().contains(identifiable)) {
+
+            identifiableElementList.setCellFactory(null);
+            identifiableElementList.getItems().remove(identifiable);
+            identifiableElementList.setCellFactory(tListView -> new IdentifiableListCell(this.table));
+        }
+    }
+
+    private class ScheduleTask implements Runnable {
+
+        private PartnerListView partnerListView;
+
+        public ScheduleTask(PartnerListView partnerListView) {
+            this.partnerListView = partnerListView;
+        }
+
+        @Override
+        public void run() {
+            for (Node cell : identifiableElementList.getChildrenUnmodifiable()) {
+                VirtualFlow cell1 = (VirtualFlow) cell;
+                for (int i = 0; i < cell1.getCellCount(); i++) {
+                    IdentifiableListCell<Typable> cell2 = (IdentifiableListCell<Typable>) cell1.getCell(i);
+                    RemoveItemFromList viewCell = (RemoveItemFromList) cell2.getView();
+
+                    if (viewCell.hasRemoveItem()) continue;
+
+                    viewCell.setRemoveItem(partnerListView::removeItem);
+                }
+            }
+        }
+
     }
 }

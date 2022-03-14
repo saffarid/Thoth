@@ -1,18 +1,15 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.list_cell;
 
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.layout.Priority;
-import javafx.scene.paint.Color;
 import layout.basepane.BorderPane;
 import layout.basepane.GridPane;
 import layout.basepane.HBox;
-import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextField;
-import tools.BackgroundWrapper;
 import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
@@ -20,8 +17,6 @@ import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
 import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.RemoveItem;
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
@@ -44,10 +39,16 @@ public class ListedViewCell
     private final controls.Button toEdit = Button.getInstance(
             SvgWrapper.getInstance(Images.EDIT(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
             , event -> toFromEditMode());
-    private final controls.Button remove = Button.getInstance(
+    private final controls.Button remove;
+    private final controls.Button trash = Button.getInstance(
+            SvgWrapper.getInstance(Images.TRASH(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> {
+            });
+    private final controls.Button emptyFish = Button.getInstance(
             SvgWrapper.getInstance(Images.EMPTY(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
             , event -> {
             });
+
     private final controls.Button acceptEdit = Button.getInstance(
             SvgWrapper.getInstance(Images.CHECKMARK(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
             , event -> apply());
@@ -62,12 +63,17 @@ public class ListedViewCell
     private LocalDateTime prevClick;
 
     private controls.TextField value;
-    private controls.Label valueLabel;
+//    private controls.Label valueLabel;
 
     private RemoveItem removeItem;
 
     protected ListedViewCell(Typable typable) {
         super();
+
+        remove = (typable.getId().equals("new")) ?
+                (trash) :
+                (emptyFish);
+
         this.identifiable.setValue(typable);
 
         modeIsEdit.addListener((observableValue, aBoolean, t1) -> changeStatusView());
@@ -84,7 +90,7 @@ public class ListedViewCell
         List<Typable> list = new LinkedList<>();
         list.add(typable);
         try {
-            if (typable.getId().equals("-1")) {
+            if (typable.getId().equals("new")) {
                 //Вставляем запись в таблицу БД
                 GuiLogger.log.info("Insert list-item into table");
                 ThothLite.getInstance().insertToTable(table, list);
@@ -94,34 +100,23 @@ public class ListedViewCell
                 ThothLite.getInstance().updateInTable(table, list);
             }
             toFromEditMode();
-        }
-        catch (SQLException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-        catch (NotContainsException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (SQLException | NotContainsException | ClassNotFoundException e) {
             GuiLogger.log.error(e.getMessage(), e);
         }
     }
 
     @Override
     public void cancel() {
-        value.setText(((Typable)this.identifiable.getValue()).getValue());
+        value.setText(((Typable) this.identifiable.getValue()).getValue());
         toFromEditMode();
     }
 
     private void changeStatusView() {
         if (modeIsEdit.getValue()) {
-            value.setOpacity(1);
-            valueLabel.setOpacity(0);
             pallete.getChildren().setAll(
                     acceptEdit, cancelEdit
             );
         } else {
-            value.setOpacity(0);
-            valueLabel.setOpacity(1);
             pallete.getChildren().setAll(
                     toEdit, remove
             );
@@ -169,18 +164,14 @@ public class ListedViewCell
     @Override
     protected Node centerNode() {
 
-
-        value = TextField.getInstance(((Typable)this.identifiable.getValue()).getValue());
-        valueLabel = Label.getInstanse();
-        valueLabel.textProperty().bind(value.textProperty());
+        value = TextField.getInstance(((Typable) this.identifiable.getValue()).getValue());
+        value.editableProperty().bind(modeIsEdit);
 
         GridPane pane = new GridPane()
                 .addRow(Priority.NEVER)
-                .addColumn(Priority.ALWAYS)
-                ;
-
+                .addColumn(Priority.ALWAYS);
+        pane.setPadding(new Insets(2, 0, 2, 0));
         pane.add(value, 0, 0);
-        pane.add(valueLabel, 0, 0);
         return pane;
     }
 
@@ -189,8 +180,12 @@ public class ListedViewCell
         pallete = new HBox();
         pallete.setSpacing(5);
         BorderPane.setAlignment(pallete, Pos.CENTER);
-        remove.setDisable(true);
-        remove.setOpacity(0);
+        if (!this.identifiable.getValue().getId().equals("new")) {
+            remove.setDisable(true);
+            remove.setOpacity(0);
+        } else {
+            remove.setOnAction(event -> removeItem.removeItem(this.identifiable.getValue()));
+        }
         pallete.setAlignment(Pos.CENTER);
 
         return pallete;
@@ -200,32 +195,6 @@ public class ListedViewCell
     @Override
     public boolean hasRemoveItem() {
         return removeItem != null;
-    }
-
-    private void remove(ActionEvent event) {
-        if (!this.identifiable.getValue().getId().equals("-1")) {
-//            DialogWindow<ButtonType> instance = DialogWindow.getInstance(DialogWindowType.CONFIRM, "Вы подтверждаете удаление записи из БД?");
-//            Optional<ButtonType> optional = instance.showAndWait();
-//            if(optional.isPresent()){
-//                if(optional.get() == ButtonType.YES){
-//                    List<Listed> list = new LinkedList<>();
-//                    list.add(listed);
-//                    try {
-//                        ThothLite.getInstance().removeFromTable(table, list);
-//                        removeItem.removeItem(listed);
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    } catch (NotContainsException e) {
-//                        e.printStackTrace();
-//                    } catch (ClassNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-        } else {
-            removeItem.removeItem(((Typable)this.identifiable.getValue()));
-        }
-
     }
 
     @Override

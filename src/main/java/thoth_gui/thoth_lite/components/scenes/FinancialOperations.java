@@ -201,16 +201,6 @@ public class FinancialOperations
 
         initialData.addListener((ListChangeListener<? super FinancialAccounting>) change -> initialDataChange());
         data.addListener(this::showData);
-
-//        try {
-//            initialData.setValue(
-//                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
-//            );
-//            ThothLite.getInstance().subscribeOnTable(table, this);
-//        }
-//        catch (NotContainsException | SQLException | ClassNotFoundException e) {
-//            GuiLogger.log.error(e.getMessage(), e);
-//        }
     }
 
     private void initHistoryTable() {
@@ -226,7 +216,6 @@ public class FinancialOperations
             protected void updateItem(LocalDate localDate, boolean b) {
                 if (localDate != null) {
                     super.updateItem(localDate, b);
-//                    setText( String.format("%1s.%2s.%3s", localDate.getDayOfMonth(), localDate.getMonth().name(), localDate.getYear()) );
                     setText(localDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
                 }
             }
@@ -364,15 +353,11 @@ public class FinancialOperations
     private void initStyle() {
         finOpSumTable.setColumnResizePolicy(controls.table_view.TableView.CONSTRAINED_RESIZE_POLICY);
         finOpHistoryTable.setColumnResizePolicy(controls.table_view.TableView.CONSTRAINED_RESIZE_POLICY);
-//        tableView.setRowFactory(data -> new FinRow());
     }
 
     @Override
     public void open() {
         try {
-//            initialData.setValue(
-//                    FXCollections.observableList((List<FinancialAccounting>) ThothLite.getInstance().getDataFromTable(table))
-//            );
             ThothLite.getInstance().subscribeOnTable(table, this);
         }
         catch (NotContainsException | SQLException | ClassNotFoundException e) {

@@ -21,6 +21,7 @@ import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextField;
+import thoth_gui.thoth_lite.components.scenes.db_elements_view.list_view.RemoveItem;
 import thoth_gui.thoth_styleconstants.svg.Images;
 import tools.SvgWrapper;
 
@@ -32,7 +33,7 @@ import java.util.List;
 
 public class PartnerViewCell
         extends IdentifiableViewCell
-        implements Apply, Cancel {
+        implements Apply, Cancel, RemoveItemFromList {
 
     private final double imgBtnSize = 17;
     private final double imgBtnViewBoxSize = 20;
@@ -40,7 +41,11 @@ public class PartnerViewCell
     private final controls.Button toEdit = Button.getInstance(
             SvgWrapper.getInstance(Images.EDIT(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
             , event -> toFromEditMode());
-
+    private final controls.Button remove;
+    private final controls.Button trash = Button.getInstance(
+            SvgWrapper.getInstance(Images.TRASH(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
+            , event -> {
+            });
     private final controls.Button emptyFish = Button.getInstance(
             SvgWrapper.getInstance(Images.EMPTY(), imgBtnSize, imgBtnSize, imgBtnViewBoxSize, imgBtnViewBoxSize)
             , event -> {
@@ -56,21 +61,26 @@ public class PartnerViewCell
 
     private SimpleBooleanProperty modeIsEdit = new SimpleBooleanProperty(true);
 
+    private RemoveItem removeItem;
+
     private HBox pallete;
     private GridPane content;
 
     private LocalDateTime prevClick;
 
     private controls.TextField name;
-    private controls.Label nameLabel;
     private controls.TextField web;
-    private controls.Label webLabel;
     private controls.TextField phone;
-    private controls.Label phoneLabel;
+
 
 
     public PartnerViewCell(Partnership partner) {
         super();
+
+        remove = (partner.getId().equals("new"))?
+                (trash):
+                (emptyFish);
+
         this.identifiable.setValue(partner);
         setTable(AvaliableTables.PARTNERS);
 
@@ -81,7 +91,6 @@ public class PartnerViewCell
         setOnKeyPressed(this::keyPress);
 
     }
-
 
     @Override
     protected Node leftNode() {
@@ -94,16 +103,17 @@ public class PartnerViewCell
     protected Node centerNode() {
         Partnership partner = (Partnership) this.identifiable.getValue();
 
-        name = TextField.getInstance(partner.getName());
-        nameLabel = Label.getInstanse();
-        web = TextField.getInstance(partner.getWeb());
-        webLabel = Label.getInstanse();
-        phone = TextField.getInstance(partner.getPhone());
-        phoneLabel = Label.getInstanse();
+        name = TextField.getInstance((partner.getName() != null && !partner.getName().equals("null"))?(partner.getName()):(""));
+        web = TextField.getInstance((partner.getWeb() != null && !partner.getWeb().equals("null"))?(partner.getWeb()):(""));
+        phone = TextField.getInstance((partner.getPhone() != null && !partner.getPhone().equals("null"))?(partner.getPhone()):(""));
 
-        nameLabel.textProperty().bind(name.textProperty());
-        webLabel.textProperty().bind(web.textProperty());
-        phoneLabel.textProperty().bind(phone.textProperty());
+        name.setPromptText("name");
+        web.setPromptText("web");
+        phone.setPromptText("phone");
+
+        name.editableProperty().bind(modeIsEdit);
+        web.editableProperty().bind(modeIsEdit);
+        phone.editableProperty().bind(modeIsEdit);
 
         content = new GridPane()
                 .addRow(Priority.NEVER)
@@ -116,12 +126,8 @@ public class PartnerViewCell
 
         content.setPadding(new Insets(2));
 
-        nameLabel.setWrapText(true);
-        content.add(nameLabel, 0, 0);
         content.add(name, 0, 0);
-        content.add(webLabel, 1, 0);
         content.add(web, 1, 0);
-        content.add(phoneLabel, 2, 0);
         content.add(phone, 2, 0);
 
         return content;
@@ -132,8 +138,12 @@ public class PartnerViewCell
         pallete = new HBox();
         pallete.setSpacing(5);
         BorderPane.setAlignment(pallete, Pos.CENTER);
-        emptyFish.setDisable(true);
-        emptyFish.setOpacity(0);
+        if (!this.identifiable.getValue().getId().equals("new")) {
+            remove.setDisable(true);
+            remove.setOpacity(0);
+        } else {
+            remove.setOnAction(event -> removeItem.removeItem(this.identifiable.getValue()));
+        }
         pallete.setAlignment(Pos.CENTER);
 
         return pallete;
@@ -148,7 +158,7 @@ public class PartnerViewCell
         List<Partnership> list = new LinkedList<>();
         list.add(partner);
         try {
-            if (partner.getId().equals("-1")) {
+            if (partner.getId().equals("new")) {
                 GuiLogger.log.info("Insert partner into table");
                 //Вставляем запись в таблицу БД
                 ThothLite.getInstance().insertToTable(table, list);
@@ -159,13 +169,7 @@ public class PartnerViewCell
             }
             toFromEditMode();
         }
-        catch (SQLException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-        catch (NotContainsException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
-        catch (ClassNotFoundException e) {
+        catch (SQLException | NotContainsException | ClassNotFoundException e) {
             GuiLogger.log.error(e.getMessage(), e);
         }
     }
@@ -212,25 +216,26 @@ public class PartnerViewCell
 
     private void changeStatusView() {
         if (modeIsEdit.getValue()) {
-            name.setOpacity(1);
-            web.setOpacity(1);
-            phone.setOpacity(1);
-            nameLabel.setOpacity(0);
-            webLabel.setOpacity(0);
-            phoneLabel.setOpacity(0);
             pallete.getChildren().setAll(
                     acceptEdit, cancelEdit
             );
         } else {
-            name.setOpacity(0);
-            web.setOpacity(0);
-            phone.setOpacity(0);
-            nameLabel.setOpacity(1);
-            webLabel.setOpacity(1);
-            phoneLabel.setOpacity(1);
             pallete.getChildren().setAll(
-                    toEdit, emptyFish
+                    toEdit, remove
             );
+        }
+    }
+
+    @Override
+    public boolean hasRemoveItem() {
+        return removeItem != null;
+    }
+
+    @Override
+    public void setRemoveItem(RemoveItem removeItem) {
+        this.removeItem = removeItem;
+        if (remove != null) {
+            remove.setDisable(!hasRemoveItem());
         }
     }
 }
