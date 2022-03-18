@@ -36,4 +36,8 @@ public class ListElement
         this.value = value;
     }
 
+    @Override
+    public String toString() {
+        return value;
+    }
 }

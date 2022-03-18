@@ -1,9 +1,16 @@
 package main;
 
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import thoth_core.thoth_lite.exceptions.DontSetSystemCurrencyException;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.GuiLogger;
 import thoth_gui.config.Config;
+import thoth_gui.thoth_lite.SystemInfoConfig;
+import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.main_window.ThothLiteWindow;
 import thoth_core.thoth_lite.ThothLite;
 import javafx.application.Application;
@@ -12,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.json.simple.parser.ParseException;
+import thoth_gui.thoth_lite.tools.Properties;
 import window.StageResizer;
 
 import java.io.IOException;
@@ -42,17 +50,26 @@ public class Main extends Application {
         this.stage = stage;
 
         this.stage.initStyle(StageStyle.UNDECORATED);
+        this.stage.setScene(new Scene( new Pane( new ImageView(new Image(getClass().getResource("./img/splash.png").toString())) )));
         this.stage.show();
         CompletableFuture.runAsync(() -> {
             GuiLogger.log.info("Read config");
+            System.out.println("Read config");
             config = Config.getInstance();
+            Properties.loadProperties(config.getScene().getLocale());
+            System.out.println("Read config finish");
         });
         CompletableFuture.runAsync(() -> {
             GuiLogger.log.info("Init thoth-core");
+            System.out.println("Init thoth-core");
             try{
                 ThothLite.getInstance();
             } catch (DontSetSystemCurrencyException e){
-                ThothLite.getInstance(Currency.getInstance(Locale.getDefault()));
+                Platform.runLater(() -> new SystemInfoConfig().showAndWait());
+
+//                if(currency.isPresent()) {
+//                    ThothLite.getInstance(currency.get());
+//                }
             }
         }).thenAccept(unused -> {
             Platform.runLater(() -> {

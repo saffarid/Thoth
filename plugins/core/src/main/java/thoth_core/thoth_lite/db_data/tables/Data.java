@@ -97,6 +97,7 @@ public abstract class Data<T extends Identifiable>
      * */
     @Override
     public void subscribe(Flow.Subscriber subscriber) {
+        System.out.println("datasTable - " + datas);
         if (!publisher.isSubscribed(subscriber)) {
             publisher.subscribe(subscriber);
             System.out.println(name + " subscribers: " + this.publisher.getNumberOfSubscribers());

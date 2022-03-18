@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import org.json.simple.parser.ParseException;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Label;
+import thoth_gui.thoth_lite.tools.Properties;
 import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.Stylesheets;
 
@@ -32,7 +33,7 @@ public class ComboBox {
     public static controls.ComboBox getInstance(){
         controls.ComboBox comboBox = new controls.ComboBox();
         comboBox.setPlaceholder(
-                Label.getInstanse("no_elements", TextCase.NORMAL)
+                Label.getInstanse(Properties.getString("no_elements", TextCase.NORMAL))
         );
         comboBox.setMaxWidth(Double.MAX_VALUE);
         bindFont(comboBox);
