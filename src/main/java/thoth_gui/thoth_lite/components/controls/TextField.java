@@ -10,18 +10,10 @@ import java.util.concurrent.CompletableFuture;
 
 public class TextField {
     private static void bindFont(controls.TextField node) {
-        try {
-            node.fontProperty().bind(Config.getInstance().getFont().fontProperty());
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
+        node.fontProperty().bind(Config.getInstance().getFont().fontProperty());
     }
 
-    private static void connectStyle(controls.TextField node){
+    private static void connectStyle(controls.TextField node) {
         CompletableFuture
                 .supplyAsync(() -> Stylesheets.TEXT_FIELD.getStylesheet())
                 .thenAccept(s -> {
@@ -29,13 +21,14 @@ public class TextField {
                 });
     }
 
-    public static controls.TextField getInstance(){
+    public static controls.TextField getInstance() {
         controls.TextField res = new controls.TextField();
         bindFont(res);
         connectStyle(res);
         return res;
     }
-    public static controls.TextField getInstance(String text){
+
+    public static controls.TextField getInstance(String text) {
         controls.TextField res = getInstance();
         res.setText(text);
         connectStyle(res);

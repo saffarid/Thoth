@@ -9,13 +9,7 @@ import java.io.IOException;
 
 public class Tooltip {
     private static void bindFont(javafx.scene.control.Tooltip tooltip) {
-        try {
-            tooltip.fontProperty().bind(Config.getInstance().getFont().fontProperty());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        tooltip.fontProperty().bind(Config.getInstance().getFont().fontProperty());
     }
 
     public static javafx.scene.control.Tooltip getInstance(){

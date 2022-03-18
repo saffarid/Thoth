@@ -1,5 +1,6 @@
 package main;
 
+import thoth_core.thoth_lite.exceptions.DontSetSystemCurrencyException;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.GuiLogger;
 import thoth_gui.config.Config;
@@ -15,21 +16,19 @@ import window.StageResizer;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class Main extends Application{
+public class Main extends Application {
 
     private Stage stage;
     private Config config;
 
     static {
-        GuiLogger.log.trace( "java.runtime.version - " + System.getProperty("java.runtime.version") );
-        GuiLogger.log.trace( "os.name - " + System.getProperty("os.name") );
-        GuiLogger.log.trace( "java.vm.name - " + System.getProperty("java.vm.name") );
-        GuiLogger.log.trace( "javafx.runtime.version - " + System.getProperty("javafx.runtime.version") );
+        GuiLogger.log.trace("java.runtime.version - " + System.getProperty("java.runtime.version"));
+        GuiLogger.log.trace("os.name - " + System.getProperty("os.name"));
+        GuiLogger.log.trace("java.vm.name - " + System.getProperty("java.vm.name"));
+        GuiLogger.log.trace("javafx.runtime.version - " + System.getProperty("javafx.runtime.version"));
     }
 
     @Override
@@ -46,24 +45,14 @@ public class Main extends Application{
         this.stage.show();
         CompletableFuture.runAsync(() -> {
             GuiLogger.log.info("Read config");
-            try {
-                config = Config.getInstance();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            config = Config.getInstance();
         });
         CompletableFuture.runAsync(() -> {
-            try {
-                GuiLogger.log.info("Init thoth-core");
+            GuiLogger.log.info("Init thoth-core");
+            try{
                 ThothLite.getInstance();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (NotContainsException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (DontSetSystemCurrencyException e){
+                ThothLite.getInstance(Currency.getInstance(Locale.getDefault()));
             }
         }).thenAccept(unused -> {
             Platform.runLater(() -> {
@@ -78,20 +67,20 @@ public class Main extends Application{
                 );
 
                 //Установка начального положения
-                this.stage.setX( config.getWindow().getxPrimary() );
-                this.stage.setY( config.getWindow().getyPrimary() );
+                this.stage.setX(config.getWindow().getxPrimary());
+                this.stage.setY(config.getWindow().getyPrimary());
                 //Установка минимальных размеров
-                this.stage.setMinWidth( config.getWindow().getWidthPrimaryMin() );
-                this.stage.setMinHeight( config.getWindow().getHeightPrimaryMin() );
+                this.stage.setMinWidth(config.getWindow().getWidthPrimaryMin());
+                this.stage.setMinHeight(config.getWindow().getHeightPrimaryMin());
                 //Связываем свойства начальных положений
-                config.getWindow().xPrimaryProperty().bind( this.stage.xProperty() );
-                config.getWindow().yPrimaryProperty().bind( this.stage.yProperty() );
+                config.getWindow().xPrimaryProperty().bind(this.stage.xProperty());
+                config.getWindow().yPrimaryProperty().bind(this.stage.yProperty());
                 //Связываем размеры окна
-                config.getWindow().widthPrimaryProperty().bind( this.stage.widthProperty() );
-                config.getWindow().heightPrimaryProperty().bind( this.stage.heightProperty() );
+                config.getWindow().widthPrimaryProperty().bind(this.stage.widthProperty());
+                config.getWindow().heightPrimaryProperty().bind(this.stage.heightProperty());
 
                 GuiLogger.log.info("Show scene");
-                stage.setScene( scene );
+                stage.setScene(scene);
 
                 new StageResizer(stage);
 

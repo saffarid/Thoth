@@ -111,13 +111,7 @@ public abstract class IdentifiableCard
                 }
                 closeable.close();
             }
-            catch (NotContainsException e) {
-                GuiLogger.log.error(e.getMessage(), e);
-            }
-            catch (SQLException e) {
-                GuiLogger.log.error(e.getMessage(), e);
-            }
-            catch (ClassNotFoundException e) {
+            catch (NotContainsException | ClassNotFoundException e) {
                 GuiLogger.log.error(e.getMessage(), e);
             }
         }

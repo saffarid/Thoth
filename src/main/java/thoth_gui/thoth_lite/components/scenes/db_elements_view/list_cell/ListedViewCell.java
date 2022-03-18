@@ -100,7 +100,7 @@ public class ListedViewCell
                 ThothLite.getInstance().updateInTable(table, list);
             }
             toFromEditMode();
-        } catch (SQLException | NotContainsException | ClassNotFoundException e) {
+        } catch (NotContainsException | ClassNotFoundException e) {
             GuiLogger.log.error(e.getMessage(), e);
         }
     }

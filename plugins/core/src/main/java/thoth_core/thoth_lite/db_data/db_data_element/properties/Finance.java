@@ -8,4 +8,5 @@ public interface Finance
     Currency getCurrency();
     Double getCourse();
     void setCourse(Double course);
+
 }

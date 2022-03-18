@@ -20,6 +20,7 @@ import thoth_gui.config.Keys;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.Tooltip;
+import thoth_gui.thoth_lite.tools.Properties;
 import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
@@ -75,24 +76,12 @@ public class Settings
         super();
         this.id = Scenes.SETTINGS.name();
         //Запрос конфигураций
-        try {
-            GuiLogger.log.info("Get config-json");
-            newConfigJson = new JSONObject();
+        GuiLogger.log.info("Get config-json");
+        newConfigJson = new JSONObject();
 
-            configs = new LinkedList<>();
-            configs.add(Config.getInstance());
-            configs.add(ThothLite.getInstance().getConfig());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        configs = new LinkedList<>();
+        configs.add(Config.getInstance());
+        configs.add(ThothLite.getInstance().getConfig());
 
         content = new SimpleObjectProperty<>(createContentNode());
         tools = new SimpleObjectProperty<>(createToolsNode());
@@ -179,7 +168,7 @@ public class Settings
 
                 //Создаем компоненты
                 Twin twin = getConfigRow();
-                twin.setFirstNode(Label.getInstanse(key, TextCase.NORMAL));
+                twin.setFirstNode(Label.getInstanse(Properties.getString(key, TextCase.NORMAL)));
 
                 newJson.put(key, value);
 
@@ -231,8 +220,7 @@ public class Settings
                 .setMaxLeftWidth(250)
                 .setPriorityLeft(Priority.NEVER)
                 .setMinRightWidth(200)
-                .setMaxRightWidth(450)
-                ;
+                .setMaxRightWidth(450);
         twin.setPadding(configRowInsetsPadding);
         VBox.setMargin(twin, configRowInsetsMargin);
         return twin;

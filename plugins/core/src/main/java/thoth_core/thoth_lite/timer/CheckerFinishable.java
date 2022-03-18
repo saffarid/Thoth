@@ -1,6 +1,6 @@
 package thoth_core.thoth_lite.timer;
 
-import thoth_core.thoth_lite.config.Config;
+import thoth_core.thoth_lite.config.impl.Config;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finishable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import org.json.simple.parser.ParseException;
@@ -71,23 +71,19 @@ public class CheckerFinishable
                 LocalDate finishDate = finishable.finishDate();
                 int daysDelay = Period.between(currentDate, finishDate).getDays();
                 Runnable task = () -> notifySubscribers(wrappedFinishable(WhatDo.PLANNING, finishable));
-                try {
-                    if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getValue()) && (finishDate.isAfter(currentDate))) {
-                        taskMap.put(
-                                finishable,
-                                poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
-                        );
-                    } else {
-                        taskMap.put(
-                                finishable,
-                                poolExecutor.schedule(task, 1, TimeUnit.SECONDS)
-                        );
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
+
+                if ((daysDelay > Config.getInstance().getDelivered().getDayBeforeDelivery().getValue()) && (finishDate.isAfter(currentDate))) {
+                    taskMap.put(
+                            finishable,
+                            poolExecutor.schedule(task, daysDelay, TimeUnit.DAYS)
+                    );
+                } else {
+                    taskMap.put(
+                            finishable,
+                            poolExecutor.schedule(task, 1, TimeUnit.SECONDS)
+                    );
                 }
+
             }
 
         }

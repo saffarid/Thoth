@@ -9,13 +9,12 @@ import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.config.ConfigEnums;
 import thoth_core.thoth_lite.config.Configuration;
 import thoth_gui.GuiLogger;
-import thoth_gui.thoth_styleconstants.color.ColorTheme;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Locale;
 
 public class Config
         implements Configuration {
@@ -51,8 +50,7 @@ public class Config
     private Scene scene;
     private Window window;
 
-    private Config()
-            throws IOException, ParseException {
+    private Config() {
         configFile = new File(
                 pathConfig + File.separator + fileConfigName
         );
@@ -63,7 +61,11 @@ public class Config
         if (!configFile.exists()) {
             exportConfig();
         } else {
-            setConfig( importConfig() );
+            try {
+                setConfig( importConfig() );
+            } catch (IOException | ParseException e) {
+                GuiLogger.log.error(e.getMessage(), e);
+            }
         }
     }
 
@@ -78,9 +80,8 @@ public class Config
 
     @Override
     public ConfigEnums[] getConfigEnums(String key) {
-        if (key.equals(Keys.Scene.COLOR_THEME.getKey())){
-            return ColorTheme.values();
-        }
+        if (key.equals(Keys.Scene.COLOR_THEME.getKey())){ return ColorTheme.values(); }
+        if (key.equals(Keys.Scene.LOCALE.getKey())){ return Locales.values(); }
         return null;
     }
 
@@ -88,8 +89,7 @@ public class Config
         return font;
     }
 
-    public static Config getInstance()
-            throws IOException, ParseException {
+    public static Config getInstance() {
         if (config == null) {
             config = new Config();
         }
@@ -196,13 +196,17 @@ public class Config
     public class Scene
             implements Configuration {
         private final String KEY_COLOR_THEME = Keys.Scene.COLOR_THEME.getKey();
+        private final String KEY_LOCALE = Keys.Scene.LOCALE.getKey();
 
         private final ColorTheme themeDefault = ColorTheme.DARK;
+        private final Locale localeDefault = Locale.getDefault();
 
         private SimpleObjectProperty<ColorTheme> theme;
+        private Locale locale;
 
         public Scene() {
             theme = new SimpleObjectProperty<>(themeDefault);
+            locale = localeDefault;
         }
 
         /* --- Getter --- */
@@ -211,6 +215,7 @@ public class Config
         public JSONObject getConfig() {
             JSONObject res = new JSONObject();
             res.put(KEY_COLOR_THEME, theme.getValue().getName());
+            res.put(KEY_LOCALE, locale.toLanguageTag());
             return res;
         }
 
@@ -225,12 +230,17 @@ public class Config
             return theme.get();
         }
 
+        public Locale getLocale(){
+            return locale;
+        }
+
         /* --- Setter --- */
 
         @Override
         public void setConfig(JSONObject json) {
             if(json == null) return;
             theme.setValue(ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME)));
+            locale = Locale.forLanguageTag( String.valueOf(json.get(KEY_LOCALE)) );
         }
     }
 

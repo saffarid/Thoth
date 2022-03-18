@@ -55,8 +55,6 @@ public class Workspace
                     GuiLogger.log.error("Reread database error", e);
                 } catch (ClassNotFoundException e) {
                     GuiLogger.log.error(e.getMessage(), e);
-                } catch (NotContainsException e) {
-                    GuiLogger.log.error(e.getMessage(), e);
                 }
             }
     ).setTool(Tooltip.getInstance("reread"));

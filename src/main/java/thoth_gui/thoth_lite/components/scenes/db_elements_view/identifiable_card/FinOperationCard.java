@@ -131,7 +131,7 @@ public class FinOperationCard
         comment = TextArea.getInstance();
 
         courseFromFinance.setIndeterminate(false);
-        course.editableProperty().bind(courseFromFinance.selectedProperty());
+        course.editableProperty().bind(courseFromFinance.selectedProperty().not());
         financeComboBox.valueProperty().addListener((observableValue, finance, t1) -> changeCourse());
         courseFromFinance.selectedProperty().addListener((observableValue, aBoolean, t1) -> changeCourse());
 

@@ -169,7 +169,7 @@ public class PartnerViewCell
             }
             toFromEditMode();
         }
-        catch (SQLException | NotContainsException | ClassNotFoundException e) {
+        catch (NotContainsException | ClassNotFoundException e) {
             GuiLogger.log.error(e.getMessage(), e);
         }
     }

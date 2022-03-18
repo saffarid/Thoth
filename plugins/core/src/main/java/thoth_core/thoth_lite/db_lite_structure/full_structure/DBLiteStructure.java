@@ -5,19 +5,14 @@ import database.ContentValues;
 import database.DataBaseSQL;
 import database.Exceptions.NotSupportedOperation;
 import database.Table;
+import thoth_core.thoth_lite.info.SystemInfoKeys;
 
-import java.util.Currency;
 import java.util.Locale;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class DBLiteStructure extends DataBaseSQL {
 
-    private static Logger LOG;
-
-    static {
-        LOG = Logger.getLogger(DBLiteStructure.class.getName());
-    }
+    private final String VERSION_DB = "1.0.0";
 
     public DBLiteStructure() {
         super();
@@ -44,6 +39,7 @@ public class DBLiteStructure extends DataBaseSQL {
         //Таблицы типа COMPOSITE
 //        tables.add(new ProjectsComposition());
         tables.add(new PurchasesComposite());
+
     }
 
     private TableColumn getCustomColumn(String name, DataTypes type, boolean isUnique, boolean isNotNull) {
@@ -90,19 +86,19 @@ public class DBLiteStructure extends DataBaseSQL {
             name = StructureDescription.Info.TABLE_NAME;
             type = StructureDescription.TableTypes.SYSTEM_TABLE.getType();
 
-            addColumn(
-                    TableColumn.getInstance(ColumnTypes.PRIMARYKEY_AUTOINCREMENT)
+            TableColumn key = getPrimaryKeyCustom(StructureDescription.Info.ID, DataTypes.NOTE);
+            TableColumn value = getCustomColumn(
+                    StructureDescription.Info.VALUE, DataTypes.NOTE, false, true
             );
-            addColumn(
-                    getCustomColumn(
-                            StructureDescription.Info.MODULE, DataTypes.NOTE, false, true
-                    )
-            );
-            addColumn(
-                    getCustomColumn(
-                            StructureDescription.Info.VERSION, DataTypes.NOTE, false, true
-                    )
-            );
+            addColumn( key );
+            addColumn( value );
+
+            ContentValues contentValues = new ContentValues();
+
+            contentValues.put(key, SystemInfoKeys.VERSION_DB.name());
+            contentValues.put(value, VERSION_DB);
+
+            this.contentValues.add(contentValues);
         }
     }
 
@@ -236,12 +232,10 @@ public class DBLiteStructure extends DataBaseSQL {
                     .sorted((o1, o2) -> o1.getCurrencyCode().compareTo(o2.getCurrencyCode()))
                     .collect(Collectors.toList())){
                 ContentValues contentValues = new ContentValues();
+
                 contentValues.put(currencyCodeColumn, currency.getCurrencyCode());
-                if (currency.getCurrencyCode().equals(java.util.Currency.getInstance(Locale.getDefault()).getCurrencyCode())){
-                    contentValues.put(courseColumn, 1.0);
-                }else{
-                    contentValues.put(courseColumn, 0.0);
-                }
+                contentValues.put(courseColumn, 0.0);
+
                 this.contentValues.add(contentValues);
             }
         }

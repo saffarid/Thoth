@@ -1,6 +1,7 @@
 package thoth_core.thoth_lite;
 
-import thoth_core.thoth_lite.config.Config;
+import database.ContentValues;
+import thoth_core.thoth_lite.config.impl.Config;
 import thoth_core.thoth_lite.config.Configuration;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
 import thoth_core.thoth_lite.db_data.DBData;
@@ -10,66 +11,119 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Composite;
 import thoth_core.thoth_lite.db_data.tables.Data;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription;
+import thoth_core.thoth_lite.exceptions.DontSetSystemCurrencyException;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_core.thoth_lite.info.SystemInfoKeys;
 import thoth_core.thoth_lite.timer.CheckerFinishable;
 import thoth_core.thoth_lite.timer.Traceable;
-import org.json.simple.parser.ParseException;
 import thoth_core.thoth_lite.timer.WhatDo;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
-
 
 public class ThothLite {
 
-    private static ThothLite thoth;
-    private ScheduledFuture<?> scheduledFutureReReadDb;
-
-    private Config config;
-
+    /**
+     * Карта основных сведений о системе
+     */
+    private final Map<SystemInfoKeys, String> info = new HashMap<>();
+    /**
+     * Объект конфигурации системы
+     */
+    private final Config config = Config.getInstance();
+    /**
+     * Локальная, считанная, БД
+     */
+    private final DBData dbData = DBData.getInstance();
+    /**
+     * Объект-посредник для работы с БД
+     */
     private DataBaseLite database;
-    private DBData dbData;
 
-    private Traceable watcherPurchasesFinish;
-    private Traceable watcherOrdersFinish;
+    private final Accountant accountant;
+    private final Runnable reReader = () -> {
+        try {
+            database.readDataBase();
+        } catch (SQLException | ClassNotFoundException e) {
+            CoreLogger.log.error(e.getMessage(), e);
+        }
+    };
+    private final Traceable watcherPurchasesFinish = new CheckerFinishable();
+    private final Traceable watcherOrdersFinish = new CheckerFinishable();
+
+    private static ThothLite thoth;
+    /**
+     * Задача перечитывания базы
+     */
+    private ScheduledFuture<?> scheduledFutureReReadDb;
 
     private ScheduledThreadPoolExecutor periodReReadDb;
 
-    private Runnable reReader;
+    private ThothLite(Currency currency) throws DontSetSystemCurrencyException {
 
-
-    private ThothLite()
-            throws SQLException, ClassNotFoundException, NotContainsException {
-
-        try {
-            config = Config.getInstance();
-        }
-        catch (IOException e) {
-            CoreLogger.log.error("Open config error", e);
-        }
-        catch (ParseException e) {
-            CoreLogger.log.error("Read config error", e);
-        }
-        //Инициализация пустой локальной БД
         CoreLogger.log.info("Init empty local base");
-        dbData = DBData.getInstance();
-        //Инициализация системы оповещения
-        watcherPurchasesFinish = new CheckerFinishable();
-        watcherOrdersFinish = new CheckerFinishable();
-        DBData.getInstance().getTable(getTableName(AvaliableTables.PURCHASABLE)).subscribe((Flow.Subscriber) watcherPurchasesFinish);
+        //Инициализируем объект для работы с БД
+        try {
+            database = new DataBaseLite();
+        } catch (SQLException | ClassNotFoundException e) {
+            CoreLogger.log.error(e.getMessage(), e);
+        }
+        //Читаем единоразовые настройки
+        try {
+            List<HashMap<String, Object>> infoDatas = database.getDataFromTable(StructureDescription.Info.TABLE_NAME);
+            for (HashMap<String, Object> row : infoDatas) {
+                info.put(
+                        SystemInfoKeys.valueOf(String.valueOf(row.get(StructureDescription.Info.ID))),
+                        String.valueOf(row.get(StructureDescription.Info.VALUE))
+                );
+            }
 
-        //Инициализация и считывание БД
-        database = new DataBaseLite();
+            if (!info.containsKey(SystemInfoKeys.SYSTEM_CURRENCY_CODE) && currency == null) {
+                throw new DontSetSystemCurrencyException();
+            }else if(!info.containsKey(SystemInfoKeys.SYSTEM_CURRENCY_CODE) && currency != null){
+                initSystemCurrency(currency);
+            }
 
-        reReader = new ReReadDatabase();
-//        periodReReadDb = new ScheduledThreadPoolExecutor(1);
-//        scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, 5, TimeUnit.SECONDS);
+        } catch (SQLException | ClassNotFoundException e) {
+            CoreLogger.log.error(e.getMessage(), e);
+        }
+
+        //Подписка на покупки
+        try {
+            DBData.getInstance().getTable(getTableName(AvaliableTables.PURCHASABLE)).subscribe((Flow.Subscriber) watcherPurchasesFinish);
+        } catch (NotContainsException e) {
+            CoreLogger.log.error(e.getMessage(), e);
+        }
+
+        reReader.run();
+
+        accountant = new Accountant();
+
+        //Проверяем
         CoreLogger.log.info("Init thoth-core is Done");
+    }
+
+    /**
+     * Функция устанавливает системную валюту при первом запуске
+     * */
+    private void initSystemCurrency(Currency currency) throws SQLException {
+        HashMap<String, Object> dataForInfoTable = new HashMap<>();
+        dataForInfoTable.put(StructureDescription.Info.ID, SystemInfoKeys.SYSTEM_CURRENCY_CODE.name());
+        dataForInfoTable.put(StructureDescription.Info.VALUE, currency.getCurrencyCode());
+        List<HashMap<String, Object>> datasForInfo = new LinkedList<>();
+        datasForInfo.add(dataForInfoTable);
+
+        HashMap<String, Object> dataForCurrencyTable = new HashMap<>();
+        dataForCurrencyTable.put(StructureDescription.Info.ID, SystemInfoKeys.SYSTEM_CURRENCY_CODE.name());
+        dataForCurrencyTable.put(StructureDescription.Info.VALUE, currency.getCurrencyCode());
+
+        List<HashMap<String, Object>> datasForCurrency = new LinkedList<>();
+        datasForCurrency.add(dataForInfoTable);
+
+        database.insert(StructureDescription.Info.TABLE_NAME, datasForInfo);
+        database.update(StructureDescription.Info.TABLE_NAME, datasForCurrency);
     }
 
     public void acceptPurchase(Purchasable purchasable)
@@ -157,10 +211,24 @@ public class ThothLite {
         return dbData.getTable(getTableName(table)).getDatas();
     }
 
-    public static ThothLite getInstance()
-            throws SQLException, NotContainsException, ClassNotFoundException {
+    /**
+     * Функция создает объект системы с настройками локали по-умолчанию
+     *
+     * @throws DontSetSystemCurrencyException
+     */
+    public static ThothLite getInstance() throws DontSetSystemCurrencyException {
         if (thoth == null) {
-            thoth = new ThothLite();
+            thoth = new ThothLite(null);
+        }
+        return thoth;
+    }
+
+    /**
+     * Функция создает объект системы с заданными настройками локали
+     */
+    public static ThothLite getInstance(Currency currency) {
+        if (thoth == null) {
+            thoth = new ThothLite(currency);
         }
         return thoth;
     }
@@ -425,19 +493,6 @@ public class ThothLite {
         HashMap<String, List<HashMap<String, Object>>> data = dbData.getTable(tableName).convertToMap(datas);
         for (String name : data.keySet()) {
             database.update(name, data.get(name));
-        }
-    }
-
-    class ReReadDatabase
-            implements Runnable {
-        @Override
-        public void run() {
-            try {
-                database.readDataBase();
-            }
-            catch (SQLException | ClassNotFoundException e) {
-                CoreLogger.log.error(e.getMessage(), e);
-            }
         }
     }
 

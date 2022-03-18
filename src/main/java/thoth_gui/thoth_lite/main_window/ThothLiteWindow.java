@@ -15,11 +15,10 @@ import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
 import thoth_gui.thoth_lite.tools.Properties;
 import thoth_gui.thoth_lite.tools.TextCase;
 import thoth_gui.thoth_styleconstants.Stylesheets;
-import thoth_gui.thoth_styleconstants.color.ColorTheme;
+import thoth_gui.config.ColorTheme;
 import tools.BorderWrapper;
 import tools.SvgWrapper;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
-import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.scenes.Settings;
@@ -35,29 +34,25 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.*;
-import layout.basepane.VBox;
 import layout.custompane.NavigationMenu;
 import org.json.simple.parser.ParseException;
 import thoth_gui.thoth_styleconstants.svg.*;
 import window.PrimaryWindow;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class ThothLiteWindow
         extends PrimaryWindow {
 
-    private Config config;
+    private Config config = Config.getInstance();
 
     public enum DEFAULT_SIZE {
         HEIGHT(600),
         WIDTH(900),
         WIDTH_LEFT_BLOCK(200),
-
         ;
         private double size;
 
@@ -72,7 +67,7 @@ public class ThothLiteWindow
 
     private static ThothLiteWindow window;
 
-    private SimpleObjectProperty<ColorTheme> theme;
+    private final SimpleObjectProperty<ColorTheme> theme = new SimpleObjectProperty<>();
 
     private Stage mainStage;
 
@@ -83,29 +78,14 @@ public class ThothLiteWindow
     private ThothLite thoth;
 
     static {
-        Properties.loadProperties(Locale.getDefault());
+        Properties.loadProperties(Config.getInstance().getScene().getLocale());
     }
 
     private ThothLiteWindow(Stage stage) {
         super(stage);
-        try {
-            GuiLogger.log.info("Get thoth-core");
-            this.thoth = ThothLite.getInstance();
-        } catch (SQLException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        } catch (NotContainsException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
 
-        try {
-            this.config = Config.getInstance();
-        } catch (IOException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        } catch (ParseException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
+        GuiLogger.log.info("Get thoth-core");
+        this.thoth = ThothLite.getInstance();
 
         mainStage = stage;
 
@@ -140,8 +120,6 @@ public class ThothLiteWindow
         left.setPadding(new Insets(2));
         left.setVgap(2);
 
-        FinishableView finishableViewPurchase = getFinishableView();
-        thoth.purchasesSubscribe(finishableViewPurchase);
 
         left.setBorder(
                 new BorderWrapper()
@@ -151,7 +129,7 @@ public class ThothLiteWindow
         );
 
         left.add(navigationMenuConfig(), 0, 0);
-        left.add(finishableViewPurchase, 0, 1);
+        left.add(getFinishableView(), 0, 1);
 
         return left;
     }
@@ -168,7 +146,6 @@ public class ThothLiteWindow
     protected void initStyle() {
         CompletableFuture.runAsync(() -> {
                     GuiLogger.log.info("Theme init");
-                    theme = new SimpleObjectProperty<>();
                     theme.addListener((observableValue, colorTheme, t1) -> {
                         if (t1 != null) {
                             Platform.runLater(() -> {
@@ -177,13 +154,7 @@ public class ThothLiteWindow
                             });
                         }
                     });
-                    try {
-                        theme.bind(Config.getInstance().getScene().getThemeProperty());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    theme.bind(Config.getInstance().getScene().getThemeProperty());
                 })
                 .thenAccept(unused -> {
                     Platform.runLater(() -> {
@@ -276,7 +247,7 @@ public class ThothLiteWindow
 
     private FinishableView getFinishableView() {
         FinishableView res = new FinishableView();
-
+        thoth.purchasesSubscribe(res);
         return res;
     }
 

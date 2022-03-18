@@ -96,12 +96,6 @@ public class PurchasableCard
             catch (NotContainsException e) {
                 e.printStackTrace();
             }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-            catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
 
         }
     }
@@ -174,10 +168,6 @@ public class PurchasableCard
         try {
             res.setItems( FXCollections.observableList( ThothLite.getInstance().getDataFromTable(AvaliableTables.PARTNERS) ) );
         } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 

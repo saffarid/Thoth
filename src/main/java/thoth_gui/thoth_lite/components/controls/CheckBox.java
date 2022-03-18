@@ -13,19 +13,14 @@ import java.util.concurrent.CompletableFuture;
 
 public class CheckBox {
 
-    private static javafx.scene.control.CheckBox bindFont(javafx.scene.control.CheckBox node){
-        try {
-            SimpleObjectProperty<Font> fontProperty = Config.getInstance().getFont().fontProperty();
-            node.fontProperty().bind(fontProperty);
-            node.tooltipProperty().addListener((observableValue, tooltip, t1) -> node.getTooltip().fontProperty().bind(fontProperty));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    private static javafx.scene.control.CheckBox bindFont(javafx.scene.control.CheckBox node) {
+        SimpleObjectProperty<Font> fontProperty = Config.getInstance().getFont().fontProperty();
+        node.fontProperty().bind(fontProperty);
+        node.tooltipProperty().addListener((observableValue, tooltip, t1) -> node.getTooltip().fontProperty().bind(fontProperty));
         return node;
     }
-    private static void connectStyle(javafx.scene.control.CheckBox node){
+
+    private static void connectStyle(javafx.scene.control.CheckBox node) {
         CompletableFuture
                 .supplyAsync(() -> Stylesheets.CHECK_BOX.getStylesheet())
                 .thenAccept(s -> {
@@ -33,13 +28,14 @@ public class CheckBox {
                 });
     }
 
-    public static javafx.scene.control.CheckBox getInstance(){
+    public static javafx.scene.control.CheckBox getInstance() {
         javafx.scene.control.CheckBox res = new javafx.scene.control.CheckBox();
         bindFont(res);
         connectStyle(res);
         return res;
     }
-    public static javafx.scene.control.CheckBox getInstance(String s){
+
+    public static javafx.scene.control.CheckBox getInstance(String s) {
         javafx.scene.control.CheckBox res = getInstance();
         res.setText(s);
         res.setTooltip(new Tooltip(s));

@@ -54,15 +54,9 @@ public class About
 
     @Override
     protected void initStyle() {
-        try {
-            getStyleClass().add(Config.getInstance().getScene().getTheme().getName().toLowerCase());
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
+
+        getStyleClass().add(Config.getInstance().getScene().getTheme().getName().toLowerCase());
+
         getStylesheets().add(Stylesheets.COLORS.getStylesheet());
         getStylesheets().add(Stylesheets.LABEL.getStylesheet());
         getStylesheets().add(Stylesheets.TITLE.getStylesheet());

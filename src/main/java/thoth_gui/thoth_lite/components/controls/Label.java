@@ -15,15 +15,10 @@ import java.util.concurrent.CompletableFuture;
 public class Label {
 
     private static void bindFont(controls.Label label) {
-        try {
-            label.fontProperty().bind(Config.getInstance().getFont().fontProperty());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        label.fontProperty().bind(Config.getInstance().getFont().fontProperty());
     }
-    private static void connectStyle(controls.Label node){
+
+    private static void connectStyle(controls.Label node) {
         CompletableFuture
                 .supplyAsync(() -> Stylesheets.LABEL.getStylesheet())
                 .thenAccept(s -> {
@@ -31,29 +26,33 @@ public class Label {
                 });
     }
 
-    public static controls.Label getInstanse(){
+    public static controls.Label getInstanse() {
         controls.Label label = new controls.Label();
         label.setTextFill(Color.WHITE);
         bindFont(label);
         connectStyle(label);
         return label;
     }
-    public static controls.Label getInstanse(String s){
+
+    public static controls.Label getInstanse(String s) {
         controls.Label instanse = getInstanse();
         instanse.setText(s);
         return instanse;
     }
-    public static controls.Label getInstanse(String s, TextCase textCase){
+
+    public static controls.Label getInstanse(String s, TextCase textCase) {
         controls.Label label = getInstanse();
         label.setText(Properties.getString(s, textCase));
         return label;
     }
-    public static controls.Label getInstanse(String s, Node node){
+
+    public static controls.Label getInstanse(String s, Node node) {
         controls.Label label = getInstanse(s);
         label.setGraphic(node);
         return label;
     }
-    public static controls.Label getInstanse(String s, Node node, TextCase textCase){
+
+    public static controls.Label getInstanse(String s, Node node, TextCase textCase) {
         controls.Label label = getInstanse(s, textCase);
         label.setGraphic(node);
         return label;

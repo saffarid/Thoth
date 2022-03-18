@@ -39,11 +39,11 @@ public class SortCell
 
         hBox.getChildren().addAll(
                 Label.getInstanse(
-                        (text.endsWith("down"))?(text.replace("_down", "")):(text.replace("_up", "")), TextCase.LOWER
+                        (text.endsWith("down")) ? (text.replace("_down", "")) : (text.replace("_up", "")), TextCase.LOWER
                 )
         );
 
-        if(node != null) hBox.getChildren().addAll( node );
+        if (node != null) hBox.getChildren().addAll(node);
 
         return hBox;
     }
@@ -51,17 +51,11 @@ public class SortCell
     @Override
     protected void updateItem(SortBy t, boolean b) {
         if (t != null) {
-            try {
-                super.updateItem(t, b);
-                fontProperty().bind(Config.getInstance().getFont().fontProperty());
-                setGraphic(
-                        createGraphic(t.getSortName())
-                );
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            super.updateItem(t, b);
+            fontProperty().bind(Config.getInstance().getFont().fontProperty());
+            setGraphic(
+                    createGraphic(t.getSortName())
+            );
         }
     }
 }

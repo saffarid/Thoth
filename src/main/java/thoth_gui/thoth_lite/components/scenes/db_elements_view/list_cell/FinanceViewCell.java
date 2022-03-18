@@ -92,7 +92,7 @@ public class FinanceViewCell
             ThothLite.getInstance().updateInTable(table, list);
             toFromEditMode();
         }
-        catch (SQLException | NotContainsException | ClassNotFoundException e) {
+        catch (NotContainsException e) {
             GuiLogger.log.error(e.getMessage(), e);
         }
     }

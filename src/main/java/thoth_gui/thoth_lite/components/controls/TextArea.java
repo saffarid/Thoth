@@ -11,15 +11,10 @@ import java.util.concurrent.CompletableFuture;
 public class TextArea {
 
     private static void bindFont(controls.TextArea node) {
-        try {
-            node.fontProperty().bind(Config.getInstance().getFont().fontProperty());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        node.fontProperty().bind(Config.getInstance().getFont().fontProperty());
     }
-    private static void connectStyle(controls.TextArea node){
+
+    private static void connectStyle(controls.TextArea node) {
         CompletableFuture
                 .supplyAsync(() -> Stylesheets.TEXT_FIELD.getStylesheet())
                 .thenAccept(s -> {
@@ -27,13 +22,14 @@ public class TextArea {
                 });
     }
 
-    public static controls.TextArea getInstance(){
+    public static controls.TextArea getInstance() {
         controls.TextArea res = new controls.TextArea();
         bindFont(res);
         connectStyle(res);
         return res;
     }
-    public static controls.TextArea getInstance(String s){
+
+    public static controls.TextArea getInstance(String s) {
         controls.TextArea res = getInstance();
         res.setText(s);
         return res;

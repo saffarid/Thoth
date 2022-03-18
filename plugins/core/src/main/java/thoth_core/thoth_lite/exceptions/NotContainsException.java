@@ -1,4 +1,4 @@
 package thoth_core.thoth_lite.exceptions;
 
-public class NotContainsException extends Exception{
+public class NotContainsException extends RuntimeException{
 }

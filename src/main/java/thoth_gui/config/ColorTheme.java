@@ -1,4 +1,4 @@
-package thoth_gui.thoth_styleconstants.color;
+package thoth_gui.config;
 
 import thoth_core.thoth_lite.config.ConfigEnums;
 

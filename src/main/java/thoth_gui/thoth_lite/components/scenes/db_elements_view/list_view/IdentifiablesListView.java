@@ -145,11 +145,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                 default:
                     return new ListedListView((List<Typable>) dataFromTable, type);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         } catch (NotContainsException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
@@ -159,7 +155,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     public void open() {
         try {
             ThothLite.getInstance().subscribeOnTable(this.table, this);
-        } catch (NotContainsException | SQLException | ClassNotFoundException e) {
+        } catch (NotContainsException e) {
             e.printStackTrace();
         }
     }
@@ -182,7 +178,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
                         }
                     }
                 }
-                catch (ClassNotFoundException | NotContainsException | SQLException e) {
+                catch (NotContainsException e) {
                     GuiLogger.log.error(e.getMessage(), e);
                 }
             }

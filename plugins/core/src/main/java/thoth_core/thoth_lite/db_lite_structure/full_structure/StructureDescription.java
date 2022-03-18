@@ -35,9 +35,8 @@ public class StructureDescription {
      * */
     public static class Info{
         public static final String TABLE_NAME = "info";
-        public static final String ID = "id";
-        public static final String MODULE = "module";
-        public static final String VERSION = "version";
+        public static final String ID = "key";
+        public static final String VALUE = "value";
     }
 
     /* --- Таблицы со списочными данными --- */

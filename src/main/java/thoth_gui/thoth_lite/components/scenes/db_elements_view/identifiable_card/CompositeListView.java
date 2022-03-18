@@ -452,7 +452,7 @@ public class CompositeListView
 
         try {
             ThothLite.getInstance().subscribeOnTable(AvaliableTables.STORAGABLE, res);
-        } catch (NotContainsException | SQLException | ClassNotFoundException e) {
+        } catch (NotContainsException e) {
             e.printStackTrace();
         }
 

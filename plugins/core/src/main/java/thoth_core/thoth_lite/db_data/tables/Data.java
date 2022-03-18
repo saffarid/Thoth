@@ -1,19 +1,16 @@
 package thoth_core.thoth_lite.db_data.tables;
 
-import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.DBData;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Nameable;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 
-import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
-import java.util.logging.Level;
 
 public abstract class Data<T extends Identifiable>
         implements Nameable

@@ -9,7 +9,6 @@ import database.Table;
 import database.WhereValues;
 import thoth_core.thoth_lite.db_data.DBData;
 import thoth_core.thoth_lite.db_lite_structure.full_structure.DBLiteStructure;
-import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription;
 import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.TableTypes;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 
@@ -20,7 +19,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -32,8 +30,8 @@ public class DataBaseLite {
     private final String URL_DB = "db/storage.tho";
     private final File dbFile;
 
-    private DBLiteStructure structure;
-    private DataBaseManager dbManager;
+    private DBLiteStructure structure = new DBLiteStructure();
+    private DataBaseManager dbManager = DataBaseManager.getDbManager();
 
     static {
         LOG = Logger.getLogger(DBLiteStructure.class.getName());
@@ -41,14 +39,12 @@ public class DataBaseLite {
 
     public DataBaseLite()
             throws SQLException, ClassNotFoundException {
-        dbManager = DataBaseManager.getDbManager();
-        this.structure = new DBLiteStructure();
+
         dbFile = new File(URL_DB);
         if (!this.dbFile.exists()) {
             firstInit();
         }
-        CoreLogger.log.info("Read database");
-        readDataBase();
+
     }
 
     /**
@@ -63,13 +59,13 @@ public class DataBaseLite {
         for (Table table : structure.getTables()) {
             dbManager.createTable(table, this.dbFile);
 
-            if(!table.getContentValues().isEmpty()){
-                for(ContentValues values : table.getContentValues())
-                dbManager.insert(
-                        table,
-                        values,
-                        dbFile
-                );
+            if (!table.getContentValues().isEmpty()) {
+                for (ContentValues values : table.getContentValues())
+                    dbManager.insert(
+                            table,
+                            values,
+                            dbFile
+                    );
             }
         }
         CoreLogger.log.info("Create database is done");
@@ -84,7 +80,7 @@ public class DataBaseLite {
         dbManager.beginTransaction(dbFile);
     }
 
-    public void close(){
+    public void close() {
         try {
             dbManager.closeConnection(dbFile);
         } catch (SQLException e) {
@@ -126,6 +122,16 @@ public class DataBaseLite {
         return whereValues;
     }
 
+    public List<HashMap<String, Object>> getDataFromTable(String tableName)
+            throws SQLException, ClassNotFoundException {
+        return getDataFromTable(structure.getTable(tableName));
+    }
+
+    public List<HashMap<String, Object>> getDataFromTable(Table tableName)
+            throws SQLException, ClassNotFoundException {
+        return dbManager.getDataTable(dbFile, tableName, false);
+    }
+
     public List<Table> getTables() {
         return structure.getTables();
     }
@@ -160,9 +166,9 @@ public class DataBaseLite {
                 .filter(table -> !table.getType().equals(TableTypes.SYSTEM_TABLE.getType()))
                 .collect(Collectors.toList());
         for (Table table : collect) {
-            readTable(
+            setDataTable(
                     table,
-                    dbManager.getDataTable(dbFile, table, false)
+                    getDataFromTable(table)
             );
         }
         CoreLogger.log.info("Read database is Done");
@@ -178,41 +184,20 @@ public class DataBaseLite {
         CompletableFuture.supplyAsync(() -> {
             List<HashMap<String, Object>> dataTable = new LinkedList<>();
             try {
-                dataTable = dbManager.getDataTable(dbFile, readingTable, false);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                dataTable = getDataFromTable(readingTable);
+            } catch (SQLException | ClassNotFoundException e) {
+                CoreLogger.log.error(e.getMessage(), e);
             }
             return dataTable;
         }).thenAccept(hashMaps -> {
-            readTable(readingTable, hashMaps);
+            setDataTable(readingTable, hashMaps);
         });
     }
 
     /**
-     * Чтение содержимого таблицы
-     */
-    private void readTable(Table table, List<HashMap<String, Object>> data) {
-        CoreLogger.log.info("Read table " + table.getName());
-        try {
-            TableTypes tableType = TableTypes.valueOf(table.getType());
-            DBData.getInstance()
-                    .getTableReadable(table.getName())
-                    .readTable(tableType, data);
-            CoreLogger.log.info("Read table " + table.getName() + " is Done");
-        } catch (ParseException e) {
-            CoreLogger.log.error("Parse table" + table.getName() + " error:", e);
-        } catch (NotContainsException e) {
-            CoreLogger.log.error("Not Contains in table" + table.getName() + " error:", e);
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Функция отменяет транзакцию
-     * */
-    public void rollbackTransaction(){
+     */
+    public void rollbackTransaction() {
         dbManager.rollbackTransaction(dbFile);
     }
 
@@ -233,6 +218,24 @@ public class DataBaseLite {
             );
         }
         CoreLogger.log.info("Remove from table " + tableName + " is Done");
+    }
+
+    /**
+     * Чтение содержимого таблицы
+     */
+    private void setDataTable(Table table, List<HashMap<String, Object>> data) {
+        CoreLogger.log.info("Read table " + table.getName());
+        try {
+            TableTypes tableType = TableTypes.valueOf(table.getType());
+            DBData.getInstance()
+                    .getTableReadable(table.getName())
+                    .readTable(tableType, data);
+            CoreLogger.log.info("Read table " + table.getName() + " is Done");
+        } catch (ParseException e) {
+            CoreLogger.log.error("Parse table" + table.getName() + " error:", e);
+        } catch (NotContainsException e) {
+            CoreLogger.log.error("Not Contains in table" + table.getName() + " error:", e);
+        }
     }
 
     public void update(String tableName, List<HashMap<String, Object>> datas)

@@ -56,7 +56,7 @@ public class FinanceComboBox {
 
         try {
             ThothLite.getInstance().subscribeOnTable(AvaliableTables.CURRENCIES, res);
-        } catch (NotContainsException | SQLException | ClassNotFoundException e) {
+        } catch (NotContainsException e) {
             GuiLogger.log.error(e.getMessage(), e);
         }
 

@@ -360,7 +360,7 @@ public class FinancialOperations
         try {
             ThothLite.getInstance().subscribeOnTable(table, this);
         }
-        catch (NotContainsException | SQLException | ClassNotFoundException e) {
+        catch (NotContainsException e) {
             GuiLogger.log.error(e.getMessage(), e);
         }
     }

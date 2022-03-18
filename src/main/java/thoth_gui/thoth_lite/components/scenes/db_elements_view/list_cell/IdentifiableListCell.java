@@ -96,11 +96,7 @@ public class IdentifiableListCell<T extends Identifiable>
                 removeList.add(this.identifiable);
                 try {
                     ThothLite.getInstance().removeFromTable(table, removeList);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (NotContainsException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
+                } catch (NotContainsException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }

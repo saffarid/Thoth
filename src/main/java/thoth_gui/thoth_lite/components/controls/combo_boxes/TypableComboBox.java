@@ -34,7 +34,7 @@ public class TypableComboBox {
 
         try {
             ThothLite.getInstance().subscribeOnTable(table, res);
-        } catch (NotContainsException | SQLException | ClassNotFoundException e) {
+        } catch (NotContainsException e) {
             e.printStackTrace();
         }
 

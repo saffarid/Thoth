@@ -33,6 +33,7 @@ public class DBData {
         tables.add(new Products());
         tables.add(new Projects());
         tables.add(new Purchases());
+
     }
 
     public static DBData getInstance(){

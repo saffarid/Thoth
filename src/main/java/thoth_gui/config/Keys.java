@@ -57,6 +57,10 @@ public class Keys {
          * Ключ доступа к цветовой схеме
          * */
         COLOR_THEME("color-theme"),
+        /**
+         * Ключ доступа к коду языка локализации
+         * */
+        LOCALE("locale-config")
         ;
         private String key;
         Scene(String key) {
