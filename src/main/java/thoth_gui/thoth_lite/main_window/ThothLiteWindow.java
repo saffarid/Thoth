@@ -9,7 +9,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 
 import layout.basepane.GridPane;
+import thoth_core.thoth_lite.exceptions.DontSetSystemCurrencyException;
 import thoth_gui.GuiLogger;
+import thoth_gui.thoth_lite.SystemInfoConfig;
 import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
 import thoth_gui.thoth_lite.tools.Properties;
@@ -85,7 +87,14 @@ public class ThothLiteWindow
         super(stage);
 
         GuiLogger.log.info("Get thoth-core");
-        this.thoth = ThothLite.getInstance();
+//        this.thoth = ThothLite.getInstance();
+
+        GuiLogger.log.info("Init thoth-core");
+//        try {
+//            this.thoth = ThothLite.getInstance();
+//        } catch (DontSetSystemCurrencyException e) {
+//            this.thoth = ThothLite.getInstance(new SystemInfoConfig(stage).showAndWait().get());
+//        }
 
         mainStage = stage;
 

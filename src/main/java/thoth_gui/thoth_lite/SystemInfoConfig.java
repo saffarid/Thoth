@@ -3,6 +3,7 @@ package thoth_gui.thoth_lite;
 import controls.ListCell;
 import controls.Twin;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -10,9 +11,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import layout.basepane.BorderPane;
 import layout.basepane.VBox;
 import thoth_gui.GuiLogger;
+import thoth_gui.config.ColorTheme;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Label;
@@ -22,30 +27,27 @@ import thoth_gui.thoth_styleconstants.Stylesheets;
 
 import java.util.Currency;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class SystemInfoConfig extends Dialog<Currency> {
 
-    private final Insets headlineInsetsMargin = new Insets(0, 2, 0, 2);
-    private final Insets headlineInsetsPadding = new Insets(0, 0, 0, 5);
     private final Insets configRowInsetsMargin = new Insets(0, 2, 0, 2);
     private final Insets configRowInsetsPadding = new Insets(0, 0, 0, 10);
-
+    private final SimpleObjectProperty<ColorTheme> theme = new SimpleObjectProperty<>();
     private controls.ComboBox<Currency> currencyComboBox = ComboBox.getInstance();
 
     private BorderPane content = new BorderPane();
 
-    public SystemInfoConfig() {
-        System.out.println("SystemInfoConfig");
+    public SystemInfoConfig(Stage stage) {
+        initStyle(StageStyle.UNDECORATED);
+        initModality(Modality.APPLICATION_MODAL);
+        initOwner(stage);
         getDialogPane().setContent(createCenter());
-        ButtonType yes = ButtonType.YES;
-        getDialogPane().getButtonTypes().add(yes);
-        setResultConverter(buttonType -> {
-            if(buttonType == yes){
-                return currencyComboBox.getValue();
-            }
-            return null;
+        content.heightProperty().addListener((observableValue, number, t1) -> {
+            if(t1 == null) return;
+            setHeight(t1.doubleValue());
         });
     }
 
@@ -59,17 +61,28 @@ public class SystemInfoConfig extends Dialog<Currency> {
                         Currency.getAvailableCurrencies()
                                 .stream()
                                 .collect(Collectors.toList())
+                                .stream()
+                                .sorted((o1, o2) -> o1.getCurrencyCode().compareTo(o2.getCurrencyCode()))
+                                .collect(Collectors.toList())
                 )
         );
         currencyComboBox.setButtonCell(new CurrencyCell());
         currencyComboBox.setCellFactory(cell -> new CurrencyCell());
+        currencyComboBox.setValue(Currency.getInstance(Locale.getDefault()));
         currency.setFirstNode(Label.getInstanse("System Currency"));
         currency.setSecondNode(currencyComboBox);
+
+
 
         vBox.getChildren().addAll(
                 currency
         );
 
+        content.setBottom(
+                Button.getInstance("test", event -> {
+                    setResult(currencyComboBox.getValue());
+                })
+        );
         content.setCenter(vBox);
         return content;
     }
@@ -90,15 +103,15 @@ public class SystemInfoConfig extends Dialog<Currency> {
     protected void initStyle() {
         CompletableFuture.runAsync(() -> {
                     GuiLogger.log.info("Theme init");
-                    Config.getInstance().getScene().getThemeProperty().addListener((observableValue, colorTheme, t1) -> {
+                    theme.addListener((observableValue, colorTheme, t1) -> {
                         if (t1 != null) {
                             Platform.runLater(() -> {
                                 if (colorTheme != null) content.getStyleClass().remove(colorTheme.getName().toLowerCase());
-                                content.getStyleClass().add(t1.getName().toLowerCase());
+                                content.getStyleClass().addAll(t1.getName().toLowerCase(), "window");
                             });
                         }
                     });
-                    Config.getInstance().getScene().getThemeProperty().bind(Config.getInstance().getScene().getThemeProperty());
+                    theme.bind(Config.getInstance().getScene().getThemeProperty());
                 })
                 .thenAccept(unused -> {
                     Platform.runLater(() -> {

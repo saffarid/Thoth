@@ -20,6 +20,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.json.simple.parser.ParseException;
 import thoth_gui.thoth_lite.tools.Properties;
+import thoth_gui.thoth_styleconstants.Styleloader;
+import thoth_gui.thoth_styleconstants.svg.Images;
+import tools.SvgWrapper;
 import window.StageResizer;
 
 import java.io.IOException;
@@ -28,6 +31,16 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
+
+    private final Image image = new Image(Main.class.getResource("/img/splash.png").toExternalForm(), 640, 360, false, false);
+
+    private final Scene splashScene = new Scene(
+            new Pane(
+                    new ImageView(
+                            image
+                    )
+            )
+    );
 
     private Stage stage;
     private Config config;
@@ -48,32 +61,22 @@ public class Main extends Application {
     public void start(Stage stage)
             throws Exception {
         this.stage = stage;
+        this.stage.setScene(splashScene);
 
         this.stage.initStyle(StageStyle.UNDECORATED);
-        this.stage.setScene(new Scene( new Pane( new ImageView(new Image(getClass().getResource("./img/splash.png").toString())) )));
+
         this.stage.show();
         CompletableFuture.runAsync(() -> {
             GuiLogger.log.info("Read config");
-            System.out.println("Read config");
             config = Config.getInstance();
             Properties.loadProperties(config.getScene().getLocale());
-            System.out.println("Read config finish");
-        });
-        CompletableFuture.runAsync(() -> {
-            GuiLogger.log.info("Init thoth-core");
-            System.out.println("Init thoth-core");
-            try{
-                ThothLite.getInstance();
-            } catch (DontSetSystemCurrencyException e){
-                Platform.runLater(() -> new SystemInfoConfig().showAndWait());
+//        });
 
-//                if(currency.isPresent()) {
-//                    ThothLite.getInstance(currency.get());
-//                }
-            }
+//        CompletableFuture.runAsync(() -> {
+
         }).thenAccept(unused -> {
-            Platform.runLater(() -> {
 
+            Platform.runLater(() -> {
                 GuiLogger.log.info("Scene create");
                 ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage);
 
@@ -82,17 +85,17 @@ public class Main extends Application {
                         , config.getWindow().getWidthPrimary()
                         , config.getWindow().getHeightPrimary()
                 );
-
-                //Установка начального положения
+//
+//                Установка начального положения
                 this.stage.setX(config.getWindow().getxPrimary());
                 this.stage.setY(config.getWindow().getyPrimary());
-                //Установка минимальных размеров
+//                Установка минимальных размеров
                 this.stage.setMinWidth(config.getWindow().getWidthPrimaryMin());
                 this.stage.setMinHeight(config.getWindow().getHeightPrimaryMin());
-                //Связываем свойства начальных положений
+//                Связываем свойства начальных положений
                 config.getWindow().xPrimaryProperty().bind(this.stage.xProperty());
                 config.getWindow().yPrimaryProperty().bind(this.stage.yProperty());
-                //Связываем размеры окна
+//                Связываем размеры окна
                 config.getWindow().widthPrimaryProperty().bind(this.stage.widthProperty());
                 config.getWindow().heightPrimaryProperty().bind(this.stage.heightProperty());
 
