@@ -7,6 +7,7 @@ import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Finance;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
+import thoth_core.thoth_lite.info.SystemInfoKeys;
 import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Label;
 
@@ -37,7 +38,7 @@ public class FinanceComboBox {
             }).thenApply(finances -> {
                 Optional<Finance> first = finances.stream()
                         .filter(finance ->
-                                finance.getCurrency().getCurrencyCode().equals(Currency.getInstance(Locale.getDefault()).getCurrencyCode())
+                                finance.getCurrency().getCurrencyCode().equals( ( (Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode() )
                         )
                         .findFirst();
                 return first;

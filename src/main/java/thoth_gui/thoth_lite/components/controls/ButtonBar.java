@@ -32,15 +32,11 @@ public class ButtonBar {
     }
 
     public static javafx.scene.control.ButtonBar getInstance(
-            controls.Button apply
-            , controls.Button cancel
+            controls.Button... buttons
     ) {
         javafx.scene.control.ButtonBar buttonBar = getInstance();
 
-        buttonBar.getButtons().addAll(
-                apply
-                , cancel
-        );
+        buttonBar.getButtons().addAll( buttons );
 
         return buttonBar;
     }

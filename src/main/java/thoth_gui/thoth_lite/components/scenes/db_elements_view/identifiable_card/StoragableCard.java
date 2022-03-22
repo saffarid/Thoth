@@ -65,6 +65,13 @@ public class StoragableCard
     }
 
     @Override
+    public void close() {
+        type.close();
+        adress.close();
+        countType.close();
+    }
+
+    @Override
     protected Node createContentNode() {
         super.createContentNode();
 

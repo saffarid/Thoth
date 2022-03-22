@@ -1,6 +1,5 @@
 package thoth_core.thoth_lite;
 
-import database.ContentValues;
 import thoth_core.thoth_lite.config.impl.Config;
 import thoth_core.thoth_lite.config.Configuration;
 import thoth_core.thoth_lite.config.PeriodAutoupdateDatabase;
@@ -11,7 +10,7 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Composite;
 import thoth_core.thoth_lite.db_data.tables.Data;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription;
-import thoth_core.thoth_lite.exceptions.DontSetSystemCurrencyException;
+import thoth_core.thoth_lite.exceptions.DontSetSystemInfoException;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.info.SystemInfoKeys;
 import thoth_core.thoth_lite.timer.CheckerFinishable;
@@ -61,7 +60,7 @@ public class ThothLite {
 
     private ScheduledThreadPoolExecutor periodReReadDb;
 
-    private ThothLite(Currency currency) throws DontSetSystemCurrencyException {
+    private ThothLite(HashMap<SystemInfoKeys, Object> initialData) throws DontSetSystemInfoException {
 
         CoreLogger.log.info("Init empty local base");
         //Инициализируем объект для работы с БД
@@ -80,10 +79,15 @@ public class ThothLite {
                 );
             }
 
-            if (!info.containsKey(SystemInfoKeys.SYSTEM_CURRENCY_CODE) && currency == null) {
-                throw new DontSetSystemCurrencyException();
-            }else if(!info.containsKey(SystemInfoKeys.SYSTEM_CURRENCY_CODE) && currency != null){
-                initSystemCurrency(currency);
+            List<SystemInfoKeys> missingKeys = new LinkedList<>();
+            for(SystemInfoKeys key : SystemInfoKeys.values()){
+                if(!info.containsKey(key)) missingKeys.add(key);
+            }
+
+            if (!missingKeys.isEmpty() && initialData == null) {
+                throw new DontSetSystemInfoException(missingKeys);
+            }else if(!missingKeys.isEmpty() && !initialData.isEmpty()){
+                initSystemCurrency(initialData);
             }
 
         } catch (SQLException | ClassNotFoundException e) {
@@ -108,22 +112,22 @@ public class ThothLite {
     /**
      * Функция устанавливает системную валюту при первом запуске
      * */
-    private void initSystemCurrency(Currency currency) throws SQLException {
+    private void initSystemCurrency(HashMap<SystemInfoKeys, Object> data) throws SQLException {
         HashMap<String, Object> dataForInfoTable = new HashMap<>();
         dataForInfoTable.put(StructureDescription.Info.ID, SystemInfoKeys.SYSTEM_CURRENCY_CODE.name());
-        dataForInfoTable.put(StructureDescription.Info.VALUE, currency.getCurrencyCode());
+        dataForInfoTable.put(StructureDescription.Info.VALUE, ((Currency)data.get(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode());
         List<HashMap<String, Object>> datasForInfo = new LinkedList<>();
         datasForInfo.add(dataForInfoTable);
 
         HashMap<String, Object> dataForCurrencyTable = new HashMap<>();
-        dataForCurrencyTable.put(StructureDescription.Info.ID, SystemInfoKeys.SYSTEM_CURRENCY_CODE.name());
-        dataForCurrencyTable.put(StructureDescription.Info.VALUE, currency.getCurrencyCode());
+        dataForCurrencyTable.put(StructureDescription.Currency.CURRENCY, ((Currency) data.get(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode());
+        dataForCurrencyTable.put(StructureDescription.Currency.COURSE, 1.0);
 
         List<HashMap<String, Object>> datasForCurrency = new LinkedList<>();
-        datasForCurrency.add(dataForInfoTable);
+        datasForCurrency.add(dataForCurrencyTable);
 
         database.insert(StructureDescription.Info.TABLE_NAME, datasForInfo);
-        database.update(StructureDescription.Info.TABLE_NAME, datasForCurrency);
+        database.update(StructureDescription.Currency.TABLE_NAME, datasForCurrency);
     }
 
     public void acceptPurchase(Purchasable purchasable)
@@ -212,11 +216,21 @@ public class ThothLite {
     }
 
     /**
+     * @param key ключ доступа к информационному полю
+     * @throws NotContainsException
+     * @return информационное поле
+     * */
+    public Object getInfoField(SystemInfoKeys key) throws NotContainsException{
+        if (!info.containsKey(key)) throw new NotContainsException();
+        return info.get(key);
+    }
+
+    /**
      * Функция создает объект системы с настройками локали по-умолчанию
      *
-     * @throws DontSetSystemCurrencyException
+     * @throws DontSetSystemInfoException
      */
-    public static ThothLite getInstance() throws DontSetSystemCurrencyException {
+    public static ThothLite getInstance() throws DontSetSystemInfoException {
         if (thoth == null) {
             thoth = new ThothLite(null);
         }
@@ -226,9 +240,9 @@ public class ThothLite {
     /**
      * Функция создает объект системы с заданными настройками локали
      */
-    public static ThothLite getInstance(Currency currency) {
+    public static ThothLite getInstance(HashMap<SystemInfoKeys, Object> initialData) {
         if (thoth == null) {
-            thoth = new ThothLite(currency);
+            thoth = new ThothLite(initialData);
         }
         return thoth;
     }

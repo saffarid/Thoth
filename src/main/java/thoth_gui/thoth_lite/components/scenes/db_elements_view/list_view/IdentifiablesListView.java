@@ -105,6 +105,8 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         return contentNode;
     }
 
+
+
     @Override
     protected Node createToolsNode() {
         toolsNode = new ToolsPane(table.name())

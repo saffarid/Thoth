@@ -71,7 +71,6 @@ public class CompositeListView
         }
     }
 
-
     private final static String USE_COURSE_FROM_FINANCE = Properties.getString("use_course_from_finance", TextCase.NORMAL);
     private final static String BACKET = Properties.getString("backet", TextCase.NORMAL);
     private final static String TITLE = Properties.getString("composite", TextCase.NORMAL);
@@ -157,6 +156,11 @@ public class CompositeListView
 
         setTop(title);
         setCenter(createGrid());
+    }
+
+    public void close() {
+        storagableComboBox.close();
+        financeComboBox.close();
     }
 
     private Node createGrid() {

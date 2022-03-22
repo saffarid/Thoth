@@ -9,9 +9,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 
 import layout.basepane.GridPane;
-import thoth_core.thoth_lite.exceptions.DontSetSystemCurrencyException;
 import thoth_gui.GuiLogger;
-import thoth_gui.thoth_lite.SystemInfoConfig;
 import thoth_gui.thoth_lite.components.controls.MenuButton;
 import thoth_gui.thoth_lite.components.scenes.FinancialOperations;
 import thoth_gui.thoth_lite.tools.Properties;
@@ -37,11 +35,9 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.*;
 import layout.custompane.NavigationMenu;
-import org.json.simple.parser.ParseException;
 import thoth_gui.thoth_styleconstants.svg.*;
 import window.PrimaryWindow;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -87,14 +83,10 @@ public class ThothLiteWindow
         super(stage);
 
         GuiLogger.log.info("Get thoth-core");
-//        this.thoth = ThothLite.getInstance();
+        this.thoth = ThothLite.getInstance();
 
         GuiLogger.log.info("Init thoth-core");
-//        try {
-//            this.thoth = ThothLite.getInstance();
-//        } catch (DontSetSystemCurrencyException e) {
-//            this.thoth = ThothLite.getInstance(new SystemInfoConfig(stage).showAndWait().get());
-//        }
+
 
         mainStage = stage;
 
@@ -153,25 +145,25 @@ public class ThothLiteWindow
 
     @Override
     protected void initStyle() {
-        CompletableFuture.runAsync(() -> {
+//        CompletableFuture.runAsync(() -> {
                     GuiLogger.log.info("Theme init");
                     theme.addListener((observableValue, colorTheme, t1) -> {
                         if (t1 != null) {
-                            Platform.runLater(() -> {
+//                            Platform.runLater(() -> {
                                 if (colorTheme != null) getStyleClass().remove(colorTheme.getName().toLowerCase());
                                 getStyleClass().add(t1.getName().toLowerCase());
-                            });
+//                            });
                         }
                     });
                     theme.bind(Config.getInstance().getScene().getThemeProperty());
-                })
-                .thenAccept(unused -> {
-                    Platform.runLater(() -> {
+//                })
+//                .thenAccept(unused -> {
+//                    Platform.runLater(() -> {
                         for (Stylesheets s1 : Stylesheets.values()) {
                             getStylesheets().add(s1.getStylesheet());
                         }
-                    });
-                });
+//                    });
+//                });
     }
 
     private void menuConfig() {

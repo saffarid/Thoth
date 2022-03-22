@@ -101,6 +101,12 @@ public class PurchasableCard
     }
 
     @Override
+    public void close() {
+//        store.close();
+        compositeListView.close();
+    }
+
+    @Override
     protected Node createToolsNode() {
         apply.setDisable(((Purchasable)identifiable.getValue()).isDelivered());
         return ( (ToolsPane) super.createToolsNode() )

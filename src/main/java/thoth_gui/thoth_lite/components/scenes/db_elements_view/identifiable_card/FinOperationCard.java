@@ -109,6 +109,12 @@ public class FinOperationCard
     }
 
     @Override
+    public void close() {
+        financeComboBox.close();
+        category.close();
+    }
+
+    @Override
     protected Node createToolsNode() {
         return ( (ToolsPane) super.createToolsNode() ).setTitleText(TextLabels.TITLE.text);
     }
@@ -313,6 +319,5 @@ public class FinOperationCard
         ((FinancialAccounting) identifiable.getValue()).setCourse(Double.parseDouble(course.getText()));
         ((FinancialAccounting) identifiable.getValue()).setComment(comment.getText());
     }
-
 
 }
