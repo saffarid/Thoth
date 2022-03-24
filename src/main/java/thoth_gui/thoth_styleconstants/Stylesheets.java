@@ -9,6 +9,7 @@ public enum Stylesheets {
     CHECK_BOX("/style/check_box.css"),
     COMBO_BOX("/style/combo_box.css"),
     LABEL("/style/label.css"),
+    PROGRERSS_BAR("/style/progress-bar.css"),
     SCROLL_BAR("/style/scroll_bar.css"),
     TABLE_VIEW("/style/table_view.css"),
     TEXT_FIELD("/style/text_field.css"),

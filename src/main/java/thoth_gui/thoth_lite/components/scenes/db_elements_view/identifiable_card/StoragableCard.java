@@ -6,6 +6,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
+import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Typable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Storagable;
@@ -20,6 +21,7 @@ import layout.basepane.VBox;
 import thoth_gui.thoth_lite.components.controls.*;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.TypableComboBox;
 import thoth_gui.thoth_lite.components.converters.StringDoubleConverter;
+import thoth_gui.thoth_lite.tools.Properties;
 import thoth_gui.thoth_lite.tools.TextCase;
 
 import java.util.regex.Matcher;
@@ -41,13 +43,13 @@ public class StoragableCard
     private controls.TextArea  note;
 
     private enum ControlsId {
-        ARTICLE("article"),
-        NAME("name"),
-        PRODUCT_TYPE("product-type"),
-        COUNT("count"),
-        COUNT_TYPE("count_type"),
-        ADRESS("storing"),
-        NOTE("note");
+        ARTICLE(Properties.getString("article", TextCase.NORMAL)),
+        NAME(Properties.getString("name", TextCase.NORMAL)),
+        PRODUCT_TYPE(Properties.getString("product-type", TextCase.NORMAL)),
+        COUNT(Properties.getString("count", TextCase.NORMAL)),
+        COUNT_TYPE(Properties.getString("count_type", TextCase.NORMAL)),
+        ADRESS(Properties.getString("storing", TextCase.NORMAL)),
+        NOTE(Properties.getString("note", TextCase.NORMAL));
         private String id;
 
         ControlsId(String id) {
@@ -109,28 +111,28 @@ public class StoragableCard
 
         vBox.getChildren().addAll(
                 Row.getInstance(
-                        Label.getInstanse(ControlsId.ARTICLE.id, TextCase.NORMAL),
+                        Label.getInstanse(ControlsId.ARTICLE.id),
                         article
                 )
                 , Row.getInstance(
-                        Label.getInstanse(ControlsId.NAME.id, TextCase.NORMAL),
+                        Label.getInstanse(ControlsId.NAME.id),
                         name
                 )
                 , Row.getInstance(
-                        Label.getInstanse(ControlsId.PRODUCT_TYPE.id, TextCase.NORMAL),
+                        Label.getInstanse(ControlsId.PRODUCT_TYPE.id),
                         type
                 )
                 , Row.getInstance(
-                        Label.getInstanse(ControlsId.COUNT.id, TextCase.NORMAL),
+                        Label.getInstanse(ControlsId.COUNT.id),
                         count
                 )
                 , Row.getInstance(
-                        Label.getInstanse(ControlsId.ADRESS.id, TextCase.NORMAL)
+                        Label.getInstanse(ControlsId.ADRESS.id)
                                 .setInfoGraph(LabeledInfoGraphic.getInstance("Расположение продукта")),
                         adress
                 )
                 , Row.getInstance(
-                        Label.getInstanse(ControlsId.NOTE.id, TextCase.NORMAL),
+                        Label.getInstanse(ControlsId.NOTE.id),
                         note
                 )
         );
@@ -275,6 +277,13 @@ public class StoragableCard
             }
 
         };
+    }
+
+    @Override
+    public void open() {
+        ThothLite.getInstance().subscribeOnTable(AvaliableTables.PRODUCT_TYPES, type);
+        ThothLite.getInstance().subscribeOnTable(AvaliableTables.STORING, adress);
+        ThothLite.getInstance().subscribeOnTable(AvaliableTables.COUNT_TYPES, countType);
     }
 
     @Override

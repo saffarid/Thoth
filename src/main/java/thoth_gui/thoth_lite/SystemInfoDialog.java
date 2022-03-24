@@ -51,7 +51,7 @@ public class SystemInfoDialog extends Dialog<HashMap<SystemInfoKeys, Object>> {
 
     private class SystemInfoView extends BorderPane {
 
-        private final String TITLE_TEXT = "one-time-config";
+        private final String TITLE_TEXT = Properties.getString("one-time-config", TextCase.NORMAL);
 
         private Dialog dialog;
 
@@ -76,7 +76,7 @@ public class SystemInfoDialog extends Dialog<HashMap<SystemInfoKeys, Object>> {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER_RIGHT);
             hBox.setPadding(new Insets(5));
-            hBox.getChildren().add(Button.getInstance("Apply", event -> {
+            hBox.getChildren().add(Button.getInstance(Properties.getString("Apply", TextCase.NORMAL), event -> {
                 HashMap<SystemInfoKeys, Object> resData = new HashMap<>();
                 resData.put(SystemInfoKeys.SYSTEM_CURRENCY_CODE, currencyComboBox.getValue());
                 setResult(resData);
@@ -112,7 +112,7 @@ public class SystemInfoDialog extends Dialog<HashMap<SystemInfoKeys, Object>> {
             currencyComboBox.setButtonCell(new CurrencyCell());
             currencyComboBox.setCellFactory(cell -> new CurrencyCell());
             currencyComboBox.setValue(Currency.getInstance(Locale.getDefault()));
-            currency.setFirstNode( Label.getInstanse( Properties.getString("System Currency", TextCase.NORMAL) ) );
+            currency.setFirstNode( Label.getInstanse( Properties.getString("locale_currency", TextCase.NORMAL) ) );
             currency.setSecondNode( currencyComboBox );
 
             vBox.getChildren().addAll(
@@ -124,7 +124,7 @@ public class SystemInfoDialog extends Dialog<HashMap<SystemInfoKeys, Object>> {
 
         private Node createTop() {
             Title title = new Title()
-                    .addText(Properties.getString(TITLE_TEXT, TextCase.NORMAL))
+                    .addText(TITLE_TEXT)
                     .addClose(event -> Platform.exit());
 
             title.setOnMousePressed(event -> {

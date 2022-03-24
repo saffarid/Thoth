@@ -51,9 +51,11 @@ public class Workspace
             , event -> {
                 try {
                     ThothLite.getInstance().forceRereadDatabase();
-                } catch (SQLException e) {
+                }
+                catch (SQLException e) {
                     GuiLogger.log.error("Reread database error", e);
-                } catch (ClassNotFoundException e) {
+                }
+                catch (ClassNotFoundException e) {
                     GuiLogger.log.error(e.getMessage(), e);
                 }
             }

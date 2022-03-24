@@ -120,7 +120,7 @@ public class FinancialOperations
     public FinancialOperations(AvaliableTables table) {
         this.table = table;
 
-        this.id = this.table==AvaliableTables.EXPENSES ? Scenes.EXPENSES.name() : Scenes.INCOMES.name();
+        this.id = this.table == AvaliableTables.EXPENSES ? Scenes.EXPENSES.name() : Scenes.INCOMES.name();
 
         initFinOpSumTable();
         initHistoryTable();
@@ -357,12 +357,7 @@ public class FinancialOperations
 
     @Override
     public void open() {
-        try {
-            ThothLite.getInstance().subscribeOnTable(table, this);
-        }
-        catch (NotContainsException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
+        ThothLite.getInstance().subscribeOnTable(table, this);
     }
 
     @Override
@@ -429,17 +424,4 @@ public class FinancialOperations
 
     }
 
-
-    private class FinCell
-            extends TableCell<HashMap<String, Object>, String> {
-
-        @Override
-        protected void updateItem(String s, boolean b) {
-            if (s != null) {
-                super.updateItem(s, b);
-                BorderPane node = new BorderPane(Label.getInstanse(s));
-                setGraphic(node);
-            }
-        }
-    }
 }

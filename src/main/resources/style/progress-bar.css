@@ -1,0 +1,15 @@
+.progress-bar{
+    -fx-padding:0;
+    -fx-indeterminate-bar-animation-time:1.5;
+    -fx-indeterminate-bar-animation-flip:false;
+    -fx-pref-height:15px;
+}
+
+.progress-bar>.track{
+    -fx-background-color:transparent;
+    -fx-padding:0;
+}
+
+.progress-bar>.track>.bar{
+    -fx-padding:0;
+}

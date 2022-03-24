@@ -58,7 +58,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         }
     }
 
-    protected static Logger LOG;
     private IdentifiableListCell identifiableListCell;
     protected AvaliableTables table;
 
@@ -71,10 +70,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     protected SortPane sortPane;
     protected controls.ListView<T> identifiableElementList = ListView.getInstance();
-
-    static {
-        LOG = Logger.getLogger(IdentifiablesListView.class.getName());
-    }
 
     protected IdentifiablesListView(
             List<T> datas
@@ -104,8 +99,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
         contentNode = new BorderPane(identifiableElementList);
         return contentNode;
     }
-
-
 
     @Override
     protected Node createToolsNode() {
@@ -155,11 +148,7 @@ public abstract class IdentifiablesListView<T extends Identifiable>
 
     @Override
     public void open() {
-        try {
-            ThothLite.getInstance().subscribeOnTable(this.table, this);
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        }
+        ThothLite.getInstance().subscribeOnTable(this.table, this);
     }
 
     protected void openCreateNewIdentifiable(ActionEvent event) {
@@ -217,7 +206,6 @@ public abstract class IdentifiablesListView<T extends Identifiable>
     @Override
     public void onNext(List<T> item) {
         this.subscription.request(1);
-        LOG.log(Level.INFO, "Обновление datas");
         setNewList(item);
     }
 

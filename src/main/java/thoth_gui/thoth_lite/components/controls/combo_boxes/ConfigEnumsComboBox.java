@@ -22,7 +22,8 @@ public class ConfigEnumsComboBox {
         CompletableFuture.runAsync(() -> {
             for(ConfigEnums enums : list){
                 res.getItems().add( enums );
-                if(enums.getName().equals(value)){
+                String name = enums.getName();
+                if(name.equals(value)){
                     Platform.runLater(() -> res.setValue(enums));
                 }
             }

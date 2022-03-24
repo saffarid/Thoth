@@ -6,7 +6,8 @@ import java.util.Locale;
 
 public enum Locales implements ConfigEnums<Locale> {
 
-    RU(new Locale("ru")),
+    RU(new Locale.Builder().setLanguage("ru").setRegion("RU").build()),
+    ENG(Locale.UK),
 
     ;
 
@@ -17,7 +18,7 @@ public enum Locales implements ConfigEnums<Locale> {
 
     @Override
     public String getName() {
-        return toString();
+        return locale.toLanguageTag();
     }
 
     @Override

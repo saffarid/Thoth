@@ -1,25 +1,19 @@
 package thoth_gui.thoth_lite.main_window;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 import layout.basepane.BorderPane;
 import layout.basepane.VBox;
-import org.json.simple.parser.ParseException;
-import thoth_gui.GuiLogger;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_styleconstants.Stylesheets;
 import window.SecondaryWindow;
 
-import java.awt.*;
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-
 public class About
         extends SecondaryWindow {
+
+//    <a href='https://ru.freepik.com/photos/background'>Background фото создан(а) kjpargeter - ru.freepik.com</a>
 
     private final String RUNTIME_TEMPLATE = "Runtime version: %1s";
     private final String VIRTUAL_MACHINE_TEMPLATE = "VM: %1s";

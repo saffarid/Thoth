@@ -134,6 +134,7 @@ public class Settings
     @Override
     protected Node createContentNode() {
         contentNode = new BorderPane();
+        contentNode.setPadding(new Insets(5, 0, 0, 0));
         VBox vBox = new VBox();
         vBox.setSpacing(5);
         //Проходим по все jsonам и строим на основе их контент
@@ -196,9 +197,7 @@ public class Settings
                         twin.setSecondNode(createSizeComboBox((Number) value, (observableValue, number, t1) -> newJson.put(key, t1)));
                     }
                 }
-
                 vBox.getChildren().add(twin);
-
             }
         }
     }

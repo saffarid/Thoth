@@ -75,10 +75,6 @@ public class ThothLiteWindow
 
     private ThothLite thoth;
 
-    static {
-        Properties.loadProperties(Config.getInstance().getScene().getLocale());
-    }
-
     private ThothLiteWindow(Stage stage) {
         super(stage);
 
@@ -86,7 +82,6 @@ public class ThothLiteWindow
         this.thoth = ThothLite.getInstance();
 
         GuiLogger.log.info("Init thoth-core");
-
 
         mainStage = stage;
 

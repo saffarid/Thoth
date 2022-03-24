@@ -8,6 +8,7 @@ import thoth_core.thoth_lite.exceptions.DontSetSystemInfoException;
 import thoth_core.thoth_lite.info.SystemInfoKeys;
 import thoth_gui.GuiLogger;
 import thoth_gui.config.Config;
+import thoth_gui.thoth_lite.Splash;
 import thoth_gui.thoth_lite.SystemInfoDialog;
 import thoth_gui.thoth_lite.main_window.ThothLiteWindow;
 import thoth_core.thoth_lite.ThothLite;
@@ -19,22 +20,13 @@ import javafx.stage.StageStyle;
 import thoth_gui.thoth_lite.tools.Properties;
 import window.StageResizer;
 
-import java.util.Currency;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
 
-    private final Image image = new Image(Main.class.getResource("/img/splash.png").toExternalForm(), 640, 360, false, false);
-
-    private final Scene splashScene = new Scene(
-            new Pane(
-                    new ImageView(
-                            image
-                    )
-            )
-    );
+    private final Splash splash = new Splash();
 
     private final SimpleObjectProperty<ThothLite> thothProperty = new SimpleObjectProperty<>();
 
@@ -57,7 +49,7 @@ public class Main extends Application {
     public void start(Stage stage)
             throws Exception {
         this.stage = stage;
-        this.stage.setScene(splashScene);
+        this.stage.setScene(new Scene(splash));
 
         this.stage.initStyle(StageStyle.UNDECORATED);
 
@@ -80,16 +72,16 @@ public class Main extends Application {
                 );
 
                 stage.sceneProperty().addListener((observableValue1, scene1, t11) -> {
-                    //                                Установка начального положения
+                    // Установка начального положения
                     this.stage.setX(config.getWindow().getxPrimary());
                     this.stage.setY(config.getWindow().getyPrimary());
-                    //                Установка минимальных размеров
+                    // Установка минимальных размеров
                     this.stage.setMinWidth(config.getWindow().getWidthPrimaryMin());
                     this.stage.setMinHeight(config.getWindow().getHeightPrimaryMin());
-                    //                Связываем свойства начальных положений
+                    // Связываем свойства начальных положений
                     config.getWindow().xPrimaryProperty().bind(this.stage.xProperty());
                     config.getWindow().yPrimaryProperty().bind(this.stage.yProperty());
-//                Связываем размеры окна
+                    // Связываем размеры окна
                     config.getWindow().widthPrimaryProperty().bind(this.stage.widthProperty());
                     config.getWindow().heightPrimaryProperty().bind(this.stage.heightProperty());
                 });

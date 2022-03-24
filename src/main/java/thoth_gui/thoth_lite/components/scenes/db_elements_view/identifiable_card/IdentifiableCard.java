@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 
 public abstract class IdentifiableCard
-    extends ThothSceneImpl
+        extends ThothSceneImpl
         implements Apply
         , Cancel {
 
@@ -66,7 +66,7 @@ public abstract class IdentifiableCard
     protected final SimpleObjectProperty<Identifiable> identifiable = new SimpleObjectProperty<>(null);
 
     protected boolean identifiableIsNew;
-//    protected Identifiable identifiable;
+    //    protected Identifiable identifiable;
     protected AvaliableTables table;
 
     static {
@@ -97,24 +97,23 @@ public abstract class IdentifiableCard
     @Override
     public void apply() {
         LOG.log(Level.INFO, identifiable.toString());
-        if (identifiable.getValue() != null) {
-            updateIdentifiable();
-            List<Identifiable> list = new LinkedList<>();
-            list.add(identifiable.getValue());
-            try {
-                if (identifiableIsNew) {
-                    GuiLogger.log.info("Insert into " + this.table);
-                    ThothLite.getInstance().insertToTable(table, list);
-                } else {
-                    GuiLogger.log.info("Update in " + this.table);
-                    ThothLite.getInstance().updateInTable(table, list);
-                }
-                closeable.close();
+        if (identifiable.getValue() == null) return;
+        updateIdentifiable();
+        List<Identifiable> list = new LinkedList<>();
+        list.add(identifiable.getValue());
+        try {
+            if (identifiableIsNew) {
+                GuiLogger.log.info("Insert into " + this.table);
+                ThothLite.getInstance().insertToTable(table, list);
+            } else {
+                GuiLogger.log.info("Update in " + this.table);
+                ThothLite.getInstance().updateInTable(table, list);
             }
-            catch (NotContainsException | ClassNotFoundException e) {
-                GuiLogger.log.error(e.getMessage(), e);
-            }
+            closeable.close();
+        } catch (NotContainsException | ClassNotFoundException e) {
+            GuiLogger.log.error(e.getMessage(), e);
         }
+
     }
 
     @Override
@@ -161,11 +160,6 @@ public abstract class IdentifiableCard
             }
         }
         return null;
-    }
-
-    @Override
-    public void open() {
-
     }
 
     protected abstract void updateIdentifiable();

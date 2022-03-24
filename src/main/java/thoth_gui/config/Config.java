@@ -240,7 +240,7 @@ public class Config
         public void setConfig(JSONObject json) {
             if(json == null) return;
             theme.setValue(ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME)));
-            locale = Locale.forLanguageTag( String.valueOf(json.get(KEY_LOCALE)) );
+            locale = new Locale( String.valueOf(json.get(KEY_LOCALE)) );
         }
     }
 

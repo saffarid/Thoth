@@ -21,6 +21,7 @@ import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_core.thoth_lite.ThothLite;
 
+import thoth_core.thoth_lite.info.SystemInfoKeys;
 import thoth_gui.thoth_lite.components.controls.*;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.FinanceComboBox;
@@ -126,7 +127,7 @@ public class CompositeListView
     private final javafx.scene.control.CheckBox courseCurrency = CheckBox.getInstance();
     private final controls.TextField convertedPricePerUnit = getTextField();
     private final controls.TextField convertedPrice = getTextField();
-    private final controls.TextField convertedCurrency = TextField.getInstance(Currency.getInstance(Locale.getDefault()).getCurrencyCode());
+    private final controls.TextField convertedCurrency = TextField.getInstance( ((Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode() );
 
     private final controls.Button add =
             Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), sizeSvg, sizeSvg, sizeSvgViewbox, sizeSvgViewbox), this::addItem)
@@ -146,10 +147,10 @@ public class CompositeListView
 
         if (this.identifiableIsNew) {
             storings = items;
-            this.items = new SimpleListProperty<>( FXCollections.observableList(new LinkedList<>()) );
+            this.items = new SimpleListProperty<>(FXCollections.observableList(new LinkedList<>()));
         } else {
             storings = null;
-            this.items = new SimpleListProperty<>( FXCollections.observableList(items) );
+            this.items = new SimpleListProperty<>(FXCollections.observableList(items));
         }
 
         total.textProperty().bind(totalProperty);
@@ -229,7 +230,9 @@ public class CompositeListView
         financeComboBox.valueProperty().addListener((observableValue, finance, t1) -> {
             if (t1 == null) return;
             courseCurrency.setSelected(
-                    t1.getCurrency().getCurrencyCode().equals(Currency.getInstance(Locale.getDefault()).getCurrencyCode())
+                    t1.getCurrency().getCurrencyCode().equals(
+                            ((Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode()
+                    )
             );
         });
 
@@ -356,12 +359,9 @@ public class CompositeListView
                         totalProperty.setValue(
                                 String.format(TOTAL_TEMPLATE, String.valueOf(items.getValue().size()), String.valueOf(finalPrice))
                         ));
-
             });
-
-//            listView.setCellFactory(null);
-
         });
+
         listView.itemsProperty().bind(items);
         listView.getSelectionModel().clearSelection();
         listView.setOnKeyPressed(keyEvent -> {
@@ -375,14 +375,6 @@ public class CompositeListView
         listView.setPadding(new Insets(2));
 
         listView.setCellFactory(storingListView -> new CompositeCell());
-
-//        total.setBorder(
-//                new BorderWrapper()
-//                        .addTopBorder(1)
-//                        .setColor(Color.GREY)
-//                        .setStyle(BorderStrokeStyle.SOLID)
-//                        .commit()
-//        );
 
         res.setTop(createToolsList());
         res.setCenter(listView);
@@ -404,14 +396,6 @@ public class CompositeListView
         sortPane.setValue(SORT_BY.ID_UP);
 
         toolsList.add(sortPane, 0, 0);
-
-//        toolsList.setBorder(
-//                new BorderWrapper()
-//                        .addBottomBorder(1)
-//                        .setColor(Color.GREY)
-//                        .setStyle(BorderStrokeStyle.SOLID)
-//                        .commit()
-//        );
 
         return toolsList;
     }
@@ -454,11 +438,7 @@ public class CompositeListView
 
         controls.ComboBox<Storagable> res = ComboBox.getInstance();
 
-        try {
-            ThothLite.getInstance().subscribeOnTable(AvaliableTables.STORAGABLE, res);
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        }
+        ThothLite.getInstance().subscribeOnTable(AvaliableTables.STORAGABLE, res);
 
         res.setCellFactory(storagableListView -> new StoragableCell());
         res.setButtonCell(new StoragableCell());
@@ -491,6 +471,11 @@ public class CompositeListView
         });
 
         return res;
+    }
+
+    public void open() {
+        ThothLite.getInstance().subscribeOnTable(AvaliableTables.STORAGABLE, storagableComboBox);
+        ThothLite.getInstance().subscribeOnTable(AvaliableTables.CURRENCIES, financeComboBox);
     }
 
     private VBox wrap(
@@ -613,7 +598,10 @@ public class CompositeListView
             res.add(Label.getInstanse(storing.getStoragable().getId()), 0, 0);
             res.add(Label.getInstanse(storing.getStoragable().getName()), 1, 0);
             res.add(Label.getInstanse(String.format(COUNT_TEMPLATE, storing.getCount(), storing.getStoragable().getCountType().getValue())), 2, 0);
-            if (storing.getCurrency().getCurrency().getCurrencyCode().equals(Currency.getInstance(Locale.getDefault()).getCurrencyCode())) {
+
+            if (storing.getCurrency().getCurrency().getCurrencyCode().equals(
+                    ((Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode()
+            )) {
                 res.add(
                         Label.getInstanse(
                                 String.format(FINANCE_TEMPLATE, storing.getPrice(), storing.getCurrency().getCurrency().getCurrencyCode())
@@ -632,7 +620,7 @@ public class CompositeListView
                                 String.format(
                                         CONV_FINANCE_TEMPLATE,
                                         String.format(FINANCE_TEMPLATE, storing.getPrice(), storing.getCurrency().getCurrency().getCurrencyCode()),
-                                        String.format(FINANCE_TEMPLATE, storing.getPrice() * storing.getCourse(), Currency.getInstance(Locale.getDefault()).getCurrencyCode())
+                                        String.format(FINANCE_TEMPLATE, storing.getPrice() * storing.getCourse(), ((Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode())
                                 )
                         )
                         , 3, 0
@@ -642,7 +630,7 @@ public class CompositeListView
                                 String.format(
                                         CONV_FINANCE_TEMPLATE,
                                         String.format(FINANCE_TEMPLATE, storing.getPrice().doubleValue() * storing.getCount().doubleValue(), storing.getCurrency().getCurrency().getCurrencyCode()),
-                                        String.format(FINANCE_TEMPLATE, storing.getPrice().doubleValue() * storing.getCount().doubleValue() * storing.getCourse().doubleValue(), Currency.getInstance(Locale.getDefault()).getCurrencyCode())
+                                        String.format(FINANCE_TEMPLATE, storing.getPrice().doubleValue() * storing.getCount().doubleValue() * storing.getCourse().doubleValue(), ((Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode())
                                 )
                         )
                         , 4, 0

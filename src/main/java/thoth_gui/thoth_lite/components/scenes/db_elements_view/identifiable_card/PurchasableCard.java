@@ -32,6 +32,7 @@ import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_lite.components.controls.TextField;
 import thoth_gui.thoth_lite.components.controls.ToolsPane;
 import thoth_gui.thoth_lite.components.controls.combo_boxes.ComboBox;
+import thoth_gui.thoth_lite.tools.Properties;
 import thoth_gui.thoth_lite.tools.TextCase;
 import tools.BorderWrapper;
 
@@ -42,11 +43,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PurchasableCard
-        extends IdentifiableCard
-{
+        extends IdentifiableCard {
 
-    private final String newPurchase = "new_purchase";
-    private final String purchase = "purchase";
+    private final String newPurchase = Properties.getString("new_purchase", TextCase.NORMAL);
+    private final String purchase = Properties.getString("purchase", TextCase.NORMAL);
 
     private controls.TextField trackNumber;
     private controls.ComboBox store;
@@ -55,16 +55,15 @@ public class PurchasableCard
     private Toggle toggleDelivered;
 
     private enum PropertiesPurchasableId {
-        TRACK_NUMBER("track_number"),
-        STORE("store"),
-        DELIVERY_DATE("delivery_date"),
-        IS_DELIVERED("is_delivered"),
-        STORAGABLE("storagable"),
-        COUNT("count"),
-        COUNT_TYPE("count_type"),
-        PRICE("price"),
-        CURRENCY("currency")
-        ;
+        TRACK_NUMBER(Properties.getString("track_number", TextCase.NORMAL)),
+        STORE(Properties.getString("store", TextCase.NORMAL)),
+        DELIVERY_DATE(Properties.getString("delivery_date", TextCase.NORMAL)),
+        IS_DELIVERED(Properties.getString("is_delivered", TextCase.NORMAL)),
+        STORAGABLE(Properties.getString("storagable", TextCase.NORMAL)),
+        COUNT(Properties.getString("count", TextCase.NORMAL)),
+        COUNT_TYPE(Properties.getString("count_type", TextCase.NORMAL)),
+        PRICE(Properties.getString("price", TextCase.NORMAL)),
+        CURRENCY(Properties.getString("currency", TextCase.NORMAL));
         private String id;
 
         PropertiesPurchasableId(String id) {
@@ -78,47 +77,41 @@ public class PurchasableCard
     ) {
         super(identifiable, table);
         this.id = "purchasable-card";
-        tools = new SimpleObjectProperty<>( createToolsNode() );
+        tools = new SimpleObjectProperty<>(createToolsNode());
     }
 
     @Override
     public void apply() {
-        if(identifiableIsNew){
+        if (identifiableIsNew) {
             super.apply();
-        }else{
-            if(toggleDelivered.isIsTrue()) {
+        } else {
+            if (toggleDelivered.isIsTrue()) {
                 ((Purchasable) identifiable.getValue()).delivered();
             }
-            try {
-                ThothLite.getInstance().acceptPurchase((Purchasable) identifiable.getValue());
-                closeable.close();
-            }
-            catch (NotContainsException e) {
-                e.printStackTrace();
-            }
-
+            ThothLite.getInstance().acceptPurchase((Purchasable) identifiable.getValue());
+            closeable.close();
         }
     }
 
     @Override
     public void close() {
-//        store.close();
+        store.close();
         compositeListView.close();
     }
 
     @Override
     protected Node createToolsNode() {
-        apply.setDisable(((Purchasable)identifiable.getValue()).isDelivered());
-        return ( (ToolsPane) super.createToolsNode() )
-                .setTitleText( identifiableIsNew ? newPurchase : purchase );
+        apply.setDisable(((Purchasable) identifiable.getValue()).isDelivered());
+        return ((ToolsPane) super.createToolsNode())
+                .setTitleText(identifiableIsNew ? newPurchase : purchase);
     }
 
     @Override
     protected Node createContentNode() {
         super.createContentNode();
 
-        toggleDelivered = new Toggle(((Purchasable)identifiable.getValue()).isDelivered());
-        toggleDelivered.setDisable(((Purchasable)identifiable.getValue()).isDelivered());
+        toggleDelivered = new Toggle(((Purchasable) identifiable.getValue()).isDelivered());
+        toggleDelivered.setDisable(((Purchasable) identifiable.getValue()).isDelivered());
 
         GridPane content = new GridPane();
 
@@ -139,13 +132,14 @@ public class PurchasableCard
         store = getComboBox(PropertiesPurchasableId.TRACK_NUMBER);
         datePicker = getDatePicker();
 
-        content.add( getTwin( Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id, TextCase.NORMAL), trackNumber), 0, 0 );
-        content.add( getTwin(Label.getInstanse(PropertiesPurchasableId.STORE.id, TextCase.NORMAL), store), 0, 1 );
-        content.add( getTwin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id, TextCase.NORMAL), datePicker), 0, 2 );
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.TRACK_NUMBER.id), trackNumber), 0, 0);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.STORE.id), store), 0, 1);
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.DELIVERY_DATE.id), datePicker), 0, 2);
 
-        content.add( getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id, TextCase.NORMAL), toggleDelivered), 1, 0 );
+        content.add(getTwin(Label.getInstanse(PropertiesPurchasableId.IS_DELIVERED.id), toggleDelivered), 1, 0);
 
-        content.add( new CompositeListView(((Purchasable) identifiable.getValue()).getComposition(), identifiableIsNew), 0, 3, 2, 1 );
+        compositeListView = new CompositeListView(((Purchasable) identifiable.getValue()).getComposition(), identifiableIsNew);
+        content.add(compositeListView, 0, 3, 2, 1);
 
         contentNode.setCenter(content);
 
@@ -171,26 +165,22 @@ public class PurchasableCard
         controls.ComboBox res = ComboBox.getInstance();
         res.setId(id.id);
 
-        try {
-            res.setItems( FXCollections.observableList( ThothLite.getInstance().getDataFromTable(AvaliableTables.PARTNERS) ) );
-        } catch (NotContainsException e) {
-            e.printStackTrace();
-        }
+        res.setItems(FXCollections.observableList(ThothLite.getInstance().getDataFromTable(AvaliableTables.PARTNERS)));
 
         res.setCellFactory(listView -> new PartnerCell());
         res.setButtonCell(new PartnerCell());
 
-        if(!identifiableIsNew){
+        if (!identifiableIsNew) {
             res.setDisable(true);
         }
 
         return res;
     }
 
-    private DatePicker getDatePicker(){
+    private DatePicker getDatePicker() {
         DatePicker datePicker = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance(((Purchasable) identifiable.getValue()).finishDate());
 
-        if(!identifiableIsNew){
+        if (!identifiableIsNew) {
             datePicker.setDisable(true);
         }
 
@@ -208,7 +198,7 @@ public class PurchasableCard
             }
         }
 
-        if(!identifiableIsNew){
+        if (!identifiableIsNew) {
             res.setDisable(true);
         }
 
@@ -277,8 +267,8 @@ public class PurchasableCard
 
             @Override
             public Storing getStoringByStoragableId(String id) {
-                for(Storing storing : purchasedProducts){
-                    if(storing.getStoragable().getId().equals(id))
+                for (Storing storing : purchasedProducts) {
+                    if (storing.getStoragable().getId().equals(id))
                         return storing;
                 }
                 return null;
@@ -286,8 +276,8 @@ public class PurchasableCard
 
             @Override
             public Storing getStoringByStoringId(String id) {
-                for(Storing storing : purchasedProducts){
-                    if(storing.getId().equals(id))
+                for (Storing storing : purchasedProducts) {
+                    if (storing.getId().equals(id))
                         return storing;
                 }
                 return null;
@@ -332,18 +322,24 @@ public class PurchasableCard
     }
 
     @Override
+    public void open() {
+        ThothLite.getInstance().subscribeOnTable(AvaliableTables.PARTNERS, store);
+        compositeListView.open();
+    }
+
+    @Override
     protected void updateIdentifiable() {
-        ((Purchasable)identifiable.getValue()).setId(trackNumber.getText());
-        ((Purchasable)identifiable.getValue()).setPartner((Partnership) store.getValue());
-        ((Purchasable)identifiable.getValue()).setFinishDate(datePicker.getValue());
+        ((Purchasable) identifiable.getValue()).setId(trackNumber.getText());
+        ((Purchasable) identifiable.getValue()).setPartner((Partnership) store.getValue());
+        ((Purchasable) identifiable.getValue()).setFinishDate(datePicker.getValue());
     }
 
     private class PartnerCell
-            extends ListCell<Partnership>{
+            extends ListCell<Partnership> {
 
         @Override
         protected void updateItem(Partnership partnership, boolean b) {
-            if(partnership != null) {
+            if (partnership != null) {
                 super.updateItem(partnership, b);
                 setText(partnership.getName());
             }

@@ -11,6 +11,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import layout.basepane.HBox;
 import layout.basepane.VBox;
+import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
 import thoth_gui.Apply;
@@ -39,8 +40,7 @@ public class FinOperationCard
         CURRENCY(Properties.getString("currency", TextCase.NORMAL)),
         COURSE(Properties.getString("course", TextCase.NORMAL)),
         COMMENT(Properties.getString("comment", TextCase.NORMAL)),
-        USE_COURSE_FROM_FINANCE(Properties.getString("use_course_from_finance", TextCase.NORMAL))
-        ;
+        USE_COURSE_FROM_FINANCE(Properties.getString("use_course_from_finance", TextCase.NORMAL));
         private String text;
 
         TextLabels(String id) {
@@ -89,7 +89,7 @@ public class FinOperationCard
 
     public FinOperationCard(AvaliableTables table) {
         super(null, table);
-        this.id = this.table==AvaliableTables.EXPENSES?"new-expenses":"new-incomes";
+        this.id = this.table == AvaliableTables.EXPENSES ? "new-expenses" : "new-incomes";
         tools = new SimpleObjectProperty<>(createToolsNode());
     }
 
@@ -109,6 +109,12 @@ public class FinOperationCard
     }
 
     @Override
+    public void open() {
+        ThothLite.getInstance().subscribeOnTable(AvaliableTables.CURRENCIES, financeComboBox);
+        ThothLite.getInstance().subscribeOnTable(categoryTable(), category);
+    }
+
+    @Override
     public void close() {
         financeComboBox.close();
         category.close();
@@ -116,7 +122,7 @@ public class FinOperationCard
 
     @Override
     protected Node createToolsNode() {
-        return ( (ToolsPane) super.createToolsNode() ).setTitleText(TextLabels.TITLE.text);
+        return ((ToolsPane) super.createToolsNode()).setTitleText(TextLabels.TITLE.text);
     }
 
     protected Node createContentNode() {
@@ -169,30 +175,32 @@ public class FinOperationCard
         res.setId(id.text);
 
         res.textProperty().addListener((observableValue, s, t1) -> {
-            if (!t1.equals("")) {
-                Pattern pattern = null;
-                switch (id) {
-                    case VALUE: {
-                        pattern = Pattern.compile(StringDoubleConverter.priceRegEx);
-                        break;
-                    }
-                    case COURSE: {
-                        pattern = Pattern.compile(StringDoubleConverter.courseRegEx);
-                        break;
-                    }
-                    default: pattern = null;
-                }
+            if (t1.equals("")) return;
 
-                Matcher matcher = pattern.matcher(t1);
-
-                if (!matcher.matches()) {
-                    res.setText(s);
+            Pattern pattern = null;
+            switch (id) {
+                case VALUE: {
+                    pattern = Pattern.compile(StringDoubleConverter.priceRegEx);
+                    break;
                 }
+                case COURSE: {
+                    pattern = Pattern.compile(StringDoubleConverter.courseRegEx);
+                    break;
+                }
+                default:
+                    pattern = null;
             }
+
+            Matcher matcher = pattern.matcher(t1);
+
+            if (!matcher.matches()) {
+                res.setText(s);
+            }
+
         });
 
         res.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 == false) {
+            if (!t1) {
                 switch (id) {
                     case VALUE:
                     case COURSE: {

@@ -83,30 +83,26 @@ public class FinanceViewCell
 
     @Override
     public void apply() {
-        Finance finance = (Finance)this.identifiable.getValue();
+        Finance finance = (Finance) this.identifiable.getValue();
         finance.setCourse(Double.parseDouble(course.getText()));
         List<Finance> list = new LinkedList<>();
         list.add(finance);
-        try {
-            GuiLogger.log.info("Update finance");
-            ThothLite.getInstance().updateInTable(table, list);
-            toFromEditMode();
-        }
-        catch (NotContainsException e) {
-            GuiLogger.log.error(e.getMessage(), e);
-        }
+
+        GuiLogger.log.info("Update finance");
+        ThothLite.getInstance().updateInTable(table, list);
+        toFromEditMode();
     }
 
     @Override
     public void cancel() {
-        Finance finance = (Finance)this.identifiable.getValue();
+        Finance finance = (Finance) this.identifiable.getValue();
         course.setText(String.valueOf(finance.getCourse()));
         toFromEditMode();
     }
 
     /**
      * Функция вызывается всякий раз как изменится флаг режима
-     * */
+     */
     private void changeStatusView() {
         if (modeIsEdit.getValue()) {
             pallete.getChildren().setAll(
@@ -159,7 +155,7 @@ public class FinanceViewCell
 
     @Override
     protected Node centerNode() {
-        Finance finance = (Finance)this.identifiable.getValue();
+        Finance finance = (Finance) this.identifiable.getValue();
         currencyLabel = TextField.getInstance(
                 String.format(
                         templateCurrency
