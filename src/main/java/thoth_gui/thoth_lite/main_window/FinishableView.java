@@ -22,6 +22,7 @@ import javafx.application.Platform;
 
 import layout.basepane.BorderPane;
 
+import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -45,7 +46,6 @@ public class FinishableView
 
     public FinishableView() {
         super();
-
         list.setBorder(
                 new BorderWrapper()
                         .addTopBorder(1)
@@ -54,7 +54,7 @@ public class FinishableView
                         .commit()
         );
         list.setPadding(new Insets(2));
-
+        this.list.setCellFactory(finishableListView -> new FinishableCell());
         finishables.setValue(FXCollections.observableList(new LinkedList<>()));
 
         finishables.addListener((ListChangeListener<? super Finishable>) change -> {
@@ -70,9 +70,21 @@ public class FinishableView
                             }
                         })
                         .collect(Collectors.toList());
-                this.list.setCellFactory(finishableListView -> null);
+//                this.list.setCellFactory(finishableListView -> null);
                 this.list.getItems().setAll(datas);
-                this.list.setCellFactory(finishableListView -> new FinishableCell());
+//                this.list.setCellFactory(finishableListView -> new FinishableCell());
+//                if(SystemTray.isSupported()){
+//                    SystemTray systemTray = SystemTray.getSystemTray();
+//
+//                    TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage("/img/info.png"));
+//                    try {
+//                        systemTray.add(trayIcon);
+//                        trayIcon.displayMessage("Доставка", "Есть доставка", TrayIcon.MessageType.INFO);
+//                    } catch (AWTException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+
             });
         });
 

@@ -165,7 +165,7 @@ public class PurchasableCard
         controls.ComboBox res = ComboBox.getInstance();
         res.setId(id.id);
 
-        res.setItems(FXCollections.observableList(ThothLite.getInstance().getDataFromTable(AvaliableTables.PARTNERS)));
+//        res.setItems(FXCollections.observableList(ThothLite.getInstance().getDataFromTable(AvaliableTables.PARTNERS)));
 
         res.setCellFactory(listView -> new PartnerCell());
         res.setButtonCell(new PartnerCell());

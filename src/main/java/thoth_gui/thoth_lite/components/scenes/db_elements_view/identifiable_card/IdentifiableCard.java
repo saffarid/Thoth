@@ -49,8 +49,6 @@ public abstract class IdentifiableCard
             event -> cancel()
     ).setTool(Tooltip.getInstance(ButtonText.CANCEL.name()));
 
-    protected static final Logger LOG;
-
     private EventHandler<ActionEvent> closeEvent;
 
     protected enum ButtonText {
@@ -68,10 +66,6 @@ public abstract class IdentifiableCard
     protected boolean identifiableIsNew;
     //    protected Identifiable identifiable;
     protected AvaliableTables table;
-
-    static {
-        LOG = Logger.getLogger(IdentifiableCard.class.getName());
-    }
 
     protected IdentifiableCard(
             Identifiable identifiable
@@ -96,7 +90,6 @@ public abstract class IdentifiableCard
 
     @Override
     public void apply() {
-        LOG.log(Level.INFO, identifiable.toString());
         if (identifiable.getValue() == null) return;
         updateIdentifiable();
         List<Identifiable> list = new LinkedList<>();

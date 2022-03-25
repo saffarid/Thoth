@@ -18,6 +18,10 @@ public class Keys {
          * Ключ раздела конфигурации окна
          * */
         WINDOW("window"),
+        /**
+         * Ключ раздела конфигурации оповещений
+         * */
+        NOTIFY("notify")
         ;
         private String key;
         Section(String key) {
@@ -64,6 +68,22 @@ public class Keys {
         ;
         private String key;
         Scene(String key) {
+            this.key = key;
+        }
+        public String getKey(){
+            return key;
+        }
+    }
+
+    /**
+     * Ключи конфигурации раздела оповещений
+     * */
+    public enum Notify{
+        /**Ключ доступа к разрешению оповещений в уведомления ОС*/
+        NOTIFY_TO_OS("notify-to-os"),
+        ;
+        private String key;
+        Notify(String key) {
             this.key = key;
         }
         public String getKey(){

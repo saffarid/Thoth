@@ -19,20 +19,6 @@ import java.util.Locale;
 public class Config
         implements Configuration {
 
-    public enum KEYS {
-        FONT("font"),
-        SCENE("scene"),
-        WINDOW("window"),
-        ;
-        private String key;
-        KEYS(String key) {
-            this.key = key;
-        }
-        public String getKey() {
-            return key;
-        }
-    }
-
     private static Config config;
 
     /**
@@ -46,23 +32,21 @@ public class Config
 
     private File configFile;
 
-    private Font font;
-    private Scene scene;
-    private Window window;
+    private final Font font = new Font();
+    private final Scene scene = new Scene();
+    private final Window window = new Window();
+//    private final Notify notify = new Notify();
 
     private Config() {
         configFile = new File(
                 pathConfig + File.separator + fileConfigName
         );
 
-        font = new Font();
-        scene = new Scene();
-        window = new Window();
         if (!configFile.exists()) {
             exportConfig();
         } else {
             try {
-                setConfig( importConfig() );
+                setConfig(importConfig());
             } catch (IOException | ParseException e) {
                 GuiLogger.log.error(e.getMessage(), e);
             }
@@ -75,13 +59,18 @@ public class Config
         config.put(Keys.Section.FONT.getKey(), font.getConfig());
         config.put(Keys.Section.SCENE.getKey(), scene.getConfig());
         config.put(Keys.Section.WINDOW.getKey(), window.getConfig());
+//        config.put(Keys.Section.NOTIFY.getKey(), notify.getConfig());
         return config;
     }
 
     @Override
     public ConfigEnums[] getConfigEnums(String key) {
-        if (key.equals(Keys.Scene.COLOR_THEME.getKey())){ return ColorTheme.values(); }
-        if (key.equals(Keys.Scene.LOCALE.getKey())){ return Locales.values(); }
+        if (key.equals(Keys.Scene.COLOR_THEME.getKey())) {
+            return ColorTheme.values();
+        }
+        if (key.equals(Keys.Scene.LOCALE.getKey())) {
+            return Locales.values();
+        }
         return null;
     }
 
@@ -104,6 +93,10 @@ public class Config
         return window;
     }
 
+//    public Notify getNotify(){
+//        return notify;
+//    }
+
     public void exportConfig() {
         GuiLogger.log.info("Export gui-config");
         if (!configFile.getParentFile().exists()) {
@@ -111,7 +104,7 @@ public class Config
         }
 
         try (FileWriter writer = new FileWriter(configFile)) {
-            writer.write( getConfig().toJSONString() );
+            writer.write(getConfig().toJSONString());
         } catch (IOException e) {
             GuiLogger.log.error("Export gui-config error", e);
         }
@@ -129,9 +122,10 @@ public class Config
     @Override
     public void setConfig(JSONObject json) {
         GuiLogger.log.info("Set new gui-config");
-        font  .setConfig((JSONObject) json.get(Keys.Section.FONT.getKey()));
-        scene .setConfig((JSONObject) json.get(Keys.Section.SCENE.getKey()));
+        font.setConfig((JSONObject) json.get(Keys.Section.FONT.getKey()));
+        scene.setConfig((JSONObject) json.get(Keys.Section.SCENE.getKey()));
         window.setConfig((JSONObject) json.get(Keys.Section.WINDOW.getKey()));
+//        notify.setConfig((JSONObject) json.get(Keys.Section.NOTIFY.getKey()));
     }
 
     public class Font
@@ -139,12 +133,12 @@ public class Config
 
         private final String KEY_SIZE = Keys.Font.SIZE.getKey();
         private final String KEY_FAMILY = Keys.Font.FAMILY.getKey();
+        private final javafx.scene.text.Font defaultFont = new javafx.scene.text.Font("Arial", 12.);
 
         private SimpleObjectProperty<javafx.scene.text.Font> font;
 
         public Font() {
-            javafx.scene.text.Font f = new javafx.scene.text.Font("Arial", 12);
-            font = new SimpleObjectProperty<>(f);
+            font = new SimpleObjectProperty<>(defaultFont);
         }
 
         /* --- Getter --- */
@@ -176,7 +170,7 @@ public class Config
 
         @Override
         public void setConfig(JSONObject json) {
-            if(json == null) return;
+            if (json == null) return;
             javafx.scene.text.Font f = new javafx.scene.text.Font(
                     (String) json.get(KEY_FAMILY)
                     , (double) json.get(KEY_SIZE)
@@ -198,15 +192,15 @@ public class Config
         private final String KEY_COLOR_THEME = Keys.Scene.COLOR_THEME.getKey();
         private final String KEY_LOCALE = Keys.Scene.LOCALE.getKey();
 
-        private final ColorTheme themeDefault = ColorTheme.DARK;
-        private final Locale localeDefault = Locale.getDefault();
+        private final ColorTheme defaultTheme = ColorTheme.DARK;
+        private final Locale defaultLocale = Locale.getDefault();
 
         private SimpleObjectProperty<ColorTheme> theme;
         private Locale locale;
 
         public Scene() {
-            theme = new SimpleObjectProperty<>(themeDefault);
-            locale = localeDefault;
+            theme = new SimpleObjectProperty<>(defaultTheme);
+            locale = defaultLocale;
         }
 
         /* --- Getter --- */
@@ -224,13 +218,15 @@ public class Config
             return null;
         }
 
-        public SimpleObjectProperty<ColorTheme> getThemeProperty(){return theme;}
+        public SimpleObjectProperty<ColorTheme> getThemeProperty() {
+            return theme;
+        }
 
         public ColorTheme getTheme() {
             return theme.get();
         }
 
-        public Locale getLocale(){
+        public Locale getLocale() {
             return locale;
         }
 
@@ -238,15 +234,15 @@ public class Config
 
         @Override
         public void setConfig(JSONObject json) {
-            if(json == null) return;
+            if (json == null) return;
             theme.setValue(ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME)));
-            locale = new Locale( String.valueOf(json.get(KEY_LOCALE)) );
+            locale = new Locale(String.valueOf(json.get(KEY_LOCALE)));
         }
     }
 
     /**
      * Конфигурация положения и отображения окна
-     * */
+     */
     public class Window
             implements Configuration {
 
@@ -261,16 +257,16 @@ public class Config
         private final String KEY_WIDTH_SECONDARY = "width_secondary";
         private final String KEY_HEIGHT_SECONDARY = "height_secondary";
 
-        private final double xPrimaryDefault = 0;
-        private final double yPrimaryDefault = 0;
+        private final double defaultxPrimary = 0;
+        private final double defaultyPrimary = 0;
         private final double widthPrimaryMin = 1006;
         private final double heightPrimaryMin = 606;
-        private final double widthPrimaryDefault = 1006;
-        private final double heightPrimaryDefault = 806;
-        private final boolean isMaxDefault = false;
+        private final double defaultWidthPrimary = 1006;
+        private final double defaultHeightPrimary = 806;
+        private final boolean defaultIsMax = false;
 
-        private final double widthSecondaryDefault = 806;
-        private final double heightSecondaryDefault = 606;
+        private final double defaultWidthSecondary = 806;
+        private final double defaultHeightSecondary = 606;
         private final double widthSecondaryMin = 1006;
         private final double heightSecondaryMin = 406;
 
@@ -286,15 +282,15 @@ public class Config
         private SimpleDoubleProperty heightSecondary;
 
         public Window() {
-            xPrimary = new SimpleDoubleProperty(xPrimaryDefault);
-            yPrimary = new SimpleDoubleProperty(yPrimaryDefault);
-            widthPrimary = new SimpleDoubleProperty(widthPrimaryDefault);
-            heightPrimary = new SimpleDoubleProperty(heightPrimaryDefault);
-            isMax = new SimpleBooleanProperty(isMaxDefault);
+            xPrimary = new SimpleDoubleProperty(defaultxPrimary);
+            yPrimary = new SimpleDoubleProperty(defaultyPrimary);
+            widthPrimary = new SimpleDoubleProperty(defaultWidthPrimary);
+            heightPrimary = new SimpleDoubleProperty(defaultHeightPrimary);
+            isMax = new SimpleBooleanProperty(defaultIsMax);
 
 
-            widthSecondary = new SimpleDoubleProperty(widthSecondaryDefault);
-            heightSecondary = new SimpleDoubleProperty(heightSecondaryDefault);
+            widthSecondary = new SimpleDoubleProperty(defaultWidthSecondary);
+            heightSecondary = new SimpleDoubleProperty(defaultHeightSecondary);
             xSecondary = new SimpleDoubleProperty(xPrimary.get() + ((widthPrimary.get() - widthSecondary.get()) / 2));
             ySecondary = new SimpleDoubleProperty(yPrimary.get() + ((heightPrimary.get() - heightSecondary.get()) / 2));
         }
@@ -324,7 +320,7 @@ public class Config
 
         @Override
         public void setConfig(JSONObject json) {
-            if(json == null) return;
+            if (json == null) return;
             xPrimary = new SimpleDoubleProperty((double) json.get(KEY_X_PRIMARY));
             yPrimary = new SimpleDoubleProperty((double) json.get(KEY_Y_PRIMARY));
             widthPrimary = new SimpleDoubleProperty((double) json.get(KEY_WIDTH_PRIMARY));
@@ -368,8 +364,8 @@ public class Config
             return isMax.get();
         }
 
-        public boolean isMaxDefault() {
-            return isMaxDefault;
+        public boolean isDefaultIsMax() {
+            return defaultIsMax;
         }
 
         public SimpleBooleanProperty isMaxProperty() {
@@ -433,6 +429,37 @@ public class Config
 
         public double getySecondary() {
             return ySecondary.get();
+        }
+    }
+
+    public class Notify
+            implements Configuration{
+
+        private final String KEY_NOTIFY_TO_OS = Keys.Notify.NOTIFY_TO_OS.getKey();
+
+        private final boolean defaultNotifyToOs = true;
+        private boolean notifyToOs;
+
+        public Notify() {
+            notifyToOs = defaultNotifyToOs;
+        }
+
+        @Override
+        public JSONObject getConfig() {
+            JSONObject res = new JSONObject();
+            res.put(KEY_NOTIFY_TO_OS, notifyToOs);
+            return res;
+        }
+
+        @Override
+        public ConfigEnums[] getConfigEnums(String key) {
+            return null;
+        }
+
+        @Override
+        public void setConfig(JSONObject json) {
+            if(json == null) return;
+            notifyToOs = ((boolean) json.get(KEY_NOTIFY_TO_OS));
         }
     }
 

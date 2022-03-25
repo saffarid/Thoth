@@ -127,7 +127,7 @@ public class CompositeListView
     private final javafx.scene.control.CheckBox courseCurrency = CheckBox.getInstance();
     private final controls.TextField convertedPricePerUnit = getTextField();
     private final controls.TextField convertedPrice = getTextField();
-    private final controls.TextField convertedCurrency = TextField.getInstance( ((Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode() );
+    private final controls.TextField convertedCurrency = TextField.getInstance( String.valueOf( ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)) );
 
     private final controls.Button add =
             Button.getInstance(SvgWrapper.getInstance(Images.PLUS(), sizeSvg, sizeSvg, sizeSvgViewbox, sizeSvgViewbox), this::addItem)
@@ -231,7 +231,7 @@ public class CompositeListView
             if (t1 == null) return;
             courseCurrency.setSelected(
                     t1.getCurrency().getCurrencyCode().equals(
-                            ((Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode()
+                            ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)
                     )
             );
         });
@@ -600,7 +600,7 @@ public class CompositeListView
             res.add(Label.getInstanse(String.format(COUNT_TEMPLATE, storing.getCount(), storing.getStoragable().getCountType().getValue())), 2, 0);
 
             if (storing.getCurrency().getCurrency().getCurrencyCode().equals(
-                    ((Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode()
+                    ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)
             )) {
                 res.add(
                         Label.getInstanse(

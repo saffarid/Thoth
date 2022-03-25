@@ -159,8 +159,8 @@ public class FinOperationCard
 
         vBox.getChildren().addAll(
                 Row.getInstance(Label.getInstanse(TextLabels.FIN_OP_TYPE.text), category),
-                Row.getInstance(Label.getInstanse(TextLabels.VALUE.text), value, financeComboBox),
                 Row.getInstance(Label.getInstanse(TextLabels.DATE.text), dateFinOp),
+                Row.getInstance(Label.getInstanse(TextLabels.VALUE.text), value, financeComboBox),
                 Row.getInstance(Label.getInstanse(TextLabels.COURSE.text), course, courseFromFinance),
                 Row.getInstance(Label.getInstanse(TextLabels.COMMENT.text), comment)
         );

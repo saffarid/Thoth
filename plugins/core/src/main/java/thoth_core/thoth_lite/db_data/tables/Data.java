@@ -17,6 +17,25 @@ public abstract class Data<T extends Identifiable>
         , TableReadable
         , Flow.Publisher {
 
+    /**
+     * Константа для ведения начала лога.
+     * Принимает 2 параметра:
+     *      1 - Наименование таблицы;
+     *      2 - Целевое сообщение
+     * */
+    private final String TEMPLATE_LOG = "Table: %1$s; %2$s";
+
+    /**
+     * Лог новой подписки
+     * */
+    private final String NEW_SUBSCRIBER = "new subscriber";
+
+    /**
+     * Лог данных
+     * */
+    private final String ALREADY_SUBCRIBER = "already subscriber";
+
+
     protected String name;
     protected List<T> datas;
     protected SubmissionPublisher<List<T>> publisher;
@@ -37,9 +56,7 @@ public abstract class Data<T extends Identifiable>
     public boolean contains(T data) {
         return datas
                 .stream()
-                .filter(t -> t.equals(data))
-                .findFirst()
-                .isPresent();
+                .anyMatch(t -> t.equals(data));
     }
 
     /**
@@ -97,6 +114,7 @@ public abstract class Data<T extends Identifiable>
      * */
     @Override
     public void subscribe(Flow.Subscriber subscriber) {
+//        CoreLogger.log.info();
         System.out.println("datasTable - " + datas);
         if (!publisher.isSubscribed(subscriber)) {
             publisher.subscribe(subscriber);

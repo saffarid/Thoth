@@ -156,7 +156,7 @@ public class Settings
         for (Object k : json.keySet()) {
             String key = String.valueOf(k);
             //Игнорируем конфигурацию окна
-            if (key.equals(Config.KEYS.WINDOW.getKey())) continue;
+            if (key.equals(Keys.Section.WINDOW.getKey())) continue;
 
             Object value = json.get(k);
             if (value instanceof JSONObject) {
