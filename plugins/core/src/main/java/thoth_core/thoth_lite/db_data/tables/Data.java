@@ -1,5 +1,6 @@
 package thoth_core.thoth_lite.db_data.tables;
 
+import thoth_core.thoth_lite.CoreLogger;
 import thoth_core.thoth_lite.db_data.DBData;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Nameable;
@@ -28,12 +29,12 @@ public abstract class Data<T extends Identifiable>
     /**
      * Лог новой подписки
      * */
-    private final String NEW_SUBSCRIBER = "new subscriber";
+    private final String NEW_SUBSCRIBER = "New subscriber.";
 
     /**
      * Лог данных
      * */
-    private final String ALREADY_SUBCRIBER = "already subscriber";
+    private final String ALREADY_SUBCRIBER = "Already subscriber.";
 
 
     protected String name;
@@ -114,11 +115,11 @@ public abstract class Data<T extends Identifiable>
      * */
     @Override
     public void subscribe(Flow.Subscriber subscriber) {
-//        CoreLogger.log.info();
-        System.out.println("datasTable - " + datas);
         if (!publisher.isSubscribed(subscriber)) {
+            CoreLogger.log.info(
+                    String.format(TEMPLATE_LOG, name, NEW_SUBSCRIBER)
+            );
             publisher.subscribe(subscriber);
-            System.out.println(name + " subscribers: " + this.publisher.getNumberOfSubscribers());
             publisher.submit(datas);
         }
     }

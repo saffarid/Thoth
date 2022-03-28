@@ -7,7 +7,7 @@ import java.util.Locale;
 public enum Locales implements ConfigEnums<Locale> {
 
     RU(new Locale.Builder().setLanguage("ru").setRegion("RU").build()),
-    ENG(Locale.UK),
+    ENG(new Locale.Builder().setLanguage("en").build()),
 
     ;
 

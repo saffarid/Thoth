@@ -33,13 +33,6 @@ public class Main extends Application {
     private Stage stage;
     private Config config;
 
-    static {
-        GuiLogger.log.trace("java.runtime.version - " + System.getProperty("java.runtime.version"));
-        GuiLogger.log.trace("os.name - " + System.getProperty("os.name"));
-        GuiLogger.log.trace("java.vm.name - " + System.getProperty("java.vm.name"));
-        GuiLogger.log.trace("javafx.runtime.version - " + System.getProperty("javafx.runtime.version"));
-    }
-
     @Override
     public void init() throws Exception {
         super.init();
@@ -61,6 +54,14 @@ public class Main extends Application {
         });
         thothProperty.addListener((observableValue, thothLite, t1) -> {
             if (t1 == null) return;
+
+            CompletableFuture.runAsync(() -> {
+                GuiLogger.log.trace("Thoth g1.0_" + ThothLite.getInstance().getVersion());
+                GuiLogger.log.trace("java.runtime.version - " + System.getProperty("java.runtime.version"));
+                GuiLogger.log.trace("os.name - " + System.getProperty("os.name"));
+                GuiLogger.log.trace("java.vm.name - " + System.getProperty("java.vm.name"));
+                GuiLogger.log.trace("javafx.runtime.version - " + System.getProperty("javafx.runtime.version"));
+            });
             Platform.runLater(() -> {
                 GuiLogger.log.info("Scene create");
                 ThothLiteWindow thoth = ThothLiteWindow.getInstance(stage);

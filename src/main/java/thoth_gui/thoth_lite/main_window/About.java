@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 import layout.basepane.BorderPane;
 import layout.basepane.VBox;
+import thoth_core.thoth_lite.ThothLite;
 import thoth_gui.config.Config;
 import thoth_gui.thoth_lite.components.controls.Label;
 import thoth_gui.thoth_styleconstants.Stylesheets;
@@ -13,8 +14,7 @@ import window.SecondaryWindow;
 public class About
         extends SecondaryWindow {
 
-//    <a href='https://ru.freepik.com/photos/background'>Background фото создан(а) kjpargeter - ru.freepik.com</a>
-
+    private final String APP_VERSION = "Thoth g1.0_" + ThothLite.getInstance().getVersion();
     private final String RUNTIME_TEMPLATE = "Runtime version: %1s";
     private final String VIRTUAL_MACHINE_TEMPLATE = "VM: %1s";
     private final String RUNTIME_FX_TEMPLATE = "Runtime FX: %1s";
@@ -35,7 +35,7 @@ public class About
         BorderPane.setMargin(vBox, marginVBox);
 
         vBox.getChildren().addAll(
-                Label.getInstanse("Thoth v.1.0.0"),
+                Label.getInstanse( APP_VERSION ),
                 Label.getInstanse( String.format(RUNTIME_TEMPLATE, System.getProperty("java.runtime.version")) ),
                 Label.getInstanse( String.format(VIRTUAL_MACHINE_TEMPLATE, System.getProperty("java.vm.name")) ),
                 Label.getInstanse( String.format(RUNTIME_FX_TEMPLATE, System.getProperty("javafx.runtime.version")) )
@@ -52,6 +52,7 @@ public class About
         getStyleClass().add(Config.getInstance().getScene().getTheme().getName().toLowerCase());
 
         getStylesheets().add(Stylesheets.COLORS.getStylesheet());
+        getStylesheets().add(Stylesheets.BUTTON.getStylesheet());
         getStylesheets().add(Stylesheets.LABEL.getStylesheet());
         getStylesheets().add(Stylesheets.TITLE.getStylesheet());
         getStylesheets().add(Stylesheets.WINDOW.getStylesheet());

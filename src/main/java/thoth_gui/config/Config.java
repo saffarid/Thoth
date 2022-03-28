@@ -193,7 +193,7 @@ public class Config
         private final String KEY_LOCALE = Keys.Scene.LOCALE.getKey();
 
         private final ColorTheme defaultTheme = ColorTheme.DARK;
-        private final Locale defaultLocale = Locale.getDefault();
+        private final Locale defaultLocale = Locales.ENG.getValue();
 
         private SimpleObjectProperty<ColorTheme> theme;
         private Locale locale;

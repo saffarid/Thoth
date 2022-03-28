@@ -257,7 +257,7 @@ public class FinancialOperations
 
     private void initialDataChange() {
         CompletableFuture.supplyAsync(() -> {
-            GuiLogger.log.info("Prepare data");
+            GuiLogger.log.info("Prepare data financial operations");
             HashMap<Typable, HashMap<String, Double>> data = new HashMap<>();
 
             columnKeys = new HashSet<>();

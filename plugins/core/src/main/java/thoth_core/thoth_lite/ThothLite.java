@@ -24,6 +24,8 @@ import java.util.concurrent.*;
 
 public class ThothLite {
 
+    private final String VERSION_CORE = "c1.0";
+
     /**
      * Карта основных сведений о системе
      */
@@ -295,6 +297,13 @@ public class ThothLite {
             default:
                 return null;
         }
+    }
+
+    public String getVersion(){
+        return new StringBuilder(VERSION_CORE)
+                .append("_")
+                .append(info.get(SystemInfoKeys.VERSION_DB))
+                .toString();
     }
 
     public void insertToTable(AvaliableTables table, List<? extends Identifiable> datas)

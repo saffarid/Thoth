@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class DBLiteStructure extends DataBaseSQL {
 
-    private final String VERSION_DB = "1.0.0";
+    private final String VERSION_DB = "d1.0";
 
     public DBLiteStructure() {
         super();
