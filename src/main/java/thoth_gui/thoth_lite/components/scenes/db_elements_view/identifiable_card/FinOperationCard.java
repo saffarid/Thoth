@@ -14,6 +14,7 @@ import layout.basepane.VBox;
 import thoth_core.thoth_lite.ThothLite;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.*;
 import thoth_core.thoth_lite.db_lite_structure.AvaliableTables;
+import thoth_core.thoth_lite.info.SystemInfoKeys;
 import thoth_gui.Apply;
 import thoth_gui.Cancel;
 import thoth_gui.thoth_lite.components.controls.*;
@@ -40,7 +41,8 @@ public class FinOperationCard
         CURRENCY(Properties.getString("currency", TextCase.NORMAL)),
         COURSE(Properties.getString("course", TextCase.NORMAL)),
         COMMENT(Properties.getString("comment", TextCase.NORMAL)),
-        USE_COURSE_FROM_FINANCE(Properties.getString("use_course_from_finance", TextCase.NORMAL));
+        USE_COURSE_FROM_FINANCE(Properties.getString("use_course_from_finance", TextCase.NORMAL)),
+        VALUE_IN_DEFAULT(Properties.getString("value_in_default", TextCase.NORMAL));
         private String text;
 
         TextLabels(String id) {
@@ -82,6 +84,10 @@ public class FinOperationCard
      * Подтягивание курса валюты из объекта финансов
      */
     private CheckBox courseFromFinance;
+    /**
+     * Сумма в системной валюте
+     * */
+    private DoubleProperty valueSystemCurrency;
     /**
      * Комментарий к операции
      */
@@ -133,22 +139,30 @@ public class FinOperationCard
 
         valueProperty = new SimpleDoubleProperty();
         courseProperty = new SimpleDoubleProperty();
+        valueSystemCurrency = new SimpleDoubleProperty();
 
         category = TypableComboBox.getInstance(categoryTable(), null);
-        value = getTextField(TextLabels.VALUE, String.valueOf(0.0));
         dateFinOp = thoth_gui.thoth_lite.components.controls.DatePicker.getInstance();
+        value = getTextField(TextLabels.VALUE, String.valueOf(0.0));
         financeComboBox = FinanceComboBox.getInstance();
         course = getTextField(TextLabels.COURSE, String.valueOf(0.0));
         courseFromFinance = thoth_gui.thoth_lite.components.controls.CheckBox.getInstance(TextLabels.USE_COURSE_FROM_FINANCE.text);
+        controls.TextField valueSystemCurrency = TextField.getInstance();
+        controls.TextField systemCurrency = TextField.getInstance(ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE).toString());
         comment = TextArea.getInstance();
 
         courseFromFinance.setIndeterminate(false);
         course.editableProperty().bind(courseFromFinance.selectedProperty().not());
         financeComboBox.valueProperty().addListener((observableValue, finance, t1) -> changeCourse());
         courseFromFinance.selectedProperty().addListener((observableValue, aBoolean, t1) -> changeCourse());
+        valueSystemCurrency.setEditable(false);
+        systemCurrency.setEditable(false);
 
         Bindings.bindBidirectional(value.textProperty(), valueProperty, new StringDoubleConverter());
         Bindings.bindBidirectional(course.textProperty(), courseProperty, new StringDoubleConverter());
+        Bindings.bindBidirectional(valueSystemCurrency.textProperty(), this.valueSystemCurrency, new StringDoubleConverter());
+
+        this.valueSystemCurrency.bind(valueProperty.multiply(courseProperty));
 
         apply.disableProperty().bind(
                 category.valueProperty().isNull()
@@ -162,6 +176,7 @@ public class FinOperationCard
                 Row.getInstance(Label.getInstanse(TextLabels.DATE.text), dateFinOp),
                 Row.getInstance(Label.getInstanse(TextLabels.VALUE.text), value, financeComboBox),
                 Row.getInstance(Label.getInstanse(TextLabels.COURSE.text), course, courseFromFinance),
+                Row.getInstance(Label.getInstanse(TextLabels.VALUE_IN_DEFAULT.text), valueSystemCurrency, systemCurrency),
                 Row.getInstance(Label.getInstanse(TextLabels.COMMENT.text), comment)
         );
 
@@ -194,7 +209,8 @@ public class FinOperationCard
             Matcher matcher = pattern.matcher(t1);
 
             if (!matcher.matches()) {
-                res.setText(s);
+//                res.setText(s);
+                valueProperty.setValue(Double.valueOf(s));
             }
 
         });
@@ -321,10 +337,10 @@ public class FinOperationCard
     @Override
     protected void updateIdentifiable() {
         ((FinancialAccounting) identifiable.getValue()).setCategory(category.getValue());
-        ((FinancialAccounting) identifiable.getValue()).setValue(Double.parseDouble(value.getText()));
+        ((FinancialAccounting) identifiable.getValue()).setValue(valueProperty.doubleValue());
         ((FinancialAccounting) identifiable.getValue()).setDate(dateFinOp.getValue());
         ((FinancialAccounting) identifiable.getValue()).setFinance(financeComboBox.getValue());
-        ((FinancialAccounting) identifiable.getValue()).setCourse(Double.parseDouble(course.getText()));
+        ((FinancialAccounting) identifiable.getValue()).setCourse(courseProperty.doubleValue());
         ((FinancialAccounting) identifiable.getValue()).setComment(comment.getText());
     }
 

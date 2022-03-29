@@ -38,7 +38,7 @@ public class FinanceComboBox {
             }).thenApply(finances -> {
                 Optional<Finance> first = finances.stream()
                         .filter(finance ->
-                                finance.getCurrency().getCurrencyCode().equals( ( (Currency) ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE)).getCurrencyCode() )
+                                finance.getCurrency().getCurrencyCode().equals( ThothLite.getInstance().getInfoField(SystemInfoKeys.SYSTEM_CURRENCY_CODE) )
                         )
                         .findFirst();
                 return first;

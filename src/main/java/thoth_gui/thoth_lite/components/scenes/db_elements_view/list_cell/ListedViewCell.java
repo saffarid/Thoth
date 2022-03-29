@@ -116,10 +116,12 @@ public class ListedViewCell
             pallete.getChildren().setAll(
                     acceptEdit, cancelEdit
             );
+            value.setFocusTraversable(true);
         } else {
             pallete.getChildren().setAll(
                     toEdit, remove
             );
+
         }
     }
 

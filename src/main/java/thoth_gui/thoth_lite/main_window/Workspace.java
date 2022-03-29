@@ -1,5 +1,6 @@
 package thoth_gui.thoth_lite.main_window;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderStrokeStyle;

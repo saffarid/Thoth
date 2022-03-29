@@ -60,7 +60,7 @@ public class ThothLite {
      */
     private ScheduledFuture<?> scheduledFutureReReadDb;
 
-    private ScheduledThreadPoolExecutor periodReReadDb;
+    private ScheduledThreadPoolExecutor periodReReadDb = new ScheduledThreadPoolExecutor(1);
 
     private ThothLite(HashMap<SystemInfoKeys, Object> initialData) throws DontSetSystemInfoException {
 
@@ -103,7 +103,10 @@ public class ThothLite {
             CoreLogger.log.error(e.getMessage(), e);
         }
 
+        //Считываем содержимое БД
         reReader.run();
+        //Запускаем периодическое считывание
+        changeDelayReReadDb();
 
         accountant = new Accountant();
 
@@ -170,6 +173,7 @@ public class ThothLite {
      * Отмена периодического перечитывания базы
      */
     public void cancelAutoReReadDb() {
+        if (scheduledFutureReReadDb == null) return;
         CoreLogger.log.info("Reread database cancel");
         scheduledFutureReReadDb.cancel(false);
     }
@@ -182,7 +186,7 @@ public class ThothLite {
         if (config.getDatabase().isAutoupdate()) {
             cancelAutoReReadDb();
             if (newDelay != PeriodAutoupdateDatabase.NEVER) {
-                scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, 5, newDelay.getValue(), TimeUnit.MINUTES);
+                scheduledFutureReReadDb = periodReReadDb.scheduleWithFixedDelay(reReader, newDelay.getValue(), newDelay.getValue(), TimeUnit.MINUTES);
             }
         }
     }

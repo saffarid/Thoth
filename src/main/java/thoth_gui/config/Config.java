@@ -260,9 +260,9 @@ public class Config
         private final double defaultxPrimary = 0;
         private final double defaultyPrimary = 0;
         private final double widthPrimaryMin = 1006;
-        private final double heightPrimaryMin = 606;
+        private final double heightPrimaryMin = 611;
         private final double defaultWidthPrimary = 1006;
-        private final double defaultHeightPrimary = 806;
+        private final double defaultHeightPrimary = 611;
         private final boolean defaultIsMax = false;
 
         private final double defaultWidthSecondary = 806;

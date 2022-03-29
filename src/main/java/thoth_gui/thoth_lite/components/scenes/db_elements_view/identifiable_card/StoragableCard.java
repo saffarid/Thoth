@@ -1,6 +1,7 @@
 package thoth_gui.thoth_lite.components.scenes.db_elements_view.identifiable_card;
 
 import controls.ComboBox;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -68,9 +69,11 @@ public class StoragableCard
 
     @Override
     public void close() {
-        type.close();
-        adress.close();
-        countType.close();
+        Platform.runLater(() -> {
+            type.close();
+            adress.close();
+            countType.close();
+        });
     }
 
     @Override
