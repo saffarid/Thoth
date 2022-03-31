@@ -202,7 +202,7 @@ public class ThothLite {
 
     public void forceRereadDatabase()
             throws SQLException, ClassNotFoundException {
-        database.readDataBase();
+        reReader.run();
     }
 
     /**

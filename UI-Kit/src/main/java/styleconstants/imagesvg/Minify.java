@@ -43,7 +43,7 @@ public class Minify {
         rectangle.setStroke(Color.WHITE);
         rectangle.setStrokeWidth(1);
 
-        svgPath.getStyleClass().add(Styleclasses.SVG_PATH);
+        svgPath.getStyleClass().add(Styleclasses.SVG_LINE);
         rectangle.getStyleClass().add(Styleclasses.SVG_LINE);
 
         return new Group(

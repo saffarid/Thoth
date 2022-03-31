@@ -4,3 +4,7 @@
     -fx-border-style:solid;
     -fx-border-width:3px;
 }
+
+.left{
+    -fx-background-color: -secondary;
+}

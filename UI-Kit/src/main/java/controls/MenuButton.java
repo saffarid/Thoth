@@ -2,22 +2,15 @@ package controls;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
-
-import java.util.Collection;
+import javafx.scene.control.Button;
 
 public class MenuButton extends Button {
 
-    private final String STYLE_CLASS_MENU_BUTTON = "menu-button";
+    private final String STYLE_CLASS_MENU_BUTTON = "navigation-menu-button";
 
     private String text;
     private SimpleBooleanProperty isMini;
-
-    public MenuButton() {
-        super();
-        init();
-    }
 
     public MenuButton(String s) {
         super(s);
@@ -44,8 +37,15 @@ public class MenuButton extends Button {
         });
 
         getStyleClass().add(STYLE_CLASS_MENU_BUTTON);
+        if(getStyleClass().contains("button")){
+            getStyleClass().remove("button");
+        }
+        if(getStyleClass().contains("text-button")){
+            getStyleClass().remove("text-button");
+        }
+
         setMaxWidth(Double.MAX_VALUE);
-        getStylesheets().add(getClass().getResource("/style/controls/menu_button.css").toExternalForm());
+
 
     }
 

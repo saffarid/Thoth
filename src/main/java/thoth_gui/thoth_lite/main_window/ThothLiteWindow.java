@@ -45,6 +45,7 @@ import java.util.concurrent.CompletableFuture;
 public class ThothLiteWindow
         extends PrimaryWindow {
 
+    private final String STYLE_CLASS_LEFT = "left";
     private Config config = Config.getInstance();
 
     public enum DEFAULT_SIZE {
@@ -115,7 +116,7 @@ public class ThothLiteWindow
 
         left.setPadding(new Insets(2));
         left.setVgap(2);
-
+        left.getStyleClass().add(STYLE_CLASS_LEFT);
 
         left.setBorder(
                 new BorderWrapper()

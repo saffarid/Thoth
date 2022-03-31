@@ -1,12 +1,10 @@
 package thoth_gui.thoth_lite.main_window;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.paint.Color;
 import thoth_core.thoth_lite.ThothLite;
-import thoth_core.thoth_lite.exceptions.NotContainsException;
 import thoth_gui.GuiLogger;
 import thoth_gui.thoth_lite.components.controls.Button;
 import thoth_gui.thoth_lite.components.controls.Tooltip;
@@ -24,7 +22,7 @@ import java.util.Stack;
 public class Workspace
         extends BorderPane {
 
-    private final static double MAX_WIDTH = 750;
+    private final static double MAX_WIDTH = 795;
 
     public final static double svgWidthTools = 20;
     public final static double svgHeightTools = 20;

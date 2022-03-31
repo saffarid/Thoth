@@ -2,7 +2,7 @@
     -fx-background-color:transparent;
 }
 
-.title{
+.navigation-menu .title{
     -fx-max-width:250px;
     -fx-pref-width:200px;
     -fx-min-width:50px;
@@ -10,13 +10,14 @@
     -fx-min-height:50px;
 }
 
-.title .label{
-    -fx-text-fill:white;
+.navigation-menu .title .label{
+    -fx-text-fill:-text;
     -fx-padding:10px 15px 10px 15px;
 }
 
-.minify-button{
+.navigation-menu .minify-button{
     -fx-background-color:transparent;
     -fx-background-radius:0;
     -fx-padding:2px 2px 2px 7px;
 }
+

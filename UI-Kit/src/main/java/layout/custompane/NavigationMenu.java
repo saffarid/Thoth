@@ -6,13 +6,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import layout.basepane.ScrollPane;
-import styleconstants.Stylesheets;
 import styleconstants.Styleclasses;
 import styleconstants.imagesvg.ThreeLineV;
 
@@ -31,12 +28,6 @@ public class NavigationMenu
 
     private final double MAX_SIZE = 200;
     private final double MIN_SIZE = 40;
-
-    private static Logger LOG;
-
-    static {
-        LOG = Logger.getLogger(NavigationMenu.class.getName());
-    }
 
     /**
      * Флаг отслеживания отображения навигационного меню.
@@ -96,8 +87,6 @@ public class NavigationMenu
         setCenter(scrollPane);
         scrollPane.setFitToWidth(true);
 
-        getStylesheets().add(NavigationMenu.class.getResource("/style/layout/panes/custom/navigation_menu.css").toExternalForm());
-        getStyleClass().addAll(STYLE_CLASS_NAV_MENU, Styleclasses.DARK);
         content.getStyleClass().add(STYLE_CLASS_CONTENT);
     }
 
@@ -112,7 +101,6 @@ public class NavigationMenu
      * Обработчик нажатия на кнопку минификации навигационного меню
      * */
     private void minify(ActionEvent event) {
-        LOG.log(Level.INFO, "minify Click");
         isMinified.set(!isMinified.get());
         if(isMinified.getValue()){
             setPrefWidth(MIN_SIZE);

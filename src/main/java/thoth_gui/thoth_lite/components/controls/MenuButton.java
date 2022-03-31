@@ -17,21 +17,9 @@ public class MenuButton {
         return node;
     }
 
-    public static controls.MenuButton getInstance() {
-        controls.MenuButton res = new controls.MenuButton();
-        return bindFont(res);
-    }
-
-    public static controls.MenuButton getInstance(EventHandler<ActionEvent> event) {
-        controls.MenuButton res = getInstance();
-        res.setOnAction(event);
-        return res;
-    }
-
     public static controls.MenuButton getInstance(String text) {
-        controls.MenuButton res = getInstance();
-        res.setText(Properties.getString(text, TextCase.NORMAL));
-        return res;
+        controls.MenuButton res = new controls.MenuButton(Properties.getString(text, TextCase.NORMAL));
+        return bindFont(res);
     }
 
     public static controls.MenuButton getInstance(String text, EventHandler<ActionEvent> event) {

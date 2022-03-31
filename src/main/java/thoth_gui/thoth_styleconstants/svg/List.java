@@ -30,9 +30,9 @@ public class List {
         circle1.getStyleClass().add(Styleclasses.SVG_PATH);
         circle2.getStyleClass().add(Styleclasses.SVG_PATH);
         circle3.getStyleClass().add(Styleclasses.SVG_PATH);
-        line1.getStyleClass().add(Styleclasses.SVG_PATH);
-        line2.getStyleClass().add(Styleclasses.SVG_PATH);
-        line3.getStyleClass().add(Styleclasses.SVG_PATH);
+        line1.getStyleClass().add(Styleclasses.SVG_LINE);
+        line2.getStyleClass().add(Styleclasses.SVG_LINE);
+        line3.getStyleClass().add(Styleclasses.SVG_LINE);
 
         Group group = new Group(
                 TransparentBackground.getInstance()
