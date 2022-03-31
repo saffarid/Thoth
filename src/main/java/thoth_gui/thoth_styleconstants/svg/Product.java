@@ -3,6 +3,7 @@ package thoth_gui.thoth_styleconstants.svg;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import styleconstants.Styleclasses;
 import styleconstants.imagesvg.DefaultSize;
 import styleconstants.imagesvg.TransparentBackground;
 
@@ -34,21 +35,16 @@ public class Product {
         path2.setFill(Color.WHITE);
         path3.setFill(Color.WHITE);
 
+        path1.getStyleClass().add(Styleclasses.SVG_PATH);
+        path2.getStyleClass().add(Styleclasses.SVG_PATH);
+        path3.getStyleClass().add(Styleclasses.SVG_PATH);
+
         return new Group(
                 TransparentBackground.getInstance()
                 , path1
                 , path2
                 , path3
         );
-    }
-    public static Group getInstance(
-            double width,
-            double height
-    ) {
-        Group instance = getInstance();
-        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
-        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
-        return instance;
     }
 
 }

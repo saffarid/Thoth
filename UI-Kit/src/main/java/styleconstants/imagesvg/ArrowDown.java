@@ -3,6 +3,7 @@ package styleconstants.imagesvg;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import styleconstants.Styleclasses;
 
 public class ArrowDown {
 
@@ -15,6 +16,7 @@ public class ArrowDown {
         path.setTranslateY(5.2);
         path.setFill(Color.WHITE);
 
+        path.getStyleClass().add(Styleclasses.SVG_PATH);
         return new Group(
                 TransparentBackground.getInstance(),
                 path

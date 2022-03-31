@@ -8,6 +8,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
+import styleconstants.Styleclasses;
 
 public class Minify {
     public static Group getInstance() {
@@ -41,6 +42,9 @@ public class Minify {
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.WHITE);
         rectangle.setStrokeWidth(1);
+
+        svgPath.getStyleClass().add(Styleclasses.SVG_PATH);
+        rectangle.getStyleClass().add(Styleclasses.SVG_LINE);
 
         return new Group(
                 TransparentBackground.getInstance()

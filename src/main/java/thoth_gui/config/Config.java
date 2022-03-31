@@ -208,7 +208,7 @@ public class Config
         @Override
         public JSONObject getConfig() {
             JSONObject res = new JSONObject();
-            res.put(KEY_COLOR_THEME, theme.getValue().getName());
+//            res.put(KEY_COLOR_THEME, theme.getValue().getName());
             res.put(KEY_LOCALE, locale.toLanguageTag());
             return res;
         }
@@ -235,7 +235,7 @@ public class Config
         @Override
         public void setConfig(JSONObject json) {
             if (json == null) return;
-            theme.setValue(ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME)));
+//            theme.setValue(ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME)));
             locale = new Locale(String.valueOf(json.get(KEY_LOCALE)));
         }
     }

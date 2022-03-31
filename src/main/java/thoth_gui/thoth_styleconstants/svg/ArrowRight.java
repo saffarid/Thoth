@@ -3,6 +3,7 @@ package thoth_gui.thoth_styleconstants.svg;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import styleconstants.Styleclasses;
 import styleconstants.imagesvg.DefaultSize;
 import styleconstants.imagesvg.TransparentBackground;
 
@@ -16,6 +17,8 @@ public class ArrowRight {
         path.setTranslateX(5.999);
         path.setTranslateY(3.314);
         path.setFill(Color.WHITE);
+
+        path.getStyleClass().add(Styleclasses.SVG_PATH);
 
         group.getChildren().addAll(
                 TransparentBackground.getInstance(),

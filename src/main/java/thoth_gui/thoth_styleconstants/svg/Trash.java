@@ -3,12 +3,13 @@ package thoth_gui.thoth_styleconstants.svg;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import styleconstants.Styleclasses;
 import styleconstants.imagesvg.DefaultSize;
 import styleconstants.imagesvg.TransparentBackground;
 
 public class Trash {
 
-    public static Group getInstance(){
+    public static Group getInstance() {
 
         SVGPath path = new SVGPath();
 
@@ -19,19 +20,11 @@ public class Trash {
         path.setTranslateY(1.332);
         path.setFill(Color.WHITE);
 
+        path.getStyleClass().add(Styleclasses.SVG_PATH);
+
         return new Group(
                 TransparentBackground.getInstance()
                 , path
         );
     }
-    public static Group getInstance(
-            double width
-            , double height
-    ){
-        Group instance = getInstance();
-        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
-        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
-        return instance;
-    }
-
 }

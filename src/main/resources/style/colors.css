@@ -38,13 +38,13 @@
 }
 
 .light{
-    -primary: red;
-    -primary_hover:#23272B;
-    -primary_disable:#7A7E83;
+    -primary: #f9f9fa;
+    -primary_hover:#e2e6ea;
+    -primary_disable:#fafcfc;
 
-    -secondary: #23272B;
-    -secondary_hover:#5A6268;
-    -secondary_disable:#B0B6BA;
+    -secondary: #6c757d;
+    -secondary_hover:#5a6268;
+    -secondary_disable:#b0b6ba;
 
     -active:#707070;
 
@@ -70,7 +70,7 @@
     -warning_hover: #E0A800;
     -warning_disable: #FFD75E;
 
-    -text: #F8F9FA;
-    -text_hover: #E2E6EA;
-    -text_disable: #FAFCFC;
+    -text: #343A40;
+    -text_hover: #23272B;
+    -text_disable: #7A7E83;
 }

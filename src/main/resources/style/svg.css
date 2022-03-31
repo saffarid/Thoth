@@ -1,0 +1,7 @@
+.svg-line{
+    -fx-stroke: -text;
+}
+
+.svg-path{
+    -fx-fill:-text;
+}

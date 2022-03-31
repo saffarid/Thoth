@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import styleconstants.Styleclasses;
 
 import javax.swing.*;
 
@@ -27,6 +28,10 @@ public class ThreeLineV {
         line1.setStroke(Color.WHITE);
         line2.setStroke(Color.WHITE);
         line3.setStroke(Color.WHITE);
+
+        line1.getStyleClass().add(Styleclasses.SVG_LINE);
+        line2.getStyleClass().add(Styleclasses.SVG_LINE);
+        line3.getStyleClass().add(Styleclasses.SVG_LINE);
 
         return new Group(
                 TransparentBackground.getInstance()

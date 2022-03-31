@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import styleconstants.Styleclasses;
 
 public class Maximize {
     public static Group getInstance(){
@@ -21,6 +22,8 @@ public class Maximize {
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.WHITE);
         rectangle.setStrokeWidth(3);
+
+        rectangle.getStyleClass().add(Styleclasses.SVG_LINE);
 
         return new Group(
                 TransparentBackground.getInstance(),

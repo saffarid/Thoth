@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import styleconstants.Styleclasses;
 
 public class ThreePointH {
 
@@ -19,6 +20,10 @@ public class ThreePointH {
         circle1.setFill(Color.WHITE);
         circle2.setFill(Color.WHITE);
         circle3.setFill(Color.WHITE);
+
+        circle1.getStyleClass().add(Styleclasses.SVG_PATH);
+        circle2.getStyleClass().add(Styleclasses.SVG_PATH);
+        circle3.getStyleClass().add(Styleclasses.SVG_PATH);
 
         return new Group(
                 TransparentBackground.getInstance()

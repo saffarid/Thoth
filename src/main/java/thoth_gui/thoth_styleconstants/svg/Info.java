@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
+import styleconstants.Styleclasses;
 import styleconstants.imagesvg.TransparentBackground;
 
 public class Info {
@@ -26,6 +27,10 @@ public class Info {
         path2.setTranslateX(7.178);
         path2.setTranslateY(6.526);
         path2.setFill(Color.WHITE);
+
+        path1.getStyleClass().add(Styleclasses.SVG_PATH);
+        circle.getStyleClass().add(Styleclasses.SVG_LINE);
+        path2.getStyleClass().add(Styleclasses.SVG_PATH);
 
         return new Group(
                 TransparentBackground.getInstance()

@@ -4,17 +4,17 @@
     -fx-background-insets:0;
     -fx-background-radius:0;
     -fx-border-radius:0;
-    -fx-text-fill:#F8F9FA;
+    -fx-text-fill:-text;
 }
 
 .text-button:hover{
     -fx-background-color:#5A6268;
-    -fx-text-fill:#E2E6EA;
+    -fx-text-fill:-text_hover;
 }
 
 .text-button:disabled{
     -fx-background-color:#B0B6BA;
-    -fx-text-fill:#FAFCFC;
+    -fx-text-fill:-text_disable;
 }
 
 .img-button{
@@ -22,16 +22,13 @@
     -fx-background-insets:0;
     -fx-background-radius:0;
     -fx-border-radius:0;
-    -fx-text-fill:#F8F9FA;
     -fx-padding:0;
 }
 
 .img-button:hover{
-    -fx-background-color:#5A6268;
-    -fx-text-fill:#E2E6EA;
+    -fx-background-color: -secondary_hover;
 }
 
 .img-button:disabled{
     -fx-background-color:transparent;
-    -fx-text-fill:#FAFCFC;
 }

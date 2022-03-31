@@ -4,6 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import styleconstants.Styleclasses;
 import styleconstants.imagesvg.DefaultSize;
 import styleconstants.imagesvg.TransparentBackground;
 
@@ -18,10 +19,6 @@ public class List {
         Line line2 = new Line(15, 20, 35, 20);
         Line line3 = new Line(15, 30, 35, 30);
 
-        line1.setFill(Color.WHITE);
-        line2.setFill(Color.WHITE);
-        line3.setFill(Color.WHITE);
-
         line1.setStrokeWidth(3);
         line2.setStrokeWidth(3);
         line3.setStrokeWidth(3);
@@ -29,6 +26,13 @@ public class List {
         line1.setStroke(Color.WHITE);
         line2.setStroke(Color.WHITE);
         line3.setStroke(Color.WHITE);
+
+        circle1.getStyleClass().add(Styleclasses.SVG_PATH);
+        circle2.getStyleClass().add(Styleclasses.SVG_PATH);
+        circle3.getStyleClass().add(Styleclasses.SVG_PATH);
+        line1.getStyleClass().add(Styleclasses.SVG_PATH);
+        line2.getStyleClass().add(Styleclasses.SVG_PATH);
+        line3.getStyleClass().add(Styleclasses.SVG_PATH);
 
         Group group = new Group(
                 TransparentBackground.getInstance()
@@ -40,15 +44,6 @@ public class List {
                 , line3);
 
         return group;
-    }
-    public static Group getInstance(
-            double width,
-            double height
-    ) {
-        Group instance = getInstance();
-        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
-        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
-        return instance;
     }
 
 }

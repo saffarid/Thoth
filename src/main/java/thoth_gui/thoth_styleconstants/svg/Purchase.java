@@ -4,6 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
+import styleconstants.Styleclasses;
 import styleconstants.imagesvg.DefaultSize;
 import styleconstants.imagesvg.TransparentBackground;
 
@@ -27,21 +28,16 @@ public class Purchase {
         circle2.setTranslateX(26.16);
         circle2.setTranslateY(29.43);
 
+        path.getStyleClass().add(Styleclasses.SVG_PATH);
+        circle1.getStyleClass().add(Styleclasses.SVG_PATH);
+        circle2.getStyleClass().add(Styleclasses.SVG_PATH);
+
         return new Group(
                 TransparentBackground.getInstance()
                 , path
                 , circle1
                 , circle2
         );
-    }
-    public static Group getInstance(
-            double width,
-            double height
-    ) {
-        Group instance = getInstance();
-        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
-        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
-        return instance;
     }
 
 }

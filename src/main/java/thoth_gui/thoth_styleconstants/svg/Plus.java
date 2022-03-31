@@ -3,6 +3,7 @@ package thoth_gui.thoth_styleconstants.svg;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import styleconstants.Styleclasses;
 import styleconstants.imagesvg.DefaultSize;
 import styleconstants.imagesvg.TransparentBackground;
 
@@ -20,6 +21,9 @@ public class Plus {
         hor.setStrokeWidth(3);
         ver.setStrokeWidth(3);
 
+        hor.getStyleClass().add(Styleclasses.SVG_LINE);
+        ver.getStyleClass().add(Styleclasses.SVG_LINE);
+
         res.getChildren().addAll(
                 TransparentBackground.getInstance()
                 , hor
@@ -27,15 +31,6 @@ public class Plus {
         );
 
         return res;
-    }
-    public static Group getInstance(
-            double width,
-            double height
-    ) {
-        Group instance = getInstance();
-        instance.setScaleX(DefaultSize.WIDTH.getScaleX(width));
-        instance.setScaleY(DefaultSize.HEIGHT.getScaleY(height));
-        return instance;
     }
 
 }

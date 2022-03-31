@@ -4,6 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import styleconstants.Styleclasses;
 import styleconstants.imagesvg.TransparentBackground;
 
 public class Statistic {
@@ -34,6 +35,11 @@ public class Statistic {
         line3.setStroke(Color.WHITE);
 //        line4.setStrokeWidth(1.5);
 //        line4.setStroke(Color.WHITE);
+
+        list.getStyleClass().add(Styleclasses.SVG_LINE);
+        line1.getStyleClass().add(Styleclasses.SVG_LINE);
+        line2.getStyleClass().add(Styleclasses.SVG_LINE);
+        line3.getStyleClass().add(Styleclasses.SVG_LINE);
 
         group.getChildren().addAll(
                 TransparentBackground.getInstance()
