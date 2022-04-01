@@ -35,7 +35,6 @@ public class TwinPane extends BorderPane {
         setCenter(scrollPane);
 
         getStylesheets().add(getClass().getResource("/style/layout/panes/custom/twin_pane.css").toExternalForm());
-        getStyleClass().addAll(STYLE_CLASS_TWIN_PANE, Styleclasses.DARK);
 
         scrollPane.getStyleClass().remove(Styleclasses.BORDER);
         content.getStyleClass().add(STYLE_CLASS_CONTENT);

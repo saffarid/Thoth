@@ -232,6 +232,7 @@ public class ThothLiteWindow
         menu.setPadding(new Insets(0));
         menu.setWidth(DEFAULT_SIZE.WIDTH_LEFT_BLOCK.getSize());
 
+        System.out.println(menu.getStyleClass());
         return menu;
     }
 

@@ -3,8 +3,6 @@ package layout.basepane;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import tools.BackgroundWrapper;
-import styleconstants.Stylesheets;
-import styleconstants.Styleclasses;
 
 public class ScrollPane extends javafx.scene.control.ScrollPane {
 
@@ -32,7 +30,6 @@ public class ScrollPane extends javafx.scene.control.ScrollPane {
         getStylesheets().addAll(
                 getClass().getResource(SSHEET_SPANE).toExternalForm()
         );
-        getStyleClass().addAll(Styleclasses.BORDER, Styleclasses.DARK);
         addDefaultStyle();
     }
 

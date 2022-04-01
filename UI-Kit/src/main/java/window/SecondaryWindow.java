@@ -3,9 +3,6 @@ package window;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import layout.custompane.Title;
-import log.Logger;
-
-import java.util.logging.Level;
 
 public abstract class SecondaryWindow
         extends Window{

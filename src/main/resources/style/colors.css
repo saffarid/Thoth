@@ -8,6 +8,7 @@
     -secondary_disable:#B0B6BA;
 
     -active:#707070;
+    -active_hover:#707070;
     -disable:#A8A3A3;
 
     -border: #FFC107;
@@ -47,6 +48,7 @@
     -secondary_disable:#b0b6ba;
 
     -active:#707070;
+    -active_hover:#707070;
     -disable:#A8A3A3;
 
     -border: #FFC107;
@@ -55,7 +57,7 @@
     -danger_hover: #C82333;
     -danger_disable: #E97B86;
 
-    -info: #17A2B8;
+    -info: red;
     -info_hover: #138496;
     -info_disable: #67C3D0;
 

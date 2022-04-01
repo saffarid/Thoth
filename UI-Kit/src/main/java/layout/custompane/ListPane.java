@@ -49,7 +49,6 @@ public class ListPane<T> extends BorderPane {
         list = new ListView<T>();
         list.setItems( FXCollections.observableList( items ) );
         list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        list.getStyleClass().addAll(Styleclasses.BORDER, Styleclasses.DARK);
     }
 
     public ListView<T> getList(){
