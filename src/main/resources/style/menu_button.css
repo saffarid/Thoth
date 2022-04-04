@@ -1,4 +1,4 @@
-.left .navigation-menu-button{
+.navigation-menu-button{
     -fx-alignment: center-left;
     -fx-background-color: transparent;
     -fx-background-insets: 0;
@@ -8,9 +8,9 @@
     -fx-border-width: 1px;
     -fx-padding: 2.5px;
     -fx-text-alignment: left;
-    -fx-text-fill: -text;
+    -fx-text-fill: -active_content;
 }
 
 .navigation-menu-button:hover{
-    -fx-background-color: -secondary;
+    -fx-background-color: -active_hover;
 }

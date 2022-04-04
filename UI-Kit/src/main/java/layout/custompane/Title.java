@@ -96,7 +96,7 @@ public class Title
     public Title addContextMenu(MenuItem... es){
         iconMenu = new Menu();
 
-        iconMenu.setGraphic( SvgWrapper.getInstance(Images.THREEPOINTH(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size) );
+        iconMenu.setGraphic( SvgWrapper.getInstance(Images.THREEPOINTH(), ButtonSize.WIDTH.size, ButtonSize.HEIGHT.size, ButtonSize.VIEWBOX_WIDTH.size, ButtonSize.VIEWBOX_HEIGHT.size) );
 
         iconMenu.getItems().setAll(es);
         contextMenu.getMenus().add(iconMenu);

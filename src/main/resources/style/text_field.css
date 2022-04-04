@@ -5,7 +5,7 @@
     -fx-border-color:-active;
     -fx-border-style:solid;
     -fx-border-width:0 0 1px 0;
-    -fx-text-fill:-text;
+    -fx-text-fill:-active_content;
 }
 
 .text-area{
@@ -22,20 +22,20 @@
 }
 
 .text-field:hover{
-    -fx-background-color:-secondary;
+    -fx-background-color:-active_hover;
 }
 
 .text-area:hover, .text-field:hover, .text-field:focused{
     -fx-border-color:-border;
-    -fx-text-fill:-text_hover;
+    -fx-text-fill:-active_content_hover;
 }
 
 .text-field:disabled{
-    -fx-background-color:-disable;
-    -fx-border-color:-disable;
+    -fx-background-color:-active_disable;
+    -fx-border-color:-active_disable;
 }
 
 .text-area:disabled, .text-field:disabled{
-    -fx-border-color:-disable;
-    -fx-text-fill:-text_disable;
+    -fx-border-color:-active_disable;
+    -fx-text-fill:-active_content_disable;
 }

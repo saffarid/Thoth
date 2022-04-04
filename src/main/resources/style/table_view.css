@@ -45,27 +45,26 @@
     -fx-background-color:transparent;
 }
 .table-view .column-header-background .column-drag-header{
--fx-background-color:transparent;
+    -fx-background-color:transparent;
 }
 
 .table-view .column-header-background .label{
-    -fx-text-fill:-text;
+    -fx-text-fill:-active_content;
 }
 
 .table-view .table-column{
--fx-background-color:transparent;
+    -fx-background-color:transparent;
 }
 
 .table-view .table-row-cell:empty{
     -fx-background-color:transparent;
-
 }
 
 .table-view .cell{
     -fx-alignment:center;
     -fx-background-insets:0;
     -fx-padding:0;
-    -fx-text-fill:-text;
+    -fx-text-fill:-active_content;
 }
 
 .table-view > .virtual-flow > .clipped-container > .sheet > .cell.indexed-cell.table-row-cell{
@@ -90,10 +89,8 @@
 }
 
 .table-view .cell:hover{
-    -fx-text-fill:-text_hover;
+    -fx-text-fill:-active_content_hover;
 }
-
-
 
 .table-view > .column-header-background {
     /* StackPane */

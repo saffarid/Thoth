@@ -1,14 +1,14 @@
 .check-box{
     -fx-background-color:transparent;
-    -fx-text-fill: -text;
+    -fx-text-fill: -active_content;
 }
 
 .check-box:hover{
-    -fx-text-fill: -text_hover;
+    -fx-text-fill: -active_content_hover;
 }
 
 .check-box:disabled{
-    -fx-text-fill: -text_disable;
+    -fx-text-fill: -active_content_disable;
 }
 
 .check-box .box{
@@ -20,5 +20,5 @@
 }
 
 .check-box:selected .box .mark{
-    -fx-background-color:white;
+    -fx-background-color:-active_content;
 }

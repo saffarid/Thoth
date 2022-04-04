@@ -1,7 +1,7 @@
 .label{
-    -fx-text-fill:-text;
+    -fx-text-fill:-active_content;
 }
 
 .label:disabled{
-    -fx-text-fill:-text_disable;
+    -fx-text-fill:-active_content_disable;
 }

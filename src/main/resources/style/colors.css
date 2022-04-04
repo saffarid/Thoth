@@ -3,15 +3,19 @@
     -primary_hover:#23272B;
     -primary_disable:#7A7E83;
 
-    -secondary: #23272B;
+    -secondary: #2E3439;
     -secondary_hover:#5A6268;
     -secondary_disable:#B0B6BA;
 
     -active:#707070;
-    -active_hover:#707070;
-    -disable:#A8A3A3;
+    -active_hover:#5A6268;
+    -active_disable:#707070;
 
-    -border: #FFC107;
+    -active_content: #F8F9FA;
+    -active_content_hover: #E2E6EA;
+    -active_content_disable: #FAFCFC;
+
+    -border: gray;
 
     -danger: #DC3545;
     -danger_hover: #C82333;
@@ -21,10 +25,6 @@
     -info_hover: #138496;
     -info_disable: #67C3D0;
 
-    -light: #F8F9FA;
-    -light_hover: #E2E6EA;
-    -light_disable: #FAFCFC;
-
     -success: #28A745;
     -success_hover: #218838;
     -success_disable: #74C686;
@@ -33,37 +33,34 @@
     -warning_hover: #E0A800;
     -warning_disable: #FFD75E;
 
-    -text: #F8F9FA;
-    -text_hover: #E2E6EA;
-    -text_disable: #FAFCFC;
 }
 
 .light{
-    -primary: #f9f9fa;
+    -primary: #efedef;
     -primary_hover:#e2e6ea;
     -primary_disable:#fafcfc;
 
-    -secondary: #6c757d;
-    -secondary_hover:#5a6268;
-    -secondary_disable:#b0b6ba;
+    -secondary: #CECCCE;
+    -secondary_hover:#ADADAD;
+    -secondary_disable:#CCCCCCCC;
 
-    -active:#707070;
-    -active_hover:#707070;
-    -disable:#A8A3A3;
+    -active:#CCCCCC;
+    -active_hover:#999999;
+    -active_disable:#999999;
 
-    -border: #FFC107;
+    -active_content: #222022;
+    -active_content_hover: #23272B;
+    -active_content_disable: #7A7E83;
+
+    -border: gray;
 
     -danger: #DC3545;
     -danger_hover: #C82333;
     -danger_disable: #E97B86;
 
-    -info: red;
+    -info: #17A2B8;
     -info_hover: #138496;
     -info_disable: #67C3D0;
-
-    -light: #F8F9FA;
-    -light_hover: #E2E6EA;
-    -light_disable: #FAFCFC;
 
     -success: #28A745;
     -success_hover: #218838;
@@ -73,7 +70,5 @@
     -warning_hover: #E0A800;
     -warning_disable: #FFD75E;
 
-    -text: #343A40;
-    -text_hover: #23272B;
-    -text_disable: #7A7E83;
+
 }

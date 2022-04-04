@@ -18,7 +18,7 @@
 }
 
 .scroll-bar>.thumb{
-    -fx-background-color:-light_disable;
+    -fx-background-color:-active_content_disable;
     -fx-opacity:0.1;
     -fx-background-radius:0;
     -fx-border-radius:0;

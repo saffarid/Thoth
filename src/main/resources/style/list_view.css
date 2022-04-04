@@ -17,9 +17,9 @@
 
 .list-view>.virtual-flow>.clipped-container>.sheet>.cell.indexed-cell.list-cell{
     -fx-background-color:transparent;
-    -fx-text-fill:-text;
+    -fx-text-fill:-active_content;
     -fx-padding:0 5px 0 5px;
-    -fx-border-color:-secondary;
+    -fx-border-color:-border;
     -fx-border-width:1px 0 1px 0;
     -fx-border-style:solid;
 }
@@ -33,6 +33,6 @@
 }
 
 .list-view>.virtual-flow>.clipped-container>.sheet>.cell.indexed-cell.list-cell:hover{
-    -fx-background-color:-secondary;
-    -fx-text-fill:-text_hover;
+    -fx-background-color:-secondary_hover;
+    -fx-text-fill:-active_content_hover;
 }

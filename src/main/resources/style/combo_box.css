@@ -5,24 +5,29 @@
     -fx-border-color: -active;
     -fx-border-width:0 0 1px 0;
     -fx-border-style: solid;
-    -fx-text-fill: -text;
+    -fx-text-fill: -active_content;
 }
 
 .combo-box:hover{
     -fx-border-color: -border;
-    -fx-text-fill:-text_hover;
+    -fx-text-fill:-active_content_hover;
+}
+
+.combo-box>.arrow-button{
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
 }
 
 .combo-box:disabled,
 .combo-box:disabled>.list-cell,
 .combo-box:disabled>.arrow-button{
-    -fx-background-color:-disable;
-    -fx-border-color:-disable;
-    -fx-text-fill:-text_disable;
+    -fx-background-color:-active_disable;
+    -fx-border-color:-active_disable;
+    -fx-text-fill:-active_content_disable;
 }
 
 .combo-box>.combo-box-popup>.list-view{
-    -fx-background-color:-secondary;
+    -fx-background-color:-active;
     -fx-border-color:-border;
     -fx-border-style:solid;
 }
@@ -30,8 +35,8 @@
 .combo-box>.list-cell,
 .combo-box>.combo-box-popup>.list-view>.virtual-flow>.clipped-container>.sheet>.cell.indexed-cell.list-cell
 {
-    -fx-background-color:-active;
-    -fx-text-fill: -text;
+    -fx-background-color:transparent;
+    -fx-text-fill: -active_content;
     -fx-padding: 2px 0 2px 4px;
     -fx-border-color:transparent;
     -fx-border-width: 0 0 1px 0;
@@ -39,22 +44,20 @@
 }
 
 .combo-box:hover>.list-cell,
-.combo-box:hover>.combo-box-popup>.list-view>.virtual-flow>.clipped-container>.sheet>.cell.indexed-cell.list-cell
+.combo-box>.combo-box-popup>.list-view>.virtual-flow>.clipped-container>.sheet>.cell.indexed-cell.list-cell:hover
 {
-    -fx-background-color:-secondary;
-    -fx-text-fill:-text_hover;
+    -fx-background-color:-active_hover;
+    -fx-text-fill:-active_content_hover;
 }
 
 .combo-box:hover>.arrow-button{
-    -fx-background-color:-secondary;
-    -fx-background-radius: 0;
-    -fx-border-radius: 0;
+    -fx-background-color:-active_hover;
 }
 
 .combo-box>.arrow-button>.arrow{
-    -fx-background-color:-light;
+    -fx-background-color:-active_content;
 }
 
 .combo-box:hover>.arrow-button>.arrow{
-    -fx-background-color:-light_hover;
+    -fx-background-color:-active_content_hover;
 }

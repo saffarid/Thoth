@@ -45,8 +45,6 @@ public class MenuButton extends Button {
         }
 
         setMaxWidth(Double.MAX_VALUE);
-        System.out.println(getStyleClass());
-
     }
 
     public boolean isIsMini() {

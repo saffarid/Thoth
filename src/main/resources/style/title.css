@@ -10,7 +10,7 @@
     -fx-max-height:100px;
     -fx-padding:0 0 0 10px;
     -fx-text-alignment:left;
-    -fx-text-fill:white;
+    -fx-text-fill:-active_content;
 }
 
 .title .close:hover{
@@ -35,10 +35,10 @@
 }
 
 .context-menu{
-    -fx-background-color:#343A40;
+    -fx-background-color:-primary;
     -fx-background-insets:0;
     -fx-padding:0;
-    -fx-border-color:#A17703;
+    -fx-border-color:-border;
     -fx-border-width:1px;
     -fx-border-style:solid;
 }

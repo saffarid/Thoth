@@ -11,7 +11,7 @@
 }
 
 .navigation-menu .title .label{
-    -fx-text-fill:-text;
+    -fx-text-fill:-active_content;
     -fx-padding:10px 15px 10px 15px;
 }
 
