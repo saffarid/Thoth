@@ -6,25 +6,27 @@ public class StructureDescription {
         TABLE("TABLE"),
         /**
          * Таблица-описание
-         * */
+         */
         DESC("DESC"),
         /**
          * Таблица-состав
-         * */
+         */
         COMPOSITE("COMPOSITE"),
         PROJECT_TABLE("PROJECT_TABLE"),
         /**
          * Таблица-список
-         * */
+         */
         GUIDE("GUIDE"),
         CONSTANTS("CONSTANTS"),
         SYSTEM_TABLE("SYSTEM_TABLE"),
         SYSTEM_GUIDE("SYSTEM_GUIDE"),
         SYSTEM_CONSTANTS("SYSTEM_CONSTANTS");
         private String type;
+
         TableTypes(String type) {
             this.type = type;
         }
+
         public String getType() {
             return type;
         }
@@ -32,8 +34,8 @@ public class StructureDescription {
 
     /**
      * Таблица информации о системе
-     * */
-    public static class Info{
+     */
+    public static class Info {
         public static final String TABLE_NAME = "info";
         public static final String ID = "key";
         public static final String VALUE = "value";
@@ -52,7 +54,7 @@ public class StructureDescription {
 
     /**
      * Таблица типов расходов
-     * */
+     */
     public static class ExpensesTypes {
         public static final String TABLE_NAME = "expenses_types";
         public static final String ID = "id";
@@ -88,8 +90,8 @@ public class StructureDescription {
 
     /**
      * Таблица типов проектов
-     * */
-    public static class ProjectTypes{
+     */
+    public static class ProjectTypes {
         public static final String TABLE_NAME = "project_types";
         public static final String ID = "id";
         public static final String PROJECT_TYPE = "project_type";
@@ -114,14 +116,14 @@ public class StructureDescription {
      */
     public static class Currency {
         public static final String TABLE_NAME = "currency";
-//        public static final String ID = "id";
+        //        public static final String ID = "id";
         public static final String CURRENCY = "currency_code";
         public static final String COURSE = "course";
     }
 
     /**
      * Таблица учета расходов
-     * */
+     */
     public static class Expenses {
         public static final String TABLE_NAME = "expenses";
         public static final String ID = "id";
@@ -206,67 +208,69 @@ public class StructureDescription {
     /* --- Составные таблицы --- */
 
     /**
-     * Таблица-описание покупок
-     * */
-    public static class PurchasesDesc {
-        public static final String TABLE_NAME = "purchases_desc";
-        public static final String PURCHASE_ID = "purchase_id";
-        public static final String STORE_ID = "store_id";
-        public static final String DELIVERY_DATE = "delivery_date";
-        public static final String IS_DELIVERED = "is_delivered";
-    }
-    /**
-     * Таблица-состав покупок
-     * */
-    public static class PurchasesComposition {
-        public static final String TABLE_NAME = "purchases_composition";
-        public static final String ID = "id";
-        public static final String PURCHASE_ID = "purchase_id";
-        public static final String PRODUCT_ID = "product_id";
-        public static final String COUNT = "count";
-        public static final String COUNT_TYPE_ID = "count_type_id";
-        public static final String PRICE = "price";
-        public static final String CURRENCY_ID = "currency_id";
-        public static final String COURSE = "course";
+     * Таблица покупок
+     */
+    public static class Purchase {
+
+        public static final String NAME = "purchase";
+
+        /**
+         * Таблица-описание покупок
+         */
+        public static class Desc {
+            public static final String TABLE_NAME = NAME + "_" + TableTypes.DESC.getType().toLowerCase();
+            public static final String PURCHASE_ID = "purchase_id";
+            public static final String STORE_ID = "store_id";
+            public static final String DELIVERY_DATE = "delivery_date";
+            public static final String IS_DELIVERED = "is_delivered";
+        }
+
+        /**
+         * Таблица-состав покупок
+         */
+        public static class Composite {
+            public static final String TABLE_NAME = NAME + "_" + TableTypes.COMPOSITE.getType().toLowerCase();
+            public static final String ID = "id";
+            public static final String PURCHASE_ID = Desc.PURCHASE_ID;
+            public static final String PRODUCT_ID = "product_id";
+            public static final String COUNT = "count";
+            public static final String COUNT_TYPE_ID = "count_type_id";
+            public static final String PRICE = "price";
+            public static final String CURRENCY_ID = "currency_id";
+            public static final String COURSE = "course";
+        }
     }
 
     /**
-     * Таблица для хранения покупок
-     */
-    public static class Purchases {
-        public static final String TABLE_NAME = "purchases";
-        public static final String ID = "id";
-        public static final String ORDER_ID = "order_id";
-        public static final String STORE_ID = "store_id";
-        public static final String PRODUCT_ID = "product_id";
-        public static final String COUNT = "count";
-        public static final String COUNT_TYPE_ID = "count_type_id";
-        public static final String PRICE = "price";
-        public static final String CURRENCY_ID = "currency_id";
-        public static final String DELIVERY_DATE = "delivery_date";
-        public static final String IS_DELIVERED = "is_delivered";
-    }
-
-    /**
-     * Таблица списка проектов
-     */
-    public static class ProjectsDesc {
-        public static final String TABLE_NAME = "projects_desc";
-        public static final String ID = "id";
-        public static final String NAME = "name";
-        public static final String TYPE_ID = "type_id";
-        public static final String DATE = "date";
-    }
-    /**
-     * Таблица состава проектов
+     * Таблица проектов
      * */
-    public static class ProjectsComposition {
-        public static final String TABLE_NAME = "project_composition";
-        public static final String ID = "id";
-        public static final String PRODUCT_ID = "product_id";
-        public static final String COUNT = "count";
-        public static final String COUNT_TYPE_ID = "count_type_id";
-        public static final String COURSE = "course";
+    public static class Project {
+        public static final String NAME = "project";
+        /**
+         * Таблица списка проектов
+         */
+        public static class Desc {
+            public static final String TABLE_NAME = NAME + "_" + TableTypes.DESC.getType().toLowerCase();
+            public static final String PROJECT_ID = "project_id";
+            public static final String PROJECT_NAME = "name";
+            public static final String PROJECT_TYPE_ID = "project_type_id";
+            public static final String NOTE = "note";
+        }
+
+        /**
+         * Таблица состава проектов
+         */
+        public static class Composite {
+            public static final String TABLE_NAME = NAME + "_" + TableTypes.COMPOSITE.getType().toLowerCase();
+            public static final String ID = "id";
+            public static final String PROJECT_ID = Desc.PROJECT_ID;
+            public static final String PRODUCT_ID = "product_id";
+            public static final String COUNT = "count";
+            public static final String COUNT_TYPE_ID = "count_type_id";
+            public static final String PRICE = "price";
+            public static final String CURRENCY_ID = "currency_id";
+            public static final String COURSE = "course";
+        }
     }
 
 }

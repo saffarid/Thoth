@@ -5,12 +5,15 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Nameable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Startable;
 
 public interface Projectable
-        extends Nameable
+        extends
+          Nameable
         , Composite
         , Identifiable
-        , Startable
-        , Finishable
+
 {
     void setType(Typable type);
     Typable getType();
+
+    void setNote(String note);
+    String getNote();
 }

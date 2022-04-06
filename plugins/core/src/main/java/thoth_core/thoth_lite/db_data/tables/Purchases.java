@@ -11,23 +11,21 @@ import java.sql.ResultSet;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Purchases.*;
+import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.Purchase.*;
 
 public class Purchases
         extends Data<Purchasable> {
 
     public Purchases() {
         super();
-        setName(TABLE_NAME);
+        setName(NAME);
     }
 
     @Override
-    public HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list) {
-        HashMap<String, List<HashMap<String, Object>>> res = new HashMap<>();
+    public Map<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list) {
+        HashMap<String, List<HashMap<String, Object>>> res = new LinkedHashMap<>();
         List<HashMap<String, Object>> datasDesc = new LinkedList<>();
         List<HashMap<String, Object>> datasComposition = new LinkedList<>();
 
@@ -37,26 +35,26 @@ public class Purchases
             HashMap<String, Object> description = new HashMap<>();
 
             //Заполнение карты описания
-            description.put(StructureDescription.PurchasesDesc.PURCHASE_ID, purchasable.getId());
-            description.put(StructureDescription.PurchasesDesc.STORE_ID, (purchasable.getPartner()!=null)?purchasable.getPartner().getName():null);
-            description.put(StructureDescription.PurchasesDesc.DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
-            description.put(StructureDescription.PurchasesDesc.IS_DELIVERED, purchasable.isDelivered() ? 1 : 0);
+            description.put(Desc.PURCHASE_ID, purchasable.getId());
+            description.put(Desc.STORE_ID, (purchasable.getPartner()!=null)?purchasable.getPartner().getName():null);
+            description.put(Desc.DELIVERY_DATE, purchasable.finishDate().format(DateTimeFormatter.ISO_DATE));
+            description.put(Desc.IS_DELIVERED, purchasable.isDelivered() ? 1 : 0);
             datasDesc.add(description);
             //Заполнение карты состава
             for (Storing storing : purchasable.getComposition()) {
                 HashMap<String, Object> composition = new HashMap<>();
-                composition.put(StructureDescription.PurchasesComposition.PURCHASE_ID, purchasable.getId());
-                composition.put(StructureDescription.PurchasesComposition.PRODUCT_ID, storing.getStoragable().getId());
-                composition.put(StructureDescription.PurchasesComposition.COUNT, storing.getCount());
-                composition.put(StructureDescription.PurchasesComposition.COUNT_TYPE_ID, storing.getCountType().getValue());
-                composition.put(StructureDescription.PurchasesComposition.PRICE, storing.getPrice());
-                composition.put(StructureDescription.PurchasesComposition.CURRENCY_ID, storing.getCurrency().getCurrency().getCurrencyCode());
-                composition.put(StructureDescription.PurchasesComposition.COURSE, storing.getCurrency().getCourse());
+                composition.put(Composite.PURCHASE_ID, purchasable.getId());
+                composition.put(Composite.PRODUCT_ID, storing.getStoragable().getId());
+                composition.put(Composite.COUNT, storing.getCount());
+                composition.put(Composite.COUNT_TYPE_ID, storing.getCountType().getValue());
+                composition.put(Composite.PRICE, storing.getPrice());
+                composition.put(Composite.CURRENCY_ID, storing.getCurrency().getCurrency().getCurrencyCode());
+                composition.put(Composite.COURSE, storing.getCurrency().getCourse());
                 datasComposition.add(composition);
             }
         }
-        res.put(StructureDescription.PurchasesDesc.TABLE_NAME, datasDesc);
-        res.put(StructureDescription.PurchasesComposition.TABLE_NAME, datasComposition);
+        res.put(Desc.TABLE_NAME, datasDesc);
+        res.put(Composite.TABLE_NAME, datasComposition);
         return res;
     }
 
@@ -68,10 +66,10 @@ public class Purchases
             try {
                 datas.add(
                         new Purchase(
-                                String.valueOf(row.get(StructureDescription.PurchasesDesc.PURCHASE_ID)),
-                                (Partnership) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(StructureDescription.PurchasesDesc.STORE_ID))),
-                                LocalDate.parse(String.valueOf(row.get(StructureDescription.PurchasesDesc.DELIVERY_DATE))),
-                                (int)row.get(StructureDescription.PurchasesDesc.IS_DELIVERED)==1
+                                String.valueOf(row.get(Desc.PURCHASE_ID)),
+                                (Partnership) getFromTableById(StructureDescription.Partners.TABLE_NAME, String.valueOf(row.get(Desc.STORE_ID))),
+                                LocalDate.parse(String.valueOf(row.get(Desc.DELIVERY_DATE))),
+                                (int)row.get(Desc.IS_DELIVERED)==1
                         )
                 );
             } catch (NotContainsException e) {
@@ -87,17 +85,17 @@ public class Purchases
         for(HashMap<String, Object> row : data){
 
             try {
-                Purchasable byId = getById(String.valueOf(row.get(StructureDescription.PurchasesComposition.PURCHASE_ID)));
+                Purchasable byId = getById(String.valueOf(row.get(Composite.PURCHASE_ID)));
                 List<Storing> composition = byId.getComposition();
 
                 composition.add(new StorageCell(
-                        String.valueOf(row.get(StructureDescription.PurchasesComposition.ID)),
-                        (Storagable) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(StructureDescription.PurchasesComposition.PRODUCT_ID))),
-                        Double.parseDouble(String.valueOf(row.get(StructureDescription.PurchasesComposition.COUNT))),
-                        (Typable) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(StructureDescription.PurchasesComposition.COUNT_TYPE_ID))),
-                        Double.parseDouble(String.valueOf(row.get(StructureDescription.PurchasesComposition.PRICE))),
-                        (Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(StructureDescription.PurchasesComposition.CURRENCY_ID))),
-                        Double.parseDouble(String.valueOf(row.get(StructureDescription.PurchasesComposition.COURSE)))
+                        String.valueOf(row.get(Composite.ID)),
+                        (Storagable) getFromTableById(StructureDescription.Products.TABLE_NAME, String.valueOf(row.get(Composite.PRODUCT_ID))),
+                        Double.parseDouble(String.valueOf(row.get(Composite.COUNT))),
+                        (Typable) getFromTableById(StructureDescription.CountTypes.TABLE_NAME, String.valueOf(row.get(Composite.COUNT_TYPE_ID))),
+                        Double.parseDouble(String.valueOf(row.get(Composite.PRICE))),
+                        (Finance) getFromTableById(StructureDescription.Currency.TABLE_NAME, String.valueOf(row.get(Composite.CURRENCY_ID))),
+                        Double.parseDouble(String.valueOf(row.get(Composite.COURSE)))
                 ));
 
             } catch (NotContainsException e) {

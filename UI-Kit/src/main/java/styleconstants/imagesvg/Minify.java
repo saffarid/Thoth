@@ -15,33 +15,33 @@ public class Minify {
 
         SVGPath svgPath = new SVGPath();
         svgPath.setContent(
-                        "M8.5,8.5 " +
-                                "V6 " +
+                        "M15,15 " +
+                                "V9 " +
                                 "a1.5,1.5,0,0,1,1.5,-1.5, " +
-                                "H19, " +
+                                "H31 " +
                                 "a1.5,1.5,0,0,1,1.5,1.5, " +
-                                "V15, " +
+                                "V23.5 " +
                                 "a1.5,1.5,0,0,1,-1.5,1.5, " +
-                                "H16.5"
+                                "H25"
         );
 
         svgPath.setFill(Color.TRANSPARENT);
         svgPath.setStroke(Color.WHITE);
-        svgPath.setStrokeWidth(1);
+        svgPath.setStrokeWidth(2);
 
         Rectangle rectangle = new Rectangle();
-        rectangle.setX(4.5);
-        rectangle.setY(8.5);
+        rectangle.setX(7.5);
+        rectangle.setY(15);
 
-        rectangle.setHeight(12);
-        rectangle.setWidth(12);
+        rectangle.setHeight(17.5);
+        rectangle.setWidth(17.5);
 
         rectangle.setArcHeight(3);
         rectangle.setArcWidth(3);
 
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.WHITE);
-        rectangle.setStrokeWidth(1);
+        rectangle.setStrokeWidth(2);
 
         svgPath.getStyleClass().add(Styleclasses.SVG_LINE);
         rectangle.getStyleClass().add(Styleclasses.SVG_LINE);
@@ -49,7 +49,8 @@ public class Minify {
         return new Group(
                 TransparentBackground.getInstance()
                 , svgPath
-                , rectangle);
+                , rectangle
+        );
 
     }
 }

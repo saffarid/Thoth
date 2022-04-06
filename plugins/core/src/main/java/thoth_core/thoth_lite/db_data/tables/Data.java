@@ -6,10 +6,7 @@ import thoth_core.thoth_lite.db_data.db_data_element.properties.Identifiable;
 import thoth_core.thoth_lite.db_data.db_data_element.properties.parts.Nameable;
 import thoth_core.thoth_lite.exceptions.NotContainsException;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -75,7 +72,7 @@ public abstract class Data<T extends Identifiable>
      *
      * @return список добавляемых записей по каждой таблице.
      * */
-    public abstract HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list);
+    public abstract Map<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list);
 
     /**
      * @param id идентификатор объекта

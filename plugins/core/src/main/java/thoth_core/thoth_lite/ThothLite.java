@@ -72,6 +72,27 @@ public class ThothLite {
             CoreLogger.log.error(e.getMessage(), e);
         }
         //Читаем единоразовые настройки
+        readInfo(initialData);
+
+        //Подписка на покупки
+        try {
+            DBData.getInstance().getTable(getTableName(AvaliableTables.PURCHASABLE)).subscribe((Flow.Subscriber) watcherPurchasesFinish);
+        } catch (NotContainsException e) {
+            CoreLogger.log.error(e.getMessage(), e);
+        }
+
+        //Считываем содержимое БД
+        reReader.run();
+        //Запускаем периодическое считывание
+        changeDelayReReadDb();
+
+        accountant = new Accountant();
+
+        //Проверяем
+        CoreLogger.log.info("Init thoth-core is Done");
+    }
+
+    private void readInfo(HashMap<SystemInfoKeys, Object> initialData) {
         try {
             List<HashMap<String, Object>> infoDatas = database.getDataFromTable(StructureDescription.Info.TABLE_NAME);
             for (HashMap<String, Object> row : infoDatas) {
@@ -95,23 +116,6 @@ public class ThothLite {
         } catch (SQLException | ClassNotFoundException e) {
             CoreLogger.log.error(e.getMessage(), e);
         }
-
-        //Подписка на покупки
-        try {
-            DBData.getInstance().getTable(getTableName(AvaliableTables.PURCHASABLE)).subscribe((Flow.Subscriber) watcherPurchasesFinish);
-        } catch (NotContainsException e) {
-            CoreLogger.log.error(e.getMessage(), e);
-        }
-
-        //Считываем содержимое БД
-        reReader.run();
-        //Запускаем периодическое считывание
-        changeDelayReReadDb();
-
-        accountant = new Accountant();
-
-        //Проверяем
-        CoreLogger.log.info("Init thoth-core is Done");
     }
 
     /**
@@ -133,6 +137,8 @@ public class ThothLite {
 
         database.insert(StructureDescription.Info.TABLE_NAME, datasForInfo);
         database.update(StructureDescription.Currency.TABLE_NAME, datasForCurrency);
+
+        readInfo(null);
     }
 
     public void acceptPurchase(Purchasable purchasable)
@@ -293,10 +299,10 @@ public class ThothLite {
                 return StructureDescription.Products.TABLE_NAME;
             }
             case PROJECTABLE: {
-                return StructureDescription.ProjectsDesc.TABLE_NAME;
+                return StructureDescription.Project.NAME;
             }
             case PURCHASABLE: {
-                return StructureDescription.Purchases.TABLE_NAME;
+                return StructureDescription.Purchase.NAME;
             }
             default:
                 return null;
@@ -415,7 +421,7 @@ public class ThothLite {
     public void purchaseComplete(String purchaseId)
             throws NotContainsException, SQLException {
 
-        Data purchasesTable = dbData.getTable(StructureDescription.Purchases.TABLE_NAME);
+        Data purchasesTable = dbData.getTable(StructureDescription.Purchase.NAME);
 
         List<Purchasable> purchasableList = new LinkedList<>();
         purchasableList.add((Purchasable) purchasesTable.getById(purchaseId));

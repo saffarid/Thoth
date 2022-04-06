@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static thoth_core.thoth_lite.db_lite_structure.full_structure.StructureDescription.ExpensesTypes.*;
 
@@ -23,7 +24,7 @@ public class ExpensesTypes
     }
 
     @Override
-    public HashMap<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list) {
+    public Map<String, List<HashMap<String, Object>>> convertToMap(List<? extends Identifiable> list) {
         HashMap<String, List<HashMap<String, Object>>> res = new HashMap<>();
         List<HashMap<String, Object>> data = new LinkedList<>();
         for( Identifiable identifiable : list){
