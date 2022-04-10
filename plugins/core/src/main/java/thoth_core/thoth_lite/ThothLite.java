@@ -374,21 +374,21 @@ public class ThothLite {
         /* Добавляем записи в таблицу продуктов в случае
           если исходный объект был составным и есть что записывать */
         if (!datasProducts.isEmpty()) {
-            HashMap<String, List<HashMap<String, Object>>> compositeData = products.convertToMap(datasProducts);
+            Map<String, List<HashMap<String, Object>>> compositeData = products.convertToMap(datasProducts);
             for (String tableForInsert : compositeData.keySet()) {
                 database.insert(tableForInsert, compositeData.get(tableForInsert));
             }
         }
 
         // Добавляем записи исходного объекта в таблицу
-        HashMap<String, List<HashMap<String, Object>>> data = table.convertToMap(datas);
+        Map<String, List<HashMap<String, Object>>> data = table.convertToMap(datas);
         for (String tableForInsert : data.keySet()) {
             database.insert(tableForInsert, data.get(tableForInsert));
         }
 
         // Если исходный объект instanceof Purchasable - добавляем записи в таблицу расходов
         if (data instanceof Purchasable) {
-            HashMap<String, List<HashMap<String, Object>>> hashMap = DBData.getInstance().getTable(StructureDescription.Expenses.TABLE_NAME).convertToMap(finOps);
+            Map<String, List<HashMap<String, Object>>> hashMap = DBData.getInstance().getTable(StructureDescription.Expenses.TABLE_NAME).convertToMap(finOps);
             for (String key : hashMap.keySet()) {
                 database.insert(
                         StructureDescription.Expenses.TABLE_NAME,
@@ -399,8 +399,8 @@ public class ThothLite {
 
         // Блок работает только тогда, когда добавляются записи в PRODUCT_TYPES
         if (tableName.equals(StructureDescription.ProductTypes.TABLE_NAME)) {
-            HashMap<String, List<HashMap<String, Object>>> expTypes = DBData.getInstance().getTable(StructureDescription.ExpensesTypes.TABLE_NAME).convertToMap(datas);
-            HashMap<String, List<HashMap<String, Object>>> incTypes = DBData.getInstance().getTable(StructureDescription.IncomesTypes.TABLE_NAME).convertToMap(datas);
+            Map<String, List<HashMap<String, Object>>> expTypes = DBData.getInstance().getTable(StructureDescription.ExpensesTypes.TABLE_NAME).convertToMap(datas);
+            Map<String, List<HashMap<String, Object>>> incTypes = DBData.getInstance().getTable(StructureDescription.IncomesTypes.TABLE_NAME).convertToMap(datas);
 
             for (String tableForInsert : expTypes.keySet()) {
                 database.insert(tableForInsert, expTypes.get(tableForInsert));
@@ -426,7 +426,7 @@ public class ThothLite {
         List<Purchasable> purchasableList = new LinkedList<>();
         purchasableList.add((Purchasable) purchasesTable.getById(purchaseId));
 
-        HashMap<String, List<HashMap<String, Object>>> datas = purchasesTable.convertToMap(purchasableList);
+        Map<String, List<HashMap<String, Object>>> datas = purchasesTable.convertToMap(purchasableList);
         for (String tableName : datas.keySet()) {
             database.update(tableName, datas.get(tableName));
         }
@@ -481,7 +481,7 @@ public class ThothLite {
      */
     private void removeFromTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
-        HashMap<String, List<HashMap<String, Object>>> data = dbData.getTable(tableName).convertToMap(datas);
+        Map<String, List<HashMap<String, Object>>> data = dbData.getTable(tableName).convertToMap(datas);
         for (String name : data.keySet()) {
             database.remove(name, data.get(name));
         }
@@ -523,7 +523,7 @@ public class ThothLite {
      */
     private void updateInTable(String tableName, List<? extends Identifiable> datas)
             throws SQLException, NotContainsException {
-        HashMap<String, List<HashMap<String, Object>>> data = dbData.getTable(tableName).convertToMap(datas);
+        Map<String, List<HashMap<String, Object>>> data = dbData.getTable(tableName).convertToMap(datas);
         for (String name : data.keySet()) {
             database.update(name, data.get(name));
         }

@@ -32,7 +32,7 @@ public class Home
 
     @Override
     protected BorderPane createContentNode(){
-        contentNode = new BorderPane(Label.getInstanse("Home page"));
+        contentNode = new BorderPane(  );
         return contentNode;
     }
 

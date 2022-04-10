@@ -204,10 +204,10 @@ public class ThothLiteWindow
         double sizeViewbox = 17;
 
         List<controls.MenuButton> menuButtons = new LinkedList<>();
-        menuButtons.add(MenuButton.getInstance(
-                Scenes.HOME.name(), SvgWrapper.getInstance(Images.HOME(), size, size),
-                event -> works.setNewScene(Home.getInstance())
-        ));
+//        menuButtons.add(MenuButton.getInstance(
+//                Scenes.HOME.name(), SvgWrapper.getInstance(Images.HOME(), size, size),
+//                event -> works.setNewScene(Home.getInstance())
+//        ));
         menuButtons.add(MenuButton.getInstance(
                 Scenes.EXPENSES.name(), SvgWrapper.getInstance(Images.TRADINGDOWN(), size, size),
                 event -> works.setNewScene(new FinancialOperations(AvaliableTables.EXPENSES))
