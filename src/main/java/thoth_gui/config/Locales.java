@@ -8,6 +8,9 @@ public enum Locales implements ConfigEnums<Locale> {
 
     RU(new Locale.Builder().setLanguage("ru").build()),
     ENG(new Locale.Builder().setLanguage("en").build()),
+    FR(new Locale.Builder().setLanguage("fr").build()),
+    DE(new Locale.Builder().setLanguage("de").build()),
+    IT(new Locale.Builder().setLanguage("it").build()),
     ;
 
     private Locale locale;

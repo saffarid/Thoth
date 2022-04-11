@@ -178,7 +178,7 @@ public class ThothLiteWindow
             aboutStage.initStyle(StageStyle.UNDECORATED);
             aboutStage.setScene(
                     new Scene(
-                            new About(aboutStage, "About")
+                            new About(aboutStage, Properties.getString("about", TextCase.NORMAL))
                     )
             );
 
