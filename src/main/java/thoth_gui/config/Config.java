@@ -193,10 +193,10 @@ public class Config
         private final String KEY_LOCALE = Keys.Scene.LOCALE.getKey();
 
         private final ColorTheme defaultTheme = ColorTheme.DARK;
-        private final Locale defaultLocale = Locales.ENG.getValue();
+        private final Locales defaultLocale = Locales.ENGLISH;
 
         private SimpleObjectProperty<ColorTheme> theme;
-        private Locale locale;
+        private Locales locale;
 
         public Scene() {
             theme = new SimpleObjectProperty<>(defaultTheme);
@@ -209,7 +209,7 @@ public class Config
         public JSONObject getConfig() {
             JSONObject res = new JSONObject();
             res.put(KEY_COLOR_THEME, theme.getValue().getName());
-            res.put(KEY_LOCALE, locale.toLanguageTag());
+            res.put(KEY_LOCALE, locale.getName());
             return res;
         }
 
@@ -227,7 +227,7 @@ public class Config
         }
 
         public Locale getLocale() {
-            return locale;
+            return locale.getValue();
         }
 
         /* --- Setter --- */
@@ -236,7 +236,7 @@ public class Config
         public void setConfig(JSONObject json) {
             if (json == null) return;
             theme.setValue(ColorTheme.valueOf((String) json.get(KEY_COLOR_THEME)));
-            locale = new Locale(String.valueOf(json.get(KEY_LOCALE)));
+            locale = Locales.valueOf(String.valueOf(json.get(KEY_LOCALE)));
         }
     }
 

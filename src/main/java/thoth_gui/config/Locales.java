@@ -6,11 +6,11 @@ import java.util.Locale;
 
 public enum Locales implements ConfigEnums<Locale> {
 
-    RU(new Locale.Builder().setLanguage("ru").build()),
-    ENG(new Locale.Builder().setLanguage("en").build()),
-    FR(new Locale.Builder().setLanguage("fr").build()),
-    DE(new Locale.Builder().setLanguage("de").build()),
-    IT(new Locale.Builder().setLanguage("it").build()),
+    RUSSIAN(new Locale.Builder().setLanguage("ru").build()),
+    ENGLISH(new Locale.Builder().setLanguage("en").build()),
+    FRENCH(new Locale.Builder().setLanguage("fr").build()),
+    GERMAN(new Locale.Builder().setLanguage("de").build()),
+    ITALIAN(new Locale.Builder().setLanguage("it").build()),
     ;
 
     private Locale locale;
@@ -20,7 +20,7 @@ public enum Locales implements ConfigEnums<Locale> {
 
     @Override
     public String getName() {
-        return locale.toLanguageTag();
+        return name();
     }
 
     @Override

@@ -44,14 +44,25 @@ public class ConfigEnumsComboBox {
         protected void updateItem(ConfigEnums configEnums, boolean b) {
             if(configEnums != null) {
                 super.updateItem(configEnums, b);
-                if(configEnums.getName().equalsIgnoreCase("never")){
+
+                if(configEnums.getValue() instanceof Integer || configEnums.getValue() instanceof Double) {
+
+                    if (configEnums.getName().equalsIgnoreCase("never")) {
+                        setGraphic(
+                                Label.getInstanse(configEnums.getName(), TextCase.NORMAL)
+                        );
+                    } else {
+                        setGraphic(
+                                Label.getInstanse(String.valueOf(configEnums.getValue()))
+                        );
+                    }
+
+                } else {
+
                     setGraphic(
-                            Label.getInstanse( configEnums.getName(), TextCase.NORMAL )
+                            Label.getInstanse(configEnums.getName(), TextCase.NORMAL)
                     );
-                }else{
-                    setGraphic(
-                            Label.getInstanse( String.valueOf(configEnums.getValue()) )
-                    );
+
                 }
             }
         }
