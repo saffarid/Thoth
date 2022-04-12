@@ -51,7 +51,7 @@ public class SystemInfoDialog extends Dialog<HashMap<SystemInfoKeys, Object>> {
 
     private class SystemInfoView extends BorderPane {
 
-        private final String TITLE_TEXT = Properties.getString("one-time-config", TextCase.NORMAL);
+        private final String TITLE_TEXT = Properties.getString("one_time_config", TextCase.NORMAL);
 
         private Dialog dialog;
 

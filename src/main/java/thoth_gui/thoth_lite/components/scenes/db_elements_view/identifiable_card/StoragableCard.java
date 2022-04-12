@@ -46,7 +46,7 @@ public class StoragableCard
     private enum ControlsId {
         ARTICLE(Properties.getString("article", TextCase.NORMAL)),
         NAME(Properties.getString("name", TextCase.NORMAL)),
-        PRODUCT_TYPE(Properties.getString("product-type", TextCase.NORMAL)),
+        PRODUCT_TYPE(Properties.getString("product_type", TextCase.NORMAL)),
         COUNT(Properties.getString("count", TextCase.NORMAL)),
         COUNT_TYPE(Properties.getString("count_type", TextCase.NORMAL)),
         ADRESS(Properties.getString("storing", TextCase.NORMAL)),

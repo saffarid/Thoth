@@ -35,7 +35,7 @@ public class FinOperationCard
 
     private enum TextLabels {
         TITLE(Properties.getString("new_fin_op", TextCase.NORMAL)),
-        FIN_OP_TYPE(Properties.getString("fin-op-type", TextCase.NORMAL)),
+        FIN_OP_TYPE(Properties.getString("fin_op_type", TextCase.NORMAL)),
         VALUE(Properties.getString("value", TextCase.NORMAL)),
         DATE(Properties.getString("date", TextCase.NORMAL)),
         CURRENCY(Properties.getString("currency", TextCase.NORMAL)),

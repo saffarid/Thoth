@@ -60,11 +60,11 @@ public class Keys {
         /**
          * Ключ доступа к цветовой схеме
          * */
-        COLOR_THEME("color-theme"),
+        COLOR_THEME("color_theme"),
         /**
          * Ключ доступа к коду языка локализации
          * */
-        LOCALE("locale-config")
+        LOCALE("locale_config")
         ;
         private String key;
         Scene(String key) {
@@ -80,7 +80,7 @@ public class Keys {
      * */
     public enum Notify{
         /**Ключ доступа к разрешению оповещений в уведомления ОС*/
-        NOTIFY_TO_OS("notify-to-os"),
+        NOTIFY_TO_OS("notify_to_os"),
         ;
         private String key;
         Notify(String key) {

@@ -20,7 +20,7 @@ public class PurchasableViewCell
         extends IdentifiableViewCell {
 
 
-    private static final String NOT_DELIVERED= "not-delivered";
+    private static final String NOT_DELIVERED= "undelivered";
     private static final String DELIVERED= "delivered";
 
     protected PurchasableViewCell(Purchasable purchase) {
