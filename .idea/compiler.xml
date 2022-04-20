@@ -6,13 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="core" />
         <module name="Thoth" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="core" target="8" />
-      <module name="Thoth" target="11" />
+      <module name="Thoth" target="15" />
       <module name="UI-Kit" target="11" />
     </bytecodeTargetLevel>
   </component>

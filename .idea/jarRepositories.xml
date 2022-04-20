@@ -16,5 +16,10 @@
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="localrep" />
+      <option name="name" value="local repository" />
+      <option name="url" value="file:E:\Something\Projects\AaOnlyprogs\Thoth\Thoth/lib" />
+    </remote-repository>
   </component>
 </project>
