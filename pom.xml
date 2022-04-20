@@ -17,8 +17,9 @@
 
     <repositories>
         <repository>
-            <id></id>
-            <url>${basedir}/lib</url>
+            <id>localrep</id>
+            <name>local repository</name>
+            <url>file:${project.basedir}/lib</url>
         </repository>
     </repositories>
 
@@ -60,18 +61,6 @@
             <artifactId>javafx-fxml</artifactId>
             <version>16</version>
         </dependency>
-        <dependency>
-            <groupId>id.saffar</groupId>
-            <artifactId>ui-kit</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>id.saffar</groupId>
-            <artifactId>thoth</artifactId>
-            <version>0.1.0</version>
-            <scope>compile</scope>
-        </dependency>
 
         <!-- Log -->
         <dependency>
@@ -83,6 +72,25 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.26</version>
+        </dependency>
+
+        <!-- Json lib -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <!-- Saffar.Id -->
+        <dependency>
+            <groupId>id.saffar</groupId>
+            <artifactId>thoth</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>id.saffar</groupId>
+            <artifactId>ui-kit</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
     </dependencies>
