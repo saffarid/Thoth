@@ -19,10 +19,8 @@
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:win:16" level="project" />
-    <orderEntry type="module" module-name="UI-Kit" />
-    <orderEntry type="module" module-name="core" />
-    <orderEntry type="library" name="Maven: org.xerial:sqlite-jdbc:3.36.0.1" level="project" />
-    <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1" level="project" />
+    <orderEntry type="library" name="Maven: id.saffar:ui-kit:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: id.saffar:thoth:0.1.0" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.26" level="project" />

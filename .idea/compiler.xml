@@ -8,11 +8,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="core" />
         <module name="Thoth" />
-        <module name="UI-Kit" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="core" target="11" />
+      <module name="core" target="8" />
       <module name="Thoth" target="11" />
       <module name="UI-Kit" target="11" />
     </bytecodeTargetLevel>

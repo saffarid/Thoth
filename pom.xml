@@ -8,6 +8,20 @@
     <artifactId>Thoth</artifactId>
     <version>1.0</version>
 
+    <developers>
+        <developer>
+            <id>SaffarId</id>
+            <name>Pavlov Nikita</name>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id></id>
+            <url>${basedir}/lib</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
@@ -22,7 +36,6 @@
     </build>
 
     <dependencies>
-
         <!--  JavaFX Base  -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -48,15 +61,15 @@
             <version>16</version>
         </dependency>
         <dependency>
-            <groupId>groupId</groupId>
-            <artifactId>UI-Kit</artifactId>
-            <version>1.0</version>
+            <groupId>id.saffar</groupId>
+            <artifactId>ui-kit</artifactId>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>id.saffar</groupId>
             <artifactId>thoth</artifactId>
-            <version>1.0</version>
+            <version>0.1.0</version>
             <scope>compile</scope>
         </dependency>
 
